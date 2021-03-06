@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { InMemoryBaseRepository } from 'src/data/core/debug/baseRepository';
+import { InMemoryBaseRepository } from 'src/data/debug/baseRepository';
 import { IMessageDatabase } from 'src/data/core/message/messageDatabase';
 import { MessageDto } from 'src/data/core/message/messageDto';
 

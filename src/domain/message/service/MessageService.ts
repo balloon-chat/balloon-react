@@ -1,6 +1,6 @@
 import { AddMessage, IAddMessage } from 'src/domain/message/usecases/addMessage';
 import { UserId } from 'src/domain/user/models/userId';
-import { InMemoryMessageDatabase } from 'src/data/core/debug/message/messageDatabse';
+import { InMemoryMessageDatabase } from 'src/data/debug/message/messageDatabse';
 import { Observable } from 'rxjs';
 import { IObserveMessageData, MessageData, ObserveMessageData } from 'src/domain/message/usecases/observeMessageData';
 import { RoomId } from 'src/domain/room/models/roomId';
