@@ -16,7 +16,7 @@ export class FakeMessageRepository implements IMessageRepository {
     return this.repository.observeAll();
   }
 
-  save(message: MessageEntity): Promise<void> {
+  save(_: RoomId, message: MessageEntity): Promise<void> {
     this.repository.save(message.id, message);
     return Promise.resolve(undefined);
   }

@@ -20,6 +20,7 @@ module.exports = {
         'src/(.*)': '<rootDir>/src/$1',
         'tests/(.*)': '<rootDir>/tests/$1',
     },
+    verbose: true,
     // https://github.com/zeit/next.js/issues/8663#issue-490553899
     globals: {
         // we must specify a custom tsconfig for tests because we need the typescript transform
