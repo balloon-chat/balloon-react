@@ -19,10 +19,11 @@ test('Messageを取得', async (done) => {
     User Repository: User
     Message Repository: MessageEntity(body=MessageBody)
    */
+  const roomId = new RoomId();
   const user = new AnonymousUser();
   (userRepository as FakeUserRepository).save(user);
   const message = new MessageFactory().create(new MessageBody('Message'), user);
-  await messageRepository.save(new MessageEntityFactory().createFromMessage(message));
+  await messageRepository.save(roomId, new MessageEntityFactory().createFromMessage(message));
 
   usecase.execute(new RoomId()).subscribe({
     next: async value => {

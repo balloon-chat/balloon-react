@@ -3,16 +3,18 @@ import { MessageEntity, MessageEntityFactory } from 'src/domain/message/reposito
 import { IMessageRepository } from 'src/domain/message/repository/messageRepository';
 import { IllegalArgumentException } from 'src/domain/exceptions/IllegalArgumentException';
 import { MessageBody } from 'src/domain/message/models/messageBody';
+import { RoomId } from 'src/domain/room/models/roomId';
 
 export interface IAddMessage {
   /**
    * 新しくメッセージを作成する。
-   * @param value メッセージボディー
+   * @param message メッセージボディー
    * @param senderId メッセージを作成したユーザーのID
+   * @param roomId メッセージの送信先となるRoomのID
    * @return 作成されたメッセージ
-   * @throws IllegalArgumentException value が MessageBodyの条件を満たさなかったとき
+   * @throws IllegalArgumentException message が MessageBodyの条件を満たさなかったとき
    */
-  execute(value: string, senderId: UserId): Promise<MessageEntity>;
+  execute(message: string, senderId: UserId, roomId: RoomId): Promise<MessageEntity>;
 }
 
 export class AddMessage implements IAddMessage {
@@ -22,13 +24,13 @@ export class AddMessage implements IAddMessage {
   /**
    * 新しくメッセージを作成し、IMessageRepositoryに保存する。
    */
-  async execute(value: string, senderId: UserId): Promise<MessageEntity> {
+  async execute(value: string, senderId: UserId, roomId: RoomId): Promise<MessageEntity> {
     if (!MessageBody.require(value)) {
       return Promise.reject(new IllegalArgumentException('value must satisfy the constraints of MessageBody'));
     }
     const body = new MessageBody(value);
     const entity = new MessageEntityFactory().create(body, senderId);
-    await this.messageRepository.save(entity);
+    await this.messageRepository.save(roomId, entity);
     return Promise.resolve(entity);
   }
 }

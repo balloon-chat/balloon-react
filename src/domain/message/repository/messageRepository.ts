@@ -5,9 +5,9 @@ import { Observable } from 'rxjs';
 
 export interface IMessageRepository {
 
-  find(messageId: MessageId): Promise<MessageEntity |  undefined>;
+  find(roomId: RoomId, messageId: MessageId): Promise<MessageEntity |  undefined>;
 
   observeAll(roomId: RoomId): Observable<MessageEntity[]>;
 
-  save(message: MessageEntity): Promise<void>;
+  save(roomId: RoomId, message: MessageEntity): Promise<void>;
 }

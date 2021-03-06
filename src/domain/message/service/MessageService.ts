@@ -20,7 +20,7 @@ export class MessageService {
     return this.observeMessageDataUsecase.execute(new RoomId(roomId));
   }
 
-  async sendMessage(message: string, userId: string): Promise<void> {
-    await this.addMessageUsecase.execute(message, new UserId(userId));
+  async sendMessage(message: string, userId: string, roomId: string): Promise<void> {
+    await this.addMessageUsecase.execute(message, new UserId(userId), new RoomId(roomId));
   }
 }

@@ -15,10 +15,11 @@ test('MessageDataを取得', async (done) => {
   初期データ:
     Message Repository: Message
    */
+  const roomId = new RoomId();
   const user = new AnonymousUser();
   const message = new MessageFactory().create(new MessageBody('message'), user);
   const entity = new MessageEntityFactory().createFromMessage(message);
-  await messageRepository.save(entity);
+  await messageRepository.save(roomId, entity);
 
   usecase.execute(new RoomId()).subscribe(value => {
     const result = value[0];

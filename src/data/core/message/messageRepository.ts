@@ -14,8 +14,8 @@ export class MessageRepository implements IMessageRepository {
   ) {
   }
 
-  async find(messageId: MessageId): Promise<MessageEntity | undefined> {
-    const dto = await this.messageDatabase.find(messageId.value);
+  async find(roomId: RoomId, messageId: MessageId): Promise<MessageEntity | undefined> {
+    const dto = await this.messageDatabase.find(roomId.value, messageId.value);
     return dto?.toEntity();
   }
 
@@ -25,8 +25,8 @@ export class MessageRepository implements IMessageRepository {
     );
   }
 
-  async save(message: MessageEntity): Promise<void> {
-    await this.messageDatabase.save(MessageDto.from(message));
+  async save(roomId: RoomId, message: MessageEntity): Promise<void> {
+    await this.messageDatabase.save(roomId.value, MessageDto.from(message));
   }
 
 }

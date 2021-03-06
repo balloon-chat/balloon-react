@@ -3,9 +3,9 @@ import { Observable } from 'rxjs';
 
 export interface IMessageDatabase {
 
-  find(messageId: string): Promise<MessageDto | undefined>;
+  find(roomId: string, messageId: string): Promise<MessageDto | undefined>;
 
   observeAll(roomId: string): Observable<MessageDto[]>;
 
-  save(message: MessageDto): Promise<void>;
+  save(roomId: string, message: MessageDto): Promise<void>;
 }

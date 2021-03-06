@@ -19,7 +19,7 @@ export class InMemoryMessageDatabase implements IMessageDatabase {
     return this._instance;
   }
 
-  find(messageId: string): Promise<MessageDto | undefined> {
+  find(_: string, messageId: string): Promise<MessageDto | undefined> {
     return this.repository.find(messageId);
   }
 
@@ -27,7 +27,7 @@ export class InMemoryMessageDatabase implements IMessageDatabase {
     return this.repository.observeAll();
   }
 
-  save(message: MessageDto): Promise<void> {
+  save(_: string, message: MessageDto): Promise<void> {
     return this.repository.save(message.id, message);
   }
 
