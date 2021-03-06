@@ -1,40 +1,22 @@
-import { CaseReducer, createSlice } from '@reduxjs/toolkit';
-import { ObserveFulfilled, ObserveStart, sendMessage } from 'src/data/redux/message/actions';
+import { createSlice } from '@reduxjs/toolkit';
+import { sendMessage } from 'src/data/redux/message/action';
+import { observeFulfilledReducer, observeStartReducer } from 'src/data/redux/message/reducer';
+import { MessageState, messageStateName } from 'src/data/redux/message/state';
 
-export type ReduxMessageEntity = {
-  id: string,
-  message: string,
-  sender?: string,
-  createdAt: number,
+const initialState: MessageState = {
+  messages: [],
 };
-
-export type MessageState = {
-  roomId: string,
-  messages: ReduxMessageEntity[],
-};
-
-const observeStartReducer: CaseReducer<MessageState, ObserveStart> = (state) => ({
-  ...state,
-});
-
-const observeFulfilledReducer: CaseReducer<MessageState, ObserveFulfilled> = (state, { payload }) => ({
-  ...state,
-  messages: payload.messages,
-});
 
 const slice = createSlice({
-  name: 'message',
-  initialState: {
-    roomId: 'abc',
-    messages: [],
-  } as MessageState,
+  name: messageStateName,
+  initialState,
   reducers: {
     observeStart: observeStartReducer,
     observeFulfilled: observeFulfilledReducer,
   },
   extraReducers: builder => {
     builder
-      .addCase(sendMessage.fulfilled, (state) => state);
+        .addCase(sendMessage.fulfilled, (state) => state);
   },
 });
 

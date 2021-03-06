@@ -1,8 +1,9 @@
-import { Action, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { MessageService } from 'src/domain/message/service/MessageService';
-import { ReduxMessageEntity } from 'src/data/redux/message/slice';
+import { messageStateName, ReduxMessageEntity } from 'src/data/redux/message/state';
 
-export const SEND_MESSAGE = 'message/send';
+export const SEND_MESSAGE = `${messageStateName}/send`;
+
 export const sendMessage = createAsyncThunk<void, { message: string, userId: string, roomId: string }>(
     SEND_MESSAGE,
     async ({ message, userId, roomId }) => {
@@ -11,6 +12,6 @@ export const sendMessage = createAsyncThunk<void, { message: string, userId: str
     },
 );
 
-export type ObserveStart = Action;
-export type ObserveFulfilled = PayloadAction<{ messages: ReduxMessageEntity[] }>;
+export type ObserveStart = PayloadAction<{ roomId: string }>;
+export type ObserveFulfilled = PayloadAction<{ roomId: string, messages: ReduxMessageEntity[] }>;
 export type MessageActions = ObserveStart | ObserveFulfilled;
