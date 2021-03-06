@@ -1,6 +1,6 @@
 import { combineEpics, createEpicMiddleware } from 'redux-observable';
 import { messageEpic } from 'src/data/redux/message/epic';
-import { MessageActions } from 'src/data/redux/message/actions';
+import { MessageActions } from 'src/data/redux/message/action';
 import { RootState } from 'src/data/redux/state';
 
 type Actions = MessageActions;
