@@ -1,16 +1,20 @@
 import styled from 'styled-components';
 import React, { CSSProperties, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { sendMessage } from 'src/data/redux/message/actions';
-import { useMessageState } from 'src/data/redux/message/selector';
+import { sendMessage as sendMessageAction } from 'src/data/redux/message/action';
+import { useRoomState } from 'src/data/redux/room/selector';
+import { useUserSelector } from 'src/data/redux/user/selector';
 
 // tslint:disable-next-line:variable-name
 export const MessageField = () => {
 
   const dispatcher = useDispatch();
+
   const [text, setText] = useState('');
   const [isVisible, setIsVisible] = useState(true);
-  const roomId = useMessageState().roomId;
+
+  const roomId = useRoomState().roomId;
+  const userId = useUserSelector().uid;
 
   const handleInput = (value: string | null) => {
     if (value) setText(value);
@@ -21,8 +25,12 @@ export const MessageField = () => {
     if (e.key === 'Enter') {
       e.preventDefault(); // 改行をさせない
       e.currentTarget.textContent = ''; // 入力内容をクリア
-      dispatcher(sendMessage({ message: text, userId: 'abc', roomId }));
+      sendMessage(text);
     }
+  };
+
+  const sendMessage = (message: string) => {
+    if (roomId && userId) dispatcher(sendMessageAction({ message, userId, roomId }));
   };
 
   return (<MessageFieldContainer>

@@ -3,16 +3,18 @@ import { useMessageState } from 'src/data/redux/message/selector';
 import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import { observeStart } from 'src/data/redux/message/slice';
+import { useRoomState } from 'src/data/redux/room/selector';
 
 // tslint:disable-next-line:variable-name
 export const Chat = () => {
   const messages = useMessageState().messages;
+  const roomId = useRoomState().roomId;
 
   const dispatcher = useDispatch();
 
   useEffect(() => {
-    dispatcher(observeStart());
-  },        []);
+    if (roomId) dispatcher(observeStart({ roomId }));
+  },        [roomId]);
 
   return (<ChatContainer>{
     messages.map((message, index) => (
