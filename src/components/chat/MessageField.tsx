@@ -40,7 +40,9 @@ export const MessageField = () => {
           style={textFieldStyle}
           contentEditable={true}
           onInput={(e) => handleInput(e.currentTarget.textContent)}
-          onKeyPress={handleKeyPress}/>
+          onKeyPress={handleKeyPress}
+          role={'text'}
+          />
     </MessageTextArea>
   </MessageFieldContainer>);
 };
@@ -72,6 +74,9 @@ const MessageTextArea = styled.div`
 // tslint:disable-next-line:variable-name
 const TextField = styled.div`
   outline: none;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  -webkit-user-modify: read-write-plaintext-only;
 `;
 
 // tslint:disable-next-line:variable-name
