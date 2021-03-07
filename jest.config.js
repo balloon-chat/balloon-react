@@ -30,5 +30,6 @@ module.exports = {
             tsconfig: '<rootDir>/tests/tsconfig.jest.json',
             babelConfig: true,
         }
-    }
+    },
+    reporters: ["default", "jest-junit"],
 };
