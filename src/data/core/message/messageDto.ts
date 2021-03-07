@@ -38,6 +38,18 @@ export class MessageDto {
     );
   }
 
+  static fromJSON(json: Object | null): MessageDto | undefined {
+    if (json && isMessageJSON(json)) {
+      const src = json as MessageJSON;
+      return new MessageDto(
+          src.id,
+          src.body,
+          src.createdAt,
+          src.senderId,
+      );
+    }
+  }
+
   toEntity(): MessageEntity {
     return new MessageEntity(
         new MessageId(this.id),
@@ -46,4 +58,27 @@ export class MessageDto {
         new UserId(this.senderId),
     );
   }
+
+  toJSON(): MessageJSON {
+    return {
+      id: this.id,
+      body: this.body,
+      createdAt: this.createdAt,
+      senderId: this.senderId,
+    };
+  }
 }
+
+export type MessageJSON = {
+  id: string,
+  body: string,
+  createdAt: number,
+  senderId: string,
+};
+
+const isMessageJSON = (obj: any): obj is MessageJSON => {
+  return typeof obj.id === 'string'
+      && typeof obj.body === 'string'
+      && typeof obj.createdAt === 'number'
+      && typeof obj.senderId === 'string';
+};

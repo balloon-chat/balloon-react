@@ -1,17 +1,17 @@
 import { AddMessage, IAddMessage } from 'src/domain/message/usecases/addMessage';
 import { UserId } from 'src/domain/user/models/userId';
-import { InMemoryMessageDatabase } from 'src/data/debug/message/messageDatabse';
 import { Observable } from 'rxjs';
 import { IObserveMessageData, MessageData, ObserveMessageData } from 'src/domain/message/usecases/observeMessageData';
 import { RoomId } from 'src/domain/room/models/roomId';
 import { MessageRepository } from 'src/data/core/message/messageRepository';
 import { IMessageRepository } from 'src/domain/message/repository/messageRepository';
+import { FirebaseMessageDatabase } from 'src/data/firebase/message/messageDatabase';
 
 export class MessageService {
   private readonly addMessageUsecase: IAddMessage;
   private readonly observeMessageDataUsecase: IObserveMessageData;
 
-  constructor(messageRepository: IMessageRepository = new MessageRepository(InMemoryMessageDatabase.instance)) {
+  constructor(messageRepository: IMessageRepository = new MessageRepository(FirebaseMessageDatabase.instance)) {
     this.addMessageUsecase = new AddMessage(messageRepository);
     this.observeMessageDataUsecase = new ObserveMessageData(messageRepository);
   }
