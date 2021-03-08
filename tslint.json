@@ -14,7 +14,8 @@
       true,
       {
         "react": "React",
-        "styledComponents": "styled"
+        "styledComponents": "styled",
+        "image": "Image"
       }
     ]
   }

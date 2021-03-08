@@ -18,6 +18,18 @@ const App = ({ Component, pageProps }: AppProps) => {
         margin: 0;
         padding: 0;
       }
+
+      a:hover {
+        cursor: pointer;
+      }
+
+      body {
+        color: #323232;
+      }
+
+      ol, ul {
+        list-style: none;
+      }
     `}</style>
     <Provider store={store}>
       <Component {...pageProps} />
