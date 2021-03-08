@@ -1,23 +1,26 @@
 import styled from 'styled-components';
 import React, { CSSProperties } from 'react';
 import { TopicCard } from 'src/components/topic/TopicCard';
+import { ContainerCard } from 'src/components/topic/ContainerCard';
 
 // tslint:disable-next-line:variable-name
 export const TopicList = () => {
   return (<TopicContainer>
-    <main style={cardStyle}>
-      <div style={title}>
-        <img style={titleImage} src={'/images/character_yellow.png'}/>
-        <div>ホットな話題</div>
-      </div>
-      <TopicListComponent style={topicList}>
-        <li><TopicCard/></li>
-        <li><TopicCard/></li>
-        <li><TopicCard/></li>
-        <li><TopicCard/></li>
-        <li><TopicCard/></li>
-      </TopicListComponent>
-    </main>
+    <ContainerCard>
+      <main style={container}>
+        <div style={title}>
+          <img style={titleImage} src={'/images/character_yellow.png'}/>
+          <div>ホットな話題</div>
+        </div>
+        <TopicListComponent style={topicList}>
+          <li><TopicCard/></li>
+          <li><TopicCard/></li>
+          <li><TopicCard/></li>
+          <li><TopicCard/></li>
+          <li><TopicCard/></li>
+        </TopicListComponent>
+      </main>
+    </ContainerCard>
   </TopicContainer>);
 };
 
@@ -30,15 +33,10 @@ export const TopicContainer = styled.div`
   }
 `;
 
-const cardStyle: CSSProperties = {
+const container: CSSProperties = {
   boxSizing: 'border-box',
-  backgroundColor: 'white',
-  boxShadow: '3px 3px 6px 5px rgba(0, 64, 128, .16)',
-  borderRadius: 5,
   display: 'flex',
   flexDirection: 'column',
-  margin: '0 auto',
-  maxWidth: 1050,
   padding: '48px 16px 32px 16px',
   width: '100%',
 };

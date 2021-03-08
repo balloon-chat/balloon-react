@@ -1,24 +1,33 @@
-import styled from 'styled-components';
 import { CSSProperties } from 'react';
+import { NavButton, NavButtonSmall } from 'src/components/navbar/NavBarAction';
 
 // tslint:disable-next-line:variable-name
 export const NavBar = () => {
   return (<div style={container}>
     <div style={navTitle}>
       <div>ふうせん</div>
-      <img style={titleIcon} src={'/images/character_blue.png'} height={48}/>
+      <img style={titleIcon} src={'/images/character_blue.png'}/>
       <div>チャット</div>
     </div>
     <div style={actionContainer}>
-      <NavButton style={navButtonStyle}>
-        <img style={actionIcon} src={'/svg/speech_balloon.svg'}/>
-        <div>話題を作る</div>
-      </NavButton>
-      <NavButton style={navButtonStyle}>
-        <img style={actionIcon} src={'/svg/exit.svg'}/>
-        <div>話題に参加する</div>
-      </NavButton>
+      <NavButton title={'話題を作る'} imgSrc={'/svg/speech_balloon.svg'}/>
+      <NavButton title={'話題に参加する'} imgSrc={'/svg/exit.svg'}/>
     </div>
+  </div>);
+};
+
+// tslint:disable-next-line:variable-name
+export const NavBarSmall = () => {
+  return (<div style={containerSmall}>
+      <div style={navTitleSmall}>
+        <div>ふうせん</div>
+        <img style={titleIconSmall} src={'/images/character_blue.png'}/>
+        <div>チャット</div>
+      </div>
+      <div style={actionContainerSmall}>
+        <NavButtonSmall title={'話題を作る'} imgSrc={'/svg/speech_balloon.svg'}/>
+        <NavButtonSmall title={'話題に参加する'} imgSrc={'/svg/exit.svg'}/>
+      </div>
   </div>);
 };
 
@@ -31,6 +40,13 @@ const container: CSSProperties = {
   paddingTop: 16,
 } as const;
 
+const containerSmall: CSSProperties = {
+  ...container,
+  flexDirection: 'row',
+  justifyContent: 'space-evenly',
+  paddingTop: 0,
+} as const;
+
 const navTitle: CSSProperties = {
   alignItems: 'center',
   display: 'flex',
@@ -38,8 +54,20 @@ const navTitle: CSSProperties = {
   textAlign: 'center',
 } as const;
 
+const navTitleSmall: CSSProperties = {
+  ...navTitle,
+  fontSize: 16,
+};
+
 const titleIcon: CSSProperties = {
   margin: '0 16px',
+  height: 48,
+} as const;
+
+const titleIconSmall: CSSProperties = {
+  ...titleIcon,
+  margin: '0 8px',
+  height: 24,
 } as const;
 
 const actionContainer: CSSProperties = {
@@ -50,26 +78,7 @@ const actionContainer: CSSProperties = {
   width: '100%',
 } as const;
 
-// tslint:disable-next-line:variable-name
-const NavButton = styled.a`
-  &:hover {
-    background-color: rgba(0, 0, 0, .1);
-    cursor: pointer;
-  }
-`;
-
-const actionIcon: CSSProperties = {
-  height: 32,
-  marginRight: 16,
-} as const;
-
-const navButtonStyle: CSSProperties = {
-  alignItems: 'center',
-  display: 'flex',
-  color: 'inherit',
-  flex: 1,
-  justifyContent: 'center',
-  padding: '16px 0',
-  textAlign: 'center',
-  textDecoration: 'none',
-} as const;
+const actionContainerSmall: CSSProperties = {
+  ...actionContainer,
+  marginTop: 0,
+};
