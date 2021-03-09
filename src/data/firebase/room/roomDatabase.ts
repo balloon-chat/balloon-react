@@ -23,6 +23,16 @@ export class FirebaseRoomDatabase implements IRoomDatabase {
     return RoomDto.fromJSON(snapshot.toJSON());
   }
 
+  async findAll(): Promise<RoomDto[]> {
+    const snapshots = await this.roomsRef().once('value');
+    const data: RoomDto[] = [];
+    snapshots.forEach((snapshot) => {
+      const dto = RoomDto.fromJSON(snapshot.toJSON());
+      if (dto) data.push(dto);
+    });
+    return data;
+  }
+
   async save(room: RoomDto): Promise<void> {
     const ref = this.roomRef(room.id);
     await ref.set(room.toJSON());

@@ -4,5 +4,7 @@ export interface IRoomDatabase {
 
   find(roomId: string): Promise<RoomDto | undefined>;
 
+  findAll(): Promise<RoomDto[]>;
+
   save(room: RoomDto): Promise<void>;
 }
