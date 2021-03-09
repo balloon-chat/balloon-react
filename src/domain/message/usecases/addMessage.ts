@@ -28,9 +28,9 @@ export class AddMessage implements IAddMessage {
     if (!MessageBody.require(value)) {
       return Promise.reject(new IllegalArgumentException('value must satisfy the constraints of MessageBody'));
     }
-    const body = new MessageBody(value);
-    const entity = new MessageEntityFactory().create(body, senderId);
-    await this.messageRepository.save(roomId, entity);
-    return Promise.resolve(entity);
+
+    const message = MessageEntityFactory.create(new MessageBody(value), senderId);
+    await this.messageRepository.save(roomId, message);
+    return Promise.resolve(message);
   }
 }
