@@ -13,7 +13,7 @@ export class RoomRepository implements IRoomRepository {
 
   async find(roomId: RoomId): Promise<RoomEntity | undefined> {
     const dto = await this.roomDatabase.find(roomId.value);
-    return dto?.toRoom();
+    return dto?.toRoomEntity();
   }
 
   async save(room: RoomEntity): Promise<void> {
