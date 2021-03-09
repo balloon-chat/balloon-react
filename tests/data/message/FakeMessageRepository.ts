@@ -20,4 +20,12 @@ export class FakeMessageRepository implements IMessageRepository {
     this.repository.save(message.id, message);
     return Promise.resolve(undefined);
   }
+
+  messageCount(_: RoomId): Promise<number> {
+    return Promise.resolve(this.repository.findAll().length);
+  }
+
+  clean() {
+    this.repository.clean();
+  }
 }

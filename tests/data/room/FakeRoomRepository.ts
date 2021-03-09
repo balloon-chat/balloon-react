@@ -13,4 +13,8 @@ export class FakeRoomRepository implements IRoomRepository {
   async save(room: RoomEntity): Promise<void> {
     await this.repository.save(room.id, room);
   }
+
+  clean() {
+    this.repository.clean();
+  }
 }
