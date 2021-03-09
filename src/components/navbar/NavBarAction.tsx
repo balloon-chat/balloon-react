@@ -3,16 +3,16 @@ import styled from 'styled-components';
 import { CSSProperties } from 'react';
 
 // tslint:disable-next-line:variable-name
-export const NavButton = ({ title, imgSrc }: { title: string, imgSrc: string }) => {
-  return (<NavButtonContainer style={navButton}>
+export const NavButton = ({ title, imgSrc, link }: { title: string, imgSrc: string, link: string }) => {
+  return (<NavButtonContainer href={link} style={navButton}>
     <img style={actionIcon} src={imgSrc}/>
     <div>{title}</div>
   </NavButtonContainer>);
 };
 
 // tslint:disable-next-line:variable-name
-export const NavButtonSmall = ({ title, imgSrc }: { title: string, imgSrc: string }) => {
-  return (<NavButtonContainer style={navButtonSmall}>
+export const NavButtonSmall = ({ title, imgSrc, link }: { title: string, imgSrc: string, link: string}) => {
+  return (<NavButtonContainer href={link} style={navButtonSmall}>
     <img style={actionIconSmall} src={imgSrc}/>
     <div>{title}</div>
   </NavButtonContainer>);

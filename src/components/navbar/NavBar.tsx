@@ -1,5 +1,6 @@
 import { CSSProperties } from 'react';
 import { NavButton, NavButtonSmall } from 'src/components/navbar/NavBarAction';
+import { topicPath } from 'src/pages/pagePath';
 
 // tslint:disable-next-line:variable-name
 export const NavBar = () => {
@@ -10,8 +11,8 @@ export const NavBar = () => {
       <div>チャット</div>
     </div>
     <div style={actionContainer}>
-      <NavButton title={'話題を作る'} imgSrc={'/svg/speech_balloon.svg'}/>
-      <NavButton title={'話題に参加する'} imgSrc={'/svg/exit.svg'}/>
+      <NavButton link={topicPath.create} title={'話題を作る'} imgSrc={'/svg/speech_balloon.svg'}/>
+      <NavButton link={topicPath.index} title={'話題に参加する'} imgSrc={'/svg/exit.svg'}/>
     </div>
   </div>);
 };
@@ -25,8 +26,8 @@ export const NavBarSmall = () => {
         <div>チャット</div>
       </div>
       <div style={actionContainerSmall}>
-        <NavButtonSmall title={'話題を作る'} imgSrc={'/svg/speech_balloon.svg'}/>
-        <NavButtonSmall title={'話題に参加する'} imgSrc={'/svg/exit.svg'}/>
+        <NavButtonSmall link={topicPath.create} title={'話題を作る'} imgSrc={'/svg/speech_balloon.svg'}/>
+        <NavButtonSmall link={topicPath.index} title={'話題に参加する'} imgSrc={'/svg/exit.svg'}/>
       </div>
   </div>);
 };
