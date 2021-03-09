@@ -29,4 +29,7 @@ export class MessageRepository implements IMessageRepository {
     await this.messageDatabase.save(roomId.value, MessageDto.from(message));
   }
 
+  messageCount(roomId: RoomId): Promise<number> {
+    return this.messageDatabase.messageCount(roomId.value);
+  }
 }

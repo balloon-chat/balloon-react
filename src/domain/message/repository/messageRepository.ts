@@ -7,6 +7,12 @@ export interface IMessageRepository {
 
   find(roomId: RoomId, messageId: MessageId): Promise<MessageEntity |  undefined>;
 
+  /**
+   * 指定した Room 内のメッセージの総数を取得
+   * @param roomId メッセージ数を調べるRoomのID
+   */
+  messageCount(roomId: RoomId): Promise<number>;
+
   observeAll(roomId: RoomId): Observable<MessageEntity[]>;
 
   save(roomId: RoomId, message: MessageEntity): Promise<void>;

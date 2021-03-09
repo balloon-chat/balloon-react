@@ -48,6 +48,11 @@ export class FirebaseMessageDatabase implements IMessageDatabase {
     ref.set(message.toJSON());
   }
 
+  async messageCount(roomId: string): Promise<number> {
+    const snapshots = await this.messagesRef(roomId).get();
+    return snapshots.numChildren();
+  }
+
   private messagesRef = (roomId: string) => this.database.ref(`/messages/${roomId}`);
   private messageRef = (roomId: string, messageId: string) => this.messagesRef(roomId).child(messageId);
 }

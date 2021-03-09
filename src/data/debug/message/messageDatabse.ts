@@ -31,4 +31,9 @@ export class InMemoryMessageDatabase implements IMessageDatabase {
     return this.repository.save(message.id, message);
   }
 
+  async messageCount(_: string): Promise<number> {
+    const data = await this.repository.findAll();
+    return data.length;
+  }
+
 }
