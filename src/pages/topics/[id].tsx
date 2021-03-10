@@ -7,6 +7,7 @@ import { Chat } from 'src/components/chat/Chat';
 import { MessageField } from 'src/components/chat/MessageField';
 import { setUserId } from 'src/data/redux/user/slice';
 import { UserService } from 'src/domain/user/service/userService';
+import { NavBarSmall } from 'src/components/navbar/NavBar';
 
 // tslint:disable-next-line:variable-name
 const RoomPage = () => {
@@ -29,6 +30,7 @@ const RoomPage = () => {
   },        [id]);
 
   return (<div style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyItems: 'stretch' }}>
+    <NavBarSmall/>
     <Chat/>
     <MessageField/>
   </div>);
