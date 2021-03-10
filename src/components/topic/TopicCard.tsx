@@ -1,25 +1,30 @@
 import { CSSProperties } from 'react';
+import { topicPath } from 'src/pages/pagePath';
+
+type Props = {
+  id: string,
+  title: string,
+  description?: string,
+  createdAt: Date,
+  thumbnailUrl: string,
+  commentCount: number,
+};
 
 // tslint:disable-next-line:variable-name
-export const TopicCard = ({}) => {
-  const commentCount = 400;
-  const year = 2021;
-  const month = 2;
-  const day = 1;
-  const yearStr = `000${year}`.slice(-4);
-  const monthStr = `00${month}`.slice(-2);
-  const dayStr = `00${day}`.slice(-2);
-  const imgUrl = 'http://placehold.jp/1600x800.png';
+export const TopicCard = ({ props }: { props: Props }) => {
+  const year = `000${props.createdAt.getFullYear()}`.slice(-4);
+  const month = `00${props.createdAt.getMonth()}`.slice(-2);
+  const day = `00${props.createdAt.getDay()}`.slice(-2);
 
   return (<article style={cardStyle}>
-    <a style={link}>
-      <img style={thumbnail} src={imgUrl}/>
+    <a href={topicPath.topic(props.id)} style={link}>
+      <img style={thumbnail} src={props.thumbnailUrl}/>
       <div style={topicInformation}>
-        <div style={topicTitle}>タイトル</div>
-        <div style={topicDescription}>簡単な説明</div>
+        <div style={topicTitle}>{props.title}</div>
+        <div style={topicDescription}>{props.description}</div>
         <div style={topicFooter}>
-          <div style={comment}>{`${commentCount}件のコメント`}</div>
-          <div style={timeStamp}>{`${yearStr}.${monthStr}.${dayStr}`}</div>
+          <div style={comment}>{`${props.commentCount}件のコメント`}</div>
+          <div style={timeStamp}>{`${year}.${month}.${day}`}</div>
         </div>
       </div>
     </a>
