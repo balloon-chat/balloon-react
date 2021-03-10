@@ -16,6 +16,11 @@ export class RoomRepository implements IRoomRepository {
     return dto?.toRoomEntity();
   }
 
+  async findAll(): Promise<RoomEntity[]> {
+    const dto = await this.roomDatabase.findAll();
+    return RoomDto.toRoomEntities(dto);
+  }
+
   async save(room: RoomEntity): Promise<void> {
     await this.roomDatabase.save(RoomDto.from(room));
   }

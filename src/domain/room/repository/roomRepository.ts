@@ -5,5 +5,7 @@ export interface IRoomRepository {
 
   find(roomId: RoomId): Promise<RoomEntity | undefined>;
 
+  findAll(): Promise<RoomEntity[]>;
+
   save(room: RoomEntity): Promise<void>;
 }

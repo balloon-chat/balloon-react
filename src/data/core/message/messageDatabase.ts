@@ -8,4 +8,6 @@ export interface IMessageDatabase {
   observeAll(roomId: string): Observable<MessageDto[]>;
 
   save(roomId: string, message: MessageDto): Promise<void>;
+
+  messageCount(roomId: string): Promise<number>;
 }

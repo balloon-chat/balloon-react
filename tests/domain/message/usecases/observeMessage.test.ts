@@ -6,8 +6,8 @@ import { RoomId } from 'src/domain/room/models/roomId';
 import { AnonymousUser } from 'src/domain/user/models/user';
 import { MessageFactory } from 'src/domain/message/models/message';
 import { MessageBody } from 'src/domain/message/models/messageBody';
-import { MessageEntityFactory } from 'src/domain/message/repository/messageEntity';
 import { IObserveMessages, ObserveMessages } from 'src/domain/message/usecases/observeMessages';
+import { MessageEntity } from 'src/domain/message/repository/messageEntity';
 
 const messageRepository: IMessageRepository = new FakeMessageRepository();
 const userRepository: IUserRepository = new FakeUserRepository();
@@ -21,9 +21,9 @@ test('Messageを取得', async (done) => {
    */
   const roomId = new RoomId();
   const user = new AnonymousUser();
-  (userRepository as FakeUserRepository).save(user);
+  await userRepository.save(user);
   const message = new MessageFactory().create(new MessageBody('Message'), user);
-  await messageRepository.save(roomId, new MessageEntityFactory().createFromMessage(message));
+  await messageRepository.save(roomId, MessageEntity.from(message));
 
   usecase.execute(new RoomId()).subscribe({
     next: async value => {

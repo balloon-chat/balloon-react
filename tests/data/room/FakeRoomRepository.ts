@@ -10,7 +10,15 @@ export class FakeRoomRepository implements IRoomRepository {
     return Promise.resolve(this.repository.find(roomId));
   }
 
+  findAll(): Promise<RoomEntity[]> {
+    return Promise.resolve(this.repository.findAll());
+  }
+
   async save(room: RoomEntity): Promise<void> {
     await this.repository.save(room.id, room);
+  }
+
+  clean() {
+    this.repository.clean();
   }
 }

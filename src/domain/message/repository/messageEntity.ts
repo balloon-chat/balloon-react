@@ -3,26 +3,6 @@ import { UserId } from 'src/domain/user/models/userId';
 import { MessageBody } from 'src/domain/message/models/messageBody';
 import { Message } from 'src/domain/message/models/message';
 
-export class MessageEntityFactory {
-  createFromMessage(message: Message): MessageEntity {
-    return new MessageEntity(
-        message.id,
-        message.body,
-        message.createdAt,
-        message.sender.id,
-    );
-  }
-
-  create(body: MessageBody, senderId: UserId, createdAt: number = Date.now()): MessageEntity {
-    return new MessageEntity(
-        new MessageId(),
-        body,
-        createdAt,
-        senderId,
-    );
-  }
-}
-
 export class MessageEntity {
   constructor(
       public readonly id: MessageId,
@@ -30,5 +10,26 @@ export class MessageEntity {
       public readonly createdAt: number,
       public readonly senderId: UserId,
   ) {
+  }
+
+  static from(message: Message): MessageEntity {
+    return new MessageEntity(
+        message.id,
+        message.body,
+        message.createdAt,
+        message.sender.id,
+    );
+  }
+}
+
+export class MessageEntityFactory {
+
+  static create(body: MessageBody, senderId: UserId): MessageEntity {
+    return new MessageEntity(
+        new MessageId(),
+        body,
+        Date.now(),
+        senderId,
+    );
   }
 }

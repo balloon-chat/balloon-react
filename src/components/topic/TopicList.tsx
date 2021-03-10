@@ -1,10 +1,20 @@
 import styled from 'styled-components';
-import React, { CSSProperties } from 'react';
+import React, { CSSProperties, useEffect } from 'react';
 import { TopicCard } from 'src/components/topic/TopicCard';
 import { ContainerCard } from 'src/components/topic/ContainerCard';
+import { useDispatch } from 'react-redux';
+import { useRoomState } from 'src/data/redux/room/selector';
+import { fetchRooms } from 'src/data/redux/room/action';
 
 // tslint:disable-next-line:variable-name
 export const TopicList = () => {
+  const dispatcher = useDispatch();
+  const topics = useRoomState().rooms;
+
+  useEffect(() => {
+    dispatcher(fetchRooms({}));
+  },        []);
+
   return (<TopicContainer>
     <ContainerCard>
       <main style={container}>
@@ -13,11 +23,9 @@ export const TopicList = () => {
           <div>ホットな話題</div>
         </div>
         <TopicListComponent style={topicList}>
-          <li><TopicCard/></li>
-          <li><TopicCard/></li>
-          <li><TopicCard/></li>
-          <li><TopicCard/></li>
-          <li><TopicCard/></li>
+          {topics.map((topic, index) => {
+            return (<li key={index}><TopicCard props={{ ...topic }}/></li>);
+          })}
         </TopicListComponent>
       </main>
     </ContainerCard>

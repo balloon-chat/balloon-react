@@ -5,7 +5,7 @@ export class UserName {
   static readonly MAX_NAME_SIZE = 20;
 
   constructor(public readonly value: string) {
-    assert(require(this.value));
+    assert(UserName.require(this.value));
   }
 
   static require(value: string): boolean {

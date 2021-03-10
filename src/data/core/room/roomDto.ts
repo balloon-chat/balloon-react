@@ -38,6 +38,10 @@ export class RoomDto {
     }
   }
 
+  static toRoomEntities(dto: RoomDto[]): RoomEntity[] {
+    return dto.map((d) => d.toRoomEntity());
+  }
+
   toRoomEntity(): RoomEntity {
     return new Room(
         new RoomId(this.id),

@@ -32,4 +32,9 @@ export class FakeBaseRepository<K, V> {
     this.data.delete(key);
     this.behaviorSubject.next(this.data);
   }
+
+  clean() {
+    this.data.clear();
+    this.behaviorSubject.next(this.data);
+  }
 }

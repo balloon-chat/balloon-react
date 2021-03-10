@@ -10,7 +10,12 @@ export class FakeUserRepository implements IUserRepository {
     return Promise.resolve(this.repository.find(userId));
   }
 
-  save(user: User) {
+  save(user: User): Promise<void> {
     this.repository.save(user.id, user);
+    return Promise.resolve();
+  }
+
+  clean() {
+    this.repository.clean();
   }
 }
