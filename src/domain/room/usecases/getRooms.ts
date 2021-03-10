@@ -1,24 +1,11 @@
 import { IRoomRepository } from 'src/domain/room/repository/roomRepository';
-import { RoomId } from 'src/domain/room/models/roomId';
-import { RoomTitle } from 'src/domain/room/models/roomTitle';
-import { RoomDescription } from 'src/domain/room/models/roomDescription';
-import { User } from 'src/domain/user/models/user';
 import { IMessageRepository } from 'src/domain/message/repository/messageRepository';
 import { IUserRepository } from 'src/domain/user/repository/userRepository';
+import { RoomData } from 'src/domain/room/usecases/types';
 
 export interface IGetRooms {
   execute(): Promise<RoomData[]>;
 }
-
-export type RoomData = {
-  id: RoomId,
-  title: RoomTitle,
-  description?: RoomDescription,
-  thumbnailUrl: string,
-  createdAt: Date,
-  createdBy: User,
-  commentCount: number,
-};
 
 export class GetRooms implements IGetRooms {
 
