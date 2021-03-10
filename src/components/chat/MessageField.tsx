@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import React, { CSSProperties, useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { sendMessage as sendMessageAction } from 'src/data/redux/message/action';
 import { useRoomState } from 'src/data/redux/room/selector';
@@ -33,35 +33,29 @@ export const MessageField = () => {
     if (roomId && userId) dispatcher(sendMessageAction({ message, userId, roomId }));
   };
 
-  return (<MessageFieldContainer>
-    <MessageTextArea>
-      {isVisible && <Placeholder style={textFieldStyle} aria-hidden={true}>メッセージを送信</Placeholder>}
+  return (<MessageForm>
+    <TextFieldContainer>
+      {isVisible && <Placeholder aria-hidden={true}>メッセージを送信</Placeholder>}
       <TextField
-          style={textFieldStyle}
           contentEditable={true}
           onInput={(e) => handleInput(e.currentTarget.textContent)}
           onKeyPress={handleKeyPress}
           role={'text'}
-          />
-    </MessageTextArea>
-  </MessageFieldContainer>);
+      />
+    </TextFieldContainer>
+  </MessageForm>);
 };
 
 // tslint:disable-next-line:variable-name
-const MessageFieldContainer = styled.form`
+const MessageForm = styled.form`
   box-sizing: border-box;
   display: flex;
   padding: 0 16px;
   width: 100%;
 `;
 
-// テキストフィールドと、プレースホルダーのスタイルを一致させる
-const textFieldStyle: CSSProperties = {
-  padding: 8,
-};
-
 // tslint:disable-next-line:variable-name
-const MessageTextArea = styled.div`
+const TextFieldContainer = styled.div`
   background-color: white;
   border: rgba(0, 0, 0, .2) solid 1px;
   border-radius: 8px;
@@ -72,7 +66,12 @@ const MessageTextArea = styled.div`
 `;
 
 // tslint:disable-next-line:variable-name
-const TextField = styled.div`
+const TextFieldCommon = styled.div`
+  padding: 8px;
+`;
+
+// tslint:disable-next-line:variable-name
+const TextField = styled(TextFieldCommon)`
   outline: none;
   white-space: pre-wrap;
   overflow-wrap: break-word;
@@ -80,7 +79,7 @@ const TextField = styled.div`
 `;
 
 // tslint:disable-next-line:variable-name
-const Placeholder = styled.div`
+const Placeholder = styled(TextFieldCommon)`
   color: #72767d;
   left: 0;
   overflow: hidden;
