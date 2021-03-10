@@ -1,15 +1,16 @@
 import { CSSProperties } from 'react';
 import { NavButton, NavButtonSmall } from 'src/components/navbar/NavBarAction';
-import { topicPath } from 'src/pages/pagePath';
+import { rootPath, topicPath } from 'src/pages/pagePath';
+import styled from 'styled-components';
 
 // tslint:disable-next-line:variable-name
 export const NavBar = () => {
   return (<div style={container}>
-    <div style={navTitle}>
+    <NavTitle>
       <div>ふうせん</div>
       <img style={titleIcon} src={'/images/character_blue.png'}/>
       <div>チャット</div>
-    </div>
+    </NavTitle>
     <div style={actionContainer}>
       <NavButton link={topicPath.create} title={'話題を作る'} imgSrc={'/svg/speech_balloon.svg'}/>
       <NavButton link={topicPath.index} title={'話題に参加する'} imgSrc={'/svg/exit.svg'}/>
@@ -20,15 +21,15 @@ export const NavBar = () => {
 // tslint:disable-next-line:variable-name
 export const NavBarSmall = () => {
   return (<div style={containerSmall}>
-      <div style={navTitleSmall}>
-        <div>ふうせん</div>
-        <img style={titleIconSmall} src={'/images/character_blue.png'}/>
-        <div>チャット</div>
-      </div>
-      <div style={actionContainerSmall}>
-        <NavButtonSmall link={topicPath.create} title={'話題を作る'} imgSrc={'/svg/speech_balloon.svg'}/>
-        <NavButtonSmall link={topicPath.index} title={'話題に参加する'} imgSrc={'/svg/exit.svg'}/>
-      </div>
+    <NavTitleSmall href={rootPath.index}>
+      <div>ふうせん</div>
+      <img style={titleIconSmall} src={'/images/character_blue.png'}/>
+      <div>チャット</div>
+    </NavTitleSmall>
+    <div style={actionContainerSmall}>
+      <NavButtonSmall link={topicPath.create} title={'話題を作る'} imgSrc={'/svg/speech_balloon.svg'}/>
+      <NavButtonSmall link={topicPath.index} title={'話題に参加する'} imgSrc={'/svg/exit.svg'}/>
+    </div>
   </div>);
 };
 
@@ -48,17 +49,25 @@ const containerSmall: CSSProperties = {
   paddingTop: 0,
 } as const;
 
-const navTitle: CSSProperties = {
-  alignItems: 'center',
-  display: 'flex',
-  fontSize: 36,
-  textAlign: 'center',
-} as const;
+// tslint:disable-next-line:variable-name
+const NavTitle = styled.a`
+  align-items: center;
+  color: inherit;
+  display: flex;
+  font-size: 36px;
+  height: 100%;
+  text-align: center;
+  text-decoration: none;
+`;
 
-const navTitleSmall: CSSProperties = {
-  ...navTitle,
-  fontSize: 16,
-};
+// tslint:disable-next-line:variable-name
+const NavTitleSmall = styled(NavTitle)`
+  font-size: 16px;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, .1);
+  }
+`;
 
 const titleIcon: CSSProperties = {
   margin: '0 16px',
