@@ -26,4 +26,3 @@ export const fetchTopic = createAsyncThunk<TopicEntity | undefined, { topicId: s
 );
 
 export type SetIsTopicCreated = PayloadAction<{ isTopicCreated: boolean }>;
-export type SetTopicId = PayloadAction<{ topicId?: string }>;

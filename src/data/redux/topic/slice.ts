@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { TopicState, topicStateName, topicStates } from 'src/data/redux/topic/state';
-import { setIsTopicCreatedReducer, setTopicIdReducer } from 'src/data/redux/topic/reducer';
+import { setIsTopicCreatedReducer } from 'src/data/redux/topic/reducer';
 import { createTopic, fetchTopic } from 'src/data/redux/topic/action';
 import { TopicEntity } from 'src/view/types/topic';
 
@@ -13,7 +13,6 @@ const topicSlice = createSlice({
   name: topicStateName,
   initialState,
   reducers: {
-    setTopicId: setTopicIdReducer,
     setIsTopicCreated: setIsTopicCreatedReducer,
   },
   extraReducers: builder => {
@@ -31,5 +30,5 @@ const topicSlice = createSlice({
   },
 });
 
-export const { setIsTopicCreated, setTopicId } = topicSlice.actions;
+export const { setIsTopicCreated } = topicSlice.actions;
 export const topicReducer = topicSlice.reducer;
