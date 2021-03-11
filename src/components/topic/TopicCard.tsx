@@ -1,65 +1,85 @@
 import { CSSProperties } from 'react';
 import { topicPath } from 'src/pages/pagePath';
-
-type Props = {
-  id: string,
-  title: string,
-  description?: string,
-  createdAt: Date,
-  thumbnailUrl: string,
-  commentCount: number,
-};
+import styled from 'styled-components';
+import { RoomEntity } from 'src/view/types/room';
 
 // tslint:disable-next-line:variable-name
-export const TopicCard = ({ props }: { props: Props }) => {
-  const year = `000${props.createdAt.getFullYear()}`.slice(-4);
-  const month = `00${props.createdAt.getMonth()}`.slice(-2);
-  const day = `00${props.createdAt.getDay()}`.slice(-2);
+export const TopicCard = ({ props }: { props: RoomEntity }) => {
+  const createdAt = new Date(props.createdAt);
+  const year = `000${createdAt.getFullYear()}`.slice(-4);
+  const month = `00${createdAt.getMonth()}`.slice(-2);
+  const day = `00${createdAt.getDay()}`.slice(-2);
 
-  return (<article style={cardStyle}>
+  return (<Card>
     <a href={topicPath.topic(props.id)} style={link}>
-      <img style={thumbnail} src={props.thumbnailUrl}/>
-      <div style={topicInformation}>
+      <Thumbnail>
+        <ThumbnailImage src={props.thumbnailUrl}/>
+        {
+          props.label && <Label labelColor={props.label.color}>{props.label.title}</Label>
+        }
+      </Thumbnail>
+      <TopicInformation>
         <div style={topicTitle}>{props.title}</div>
-        <div style={topicDescription}>{props.description}</div>
+        {props.description && <div style={topicDescription}>{props.description}</div>}
         <div style={topicFooter}>
           <div style={comment}>{`${props.commentCount}件のコメント`}</div>
           <div style={timeStamp}>{`${year}.${month}.${day}`}</div>
         </div>
-      </div>
+      </TopicInformation>
     </a>
-  </article>);
+  </Card>);
 };
 
-const cardStyle: CSSProperties = {
-  boxSizing: 'border-box',
-  borderRadius: 5,
-  overflow: 'hidden',
-  backgroundColor: 'white',
-  boxShadow: '0 1px 1px 0 rgb(131 131 131 / 50%)',
-} as const;
+// tslint:disable-next-line:variable-name
+const Card = styled.article`
+  box-sizing: border-box;
+  border-radius: 5px;
+  overflow: hidden;
+  background-color: white;
+  box-shadow: 0 1px 1px 0 rgb(131 131 131 / 50%);
+`;
 
 const link: CSSProperties = {
   color: 'inherit',
   textDecoration: 'none',
-} as const;
-
-const thumbnail: CSSProperties = {
-  width: '100%',
-  maxHeight: 230,
-  objectFit: 'cover',
-  overflow: 'hidden',
+  height: '100%',
 } as const;
 
 // tslint:disable-next-line:variable-name
-const topicInformation: CSSProperties = {
-  boxSizing: 'border-box',
-  display: 'flex',
-  flexDirection: 'column',
-  padding: '16px 16px 16px 28px',
-} as const;
+const Thumbnail = styled.div`
+  max-height: 230px;
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+`;
 
 // tslint:disable-next-line:variable-name
+const ThumbnailImage = styled.img`
+  object-fit: cover;
+  overflow: hidden;
+  max-height: 230px;
+  width: 100%;
+`;
+
+// tslint:disable-next-line:variable-name
+const Label = styled.div<{ labelColor: string }>`
+  color: white;
+  background-color: ${props => props.labelColor};
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  padding: 8px 64px;
+  font-weight: bold;
+`;
+
+// tslint:disable-next-line:variable-name
+const TopicInformation = styled.div`
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+`;
+
 const topicTitle: CSSProperties = {
   fontWeight: 'bold',
   fontSize: 16,

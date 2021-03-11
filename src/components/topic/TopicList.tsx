@@ -1,94 +1,69 @@
 import styled from 'styled-components';
-import React, { CSSProperties, useEffect } from 'react';
+import React from 'react';
 import { TopicCard } from 'src/components/topic/TopicCard';
-import { ContainerCard } from 'src/components/topic/ContainerCard';
-import { useDispatch } from 'react-redux';
-import { useRoomState } from 'src/data/redux/room/selector';
-import { fetchRooms } from 'src/data/redux/room/action';
+import { RoomEntity } from 'src/view/types/room';
 
-// tslint:disable-next-line:variable-name
-export const TopicList = () => {
-  const dispatcher = useDispatch();
-  const topics = useRoomState().rooms;
-
-  useEffect(() => {
-    dispatcher(fetchRooms({}));
-  },        []);
-
-  return (<TopicContainer>
-    <ContainerCard>
-      <main style={container}>
-        <div style={title}>
-          <img style={titleImage} src={'/images/character_yellow.png'}/>
-          <div>ホットな話題</div>
-        </div>
-        <TopicListComponent style={topicList}>
-          {topics.map((topic, index) => {
-            return (<li key={index}><TopicCard props={{ ...topic }}/></li>);
-          })}
-        </TopicListComponent>
-      </main>
-    </ContainerCard>
-  </TopicContainer>);
+export type TopicListProps = {
+  pickup?: RoomEntity | null,
+  topics: RoomEntity[];
 };
 
 // tslint:disable-next-line:variable-name
-export const TopicContainer = styled.div`
-  padding: 32px 16px;
+export const TopicList: React.FC<TopicListProps> = (props) => {
+  return (<>
+    {
+      props.pickup && <PickupCard>
+          <TopicCard props={props.pickup}/>
+      </PickupCard>
+    }
+    <TopicListContainer>
+      {props.topics && props.topics.map((topic, index) => {
+        return (<li key={index}><TopicCard props={topic}/></li>);
+      })}
+    </TopicListContainer>
+  </>);
+};
 
-  @media (max-width: 850px) {
-    padding: 16px 0;
-  }
+// tslint:disable-next-line:variable-name
+const PickupCard = styled.div`
+  max-width: 1050px;
+  margin-bottom: 16px;
 `;
 
-const container: CSSProperties = {
-  boxSizing: 'border-box',
-  display: 'flex',
-  flexDirection: 'column',
-  padding: '48px 16px 32px 16px',
-  width: '100%',
-};
-
-const title: CSSProperties = {
-  alignItems: 'center',
-  display: 'flex',
-  fontWeight: 'bold',
-  fontSize: 24,
-  margin: '0 auto 60px auto',
-  textAlign: 'center',
-} as const;
-
-const titleImage: CSSProperties = {
-  marginRight: 32,
-  height: 80,
-} as const;
-
 // tslint:disable-next-line:variable-name
-const TopicListComponent = styled.ul`
+const TopicListContainer = styled.ul`
+  align-items: stretch;
+  display: flex;
+  box-sizing: border-box;
+  flex-wrap: wrap;
+  flex-direction: row;
+  list-style: none;
+  max-width: 1050px;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+
   & > li {
     min-width: 300px;
-    width: 50%;
-    flex-grow: 1;
+    width: calc(50% - 8px);
+    margin-bottom: 16px;
   }
 
-  & > li:first-child {
-    flex-grow: 2;
-    width: 100%;
+  & > li:nth-child(2n) {
+    margin-left: 16px;
   }
 
   & > li > article {
-    margin: 0 8px 16px 8px;
+    height: 100%;
+  }
+
+  @media (max-width: 800px) {
+    & > li {
+      width: 100%;
+    }
+
+    & > li:nth-child(2n) {
+      margin-left: 0;
+    }
   }
 `;
-
-const topicList: CSSProperties = {
-  display: 'flex',
-  boxSizing: 'border-box',
-  flexWrap: 'wrap',
-  flexDirection: 'row',
-  listStyle: 'none',
-  maxWidth: 1050,
-  width: '100%',
-  padding: 0,
-  margin: 0,
-} as const;

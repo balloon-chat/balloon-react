@@ -1,11 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { ReduxRoomEntity, RoomState, roomStateName, roomStates } from 'src/data/redux/room/state';
+import { RoomState, roomStateName, roomStates } from 'src/data/redux/room/state';
 import { setIsRoomCreatedReducer, setRoomIdReducer } from 'src/data/redux/room/reducer';
 import { createRoom, fetchRoom, fetchRooms } from 'src/data/redux/room/action';
+import { RoomEntity } from 'src/view/types/room';
 
 const initialState: RoomState = {
-  roomId: undefined,
-  rooms: [] as ReduxRoomEntity[],
+  rooms: [] as RoomEntity[],
   isRoomCreated: false,
 } as const;
 
