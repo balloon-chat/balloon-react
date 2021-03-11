@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { RoomState, roomStateName, roomStates } from 'src/data/redux/room/state';
 import { setIsRoomCreatedReducer, setRoomIdReducer } from 'src/data/redux/room/reducer';
-import { createRoom, fetchRoom, fetchRooms } from 'src/data/redux/room/action';
+import { createRoom, fetchRoom } from 'src/data/redux/room/action';
 import { RoomEntity } from 'src/view/types/room';
 
 const initialState: RoomState = {
@@ -22,10 +22,6 @@ const roomSlice = createSlice({
           ...state,
           roomId: payload.id.value,
           isRoomCreated: true,
-        }))
-        .addCase(fetchRooms.fulfilled, (state, { payload }) => ({
-          ...state,
-          rooms: payload,
         }))
         .addCase(fetchRoom.fulfilled, (state, { payload }) => ({
           ...state,
