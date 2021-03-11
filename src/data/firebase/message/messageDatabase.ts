@@ -19,14 +19,14 @@ export class FirebaseMessageDatabase implements IMessageDatabase {
     return this._instance;
   }
 
-  async find(roomId: string, messageId: string): Promise<MessageDto | undefined> {
-    const snapshot = await this.messageRef(roomId, messageId).once('value');
+  async find(topicId: string, messageId: string): Promise<MessageDto | undefined> {
+    const snapshot = await this.messageRef(topicId, messageId).once('value');
     return MessageDto.fromJSON(snapshot.toJSON());
   }
 
-  observeAll(roomId: string): Observable<MessageDto[]> {
+  observeAll(topicId: string): Observable<MessageDto[]> {
     const behaviorSubject = new BehaviorSubject<MessageDto[]>([]);
-    this.messagesRef(roomId).on(
+    this.messagesRef(topicId).on(
         'value',
         (snapshots) => {
           const data: MessageDto[] = [];
@@ -43,16 +43,16 @@ export class FirebaseMessageDatabase implements IMessageDatabase {
     return behaviorSubject.asObservable();
   }
 
-  async save(roomId: string, message: MessageDto): Promise<void> {
-    const ref = await this.messageRef(roomId, message.id);
+  async save(topicId: string, message: MessageDto): Promise<void> {
+    const ref = await this.messageRef(topicId, message.id);
     ref.set(message.toJSON());
   }
 
-  async messageCount(roomId: string): Promise<number> {
-    const snapshots = await this.messagesRef(roomId).get();
+  async messageCount(topicId: string): Promise<number> {
+    const snapshots = await this.messagesRef(topicId).get();
     return snapshots.numChildren();
   }
 
-  private messagesRef = (roomId: string) => this.database.ref(`/messages/${roomId}`);
-  private messageRef = (roomId: string, messageId: string) => this.messagesRef(roomId).child(messageId);
+  private messagesRef = (topicId: string) => this.database.ref(`/messages/${topicId}`);
+  private messageRef = (topicId: string, messageId: string) => this.messagesRef(topicId).child(messageId);
 }

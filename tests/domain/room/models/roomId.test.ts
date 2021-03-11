@@ -1,11 +1,11 @@
-import { RoomId } from 'src/domain/room/models/roomId';
+import { TopicId } from 'src/domain/topic/models/topicId';
 
 test('与えられた文字列で初期化される', () => {
-  const roomId = new RoomId('abc');
-  expect(roomId.value).toEqual('abc');
+  const topicId = new TopicId('abc');
+  expect(topicId.value).toEqual('abc');
 });
 
 test('ランダムな文字列で初期化される', () => {
-  const userId = new RoomId();
+  const userId = new TopicId();
   expect(userId.value).toBeTruthy();
 });

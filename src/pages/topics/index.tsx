@@ -5,11 +5,11 @@ import { UserService } from 'src/domain/user/service/userService';
 import styled from 'styled-components';
 import { ContainerCard } from 'src/components/topic/ContainerCard';
 import { GetServerSideProps } from 'next';
-import { RoomService } from 'src/domain/room/service/RoomService';
-import { RoomEntityFactory } from 'src/view/types/room';
+import { TopicService } from 'src/domain/topic/service/topicService';
+import { TopicEntityFactory } from 'src/view/types/topic';
 
 // tslint:disable-next-line:variable-name
-const RoomIndexPage: React.FC<TopicListProps> = (props) => {
+const TopicIndexPage: React.FC<TopicListProps> = (props) => {
   return (<>
     <NavBarSmall/>
     <TopicContainer>
@@ -47,10 +47,10 @@ export const getServerSideProps: GetServerSideProps<TopicListProps> = async () =
   // TODO: remove this
   new UserService().getCurrentUserId();
 
-  const service = new RoomService();
-  const rooms = await service.fetchRooms(50);
-  const entities = rooms
-      .map((room) => RoomEntityFactory.create(room))
+  const service = new TopicService();
+  const topics = await service.fetchTopics(50);
+  const entities = topics
+      .map(topic => TopicEntityFactory.create(topic))
       .map((entity, index) => {
         if (index !== 0) return entity;
         // 最初の話題にのみ、ラベルを付ける
@@ -71,4 +71,4 @@ export const getServerSideProps: GetServerSideProps<TopicListProps> = async () =
   };
 };
 
-export default RoomIndexPage;
+export default TopicIndexPage;

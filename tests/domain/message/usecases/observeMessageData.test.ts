@@ -5,7 +5,7 @@ import { MessageFactory } from 'src/domain/message/models/message';
 import { MessageBody } from 'src/domain/message/models/messageBody';
 import { AnonymousUser } from 'src/domain/user/models/user';
 import { MessageEntity } from 'src/domain/message/repository/messageEntity';
-import { RoomId } from 'src/domain/room/models/roomId';
+import { TopicId } from 'src/domain/topic/models/topicId';
 
 const messageRepository: IMessageRepository = new FakeMessageRepository();
 const usecase: IObserveMessageData = new ObserveMessageData(messageRepository);
@@ -15,12 +15,12 @@ test('MessageDataを取得', async (done) => {
   初期データ:
     Message Repository: Message
    */
-  const roomId = new RoomId();
+  const topicId = new TopicId();
   const user = new AnonymousUser();
   const message = new MessageFactory().create(new MessageBody('message'), user);
-  await messageRepository.save(roomId, MessageEntity.from(message));
+  await messageRepository.save(topicId, MessageEntity.from(message));
 
-  usecase.execute(new RoomId()).subscribe(value => {
+  usecase.execute(new TopicId()).subscribe(value => {
     const result = value[0];
     expect(result).toStrictEqual(new MessageData(
         message.id,

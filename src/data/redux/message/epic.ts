@@ -11,11 +11,11 @@ export const messageEpic: Epic<ObserveStart, ObserveFulfilled, RootState> = (act
     ofType(observeStart.type),
     mergeMap(({ payload }) => {
       const service = new MessageService();
-      return service.observeMessageData(payload.roomId).pipe(
+      return service.observeMessageData(payload.topicId).pipe(
               map((messages): ObserveFulfilled => ({
                 type: observeFulfilled.type,
                 payload: {
-                  roomId: payload.roomId,
+                  topicId: payload.topicId,
                   messages: messages.map((message: MessageEntity): ReduxMessageEntity => ({
                     id: message.id.value,
                     message: message.body.value,

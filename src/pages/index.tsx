@@ -6,8 +6,8 @@ import { TopicContainer } from 'src/pages/topics';
 import styled from 'styled-components';
 import { UserService } from 'src/domain/user/service/userService';
 import { GetServerSideProps } from 'next';
-import { RoomService } from 'src/domain/room/service/RoomService';
-import { RoomEntityFactory } from 'src/view/types/room';
+import { TopicService } from 'src/domain/topic/service/topicService';
+import { TopicEntityFactory } from 'src/view/types/topic';
 
 // tslint:disable-next-line:variable-name
 const IndexPage: React.FC<TopicListProps> = (props) => {
@@ -58,10 +58,10 @@ export const getServerSideProps: GetServerSideProps<TopicListProps> = async () =
   // TODO: remove this
   new UserService().getCurrentUserId();
 
-  const service = new RoomService();
-  const rooms = await service.fetchRooms(50);
-  const entities = rooms
-      .map((room) => RoomEntityFactory.create(room))
+  const service = new TopicService();
+  const data = await service.fetchTopics(50);
+  const entities = data
+      .map(topic => TopicEntityFactory.create(topic))
       .map((entity, index) => {
         if (index > 2) return entity;
 

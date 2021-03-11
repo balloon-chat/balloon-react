@@ -1,4 +1,4 @@
-export const messageStateName = 'roomState';
+export const messageStateName = 'messageState';
 
 export type ReduxMessageEntity = {
   id: string,

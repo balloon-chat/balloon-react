@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 
-export class RoomId {
+export class TopicId {
   constructor(public readonly value: string = uuidv4()) {
   }
 }

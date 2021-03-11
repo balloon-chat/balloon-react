@@ -1,18 +1,18 @@
-import { RoomDescription } from 'src/domain/room/models/roomDescription';
+import { TopicDescription } from 'src/domain/topic/models/topicDescription';
 
 test('文字数は50文字以内', () => {
-  expect(RoomDescription.require('a'.repeat(50))).toBeTruthy();
-  expect(RoomDescription.require('a'.repeat(51))).toBeFalsy();
+  expect(TopicDescription.require('a'.repeat(50))).toBeTruthy();
+  expect(TopicDescription.require('a'.repeat(51))).toBeFalsy();
 
-  expect(RoomDescription.create('a'.repeat(50))).not.toBeUndefined();
-  expect(RoomDescription.create('a'.repeat(51))).toBeUndefined();
+  expect(TopicDescription.create('a'.repeat(50))).not.toBeUndefined();
+  expect(TopicDescription.create('a'.repeat(51))).toBeUndefined();
 });
 
 test('空文字ではいけない', () => {
-  expect(RoomDescription.require('')).toBeFalsy();
-  expect(RoomDescription.create('')).toBeUndefined();
+  expect(TopicDescription.require('')).toBeFalsy();
+  expect(TopicDescription.create('')).toBeUndefined();
 });
 
 test('undefinedから作成', () => {
-  expect(RoomDescription.create(undefined)).toBeUndefined();
+  expect(TopicDescription.create(undefined)).toBeUndefined();
 });

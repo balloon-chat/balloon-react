@@ -1,49 +1,49 @@
-import { FakeRoomRepository } from 'tests/data/room/FakeRoomRepository';
+import { TopicRepository } from 'tests/data/topic/topicRepository';
 import { FakeMessageRepository } from 'tests/data/message/FakeMessageRepository';
 import { FakeUserRepository } from 'tests/data/user/FakeUserRepository';
-import { GetRoom, IGetRoom } from 'src/domain/room/usecases/getRoom';
+import { GetTopic, IGetTopic } from 'src/domain/topic/usecases/getTopic';
 import { AnonymousUser } from 'src/domain/user/models/user';
-import { RoomFactory } from 'src/domain/room/models/room';
-import { RoomTitle } from 'src/domain/room/models/roomTitle';
-import { RoomEntity } from 'src/domain/room/repository/roomEntity';
+import { TopicFactory } from 'src/domain/topic/models/topic';
+import { TopicTitle } from 'src/domain/topic/models/topicTitle';
+import { TopicEntity } from 'src/domain/topic/repository/topicEntity';
 import { MessageFactory } from 'src/domain/message/models/message';
 import { MessageBody } from 'src/domain/message/models/messageBody';
 import { MessageEntity } from 'src/domain/message/repository/messageEntity';
-import { RoomId } from 'src/domain/room/models/roomId';
+import { TopicId } from 'src/domain/topic/models/topicId';
 
-const roomRepository = new FakeRoomRepository();
+const topicRepository = new TopicRepository();
 const messageRepository = new FakeMessageRepository();
 const userRepository = new FakeUserRepository();
 
-const usecase: IGetRoom = new GetRoom(messageRepository, roomRepository, userRepository);
+const usecase: IGetTopic = new GetTopic(messageRepository, topicRepository, userRepository);
 
 afterEach(() => {
-  roomRepository.clean();
+  topicRepository.clean();
   messageRepository.clean();
   userRepository.clean();
 });
 
-test('Roomに関するデータを取得', async () => {
+test('Topicに関するデータを取得', async () => {
   /*
   初期データ:
-    RoomRepository: Room
+    TopicRepository: Topic
     MessageRepository: [Message],
     UserRepository: User
    */
   const user = new AnonymousUser();
   await userRepository.save(user);
 
-  const room = new RoomFactory().create(new RoomTitle('test'), user.id, 'description');
-  await roomRepository.save(RoomEntity.from(room));
+  const topic = new TopicFactory().create(new TopicTitle('test'), user.id, 'description');
+  await topicRepository.save(TopicEntity.from(topic));
 
   const message = new MessageFactory().create(new MessageBody('test'), user);
-  await messageRepository.save(room.id, MessageEntity.from(message));
+  await messageRepository.save(topic.id, MessageEntity.from(message));
 
-  const result = await usecase.execute(room.id);
+  const result = await usecase.execute(topic.id);
   expect(result).not.toBeUndefined();
-  expect(result?.id).toEqual(room.id);
-  expect(result?.title).toEqual(room.title);
-  expect(result?.description).toEqual(room.description);
+  expect(result?.id).toEqual(topic.id);
+  expect(result?.title).toEqual(topic.title);
+  expect(result?.description).toEqual(topic.description);
   expect(result?.createdBy).toEqual(user);
   expect(result?.commentCount).toEqual(1);
 });
@@ -51,27 +51,27 @@ test('Roomに関するデータを取得', async () => {
 test('保存する前に取得', async () => {
   /*
    初期データ:
-     RoomRepository: null
+     TopicRepository: null
      MessageRepository: [],
      UserRepository: null
     */
-  const results = await usecase.execute(new RoomId());
+  const results = await usecase.execute(new TopicId());
   expect(results).toBeUndefined();
 });
 
 test('作成したユーザーが存在しない場合、取得しない', async () => {
   /*
    初期データ:
-     RoomRepository: Room
+     TopicRepository: Topic
      MessageRepository: [],
      UserRepository: null
     */
   const user = new AnonymousUser();
 
-  const room = new RoomFactory().create(new RoomTitle('test'), user.id);
-  await roomRepository.save(RoomEntity.from(room));
+  const topic = new TopicFactory().create(new TopicTitle('test'), user.id);
+  await topicRepository.save(TopicEntity.from(topic));
 
-  const result = await usecase.execute(room.id);
-  // ユーザー情報がない場合は、そのRoomを取得しない
+  const result = await usecase.execute(topic.id);
+  // ユーザー情報がない場合は、そのTopicを取得しない
   expect(result).toBeUndefined();
 });

@@ -1,6 +1,6 @@
 import { IMessageRepository } from 'src/domain/message/repository/messageRepository';
 import { Observable, Operator, Subscriber, TeardownLogic } from 'rxjs';
-import { RoomId } from 'src/domain/room/models/roomId';
+import { TopicId } from 'src/domain/topic/models/topicId';
 import { Message } from 'src/domain/message/models/message';
 import { IUserRepository } from 'src/domain/user/repository/userRepository';
 import { AnonymousUser, User } from 'src/domain/user/models/user';
@@ -11,7 +11,7 @@ import { UserId } from 'src/domain/user/models/userId';
  * ユーザー情報などメッセージに関する詳細な情報を含むデータを取得
  */
 export interface IObserveMessages {
-  execute(roomId: RoomId): Observable<Message[]>;
+  execute(topicId: TopicId): Observable<Message[]>;
 }
 
 export class ObserveMessages implements IObserveMessages {
@@ -21,8 +21,8 @@ export class ObserveMessages implements IObserveMessages {
   ) {
   }
 
-  execute(roomId: RoomId): Observable<Message[]> {
-    return this.messageRepository.observeAll(roomId)
+  execute(topicId: TopicId): Observable<Message[]> {
+    return this.messageRepository.observeAll(topicId)
         .lift(new BindUserOperator(this.userRepository));
   }
 }

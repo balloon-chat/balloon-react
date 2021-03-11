@@ -1,65 +1,65 @@
-import { FakeRoomRepository } from 'tests/data/room/FakeRoomRepository';
+import { TopicRepository } from 'tests/data/topic/topicRepository';
 import { FakeMessageRepository } from 'tests/data/message/FakeMessageRepository';
 import { FakeUserRepository } from 'tests/data/user/FakeUserRepository';
-import { RoomFactory } from 'src/domain/room/models/room';
-import { RoomTitle } from 'src/domain/room/models/roomTitle';
+import { TopicFactory } from 'src/domain/topic/models/topic';
+import { TopicTitle } from 'src/domain/topic/models/topicTitle';
 import { AnonymousUser } from 'src/domain/user/models/user';
-import { RoomEntity } from 'src/domain/room/repository/roomEntity';
+import { TopicEntity } from 'src/domain/topic/repository/topicEntity';
 import { MessageFactory } from 'src/domain/message/models/message';
 import { MessageBody } from 'src/domain/message/models/messageBody';
 import { MessageEntity } from 'src/domain/message/repository/messageEntity';
-import { GetRooms, IGetRooms } from 'src/domain/room/usecases/getRooms';
+import { GetTopics, IGetTopics } from 'src/domain/topic/usecases/getTopics';
 
-const roomRepository = new FakeRoomRepository();
+const topicRepository = new TopicRepository();
 const messageRepository = new FakeMessageRepository();
 const userRepository = new FakeUserRepository();
 
-const usecase: IGetRooms = new GetRooms(messageRepository, roomRepository, userRepository);
+const usecase: IGetTopics = new GetTopics(messageRepository, topicRepository, userRepository);
 
 afterEach(() => {
-  roomRepository.clean();
+  topicRepository.clean();
   messageRepository.clean();
   userRepository.clean();
 });
 
-test('Roomに関するデータを取得', async () => {
+test('Topicに関するデータを取得', async () => {
   /*
   初期データ:
-    RoomRepository: Room
+    TopicRepository: Topic
     MessageRepository: [Message],
     UserRepository: User
    */
   const user = new AnonymousUser();
   await userRepository.save(user);
 
-  const room = new RoomFactory().create(new RoomTitle('test'), user.id, 'description');
-  await roomRepository.save(RoomEntity.from(room));
+  const topic = new TopicFactory().create(new TopicTitle('test'), user.id, 'description');
+  await topicRepository.save(TopicEntity.from(topic));
 
   const message = new MessageFactory().create(new MessageBody('test'), user);
-  await messageRepository.save(room.id, MessageEntity.from(message));
+  await messageRepository.save(topic.id, MessageEntity.from(message));
 
   const results = await usecase.execute(50);
   expect(results.length).toEqual(1);
   const result = results[0];
-  expect(result.id).toEqual(room.id);
-  expect(result.title).toEqual(room.title);
-  expect(result.description).toEqual(room.description);
+  expect(result.id).toEqual(topic.id);
+  expect(result.title).toEqual(topic.title);
+  expect(result.description).toEqual(topic.description);
   expect(result.createdBy).toEqual(user);
   expect(result.commentCount).toEqual(1);
 });
 
-test('上限以下のRoomを取得', async () => {
+test('上限以下のTopicを取得', async () => {
   /*
   初期データ:
-    RoomRepository: Room x 50
+    TopicRepository: Topic x 50
    */
   const user = new AnonymousUser();
   await userRepository.save(user);
-  const rooms = [];
+  const topics = [];
   for (let i = 0; i < 50; i += 1) {
-    const room = new RoomFactory().create(new RoomTitle('test'), user.id);
-    await roomRepository.save(RoomEntity.from(room));
-    rooms.push(room);
+    const topic = new TopicFactory().create(new TopicTitle('test'), user.id);
+    await topicRepository.save(TopicEntity.from(topic));
+    topics.push(topic);
   }
 
   const results = await usecase.execute(10);
@@ -70,12 +70,12 @@ test('作成日時順に並び替えた状態で取得', async () => {
   const user = new AnonymousUser();
   await userRepository.save(user);
 
-  const rooms = [];
+  const topics = [];
   for (let i = 0; i < 10; i += 1) {
     const createdAt = (Math.random() + 1) * 1000000000000;
-    const room = new RoomFactory().create(new RoomTitle('test'), user.id, undefined, createdAt);
-    await roomRepository.save(RoomEntity.from(room));
-    rooms.push(room);
+    const topic = new TopicFactory().create(new TopicTitle('test'), user.id, undefined, createdAt);
+    await topicRepository.save(TopicEntity.from(topic));
+    topics.push(topic);
   }
 
   const results = await usecase.execute(10);
@@ -90,7 +90,7 @@ test('作成日時順に並び替えた状態で取得', async () => {
 test('保存する前に取得', async () => {
   /*
    初期データ:
-     RoomRepository: null
+     TopicRepository: null
      MessageRepository: [],
      UserRepository: null
     */
@@ -98,20 +98,20 @@ test('保存する前に取得', async () => {
   expect(results.length).toEqual(0);
 });
 
-test('存在しないユーザーによって作成されたRoom', async () => {
+test('存在しないユーザーによって作成されたTopic', async () => {
   /*
    初期データ:
-     RoomRepository: Room
+     TopicRepository: Topic
      MessageRepository: [],
      UserRepository: null
     */
   // ユーザーの情報を保存しない
   const user = new AnonymousUser();
 
-  const room = new RoomFactory().create(new RoomTitle('test'), user.id);
-  await roomRepository.save(RoomEntity.from(room));
+  const topic = new TopicFactory().create(new TopicTitle('test'), user.id);
+  await topicRepository.save(TopicEntity.from(topic));
 
   const results = await usecase.execute(50);
-  // ユーザー情報がない場合は、そのRoomを取得しない
+  // ユーザー情報がない場合は、そのTopicを取得しない
   expect(results.length).toEqual(0);
 });
