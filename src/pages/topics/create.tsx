@@ -1,25 +1,27 @@
-import { NavBarSmall } from 'src/components/navbar/NavBar';
+import { NavBar } from 'src/components/navbar/NavBar';
 import { EditTopic } from 'src/components/topic/EditTopic';
-import React, { CSSProperties } from 'react';
+import React from 'react';
 import { ContainerCard } from 'src/components/topic/ContainerCard';
+import styled from 'styled-components';
 
 // tslint:disable-next-line:variable-name
 const CreateTopicPage = () => {
-  return (<div>
-    <NavBarSmall/>
-    <div style={body}>
+  return (<>
+    <NavBar/>
+    <Body>
       <ContainerCard>
         <EditTopic/>
       </ContainerCard>
-    </div>
-  </div>);
+    </Body>
+  </>);
 };
 
-const body: CSSProperties = {
-  boxSizing: 'border-box',
-  backgroundColor: '#AEE1E1',
-  width: '100%',
-  paddingTop: 16,
-} as const;
+// tslint:disable-next-line:variable-name
+const Body = styled.div`
+  box-sizing: border-box;
+  background-color: #AEE1E1;
+  width: 100%;
+  padding-top: 16px;
+`;
 
 export default CreateTopicPage;

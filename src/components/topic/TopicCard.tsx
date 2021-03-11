@@ -1,4 +1,3 @@
-import { CSSProperties } from 'react';
 import { topicPath } from 'src/pages/pagePath';
 import styled from 'styled-components';
 import { TopicEntity } from 'src/view/types/topic';
@@ -11,7 +10,7 @@ export const TopicCard = ({ props }: { props: TopicEntity }) => {
   const day = `00${createdAt.getDay()}`.slice(-2);
 
   return (<Card>
-    <a href={topicPath.topic(props.id)} style={link}>
+    <Container href={topicPath.topic(props.id)}>
       <Thumbnail>
         <ThumbnailImage src={props.thumbnailUrl}/>
         {
@@ -19,14 +18,14 @@ export const TopicCard = ({ props }: { props: TopicEntity }) => {
         }
       </Thumbnail>
       <TopicInformation>
-        <div style={topicTitle}>{props.title}</div>
-        {props.description && <div style={topicDescription}>{props.description}</div>}
-        <div style={topicFooter}>
-          <div style={comment}>{`${props.commentCount}件のコメント`}</div>
-          <div style={timeStamp}>{`${year}.${month}.${day}`}</div>
-        </div>
+        <TopicTitle>{props.title}</TopicTitle>
+        {props.description && <TopicDescription>{props.description}</TopicDescription>}
+        <TopicFooter>
+          <div>{`${props.commentCount}件のコメント`}</div>
+          <TimeStamp>{`${year}.${month}.${day}`}</TimeStamp>
+        </TopicFooter>
       </TopicInformation>
-    </a>
+    </Container>
   </Card>);
 };
 
@@ -39,12 +38,12 @@ const Card = styled.article`
   box-shadow: 0 1px 1px 0 rgb(131 131 131 / 50%);
 `;
 
-const link: CSSProperties = {
-  color: 'inherit',
-  textDecoration: 'none',
-  height: '100%',
-} as const;
-
+// tslint:disable-next-line:variable-name
+const Container = styled.a`
+  color: inherit;
+  text-decoration: none;
+  height: 100%;
+`;
 // tslint:disable-next-line:variable-name
 const Thumbnail = styled.div`
   max-height: 230px;
@@ -80,33 +79,32 @@ const TopicInformation = styled.div`
   padding: 16px;
 `;
 
-const topicTitle: CSSProperties = {
-  fontWeight: 'bold',
-  fontSize: 16,
-  overflow: 'hidden',
-  textDecoration: 'none',
-  textOverflow: 'ellipsis',
-  whiteSpace: 'nowrap',
-} as const;
+// tslint:disable-next-line:variable-name
+const TopicTitle = styled.div`
+  font-weight: bold;
+  font-size: 16px;
+  overflow: hidden;
+  text-decoration: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
 
-const topicDescription: CSSProperties = {
-  fontSize: 12,
-} as const;
+// tslint:disable-next-line:variable-name
+const TopicDescription = styled.div`
+  font-size: 12px;
+`;
 
-const topicFooter: CSSProperties = {
-  display: 'flex',
-  flexDirection: 'row',
-  justifyContent: 'space-between',
-  marginTop: 8,
-} as const;
+// tslint:disable-next-line:variable-name
+const TopicFooter = styled.div`
+  display: flex;
+  flex-direction: row;
+  color: #a1a1a1;
+  font-size: 14px;
+  justify-content: space-between;
+  margin-top: 8px;
+`;
 
-const comment: CSSProperties = {
-  color: '#a1a1a1',
-  fontSize: 14,
-} as const;
-
-const timeStamp: CSSProperties = {
-  color: '#a1a1a1',
-  fontSize: 14,
-  fontWeight: 'bold',
-} as const;
+// tslint:disable-next-line:variable-name
+const TimeStamp = styled.div`
+  font-weight: bold;
+`;

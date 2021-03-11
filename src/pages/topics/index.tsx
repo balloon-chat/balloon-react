@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavBarSmall } from 'src/components/navbar/NavBar';
+import { NavBar } from 'src/components/navbar/NavBar';
 import { TopicList, TopicListProps } from 'src/components/topic/TopicList';
 import { UserService } from 'src/domain/user/service/userService';
 import styled from 'styled-components';
@@ -11,7 +11,7 @@ import { TopicEntityFactory } from 'src/view/types/topic';
 // tslint:disable-next-line:variable-name
 const TopicIndexPage: React.FC<TopicListProps> = (props) => {
   return (<>
-    <NavBarSmall/>
+    <NavBar/>
     <TopicContainer>
       <ContainerCard>
         <Container>

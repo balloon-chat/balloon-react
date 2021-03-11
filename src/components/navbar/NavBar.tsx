@@ -1,94 +1,99 @@
-import { CSSProperties } from 'react';
-import { NavButton, NavButtonSmall } from 'src/components/navbar/NavBarAction';
+import { NavButton, NavButtonLarge } from 'src/components/navbar/NavBarAction';
 import { rootPath, topicPath } from 'src/pages/pagePath';
 import styled from 'styled-components';
 
 // tslint:disable-next-line:variable-name
-export const NavBar = () => {
-  return (<div style={container}>
-    <NavTitle>
+export const NavBarLarge = () => {
+  return (<NavContainerLarge>
+    <NavTitleLarge>
       <div>ふうせん</div>
-      <img style={titleIcon} src={'/images/character_blue.png'}/>
+      <TitleIconLarge src={'/images/character_blue.png'}/>
       <div>チャット</div>
-    </NavTitle>
-    <div style={actionContainer}>
-      <NavButton link={topicPath.create} title={'話題を作る'} imgSrc={'/svg/speech_balloon.svg'}/>
-      <NavButton link={topicPath.index} title={'話題に参加する'} imgSrc={'/svg/exit.svg'}/>
-    </div>
-  </div>);
+    </NavTitleLarge>
+    <ActionContainerLarge>
+      <NavButtonLarge link={topicPath.create} title={'話題を作る'} imgSrc={'/svg/speech_balloon.svg'}/>
+      <NavButtonLarge link={topicPath.index} title={'話題に参加する'} imgSrc={'/svg/exit.svg'}/>
+    </ActionContainerLarge>
+  </NavContainerLarge>);
 };
 
 // tslint:disable-next-line:variable-name
-export const NavBarSmall = () => {
-  return (<div style={containerSmall}>
-    <NavTitleSmall href={rootPath.index}>
+export const NavBar = () => {
+  return (<NavContainer>
+    <NavTitle href={rootPath.index}>
       <div>ふうせん</div>
-      <img style={titleIconSmall} src={'/images/character_blue.png'}/>
+      <TitleIcon src={'/images/character_blue.png'}/>
       <div>チャット</div>
-    </NavTitleSmall>
-    <div style={actionContainerSmall}>
-      <NavButtonSmall link={topicPath.create} title={'話題を作る'} imgSrc={'/svg/speech_balloon.svg'}/>
-      <NavButtonSmall link={topicPath.index} title={'話題に参加する'} imgSrc={'/svg/exit.svg'}/>
-    </div>
-  </div>);
+    </NavTitle>
+    <ActionContainer>
+      <NavButton link={topicPath.create} title={'話題を作る'} imgSrc={'/svg/speech_balloon.svg'}/>
+      <NavButton link={topicPath.index} title={'話題に参加する'} imgSrc={'/svg/exit.svg'}/>
+    </ActionContainer>
+  </NavContainer>);
 };
 
-const container: CSSProperties = {
-  alignItems: 'center',
-  backgroundColor: 'white',
-  borderBottom: '1px solid rgba(0, 0, 0, .1)',
-  display: 'flex',
-  flexDirection: 'column',
-  paddingTop: 16,
-} as const;
+// tslint:disable-next-line:variable-name
+const NavContainer = styled.div`
+  align-items: center;
+  background-color: white;
+  border-bottom: 1px solid rgba(0, 0, 0, .1);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  padding-top: 0;
+`;
 
-const containerSmall: CSSProperties = {
-  ...container,
-  flexDirection: 'row',
-  justifyContent: 'space-evenly',
-  paddingTop: 0,
-} as const;
+// tslint:disable-next-line:variable-name
+const NavContainerLarge = styled(NavContainer)`
+  flex-direction: column;
+  padding-top: 16px;
+`;
 
 // tslint:disable-next-line:variable-name
 const NavTitle = styled.a`
   align-items: center;
   color: inherit;
   display: flex;
-  font-size: 36px;
+  font-size: 16px;
   height: 100%;
   text-align: center;
   text-decoration: none;
-`;
-
-// tslint:disable-next-line:variable-name
-const NavTitleSmall = styled(NavTitle)`
-  font-size: 16px;
 
   &:hover {
     background-color: rgba(0, 0, 0, .1);
   }
 `;
 
-const titleIcon: CSSProperties = {
-  margin: '0 16px',
-  height: 48,
-} as const;
+// tslint:disable-next-line:variable-name
+const NavTitleLarge = styled(NavTitle)`
+  font-size: 36px;
 
-const titleIconSmall: CSSProperties = {
-  ...titleIcon,
-  margin: '0 8px',
-  height: 24,
-} as const;
+  &:hover {
+    background-color: transparent;
+  }
+`;
 
-const actionContainer: CSSProperties = {
-  display: 'flex',
-  flexDirection: 'row',
-  marginTop: 16,
-  maxWidth: 500,
-  width: '100%',
-} as const;
+// tslint:disable-next-line:variable-name
+const TitleIcon = styled.img`
+  margin: 0 16px;
+  height: 24px;
+`;
 
-const actionContainerSmall: CSSProperties = {
-  ...actionContainer,
-  marginTop: 0,
-};
+// tslint:disable-next-line:variable-name
+const TitleIconLarge = styled(TitleIcon)`
+  margin: 0 8px;
+  height: 48px;
+`;
+
+// tslint:disable-next-line:variable-name
+const ActionContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  max-width: 500px;
+  width: 100%;
+`;
+
+// tslint:disable-next-line:variable-name
+const ActionContainerLarge = styled(ActionContainer)`
+  margin-top: 16px;
+`;

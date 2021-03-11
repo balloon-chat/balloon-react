@@ -3,7 +3,7 @@ import React from 'react';
 import { Chat } from 'src/components/chat/Chat';
 import { MessageField } from 'src/components/chat/MessageField';
 import { UserService } from 'src/domain/user/service/userService';
-import { NavBarSmall } from 'src/components/navbar/NavBar';
+import { NavBar } from 'src/components/navbar/NavBar';
 import { TopicNotFound } from 'src/components/topic/TopicNotFound';
 import Head from 'next/head';
 import { topicPath } from 'src/pages/pagePath';
@@ -20,7 +20,7 @@ type Props = {
 const TopicPage = ({ topic }: Props) => {
 
   return (<Container>
-    <NavBarSmall/>
+    <NavBar/>
     {topic && (<>
           <Head>
             <title>{topicPath.title(topic.title)}</title>
