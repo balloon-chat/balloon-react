@@ -1,10 +1,10 @@
 import { CSSProperties } from 'react';
 import { topicPath } from 'src/pages/pagePath';
 import styled from 'styled-components';
-import { RoomEntity } from 'src/view/types/room';
+import { TopicEntity } from 'src/view/types/topic';
 
 // tslint:disable-next-line:variable-name
-export const TopicCard = ({ props }: { props: RoomEntity }) => {
+export const TopicCard = ({ props }: { props: TopicEntity }) => {
   const createdAt = new Date(props.createdAt);
   const year = `000${createdAt.getFullYear()}`.slice(-4);
   const month = `00${createdAt.getMonth()}`.slice(-2);

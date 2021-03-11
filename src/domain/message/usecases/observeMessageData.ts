@@ -1,4 +1,4 @@
-import { RoomId } from 'src/domain/room/models/roomId';
+import { TopicId } from 'src/domain/topic/models/topicId';
 import { Observable } from 'rxjs';
 import { MessageId } from 'src/domain/message/models/messageId';
 import { MessageBody } from 'src/domain/message/models/messageBody';
@@ -11,7 +11,7 @@ import { map } from 'rxjs/operators';
  * 詳細な情報を含まないメッセージに関するデータを取得
  */
 export interface IObserveMessageData{
-  execute(roomId: RoomId): Observable<MessageData[]>;
+  execute(topicId: TopicId): Observable<MessageData[]>;
 }
 
 export class MessageData {
@@ -42,8 +42,8 @@ export class ObserveMessageData implements IObserveMessageData {
   constructor(private readonly messageRepository: IMessageRepository) {
   }
 
-  execute(roomId: RoomId): Observable<MessageData[]> {
-    return this.messageRepository.observeAll(roomId)
+  execute(topicId: TopicId): Observable<MessageData[]> {
+    return this.messageRepository.observeAll(topicId)
         .pipe(map(entities => this.factory.create(...entities)));
   }
 }

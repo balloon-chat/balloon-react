@@ -3,10 +3,10 @@ import styled from 'styled-components';
 import { Button } from 'src/components/topic/Button';
 import { useDispatch } from 'react-redux';
 import { useUserSelector } from 'src/data/redux/user/selector';
-import { createRoom } from 'src/data/redux/room/action';
-import { useRoomState } from 'src/data/redux/room/selector';
+import { createTopic } from 'src/data/redux/topic/action';
+import { useTopicState } from 'src/data/redux/topic/selector';
 import { useRouter } from 'next/router';
-import { setIsRoomCreated } from 'src/data/redux/room/slice';
+import { setIsTopicCreated } from 'src/data/redux/topic/slice';
 import { UserService } from 'src/domain/user/service/userService';
 import { setUserId } from 'src/data/redux/user/slice';
 
@@ -16,8 +16,8 @@ export const EditTopic = () => {
   const dispatcher = useDispatch();
   const router = useRouter();
   const userId = useUserSelector().uid;
-  const roomId = useRoomState().roomId;
-  const isRoomCreated = useRoomState().isRoomCreated;
+  const topicId = useTopicState().topicId;
+  const isTopicCreated = useTopicState().isTopicCreated;
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -29,17 +29,17 @@ export const EditTopic = () => {
   },        []);
 
   useEffect(() => {
-    if (roomId && isRoomCreated) navigateToRoom(roomId).then();
-  },        [roomId, isRoomCreated]);
+    if (topicId && isTopicCreated) navigateToTopic(topicId).then();
+  },        [topicId, isTopicCreated]);
 
-  const navigateToRoom = async (roomId: string) => {
-    dispatcher(setIsRoomCreated({ isRoomCreated: true }));
-    await router.push(`/topics/${roomId}`);
+  const navigateToTopic = async (topicId: string) => {
+    dispatcher(setIsTopicCreated({ isTopicCreated: true }));
+    await router.push(`/topics/${topicId}`);
   };
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (title && userId) dispatcher(createRoom({ title, userId, description }));
+    if (title && userId) dispatcher(createTopic({ title, userId, description }));
   };
 
   return (<form style={form} onSubmit={handleSubmit}>

@@ -3,7 +3,7 @@ import { MessageEntity } from 'src/domain/message/repository/messageEntity';
 import { FakeBaseRepository } from 'tests/data/FakeBaseRepository';
 import { MessageId } from 'src/domain/message/models/messageId';
 import { Observable } from 'rxjs';
-import { RoomId } from 'src/domain/room/models/roomId';
+import { TopicId } from 'src/domain/topic/models/topicId';
 
 export class FakeMessageRepository implements IMessageRepository {
   private repository = new FakeBaseRepository<MessageId, MessageEntity>();
@@ -12,16 +12,16 @@ export class FakeMessageRepository implements IMessageRepository {
     return Promise.resolve(this.repository.find(messageId));
   }
 
-  observeAll(_: RoomId): Observable<MessageEntity[]> {
+  observeAll(_: TopicId): Observable<MessageEntity[]> {
     return this.repository.observeAll();
   }
 
-  save(_: RoomId, message: MessageEntity): Promise<void> {
+  save(_: TopicId, message: MessageEntity): Promise<void> {
     this.repository.save(message.id, message);
     return Promise.resolve(undefined);
   }
 
-  messageCount(_: RoomId): Promise<number> {
+  messageCount(_: TopicId): Promise<number> {
     return Promise.resolve(this.repository.findAll().length);
   }
 

@@ -1,11 +1,11 @@
 import styled from 'styled-components';
 import React from 'react';
 import { TopicCard } from 'src/components/topic/TopicCard';
-import { RoomEntity } from 'src/view/types/room';
+import { TopicEntity } from 'src/view/types/topic';
 
 export type TopicListProps = {
-  pickup?: RoomEntity | null,
-  topics: RoomEntity[];
+  pickup?: TopicEntity | null,
+  topics: TopicEntity[];
 };
 
 // tslint:disable-next-line:variable-name

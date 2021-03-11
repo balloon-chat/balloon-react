@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { sendMessage as sendMessageAction } from 'src/data/redux/message/action';
-import { useRoomState } from 'src/data/redux/room/selector';
+import { useTopicState } from 'src/data/redux/topic/selector';
 import { useUserSelector } from 'src/data/redux/user/selector';
 
 // tslint:disable-next-line:variable-name
@@ -13,7 +13,7 @@ export const MessageField = () => {
   const [text, setText] = useState('');
   const [isVisible, setIsVisible] = useState(true);
 
-  const roomId = useRoomState().roomId;
+  const topicId = useTopicState().topicId;
   const userId = useUserSelector().uid;
 
   const handleInput = (value: string | null) => {
@@ -30,7 +30,7 @@ export const MessageField = () => {
   };
 
   const sendMessage = (message: string) => {
-    if (roomId && userId) dispatcher(sendMessageAction({ message, userId, roomId }));
+    if (topicId && userId) dispatcher(sendMessageAction({ message, userId, topicId }));
   };
 
   return (<MessageForm>

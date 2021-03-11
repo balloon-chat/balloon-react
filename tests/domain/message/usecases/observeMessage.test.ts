@@ -2,7 +2,7 @@ import { IMessageRepository } from 'src/domain/message/repository/messageReposit
 import { FakeMessageRepository } from 'tests/data/message/FakeMessageRepository';
 import { IUserRepository } from 'src/domain/user/repository/userRepository';
 import { FakeUserRepository } from 'tests/data/user/FakeUserRepository';
-import { RoomId } from 'src/domain/room/models/roomId';
+import { TopicId } from 'src/domain/topic/models/topicId';
 import { AnonymousUser } from 'src/domain/user/models/user';
 import { MessageFactory } from 'src/domain/message/models/message';
 import { MessageBody } from 'src/domain/message/models/messageBody';
@@ -19,13 +19,13 @@ test('Messageを取得', async (done) => {
     User Repository: User
     Message Repository: MessageEntity(body=MessageBody)
    */
-  const roomId = new RoomId();
+  const topicId = new TopicId();
   const user = new AnonymousUser();
   await userRepository.save(user);
   const message = new MessageFactory().create(new MessageBody('Message'), user);
-  await messageRepository.save(roomId, MessageEntity.from(message));
+  await messageRepository.save(topicId, MessageEntity.from(message));
 
-  usecase.execute(new RoomId()).subscribe({
+  usecase.execute(new TopicId()).subscribe({
     next: async value => {
       /*
       Expected:

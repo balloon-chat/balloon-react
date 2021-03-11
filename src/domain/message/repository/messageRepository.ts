@@ -1,19 +1,19 @@
 import { MessageEntity } from 'src/domain/message/repository/messageEntity';
 import { MessageId } from 'src/domain/message/models/messageId';
-import { RoomId } from 'src/domain/room/models/roomId';
+import { TopicId } from 'src/domain/topic/models/topicId';
 import { Observable } from 'rxjs';
 
 export interface IMessageRepository {
 
-  find(roomId: RoomId, messageId: MessageId): Promise<MessageEntity |  undefined>;
+  find(topicId: TopicId, messageId: MessageId): Promise<MessageEntity |  undefined>;
 
   /**
-   * 指定した Room 内のメッセージの総数を取得
-   * @param roomId メッセージ数を調べるRoomのID
+   * 指定した Topic 内のメッセージの総数を取得
+   * @param topicId メッセージ数を調べるTopicのID
    */
-  messageCount(roomId: RoomId): Promise<number>;
+  messageCount(topicId: TopicId): Promise<number>;
 
-  observeAll(roomId: RoomId): Observable<MessageEntity[]>;
+  observeAll(topicId: TopicId): Observable<MessageEntity[]>;
 
-  save(roomId: RoomId, message: MessageEntity): Promise<void>;
+  save(topicId: TopicId, message: MessageEntity): Promise<void>;
 }

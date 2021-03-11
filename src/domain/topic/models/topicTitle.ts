@@ -1,13 +1,13 @@
 import assert from 'assert';
 
-export class RoomTitle{
+export class TopicTitle {
   static MAX_TITLE_LENGTH = 50;
 
   constructor(public readonly value: string) {
-    assert(RoomTitle.require(value));
+    assert(TopicTitle.require(value));
   }
 
   static require(value: string): boolean {
-    return value !== '' && value.length <= RoomTitle.MAX_TITLE_LENGTH;
+    return value !== '' && value.length <= TopicTitle.MAX_TITLE_LENGTH;
   }
 }
