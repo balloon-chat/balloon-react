@@ -1,18 +1,20 @@
-import React, { CSSProperties } from 'react';
+import React from 'react';
+import styled from 'styled-components';
 
 // tslint:disable-next-line:variable-name
 export const ContainerCard: React.FC = ({ children }) => {
-  return (<div style={cardStyle}>{children}</div>);
+  return (<Card>{children}</Card>);
 };
 
-const cardStyle: CSSProperties = {
-  boxSizing: 'border-box',
-  borderRadius: 5,
-  overflow: 'hidden',
-  backgroundColor: 'white',
-  boxShadow: '0 1px 1px 0 rgb(131 131 131 / 50%)',
-  width: '100%',
-  margin: '0 auto',
-  maxWidth: 1050,
-  minHeight: '100vh',
-} as const;
+// tslint:disable-next-line:variable-name
+const Card = styled.div`
+  box-sizing: border-box;
+  border-radius: 5px;
+  overflow: hidden;
+  background-color: white;
+  box-shadow: 0 1px 1px 0 rgb(131 131 131 / 50%);
+  width: 100%;
+  margin: 0 auto;
+  max-width: 1050px;
+  min-height: 100vh;
+`;

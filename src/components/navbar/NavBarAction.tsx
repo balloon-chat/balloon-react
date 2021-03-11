@@ -1,54 +1,56 @@
-// tslint:disable-next-line:variable-name
 import styled from 'styled-components';
-import { CSSProperties } from 'react';
 
+type Props = {
+  title: string,
+  imgSrc: string,
+  link: string,
+};
 // tslint:disable-next-line:variable-name
-export const NavButton = ({ title, imgSrc, link }: { title: string, imgSrc: string, link: string }) => {
-  return (<NavButtonContainer href={link} style={navButton}>
-    <img style={actionIcon} src={imgSrc}/>
+export const NavButtonLarge = ({ title, imgSrc, link }: Props) => {
+  return (<NavButtonLargeContainer href={link}>
+    <ActionLargeIcon src={imgSrc}/>
     <div>{title}</div>
-  </NavButtonContainer>);
+  </NavButtonLargeContainer>);
 };
 
 // tslint:disable-next-line:variable-name
-export const NavButtonSmall = ({ title, imgSrc, link }: { title: string, imgSrc: string, link: string}) => {
-  return (<NavButtonContainer href={link} style={navButtonSmall}>
-    <img style={actionIconSmall} src={imgSrc}/>
+export const NavButton = ({ title, imgSrc, link }: Props) => {
+  return (<NavButtonContainer href={link}>
+    <ActionIcon src={imgSrc}/>
     <div>{title}</div>
   </NavButtonContainer>);
 };
 
 // tslint:disable-next-line:variable-name
 const NavButtonContainer = styled.a`
+  align-items: center;
+  display: flex;
+  color: inherit;
+  flex: 1;
+  font-size: 16px;
+  justify-content: center;
+  padding: 8px 0;
+  text-align: center;
+  text-decoration: none;
+
   &:hover {
     background-color: rgba(0, 0, 0, .1);
     cursor: pointer;
   }
 `;
 
-const navButton: CSSProperties = {
-  alignItems: 'center',
-  display: 'flex',
-  color: 'inherit',
-  flex: 1,
-  fontSize: 16,
-  justifyContent: 'center',
-  padding: '16px 0',
-  textAlign: 'center',
-  textDecoration: 'none',
-} as const;
+// tslint:disable-next-line:variable-name
+const NavButtonLargeContainer = styled(NavButtonContainer)`
+  padding: 16px 0;
+`;
 
-const navButtonSmall: CSSProperties = {
-  ...navButton,
-  padding: '8px 0',
-} as const;
+// tslint:disable-next-line:variable-name
+const ActionIcon = styled.img`
+  height: 32px;
+  margin-right: 16px;
+`;
 
-const actionIcon: CSSProperties = {
-  height: 32,
-  marginRight: 16,
-} as const;
-
-const actionIconSmall: CSSProperties = {
-  ...actionIcon,
-  height: 24,
-} as const;
+// tslint:disable-next-line:variable-name
+const ActionLargeIcon = styled(ActionIcon)`
+  height: 32px;
+`;

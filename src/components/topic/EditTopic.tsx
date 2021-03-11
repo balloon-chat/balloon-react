@@ -1,4 +1,4 @@
-import { CSSProperties, FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Button } from 'src/components/topic/Button';
 import { useDispatch } from 'react-redux';
@@ -22,9 +22,8 @@ export const EditTopic = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
 
-  // TODO: remove this
   useEffect(() => {
-    const service = new UserService();
+    const service = new UserService(); // TODO: remove this
     dispatcher(setUserId(service.getCurrentUserId().value));
   },        []);
 
@@ -42,38 +41,41 @@ export const EditTopic = () => {
     if (title && userId) dispatcher(createTopic({ title, userId, description }));
   };
 
-  return (<form style={form} onSubmit={handleSubmit}>
-    <label style={field}>
-      <div style={titleStyle}>タイトル</div>
+  return (<Form onSubmit={handleSubmit}>
+    <TextField>
+      <Title>タイトル</Title>
       <Input onChange={e => setTitle(e.target.value)}/>
-    </label>
-    <label style={field}>
-      <div style={titleStyle}>簡単な説明</div>
+    </TextField>
+    <TextField>
+      <Title>簡単な説明</Title>
       <Input onChange={e => setDescription(e.target.value)}/>
-    </label>
-    <Button style={createButton}>作成</Button>
-  </form>);
+    </TextField>
+    <CreateButton>作成</CreateButton>
+  </Form>);
 };
 
-const form: CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
-  padding: 16,
-  maxWidth: 800,
-  margin: '0 auto',
-} as const;
+// tslint:disable-next-line:variable-name
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  max-width: 800px;
+  margin: 0 auto;
+`;
 
-const field: CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
-  marginBottom: 24,
-} as const;
+// tslint:disable-next-line:variable-name
+const TextField = styled.label`
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 24px;
+`;
 
-const titleStyle: CSSProperties = {
-  color: 'rgba(0, 0, 0, .6)',
-  fontSize: 14,
-  marginBottom: 4,
-} as const;
+// tslint:disable-next-line:variable-name
+const Title = styled.div`
+  color: rgba(0, 0, 0, .6);
+  font-size: 14px;
+  margin-bottom: 4px;
+`;
 
 // tslint:disable-next-line:variable-name
 const Input = styled.input`
@@ -88,6 +90,7 @@ const Input = styled.input`
   }
 `;
 
-const createButton: CSSProperties = {
-  marginLeft: 'auto',
-} as const;
+// tslint:disable-next-line:variable-name
+const CreateButton = styled(Button)`
+  margin-left: auto;
+`;
