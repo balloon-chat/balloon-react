@@ -49,7 +49,19 @@ export const getServerSideProps: GetServerSideProps<TopicListProps> = async () =
 
   const service = new RoomService();
   const rooms = await service.fetchRooms(50);
-  const entities = rooms.map((room) => RoomEntityFactory.create(room));
+  const entities = rooms
+      .map((room) => RoomEntityFactory.create(room))
+      .map((entity, index) => {
+        if (index !== 0) return entity;
+        // 最初の話題にのみ、ラベルを付ける
+        return {
+          ...entity,
+          label: {
+            title: 'Pickup!',
+            color: '#78C4D4',
+          },
+        } as const;
+      });
 
   return {
     props: {
