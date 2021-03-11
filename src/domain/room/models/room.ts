@@ -15,11 +15,11 @@ export class Room {
 }
 
 export class RoomFactory {
-  create(title: RoomTitle, createdBy: UserId, description?: string): Room {
+  create(title: RoomTitle, createdBy: UserId, description?: string, cratedAt?: number): Room {
     return new Room(
         new RoomId(),
         title,
-        Date.now(),
+        cratedAt ?? Date.now(),
         createdBy,
         RoomDescription.create(description),
     );

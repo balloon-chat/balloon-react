@@ -21,6 +21,11 @@ export class RoomRepository implements IRoomRepository {
     return RoomDto.toRoomEntities(dto);
   }
 
+  async findAllOrderByCreatedAt(limit: number): Promise<RoomEntity[]> {
+    const dto = await this.roomDatabase.findAllSortByCreatedAt(limit);
+    return RoomDto.toRoomEntities(dto);
+  }
+
   async save(room: RoomEntity): Promise<void> {
     await this.roomDatabase.save(RoomDto.from(room));
   }

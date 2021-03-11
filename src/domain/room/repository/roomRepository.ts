@@ -7,5 +7,7 @@ export interface IRoomRepository {
 
   findAll(): Promise<RoomEntity[]>;
 
+  findAllOrderByCreatedAt(limit: number): Promise<RoomEntity[]>;
+
   save(room: RoomEntity): Promise<void>;
 }

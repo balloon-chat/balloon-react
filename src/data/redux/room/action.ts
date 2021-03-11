@@ -19,7 +19,7 @@ export const fetchRooms = createAsyncThunk<ReduxRoomEntity[], {}>(
     FETCH_ROOMS,
     async ({}) => {
       const service = new RoomService();
-      const rooms = await service.fetchRooms();
+      const rooms = await service.fetchRooms(50);
       return rooms.map((room): ReduxRoomEntity => ({
         id: room.id.value,
         title: room.title.value,

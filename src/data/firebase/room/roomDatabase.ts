@@ -33,6 +33,16 @@ export class FirebaseRoomDatabase implements IRoomDatabase {
     return data;
   }
 
+  async findAllSortByCreatedAt(limit: number): Promise<RoomDto[]> {
+    const snapshots = await this.roomsRef().orderByChild('createdAt').limitToLast(limit).once('value');
+    const data: RoomDto[] = [];
+    snapshots.forEach((snapshot) => {
+      const dto = RoomDto.fromJSON(snapshot.toJSON());
+      if (dto) data.push(dto);
+    });
+    return data.reverse(); // 降順にする
+  }
+
   async save(room: RoomDto): Promise<void> {
     const ref = this.roomRef(room.id);
     await ref.set(room.toJSON());

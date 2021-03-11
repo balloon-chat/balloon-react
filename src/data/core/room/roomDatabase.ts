@@ -6,5 +6,7 @@ export interface IRoomDatabase {
 
   findAll(): Promise<RoomDto[]>;
 
+  findAllSortByCreatedAt(limit: number): Promise<RoomDto[]>;
+
   save(room: RoomDto): Promise<void>;
 }

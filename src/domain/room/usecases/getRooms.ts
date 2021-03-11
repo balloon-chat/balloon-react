@@ -4,7 +4,11 @@ import { IUserRepository } from 'src/domain/user/repository/userRepository';
 import { RoomData } from 'src/domain/room/usecases/types';
 
 export interface IGetRooms {
-  execute(): Promise<RoomData[]>;
+  /**
+   * RoomDataの一覧を取得する
+   * @param limit 取得する項目数の上限
+   */
+  execute(limit: number): Promise<RoomData[]>;
 }
 
 export class GetRooms implements IGetRooms {
@@ -16,8 +20,11 @@ export class GetRooms implements IGetRooms {
   ) {
   }
 
-  async execute(): Promise<RoomData[]> {
-    const rooms = await this.roomRepository.findAll();
+  /**
+   * Roomを日付順に並び替えた状態で、Roomを取得する。
+   */
+  async execute(limit: number): Promise<RoomData[]> {
+    const rooms = await this.roomRepository.findAllOrderByCreatedAt(limit);
     const data: RoomData[] = [];
 
     for (const room of rooms) {
