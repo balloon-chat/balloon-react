@@ -1,9 +1,12 @@
+import { RoomEntity } from 'src/view/types/room';
+
 export const roomStateName = 'roomState';
 
 export type RoomState = {
-  currentRoom?: ReduxRoomEntity,
+  currentRoom?: RoomEntity,
   roomId?: string,
-  rooms: ReduxRoomEntity[],
+  rooms: RoomEntity[],
+  pickup?: RoomEntity
   isRoomCreated: boolean,
   state?: RoomStates,
 };
@@ -13,12 +16,3 @@ export const roomStates = {
 } as const;
 
 type RoomStates = typeof roomStates[keyof typeof roomStates];
-
-export type ReduxRoomEntity = {
-  id: string,
-  title: string,
-  description?: string,
-  createdAt: Date,
-  thumbnailUrl: string,
-  commentCount: number,
-};

@@ -14,6 +14,11 @@ export class FakeRoomRepository implements IRoomRepository {
     return Promise.resolve(this.repository.findAll());
   }
 
+  findAllOrderByCreatedAt(limit: number): Promise<RoomEntity[]> {
+    const result = this.repository.findAll().sort((a, b) => b.createdAt - a.createdAt);
+    return Promise.resolve(result.slice(0, limit));
+  }
+
   async save(room: RoomEntity): Promise<void> {
     await this.repository.save(room.id, room);
   }

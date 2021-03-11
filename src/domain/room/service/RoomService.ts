@@ -38,7 +38,7 @@ export class RoomService {
     return this.getRoomUsecase.execute(new RoomId(roomId));
   }
 
-  fetchRooms(): Promise<RoomData[]> {
-    return this.getRoomsUsecase.execute();
+  fetchRooms(limit: number): Promise<RoomData[]> {
+    return this.getRoomsUsecase.execute(limit);
   }
 }

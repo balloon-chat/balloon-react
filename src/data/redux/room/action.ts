@@ -1,10 +1,10 @@
 import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { ReduxRoomEntity, roomStateName } from 'src/data/redux/room/state';
+import { roomStateName } from 'src/data/redux/room/state';
 import { Room } from 'src/domain/room/models/room';
 import { RoomService } from 'src/domain/room/service/RoomService';
+import { RoomEntity, RoomEntityFactory } from 'src/view/types/room';
 
 export const CREATE_ROOM = `${roomStateName}/create`;
-export const FETCH_ROOMS = `${roomStateName}/fetch_rooms`;
 export const FETCH_ROOM = `${roomStateName}/fetch_room`;
 
 export const createRoom = createAsyncThunk<Room, { title: string, userId: string, description: string }>(
@@ -15,36 +15,13 @@ export const createRoom = createAsyncThunk<Room, { title: string, userId: string
     },
 );
 
-export const fetchRooms = createAsyncThunk<ReduxRoomEntity[], {}>(
-    FETCH_ROOMS,
-    async ({}) => {
-      const service = new RoomService();
-      const rooms = await service.fetchRooms();
-      return rooms.map((room): ReduxRoomEntity => ({
-        id: room.id.value,
-        title: room.title.value,
-        description: room.description?.value,
-        createdAt: room.createdAt,
-        thumbnailUrl: room.thumbnailUrl,
-        commentCount: room.commentCount,
-      } as const));
-    },
-);
-
-export const fetchRoom = createAsyncThunk<ReduxRoomEntity | undefined, { roomId: string }>(
+export const fetchRoom = createAsyncThunk<RoomEntity | undefined, { roomId: string }>(
     FETCH_ROOM,
     async ({ roomId }) => {
       const service = new RoomService();
       const room = await service.fetchRoom(roomId);
       if (!room) return;
-      return {
-        id: room.id.value,
-        title: room.title.value,
-        description: room.description?.value,
-        createdAt: room.createdAt,
-        thumbnailUrl: room.thumbnailUrl,
-        commentCount: room.commentCount,
-      } as const;
+      return RoomEntityFactory.create(room);
     },
 );
 
