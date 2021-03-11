@@ -65,7 +65,7 @@ export const getServerSideProps: GetServerSideProps<TopicListProps> = async () =
 
   return {
     props: {
-      pickup: entities.length > 1 ? entities[0] : null,
+      pickup: entities.length > 0 ? entities[0] : null,
       topics: entities.length > 1 ? entities.slice(1, entities.length) : [],
     },
   };
