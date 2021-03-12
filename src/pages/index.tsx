@@ -4,7 +4,6 @@ import { NavBarLarge } from 'src/components/navbar/NavBar';
 import { ContainerCard } from 'src/components/topic/ContainerCard';
 import { TopicContainer } from 'src/pages/topics';
 import styled from 'styled-components';
-import { UserService } from 'src/domain/user/service/userService';
 import { GetServerSideProps } from 'next';
 import { TopicService } from 'src/domain/topic/service/topicService';
 import { TopicEntityFactory } from 'src/view/types/topic';
@@ -55,9 +54,6 @@ const TitleImage = styled.img`
 `;
 
 export const getServerSideProps: GetServerSideProps<TopicListProps> = async () => {
-  // TODO: remove this
-  new UserService().getCurrentUserId();
-
   const service = new TopicService();
   const data = await service.fetchTopics(50);
   const entities = data

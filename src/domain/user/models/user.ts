@@ -14,3 +14,9 @@ export class AnonymousUser extends User {
     super(id, undefined);
   }
 }
+
+export class LoginUser extends User {
+  constructor(id: UserId, public readonly name: UserName) {
+    super(id, name);
+  }
+}

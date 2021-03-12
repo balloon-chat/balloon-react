@@ -3,7 +3,7 @@ import { TopicEntity } from 'src/domain/topic/repository/topicEntity';
 import { TopicId } from 'src/domain/topic/models/topicId';
 import { FakeBaseRepository } from 'tests/data/FakeBaseRepository';
 
-export class TopicRepository implements ITopicRepository {
+export class FakeTopicRepository implements ITopicRepository {
   private readonly repository = new FakeBaseRepository<TopicId, TopicEntity>();
 
   find(topicId: TopicId): Promise<TopicEntity | undefined> {

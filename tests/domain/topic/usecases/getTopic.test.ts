@@ -1,4 +1,4 @@
-import { TopicRepository } from 'tests/data/topic/topicRepository';
+import { FakeTopicRepository } from 'tests/data/topic/fakeTopicRepository';
 import { FakeMessageRepository } from 'tests/data/message/FakeMessageRepository';
 import { FakeUserRepository } from 'tests/data/user/FakeUserRepository';
 import { GetTopic, IGetTopic } from 'src/domain/topic/usecases/getTopic';
@@ -11,7 +11,7 @@ import { MessageBody } from 'src/domain/message/models/messageBody';
 import { MessageEntity } from 'src/domain/message/repository/messageEntity';
 import { TopicId } from 'src/domain/topic/models/topicId';
 
-const topicRepository = new TopicRepository();
+const topicRepository = new FakeTopicRepository();
 const messageRepository = new FakeMessageRepository();
 const userRepository = new FakeUserRepository();
 
