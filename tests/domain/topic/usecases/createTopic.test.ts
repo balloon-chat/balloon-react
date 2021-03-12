@@ -1,11 +1,14 @@
 import { ITopicRepository } from 'src/domain/topic/repository/topicRepository';
-import { TopicRepository } from 'tests/data/topic/topicRepository';
+import { FakeTopicRepository } from 'tests/data/topic/fakeTopicRepository';
 import { AnonymousUser } from 'src/domain/user/models/user';
 import { CreateTopic, ICreateTopic } from 'src/domain/topic/usecases/createTopic';
 import { TopicTitle } from 'src/domain/topic/models/topicTitle';
+import { IUserRepository } from 'src/domain/user/repository/userRepository';
+import { FakeUserRepository } from 'tests/data/user/FakeUserRepository';
 
-const topicRepository: ITopicRepository = new TopicRepository();
-const usecase: ICreateTopic = new CreateTopic(topicRepository);
+const topicRepository: ITopicRepository = new FakeTopicRepository();
+const userRepository: IUserRepository = new FakeUserRepository();
+const usecase: ICreateTopic = new CreateTopic(topicRepository, userRepository);
 
 test('新しいTopicを作成', async () => {
   /*
