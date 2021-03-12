@@ -7,8 +7,6 @@ import { createTopic } from 'src/data/redux/topic/action';
 import { useTopicState } from 'src/data/redux/topic/selector';
 import { useRouter } from 'next/router';
 import { setIsTopicCreated } from 'src/data/redux/topic/slice';
-import { UserService } from 'src/domain/user/service/userService';
-import { setUserId } from 'src/data/redux/user/slice';
 
 // tslint:disable-next-line:variable-name
 export const EditTopic = () => {
@@ -21,11 +19,6 @@ export const EditTopic = () => {
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-
-  useEffect(() => {
-    const service = new UserService(); // TODO: remove this
-    dispatcher(setUserId(service.getCurrentUserId().value));
-  },        []);
 
   useEffect(() => {
     if (topicId && isTopicCreated) navigateToTopic(topicId).then();

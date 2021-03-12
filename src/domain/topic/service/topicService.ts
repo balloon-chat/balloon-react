@@ -10,10 +10,10 @@ import { MessageRepository } from 'src/data/core/message/messageRepository';
 import { FirebaseMessageDatabase } from 'src/data/firebase/message/messageDatabase';
 import { IUserRepository } from 'src/domain/user/repository/userRepository';
 import { UserRepository } from 'src/data/core/user/userRepository';
-import { InMemoryUserDatabase } from 'src/data/debug/user/userDatabase';
 import { GetTopic, IGetTopic } from 'src/domain/topic/usecases/getTopic';
 import { TopicId } from 'src/domain/topic/models/topicId';
 import { TopicData } from 'src/domain/topic/usecases/types';
+import { FirebaseUserDatabase } from 'src/data/firebase/user/userDatabase';
 
 export class TopicService {
   private readonly createTopicUsecase: ICreateTopic;
@@ -23,7 +23,7 @@ export class TopicService {
   constructor(
       topicRepository: ITopicRepository = new TopicRepository(FirebaseTopicDatabase.instance),
       messageRepository: IMessageRepository = new MessageRepository(FirebaseMessageDatabase.instance),
-      userRepository: IUserRepository = new UserRepository(InMemoryUserDatabase.instance),
+      userRepository: IUserRepository = new UserRepository(FirebaseUserDatabase.instance),
   ) {
     this.createTopicUsecase = new CreateTopic(topicRepository, userRepository);
     this.getTopicsUsecase = new GetTopics(messageRepository, topicRepository, userRepository);
