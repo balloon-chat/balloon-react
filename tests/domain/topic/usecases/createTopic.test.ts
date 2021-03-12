@@ -1,16 +1,14 @@
-import { ITopicRepository } from 'src/domain/topic/repository/topicRepository';
 import { FakeTopicRepository } from 'tests/data/topic/fakeTopicRepository';
 import { AnonymousUser, LoginUser } from 'src/domain/user/models/user';
 import { CreateTopic, ICreateTopic } from 'src/domain/topic/usecases/createTopic';
 import { TopicTitle } from 'src/domain/topic/models/topicTitle';
-import { IUserRepository } from 'src/domain/user/repository/userRepository';
 import { FakeUserRepository } from 'tests/data/user/FakeUserRepository';
 import { UserId } from 'src/domain/user/models/userId';
 import { UserName } from 'src/domain/user/models/userName';
 import { TopicDescription } from 'src/domain/topic/models/topicDescription';
 
-const topicRepository: ITopicRepository = new FakeTopicRepository();
-const userRepository: IUserRepository = new FakeUserRepository();
+const topicRepository = new FakeTopicRepository();
+const userRepository = new FakeUserRepository();
 const usecase: ICreateTopic = new CreateTopic(topicRepository, userRepository);
 
 afterEach(() => {

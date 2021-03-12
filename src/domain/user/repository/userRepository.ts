@@ -6,6 +6,4 @@ import { User } from 'src/domain/user/models/user';
 
 export interface IUserRepository {
   find(userId: UserId): Promise<User | undefined>;
-
-  save(user: User): Promise<void>;
 }

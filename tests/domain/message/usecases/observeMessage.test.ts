@@ -1,6 +1,5 @@
 import { IMessageRepository } from 'src/domain/message/repository/messageRepository';
 import { FakeMessageRepository } from 'tests/data/message/FakeMessageRepository';
-import { IUserRepository } from 'src/domain/user/repository/userRepository';
 import { FakeUserRepository } from 'tests/data/user/FakeUserRepository';
 import { TopicId } from 'src/domain/topic/models/topicId';
 import { AnonymousUser } from 'src/domain/user/models/user';
@@ -10,8 +9,13 @@ import { IObserveMessages, ObserveMessages } from 'src/domain/message/usecases/o
 import { MessageEntity } from 'src/domain/message/repository/messageEntity';
 
 const messageRepository: IMessageRepository = new FakeMessageRepository();
-const userRepository: IUserRepository = new FakeUserRepository();
+const userRepository = new FakeUserRepository();
 const usecase: IObserveMessages = new ObserveMessages(messageRepository, userRepository);
+
+afterEach(() => {
+  (messageRepository as FakeMessageRepository).clean();
+  (userRepository as FakeUserRepository).clean();
+});
 
 test('Messageを取得', async (done) => {
   /*
