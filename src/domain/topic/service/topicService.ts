@@ -25,7 +25,7 @@ export class TopicService {
       messageRepository: IMessageRepository = new MessageRepository(FirebaseMessageDatabase.instance),
       userRepository: IUserRepository = new UserRepository(InMemoryUserDatabase.instance),
   ) {
-    this.createTopicUsecase = new CreateTopic(topicRepository);
+    this.createTopicUsecase = new CreateTopic(topicRepository, userRepository);
     this.getTopicsUsecase = new GetTopics(messageRepository, topicRepository, userRepository);
     this.getTopicUsecase = new GetTopic(messageRepository, topicRepository, userRepository);
   }
