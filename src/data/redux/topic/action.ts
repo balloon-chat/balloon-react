@@ -7,11 +7,13 @@ import { TopicEntity, TopicEntityFactory } from 'src/view/types/topic';
 export const CREATE_TOPIC = `${topicStateName}/create`;
 export const FETCH_TOPIC = `${topicStateName}/fetch`;
 
-export const createTopic = createAsyncThunk<Topic, { title: string, userId: string, description: string }>(
+export const createTopic = createAsyncThunk<Topic, {
+  title: string, userId: string, description: string, thumbnail: File | Blob,
+}>(
     CREATE_TOPIC,
-    async ({ title, userId, description }) => {
+    async ({ title, userId, description, thumbnail }) => {
       const service = new TopicService();
-      return await service.createTopic(title, description, userId);
+      return await service.createTopic(title, description, userId, thumbnail);
     },
 );
 

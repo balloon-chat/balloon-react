@@ -7,6 +7,8 @@ import { createTopic } from 'src/data/redux/topic/action';
 import { useTopicState } from 'src/data/redux/topic/selector';
 import { useRouter } from 'next/router';
 import { setIsTopicCreated } from 'src/data/redux/topic/slice';
+import { ImageFileContext } from 'src/components/topic/edit/context';
+import { TopicThumbnail } from 'src/components/topic/edit/TopicThumbnail';
 
 // tslint:disable-next-line:variable-name
 export const EditTopic = () => {
@@ -19,6 +21,7 @@ export const EditTopic = () => {
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [file, setFile] = useState<Blob | File>();
 
   useEffect(() => {
     if (topicId && isTopicCreated) navigateToTopic(topicId).then();
@@ -29,20 +32,26 @@ export const EditTopic = () => {
     await router.push(`/topics/${topicId}`);
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (title && userId) dispatcher(createTopic({ title, userId, description }));
+    if (title && userId && file) dispatcher(createTopic({ title, userId, description, thumbnail: file }));
   };
 
   return (<Form onSubmit={handleSubmit}>
-    <TextField>
+    <InputRaw>
       <Title>タイトル</Title>
       <Input onChange={e => setTitle(e.target.value)}/>
-    </TextField>
-    <TextField>
+    </InputRaw>
+    <InputRaw>
       <Title>簡単な説明</Title>
       <Input onChange={e => setDescription(e.target.value)}/>
-    </TextField>
+    </InputRaw>
+    <ThumbnailInputRaw>
+      <Title>サムネイル</Title>
+      <ImageFileContext.Provider value={{ setImageFile: (blob => setFile(blob)) }}>
+        <TopicThumbnail title={title} description={description}/>
+      </ImageFileContext.Provider>
+    </ThumbnailInputRaw>
     <CreateButton>作成</CreateButton>
   </Form>);
 };
@@ -57,7 +66,14 @@ const Form = styled.form`
 `;
 
 // tslint:disable-next-line:variable-name
-const TextField = styled.label`
+const InputRaw = styled.label`
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 24px;
+`;
+
+// tslint:disable-next-line:variable-name
+const ThumbnailInputRaw = styled.div`
   display: flex;
   flex-direction: column;
   margin-bottom: 24px;
