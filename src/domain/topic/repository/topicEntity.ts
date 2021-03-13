@@ -10,7 +10,8 @@ export class TopicEntity {
       public readonly title: TopicTitle,
       public readonly createdAt: number,
       public readonly createdBy: UserId,
-      public readonly description?: TopicDescription,
+      public readonly thumbnailURL: string,
+      public readonly description: TopicDescription | null,
   ) {
   }
 
@@ -20,7 +21,8 @@ export class TopicEntity {
         topic.title,
         topic.createdAt,
         topic.createdBy,
-        topic.description,
+        topic.thumbnailUrl,
+        topic.description ?? null,
     );
   }
 }

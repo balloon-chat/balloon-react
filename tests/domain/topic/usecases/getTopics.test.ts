@@ -16,6 +16,8 @@ const userRepository = new FakeUserRepository();
 
 const usecase: IGetTopics = new GetTopics(messageRepository, topicRepository, userRepository);
 
+const thumbnailUrl = 'some.img';
+
 afterEach(() => {
   topicRepository.clean();
   messageRepository.clean();
@@ -32,7 +34,7 @@ test('Topicに関するデータを取得', async () => {
   const user = new AnonymousUser();
   await userRepository.save(user);
 
-  const topic = new TopicFactory().create(new TopicTitle('test'), user.id, 'description');
+  const topic = new TopicFactory().create(new TopicTitle('test'), user.id, thumbnailUrl, 'description');
   await topicRepository.save(TopicEntity.from(topic));
 
   const message = new MessageFactory().create(new MessageBody('test'), user);
@@ -57,7 +59,7 @@ test('上限以下のTopicを取得', async () => {
   await userRepository.save(user);
   const topics = [];
   for (let i = 0; i < 50; i += 1) {
-    const topic = new TopicFactory().create(new TopicTitle('test'), user.id);
+    const topic = new TopicFactory().create(new TopicTitle('test'), user.id, thumbnailUrl, '');
     await topicRepository.save(TopicEntity.from(topic));
     topics.push(topic);
   }
@@ -73,7 +75,7 @@ test('作成日時順に並び替えた状態で取得', async () => {
   const topics = [];
   for (let i = 0; i < 10; i += 1) {
     const createdAt = (Math.random() + 1) * 1000000000000;
-    const topic = new TopicFactory().create(new TopicTitle('test'), user.id, undefined, createdAt);
+    const topic = new TopicFactory().create(new TopicTitle('test'), user.id, thumbnailUrl, undefined, createdAt);
     await topicRepository.save(TopicEntity.from(topic));
     topics.push(topic);
   }
@@ -108,7 +110,7 @@ test('存在しないユーザーによって作成されたTopic', async () => 
   // ユーザーの情報を保存しない
   const user = new AnonymousUser();
 
-  const topic = new TopicFactory().create(new TopicTitle('test'), user.id);
+  const topic = new TopicFactory().create(new TopicTitle('test'), user.id, thumbnailUrl);
   await topicRepository.save(TopicEntity.from(topic));
 
   const results = await usecase.execute(50);

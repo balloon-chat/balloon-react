@@ -17,6 +17,8 @@ const userRepository = new FakeUserRepository();
 
 const usecase: IGetTopic = new GetTopic(messageRepository, topicRepository, userRepository);
 
+const thumbnailUrl = 'some.img';
+
 afterEach(() => {
   topicRepository.clean();
   messageRepository.clean();
@@ -33,7 +35,7 @@ test('Topicに関するデータを取得', async () => {
   const user = new AnonymousUser();
   await userRepository.save(user);
 
-  const topic = new TopicFactory().create(new TopicTitle('test'), user.id, 'description');
+  const topic = new TopicFactory().create(new TopicTitle('test'), user.id, thumbnailUrl, 'description');
   await topicRepository.save(TopicEntity.from(topic));
 
   const message = new MessageFactory().create(new MessageBody('test'), user);
@@ -68,7 +70,7 @@ test('作成したユーザーが存在しない場合、取得しない', async
     */
   const user = new AnonymousUser();
 
-  const topic = new TopicFactory().create(new TopicTitle('test'), user.id);
+  const topic = new TopicFactory().create(new TopicTitle('test'), user.id, thumbnailUrl);
   await topicRepository.save(TopicEntity.from(topic));
 
   const result = await usecase.execute(topic.id);

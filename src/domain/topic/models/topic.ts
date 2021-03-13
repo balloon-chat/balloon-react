@@ -9,18 +9,27 @@ export class Topic {
       public readonly title: TopicTitle,
       public readonly createdAt: number,
       public readonly createdBy: UserId,
+      public readonly thumbnailUrl: string,
       public readonly description?: TopicDescription,
   ) {
   }
 }
 
 export class TopicFactory {
-  create(title: TopicTitle, createdBy: UserId, description?: string, cratedAt?: number): Topic {
+  create(
+      title: TopicTitle,
+      createdBy: UserId,
+      thumbnailUrl: string,
+      description?: string,
+      cratedAt?: number,
+      topicId?: TopicId,
+  ): Topic {
     return new Topic(
-        new TopicId(),
+        topicId ?? new TopicId(),
         title,
         cratedAt ?? Date.now(),
         createdBy,
+        thumbnailUrl,
         TopicDescription.create(description),
     );
   }

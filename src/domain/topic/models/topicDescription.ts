@@ -14,7 +14,7 @@ export class TopicDescription {
   /**
    * 条件を満たしたときのみ、{@link TopicDescription}を作成する。
    */
-  static create(value?: string): TopicDescription | undefined {
+  static create(value?: string | null): TopicDescription | undefined {
     if (value && TopicDescription.require(value)) {
       return new TopicDescription(value);
     }

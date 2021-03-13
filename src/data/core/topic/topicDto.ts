@@ -1,4 +1,3 @@
-import { Topic } from 'src/domain/topic/models/topic';
 import { TopicId } from 'src/domain/topic/models/topicId';
 import { TopicTitle } from 'src/domain/topic/models/topicTitle';
 import { UserId } from 'src/domain/user/models/userId';
@@ -9,9 +8,10 @@ export class TopicDto {
   constructor(
       readonly id: string,
       readonly title: string,
-      readonly description: string,
+      readonly description: string | null,
       readonly createdAt: number,
       readonly createdBy: string,
+      readonly thumbnailURL: string,
   ) {
   }
 
@@ -22,6 +22,7 @@ export class TopicDto {
         topic.description?.value ?? '',
         topic.createdAt,
         topic.createdBy.value,
+        topic.thumbnailURL,
     );
   }
 
@@ -34,6 +35,7 @@ export class TopicDto {
           src.description,
           src.createdAt,
           src.createdBy,
+          src.thumbnailURL,
       );
     }
   }
@@ -43,12 +45,13 @@ export class TopicDto {
   }
 
   toTopicEntity(): TopicEntity {
-    return new Topic(
+    return new TopicEntity(
         new TopicId(this.id),
         new TopicTitle(this.title),
         this.createdAt,
         new UserId(this.createdBy),
-        TopicDescription.create(this.description),
+        this.thumbnailURL,
+        TopicDescription.create(this.description) ?? null,
     );
   }
 
@@ -59,6 +62,7 @@ export class TopicDto {
       description: this.description,
       createdAt: this.createdAt,
       createdBy: this.createdBy,
+      thumbnailURL: this.thumbnailURL,
     };
   }
 }
@@ -66,15 +70,17 @@ export class TopicDto {
 type TopicJSON = {
   id: string,
   title: string,
-  description: string,
+  description: string | null,
   createdAt: number,
   createdBy: string,
+  thumbnailURL: string,
 };
 
 const isTopicJSON = (obj: any): obj is TopicJSON => {
   return typeof obj.id === 'string'
       && typeof obj.title === 'string'
-      && typeof obj.description === 'string'
+      && (typeof obj.description === 'string' || typeof obj.description === 'object')
       && typeof obj.createdAt === 'number'
-      && typeof obj.createdBy === 'string';
+      && typeof obj.createdBy === 'string'
+      && typeof obj.thumbnailURL === 'string';
 };

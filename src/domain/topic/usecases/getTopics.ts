@@ -34,8 +34,8 @@ export class GetTopics implements IGetTopics {
       data.push({
         id: topic.id,
         title: topic.title,
-        description: topic.description,
-        thumbnailUrl: 'http://placehold.jp/1600x800.png',
+        description: topic.description ?? undefined,
+        thumbnailUrl: topic.thumbnailURL,
         createdAt: new Date(topic.createdAt),
         createdBy,
         commentCount,
