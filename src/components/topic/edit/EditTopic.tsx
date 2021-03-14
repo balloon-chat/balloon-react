@@ -9,6 +9,7 @@ import { useRouter } from 'next/router';
 import { setIsTopicCreated } from 'src/data/redux/topic/slice';
 import { ImageFileContext } from 'src/components/topic/edit/context';
 import { TopicThumbnail } from 'src/components/topic/edit/TopicThumbnail';
+import { CreateTopicDialog } from 'src/components/topic/edit/CreateTopicDialog';
 
 // tslint:disable-next-line:variable-name
 export const EditTopic = () => {
@@ -22,6 +23,7 @@ export const EditTopic = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [file, setFile] = useState<Blob | File>();
+  const [isTopicCreating, setIsTopicCreating] = useState(false);
 
   useEffect(() => {
     if (topicId && isTopicCreated) navigateToTopic(topicId).then();
@@ -34,26 +36,32 @@ export const EditTopic = () => {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (title && userId && file) dispatcher(createTopic({ title, userId, description, thumbnail: file }));
+    if (title && userId && file) {
+      setIsTopicCreating(true);
+      dispatcher(createTopic({ title, userId, description, thumbnail: file }));
+    }
   };
 
-  return (<Form onSubmit={handleSubmit}>
-    <InputRaw>
-      <Title>タイトル</Title>
-      <Input onChange={e => setTitle(e.target.value)}/>
-    </InputRaw>
-    <InputRaw>
-      <Title>簡単な説明</Title>
-      <Input onChange={e => setDescription(e.target.value)}/>
-    </InputRaw>
-    <ThumbnailInputRaw>
-      <Title>サムネイル</Title>
-      <ImageFileContext.Provider value={{ setImageFile: (blob => setFile(blob)) }}>
-        <TopicThumbnail title={title} description={description}/>
-      </ImageFileContext.Provider>
-    </ThumbnailInputRaw>
-    <CreateButton>作成</CreateButton>
-  </Form>);
+  return (<>
+    {isTopicCreating && <CreateTopicDialog/>}
+    <Form onSubmit={handleSubmit}>
+      <InputRaw>
+        <Title>タイトル</Title>
+        <Input onChange={e => setTitle(e.target.value)}/>
+      </InputRaw>
+      <InputRaw>
+        <Title>簡単な説明</Title>
+        <Input onChange={e => setDescription(e.target.value)}/>
+      </InputRaw>
+      <ThumbnailInputRaw>
+        <Title>サムネイル</Title>
+        <ImageFileContext.Provider value={{ setImageFile: (blob => setFile(blob)) }}>
+          <TopicThumbnail title={title} description={description}/>
+        </ImageFileContext.Provider>
+      </ThumbnailInputRaw>
+      <CreateButton>作成</CreateButton>
+    </Form>
+  </>);
 };
 
 // tslint:disable-next-line:variable-name
