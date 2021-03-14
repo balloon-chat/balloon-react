@@ -40,13 +40,16 @@ const Card = styled.article`
 
 // tslint:disable-next-line:variable-name
 const Container = styled.a`
+  display: flex;
+  flex-direction: column;
   color: inherit;
   text-decoration: none;
   height: 100%;
 `;
 // tslint:disable-next-line:variable-name
 const Thumbnail = styled.div`
-  max-height: 230px;
+  box-sizing: border-box;
+  height: 250px;
   position: relative;
   width: 100%;
   overflow: hidden;
@@ -56,7 +59,8 @@ const Thumbnail = styled.div`
 const ThumbnailImage = styled.img`
   object-fit: cover;
   overflow: hidden;
-  max-height: 230px;
+  max-height: 250px;
+  height: 100%;
   width: 100%;
 `;
 
@@ -76,6 +80,7 @@ const TopicInformation = styled.div`
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
   padding: 16px;
 `;
 
@@ -83,6 +88,7 @@ const TopicInformation = styled.div`
 const TopicTitle = styled.div`
   font-weight: bold;
   font-size: 16px;
+  flex-grow: 1;
   overflow: hidden;
   text-decoration: none;
   text-overflow: ellipsis;
