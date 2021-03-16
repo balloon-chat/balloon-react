@@ -17,21 +17,33 @@ import { FirebaseUserDatabase } from 'src/data/firebase/user/userDatabase';
 import { ITopicImageRepository } from 'src/domain/topic/repository/topicImageRepository';
 import { TopicImageRepository } from 'src/data/core/topic/topicImageRepository';
 import { FirebaseTopicImageDatabase } from 'src/data/firebase/topic/topicImageDatabase';
+import { GetRecommendTopics, IGetRecommendTopics, RecommendTopics } from 'src/domain/topic/usecases/getRecommendTopics';
+import { IRecommendTopicRepository } from 'src/domain/topic/repository/recommendTopicRepository';
+import { RecommendTopicRepository } from 'src/data/core/topic/recommendTopicRepository';
+import { FirebaseRecommendTopicDatabase } from 'src/data/firebase/topic/recommendTopicDatabase';
 
 export class TopicService {
   private readonly createTopicUsecase: ICreateTopic;
   private readonly getTopicsUsecase: IGetTopics;
   private readonly getTopicUsecase: IGetTopic;
+  private readonly getRecommendTopicsUseCase: IGetRecommendTopics;
 
   constructor(
-      topicRepository: ITopicRepository = new TopicRepository(FirebaseTopicDatabase.instance),
-      topicImageRepository: ITopicImageRepository = new TopicImageRepository(FirebaseTopicImageDatabase.instance),
-      messageRepository: IMessageRepository = new MessageRepository(FirebaseMessageDatabase.instance),
-      userRepository: IUserRepository = new UserRepository(FirebaseUserDatabase.instance),
+      topicRepository: ITopicRepository
+          = new TopicRepository(FirebaseTopicDatabase.instance),
+      recommendTopicRepository: IRecommendTopicRepository
+          = new RecommendTopicRepository(FirebaseRecommendTopicDatabase.instance),
+      topicImageRepository: ITopicImageRepository
+          = new TopicImageRepository(FirebaseTopicImageDatabase.instance),
+      messageRepository: IMessageRepository
+          = new MessageRepository(FirebaseMessageDatabase.instance),
+      userRepository: IUserRepository
+          = new UserRepository(FirebaseUserDatabase.instance),
   ) {
     this.createTopicUsecase = new CreateTopic(topicRepository, topicImageRepository, userRepository);
     this.getTopicsUsecase = new GetTopics(messageRepository, topicRepository, userRepository);
     this.getTopicUsecase = new GetTopic(messageRepository, topicRepository, userRepository);
+    this.getRecommendTopicsUseCase = new GetRecommendTopics(this.getTopicUsecase, recommendTopicRepository);
   }
 
   createTopic(title: string, description: string, createdBy: string, thumbnail: File | Blob): Promise<Topic> {
@@ -44,5 +56,9 @@ export class TopicService {
 
   fetchTopics(limit: number): Promise<TopicData[]> {
     return this.getTopicsUsecase.execute(limit);
+  }
+
+  fetchRecommendTopics(): Promise<RecommendTopics | undefined> {
+    return this.getRecommendTopicsUseCase.execute();
   }
 }
