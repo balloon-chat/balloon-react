@@ -1,25 +1,40 @@
 import React from 'react';
-import { TopicList, TopicListProps } from 'src/components/topic/TopicList';
+import { TopicList } from 'src/components/topic/TopicList';
 import { NavBarLarge } from 'src/components/navbar/NavBar';
 import { ContainerCard } from 'src/components/topic/ContainerCard';
 import { TopicContainer } from 'src/pages/topics';
 import styled from 'styled-components';
-import { GetServerSideProps } from 'next';
+import { GetStaticProps } from 'next';
 import { TopicService } from 'src/domain/topic/service/topicService';
-import { TopicEntityFactory } from 'src/view/types/topic';
+import { TopicEntity, TopicEntityFactory } from 'src/view/types/topic';
+
+type Props = {
+  pickup: {
+    main: TopicEntity | null,
+    topics: TopicEntity[],
+  },
+  newest: TopicEntity[],
+};
 
 // tslint:disable-next-line:variable-name
-const IndexPage: React.FC<TopicListProps> = (props) => {
+const IndexPage: React.FC<Props> = (props) => {
   return (<>
     <NavBarLarge/>
     <TopicContainer>
       <ContainerCard>
         <Title>
           <TitleImage src={'/images/character_yellow.png'}/>
-          <div>ホットな話題</div>
+          <div>注目の話題</div>
         </Title>
         <Container>
-          <TopicList topics={props.topics} pickup={props.pickup}/>
+          <TopicList topics={props.pickup.topics} pickup={props.pickup.main}/>
+        </Container>
+        <Title>
+          <TitleImage src={'/images/character_yellow.png'}/>
+          <div>最新の話題</div>
+        </Title>
+        <Container>
+          <TopicList topics={props.newest}/>
         </Container>
       </ContainerCard>
     </TopicContainer>
@@ -53,18 +68,30 @@ const TitleImage = styled.img`
   height: 80px;
 `;
 
-export const getServerSideProps: GetServerSideProps<TopicListProps> = async () => {
+export const getStaticProps: GetStaticProps<Props> = async () => {
   const service = new TopicService();
-  const data = await service.fetchTopics(50);
-  const entities = data
+  const data = await service.fetchRecommendTopics();
+  if (!data) {
+    return {
+      props: {
+        pickup: {
+          main: null,
+          topics: [],
+        },
+        newest: [],
+      },
+    };
+  }
+
+  const pickup = data.pickups
       .map(topic => TopicEntityFactory.create(topic))
-      .map((entity, index) => {
-        if (index > 2) return entity;
+      .map((topic, index) => {
+        if (index > 2) return topic;
 
         // 上位3つの話題にラベルを付ける
         const labelColors = ['#FFBE0F', '#78C4D4', '#CC561E'];
         return {
-          ...entity,
+          ...topic,
           label: {
             title: `No.${index + 1}`,
             color: labelColors[index],
@@ -72,14 +99,17 @@ export const getServerSideProps: GetServerSideProps<TopicListProps> = async () =
         } as const;
       });
 
-  const pickup = entities.length > 0 ? entities[0] : null;
-  const topics = entities.length > 1 ? entities.slice(1, entities.length) : [];
+  const newest = data.newest.map(topic => TopicEntityFactory.create(topic));
 
   return {
     props: {
-      pickup,
-      topics,
+      pickup: {
+        main: pickup.length > 1 ? pickup[0] : null,
+        topics: pickup.length > 1 ? pickup.slice(1, pickup.length) : [],
+      },
+      newest,
     },
+    revalidate: 60 * 30, // 30min
   };
 };
 
