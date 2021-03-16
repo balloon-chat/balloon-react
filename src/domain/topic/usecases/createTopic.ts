@@ -43,7 +43,7 @@ export class CreateTopic implements ICreateTopic {
     const topicTitle = new TopicTitle(title);
     const topicId = new TopicId();
     const thumbnailURL = await this.topicImageRepository.save(createdBy, topicId.value, thumbnail);
-    const topic = new TopicFactory().create(topicTitle, createdBy, thumbnailURL, description);
+    const topic = TopicFactory.create(topicTitle, createdBy, thumbnailURL, description);
     const entity = TopicEntity.from(topic);
     await this.topicRepository.save(entity);
     return topic;
