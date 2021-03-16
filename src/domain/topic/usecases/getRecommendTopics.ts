@@ -1,6 +1,6 @@
-import { IGetTopic } from 'src/domain/topic/usecases/getTopic';
 import { IRecommendTopicRepository } from 'src/domain/topic/repository/recommendTopicRepository';
 import { TopicData } from 'src/domain/topic/usecases/types';
+import { IGetTopics } from 'src/domain/topic/usecases/getTopics';
 
 export interface IGetRecommendTopics {
   /**
@@ -19,7 +19,7 @@ export class RecommendTopics {
 
 export class GetRecommendTopics implements IGetRecommendTopics {
   constructor(
-      private readonly getTopicUseCase: IGetTopic,
+      private readonly getTopicsUseCase: IGetTopics,
       private readonly recommendTopicRepository: IRecommendTopicRepository,
   ) {
   }
@@ -28,17 +28,10 @@ export class GetRecommendTopics implements IGetRecommendTopics {
     const recommends = await this.recommendTopicRepository.find();
     if (!recommends) return;
 
-    const pickups: TopicData[] = [];
-    for (const topicId of recommends.pickupTopicIds) {
-      const topic = await this.getTopicUseCase.execute(topicId);
-      if (topic) pickups.push(topic);
-    }
-
-    const newest: TopicData[] = [];
-    for (const topicId of recommends.newestTopicIds) {
-      const topic = await this.getTopicUseCase.execute(topicId);
-      if (topic) newest.push(topic);
-    }
+    const [pickups, newest] = await Promise.all([
+      this.getTopicsUseCase.execute(recommends.pickupTopicIds),
+      this.getTopicsUseCase.execute(recommends.newestTopicIds),
+    ]);
 
     return new RecommendTopics(pickups, newest);
   }

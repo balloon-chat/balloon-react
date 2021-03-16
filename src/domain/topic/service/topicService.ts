@@ -43,7 +43,7 @@ export class TopicService {
     this.createTopicUsecase = new CreateTopic(topicRepository, topicImageRepository, userRepository);
     this.getTopicsUsecase = new GetTopics(messageRepository, topicRepository, userRepository);
     this.getTopicUsecase = new GetTopic(messageRepository, topicRepository, userRepository);
-    this.getRecommendTopicsUseCase = new GetRecommendTopics(this.getTopicUsecase, recommendTopicRepository);
+    this.getRecommendTopicsUseCase = new GetRecommendTopics(this.getTopicsUsecase, recommendTopicRepository);
   }
 
   createTopic(title: string, description: string, createdBy: string, thumbnail: File | Blob): Promise<Topic> {

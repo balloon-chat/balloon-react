@@ -20,7 +20,7 @@ test('MessageDataを取得', async (done) => {
   const message = MessageFactory.create(new MessageBody('message'), user);
   await messageRepository.save(topicId, MessageEntity.from(message));
 
-  usecase.execute(new TopicId()).subscribe(value => {
+  usecase.execute(topicId).subscribe(value => {
     const result = value[0];
     expect(result).toStrictEqual(new MessageData(
         message.id,

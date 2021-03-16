@@ -1,6 +1,7 @@
 import { topicPath } from 'src/pages/pagePath';
 import styled from 'styled-components';
 import { TopicEntity } from 'src/view/types/topic';
+import Image from 'next/image';
 
 // tslint:disable-next-line:variable-name
 export const TopicCard = ({ props }: { props: TopicEntity }) => {
@@ -12,7 +13,9 @@ export const TopicCard = ({ props }: { props: TopicEntity }) => {
   return (<Card>
     <Container href={topicPath.topic(props.id)}>
       <Thumbnail>
-        <ThumbnailImage src={props.thumbnailUrl}/>
+        <ThumbnailImageContainer>
+          <Image src={props.thumbnailUrl} layout={'fill'} objectFit={'cover'}/>
+        </ThumbnailImageContainer>
         {
           props.label && <Label labelColor={props.label.color}>{props.label.title}</Label>
         }
@@ -56,8 +59,7 @@ const Thumbnail = styled.div`
 `;
 
 // tslint:disable-next-line:variable-name
-const ThumbnailImage = styled.img`
-  object-fit: cover;
+const ThumbnailImageContainer = styled.div`
   overflow: hidden;
   max-height: 250px;
   height: 100%;
