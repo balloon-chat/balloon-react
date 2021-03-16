@@ -1,4 +1,4 @@
-import { ITopicImageRepository } from 'src/domain/topic/repository/ITopicImageRepository';
+import { ITopicImageRepository } from 'src/domain/topic/repository/topicImageRepository';
 import { UserId } from 'src/domain/user/models/userId';
 
 export class FakeTopicImageRepository implements ITopicImageRepository {

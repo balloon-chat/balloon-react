@@ -6,7 +6,7 @@ import { UserId } from 'src/domain/user/models/userId';
 import { IllegalArgumentException } from 'src/domain/exceptions/IllegalArgumentException';
 import { IUserRepository } from 'src/domain/user/repository/userRepository';
 import { UserNotFoundException } from 'src/domain/exceptions/UserNotFoundException';
-import { ITopicImageRepository } from 'src/domain/topic/repository/ITopicImageRepository';
+import { ITopicImageRepository } from 'src/domain/topic/repository/topicImageRepository';
 import { TopicId } from 'src/domain/topic/models/topicId';
 
 export interface ICreateTopic {

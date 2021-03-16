@@ -14,7 +14,7 @@ import { GetTopic, IGetTopic } from 'src/domain/topic/usecases/getTopic';
 import { TopicId } from 'src/domain/topic/models/topicId';
 import { TopicData } from 'src/domain/topic/usecases/types';
 import { FirebaseUserDatabase } from 'src/data/firebase/user/userDatabase';
-import { ITopicImageRepository } from 'src/domain/topic/repository/ITopicImageRepository';
+import { ITopicImageRepository } from 'src/domain/topic/repository/topicImageRepository';
 import { TopicImageRepository } from 'src/data/core/topic/topicImageRepository';
 import { FirebaseTopicImageDatabase } from 'src/data/firebase/topic/topicImageDatabase';
 
