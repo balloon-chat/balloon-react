@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import Image from 'next/image';
 
 type Props = {
   title: string,
@@ -8,7 +9,9 @@ type Props = {
 // tslint:disable-next-line:variable-name
 export const NavButtonLarge = ({ title, imgSrc, link }: Props) => {
   return (<NavButtonLargeContainer href={link}>
-    <ActionLargeIcon src={imgSrc}/>
+    <ActionIconContainer>
+      <Image height={32} width={32} src={imgSrc}/>
+    </ActionIconContainer>
     <div>{title}</div>
   </NavButtonLargeContainer>);
 };
@@ -16,7 +19,9 @@ export const NavButtonLarge = ({ title, imgSrc, link }: Props) => {
 // tslint:disable-next-line:variable-name
 export const NavButton = ({ title, imgSrc, link }: Props) => {
   return (<NavButtonContainer href={link}>
-    <ActionIcon src={imgSrc}/>
+    <ActionIconContainer>
+      <Image height={32} width={32} src={imgSrc}/>
+    </ActionIconContainer>
     <div>{title}</div>
   </NavButtonContainer>);
 };
@@ -45,12 +50,7 @@ const NavButtonLargeContainer = styled(NavButtonContainer)`
 `;
 
 // tslint:disable-next-line:variable-name
-const ActionIcon = styled.img`
+const ActionIconContainer = styled.div`
   height: 32px;
   margin-right: 16px;
-`;
-
-// tslint:disable-next-line:variable-name
-const ActionLargeIcon = styled(ActionIcon)`
-  height: 32px;
 `;
