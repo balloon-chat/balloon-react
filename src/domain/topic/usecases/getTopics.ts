@@ -2,13 +2,21 @@ import { ITopicRepository } from 'src/domain/topic/repository/topicRepository';
 import { IMessageRepository } from 'src/domain/message/repository/messageRepository';
 import { IUserRepository } from 'src/domain/user/repository/userRepository';
 import { TopicData } from 'src/domain/topic/usecases/types';
+import { TopicId } from 'src/domain/topic/models/topicId';
+import { GetTopic } from 'src/domain/topic/usecases/getTopic';
 
 export interface IGetTopics {
   /**
-   * TopicDataの一覧を取得する
+   * {@link TopicData}を日付順に並び替えた状態で取得する。
    * @param limit 取得する項目数の上限
    */
   execute(limit: number): Promise<TopicData[]>;
+
+  /**
+   * {@link TopicData}の一覧を取得する
+   * @param topicsIds 取得する{@link Topic}のID
+   */
+  execute(topicsIds: TopicId[]): Promise<TopicData[]>;
 }
 
 export class GetTopics implements IGetTopics {
@@ -20,18 +28,38 @@ export class GetTopics implements IGetTopics {
   ) {
   }
 
-  /**
-   * {@link TopicData}を日付順に並び替えた状態で取得する。
-   */
-  async execute(limit: number): Promise<TopicData[]> {
-    const topics = await this.topicRepository.findAllOrderByCreatedAt(limit);
-    const data: TopicData[] = [];
+  execute(topicIds: TopicId[]): Promise<TopicData[]>;
+  execute(limit: number): Promise<TopicData[]>;
+  execute(arg: number | TopicId[]): Promise<TopicData[]> {
+    if (typeof arg === 'number') return this.getAllOrderByCreatedAt(arg);
+    return this.getAll(arg);
+  }
 
-    for (const topic of topics) {
+  async getAll(topicsIds: TopicId[]): Promise<TopicData[]> {
+    const getTopicUseCase = new GetTopic(this.messageRepository, this.topicRepository, this.userRepository);
+
+    // 並列でTopicを取得する
+    const results: (TopicData | undefined)[] = await Promise.all(topicsIds.map(async (topicId) => {
+      return await getTopicUseCase.execute(topicId);
+    }));
+
+    const topics: TopicData[] = [];
+    results.forEach((value) => {
+      if (value) topics.push(value);
+    });
+
+    return topics;
+  }
+
+  async getAllOrderByCreatedAt(limit: number): Promise<TopicData[]> {
+    const entities = await this.topicRepository.findAllOrderByCreatedAt(limit);
+
+    // 並列でTopicを取得する
+    const results: (undefined | TopicData)[] = await Promise.all(entities.map(async (topic) => {
       const createdBy = await this.userRepository.find(topic.createdBy);
-      if (!createdBy) continue;
+      if (!createdBy) return;
       const commentCount = await this.messageRepository.messageCount(topic.id);
-      data.push({
+      return {
         id: topic.id,
         title: topic.title,
         description: topic.description ?? undefined,
@@ -39,9 +67,14 @@ export class GetTopics implements IGetTopics {
         createdAt: new Date(topic.createdAt),
         createdBy,
         commentCount,
-      } as const);
-    }
+      } as const;
+    }));
 
-    return data;
+    const topics: TopicData[] = [];
+    results.forEach(result => {
+      if (result) topics.push(result);
+    });
+
+    return topics;
   }
 }

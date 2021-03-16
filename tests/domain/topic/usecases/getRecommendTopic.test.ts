@@ -1,6 +1,5 @@
 import { GetRecommendTopics, IGetRecommendTopics } from 'src/domain/topic/usecases/getRecommendTopics';
 import { FakeMessageRepository } from 'tests/data/message/FakeMessageRepository';
-import { GetTopic } from 'src/domain/topic/usecases/getTopic';
 import { FakeTopicRepository } from 'tests/data/topic/fakeTopicRepository';
 import { FakeUserRepository } from 'tests/data/user/FakeUserRepository';
 import { FakeRecommendTopicRepository } from 'tests/data/topic/fakeRecommendTopicRepository';
@@ -15,6 +14,7 @@ import { RecommendTopicEntity } from 'src/domain/topic/repository/recommendTopic
 import { MessageFactory } from 'src/domain/message/models/message';
 import { MessageBody } from 'src/domain/message/models/messageBody';
 import { MessageEntity } from 'src/domain/message/repository/messageEntity';
+import { GetTopics } from 'src/domain/topic/usecases/getTopics';
 
 const messageRepository = new FakeMessageRepository();
 const topicRepository = new FakeTopicRepository();
@@ -22,7 +22,7 @@ const recommendTopicRepository = new FakeRecommendTopicRepository();
 const userRepository = new FakeUserRepository();
 
 const usecase: IGetRecommendTopics = new GetRecommendTopics(
-    new GetTopic(messageRepository, topicRepository, userRepository),
+    new GetTopics(messageRepository, topicRepository, userRepository),
     recommendTopicRepository,
 );
 
