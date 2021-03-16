@@ -16,7 +16,7 @@ export class Topic {
 }
 
 export class TopicFactory {
-  create(
+  static create(
       title: TopicTitle,
       createdBy: UserId,
       thumbnailUrl: string,

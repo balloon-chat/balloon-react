@@ -26,7 +26,7 @@ test('Messageを取得', async (done) => {
   const topicId = new TopicId();
   const user = new AnonymousUser();
   await userRepository.save(user);
-  const message = new MessageFactory().create(new MessageBody('Message'), user);
+  const message = MessageFactory.create(new MessageBody('Message'), user);
   await messageRepository.save(topicId, MessageEntity.from(message));
 
   usecase.execute(new TopicId()).subscribe({

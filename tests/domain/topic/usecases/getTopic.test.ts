@@ -35,10 +35,10 @@ test('Topicに関するデータを取得', async () => {
   const user = new AnonymousUser();
   await userRepository.save(user);
 
-  const topic = new TopicFactory().create(new TopicTitle('test'), user.id, thumbnailUrl, 'description');
+  const topic = TopicFactory.create(new TopicTitle('test'), user.id, thumbnailUrl, 'description');
   await topicRepository.save(TopicEntity.from(topic));
 
-  const message = new MessageFactory().create(new MessageBody('test'), user);
+  const message = MessageFactory.create(new MessageBody('test'), user);
   await messageRepository.save(topic.id, MessageEntity.from(message));
 
   const result = await usecase.execute(topic.id);
@@ -70,7 +70,7 @@ test('作成したユーザーが存在しない場合、取得しない', async
     */
   const user = new AnonymousUser();
 
-  const topic = new TopicFactory().create(new TopicTitle('test'), user.id, thumbnailUrl);
+  const topic = TopicFactory.create(new TopicTitle('test'), user.id, thumbnailUrl);
   await topicRepository.save(TopicEntity.from(topic));
 
   const result = await usecase.execute(topic.id);

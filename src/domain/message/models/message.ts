@@ -3,7 +3,7 @@ import { MessageId } from 'src/domain/message/models/messageId';
 import { MessageBody } from 'src/domain/message/models/messageBody';
 
 export class MessageFactory {
-  create(body: MessageBody, sender: User): Message {
+  static create(body: MessageBody, sender: User): Message {
     return new Message(
         new MessageId(),
         body,
