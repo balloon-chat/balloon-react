@@ -16,6 +16,10 @@ const App = ({ Component, pageProps }: AppProps) => {
         min-width: 370px;
       }
 
+      h1, h2, h3, h4, h5, h6 {
+        margin: 0;
+      }
+
       a:hover {
         cursor: pointer;
       }
