@@ -1,19 +1,16 @@
 import { NavBar } from 'src/components/navbar/NavBar';
 import { EditTopic } from 'src/components/topic/edit/EditTopic';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { ContainerCard } from 'src/components/topic/ContainerCard';
 import styled from 'styled-components';
-import { useDispatch } from 'react-redux';
-import { UserService } from 'src/domain/user/service/userService';
-import { setUserId } from 'src/data/redux/user/slice';
+import 'firebase/auth';
+import { useUser } from 'src/view/lib/useUser';
+import { rootPath } from 'src/pages/pagePath';
 
 // tslint:disable-next-line:variable-name
 const CreateTopicPage = () => {
-  const dispatcher = useDispatch();
 
-  useEffect(() => {
-    dispatcher(setUserId(new UserService().getCurrentUserId().value)); // TODO: remove this
-  },        []);
+  const {} = useUser({ returnTo: rootPath.topicPath.create });
 
   return (<>
     <NavBar/>
@@ -33,4 +30,5 @@ const Body = styled.div`
   padding-top: 16px;
 `;
 
+// tslint:disable-next-line:variable-name
 export default CreateTopicPage;
