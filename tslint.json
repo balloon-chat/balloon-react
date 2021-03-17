@@ -17,7 +17,8 @@
         "styledComponents": "styled",
         "image": "Image",
         "head": "Head",
-        "reactImagesUploading": "ReactImageUploading"
+        "reactImagesUploading": "ReactImageUploading",
+        "app": "firebase"
       }
     ]
   }
