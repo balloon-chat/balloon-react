@@ -20,23 +20,37 @@ export const NavBar: React.FC = ({ children }) => {
   const isLoggedIn = uid !== null;
 
   return (<NavContainer>
-    <NavTitle href={rootPath.index}>
-      <div>ふうせん</div>
-      <TitleIcon src={'/images/character_blue.png'}/>
-      <div>チャット</div>
-    </NavTitle>
-    <ActionContainer>
-      <NavButton link={topicPath.create} title={'話題を作る'} imgSrc={'/svg/speech_balloon.svg'}/>
-      <NavButton link={topicPath.index} title={'話題に参加する'} imgSrc={'/svg/exit.svg'}/>
-    </ActionContainer>
+    <NavMainContainer>
+      <Link href={rootPath.index}>
+        <NavTitle>
+          <TitleIcon src={'/images/character_blue.png'}/>
+          <div>おもちゃっと</div>
+        </NavTitle>
+      </Link>
+      <ActionContainer>
+        <li><NavButton link={topicPath.create} title={'話題を作る'} imgSrc={'/svg/speech_balloon.svg'}/></li>
+        {!isLoggedIn && <li><NavButton link={rootPath.login} title={'ログイン'}/></li>}
+        {isLoggedIn && <li><NavButton link={rootPath.logout} title={'ログアウト'}/></li>}
+      </ActionContainer>
+    </NavMainContainer>
+    <div>{children}</div>
   </NavContainer>);
 };
 
 // tslint:disable-next-line:variable-name
 const NavContainer = styled.div`
-  align-items: center;
   background-color: white;
   border-bottom: 1px solid rgba(0, 0, 0, .1);
+`;
+
+// tslint:disable-next-line:variable-name
+const NavMainContainer = styled.div`
+  align-items: center;
+  box-sizing: border-box;
+  display: flex;
+  margin: 0 auto;
+  padding: 0 16px;
+  max-width: 1050px;
 `;
 
 // tslint:disable-next-line:variable-name
