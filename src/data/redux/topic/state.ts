@@ -4,7 +4,7 @@ export const topicStateName = 'topicState';
 
 export type TopicState = {
   currentTopic?: TopicEntity,
-  topicId?: string,
+  topicId: string | null,
   topics: TopicEntity[],
   pickup?: TopicEntity
   isTopicCreated: boolean,
