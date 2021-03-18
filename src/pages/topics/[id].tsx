@@ -1,5 +1,5 @@
 // tslint:disable-next-line:variable-name
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Chat } from 'src/components/chat/Chat';
 import { MessageField } from 'src/components/chat/MessageField';
 import { UserService } from 'src/domain/user/service/userService';
@@ -11,6 +11,11 @@ import { GetServerSideProps } from 'next';
 import { TopicEntity, TopicEntityFactory } from 'src/view/types/topic';
 import { TopicService } from 'src/domain/topic/service/topicService';
 import styled from 'styled-components';
+import { useDispatch } from 'react-redux';
+import { setTopicId } from 'src/data/redux/topic/slice';
+import { useUserSelector } from 'src/data/redux/user/selector';
+import { UserId } from 'src/domain/user/models/userId';
+import { setUserId } from 'src/data/redux/user/slice';
 
 type Props = {
   topic: TopicEntity | null,
@@ -18,6 +23,20 @@ type Props = {
 
 // tslint:disable-next-line:variable-name
 const TopicPage = ({ topic }: Props) => {
+  const dispatcher = useDispatch();
+  const { isLoggedIn } = useUserSelector();
+
+  useEffect(() => {
+    dispatcher(setTopicId({ topicId: topic?.id ?? null }));
+
+    // ユーザーが未ログイン時は、一時的なIDを付与する
+    if (!isLoggedIn) dispatcher(setUserId(new UserId().value));
+
+    return () => {
+      dispatcher(setTopicId({ topicId: null }));
+      if (!isLoggedIn) dispatcher(setUserId(null));
+    };
+  },        []);
 
   return (<Container>
     <NavBar/>
