@@ -13,8 +13,10 @@ export const AuthProvider: React.FC = ({ children }) => {
       if (user) dispatcher(setUserId(user.uid));
     });
 
-    return unsubscribe();
-  });
+    return () => {
+      unsubscribe();
+    };
+  },        []);
 
   return (<>{children}</>);
 };

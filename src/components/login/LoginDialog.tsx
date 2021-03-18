@@ -16,10 +16,14 @@ export const LoginDialog = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    firebase.auth().onAuthStateChanged(user => {
+    const unsubscribe = firebase.auth().onAuthStateChanged(user => {
       setIsLoggedIn(user !== null);
       if (user) dispatcher(createUser({ uid: user.uid, name: user.displayName, photoUrl: user.photoURL }));
     });
+
+    return () => {
+      unsubscribe();
+    };
   },        []);
 
   useEffect(() => {

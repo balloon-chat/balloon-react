@@ -23,7 +23,8 @@ export const useUser = ({ returnTo }: UseUserArgument = { returnTo: rootPath.ind
   useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-        const loginUser = new LoginUser(new UserId(user.uid), new UserName(user.displayName!));
+        // TODO: fix this.
+        const loginUser = new LoginUser(new UserId(user.uid), new UserName(user.displayName!), user.photoURL!);
         setUser(loginUser);
         dispatcher(setUserId(loginUser.id.value));
       } else {
@@ -31,7 +32,9 @@ export const useUser = ({ returnTo }: UseUserArgument = { returnTo: rootPath.ind
       }
     });
 
-    return unsubscribe();
+    return () => {
+      unsubscribe();
+    };
   },        []);
 
   useEffect(() => {
