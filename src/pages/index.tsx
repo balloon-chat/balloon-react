@@ -7,8 +7,6 @@ import styled from 'styled-components';
 import { GetStaticProps } from 'next';
 import { TopicService } from 'src/domain/topic/service/topicService';
 import { TopicEntity, TopicEntityFactory } from 'src/view/types/topic';
-import firebase from 'firebase/app';
-import 'firebase/auth';
 
 type Props = {
   pickup: {
@@ -16,11 +14,10 @@ type Props = {
     topics: TopicEntity[],
   },
   newest: TopicEntity[],
-  uid: string | null,
 };
 
 // tslint:disable-next-line:variable-name
-const IndexPage: React.FC<Props> = (props) => {
+const IndexPage: React.FC<Props> = ({ pickup, newest }) => {
   return (<>
     <NavBarHome/>
     <TopicContainer>
@@ -30,14 +27,14 @@ const IndexPage: React.FC<Props> = (props) => {
           <div>注目の話題</div>
         </Title>
         <Container>
-          <TopicList topics={props.pickup.topics} pickup={props.pickup.main}/>
+          <TopicList topics={pickup.topics} pickup={pickup.main}/>
         </Container>
         <Title>
           <TitleImage src={'/images/character_yellow.png'}/>
           <div>最新の話題</div>
         </Title>
         <Container>
-          <TopicList topics={props.newest}/>
+          <TopicList topics={newest}/>
         </Container>
       </ContainerCard>
     </TopicContainer>
@@ -74,7 +71,7 @@ const TitleImage = styled.img`
 export const getStaticProps: GetStaticProps<Props> = async () => {
   const service = new TopicService();
   const data = await service.fetchRecommendTopics();
-  const uid = (await firebase.auth().currentUser?.getIdToken()) ?? null;
+
   if (!data) {
     return {
       props: {
@@ -83,7 +80,6 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
           topics: [],
         },
         newest: [],
-        uid,
       },
     };
   }
@@ -113,10 +109,9 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
         topics: pickup.length > 1 ? pickup.slice(1, pickup.length) : [],
       },
       newest,
-      uid,
     },
     revalidate: 60 * 30, // 30min
-  };
+  } as const;
 };
 
 export default IndexPage;
