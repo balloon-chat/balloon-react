@@ -20,6 +20,7 @@ const userRepository = new FakeUserRepository();
 const usecase: IGetTopics = new GetTopics(messageRepository, topicRepository, userRepository);
 
 const thumbnailUrl = 'some.img';
+const user = new LoginUser(new UserId(), new UserName('test'), 'test');
 
 afterEach(() => {
   topicRepository.clean();
@@ -33,7 +34,6 @@ describe('TopicのIDにより取得', () => {
     初期データ:
       TopicRepository: Topic x 50
      */
-    const user = new LoginUser(new UserId(), new UserName('test'));
     await userRepository.save(user);
 
     const topics = [];
@@ -68,7 +68,6 @@ describe('TopicのIDにより取得', () => {
        UserRepository: null
       */
     const user = new AnonymousUser();
-    await userRepository.save(user);
     const topic = TopicFactory.create(new TopicTitle('test'), user.id, thumbnailUrl);
 
     const results = await usecase.execute([topic.id]);
@@ -101,7 +100,6 @@ describe('上限を設定して取得', () => {
       MessageRepository: [Message x 50],
       UserRepository: User
      */
-    const user = new AnonymousUser();
     await userRepository.save(user);
 
     const topic = TopicFactory.create(new TopicTitle('test'), user.id, thumbnailUrl, 'description');
@@ -131,7 +129,6 @@ describe('上限を設定して取得', () => {
     初期データ:
       TopicRepository: Topic x 50
      */
-    const user = new AnonymousUser();
     await userRepository.save(user);
     const topics = [];
     for (let i = 0; i < 50; i += 1) {
@@ -145,7 +142,6 @@ describe('上限を設定して取得', () => {
   });
 
   test('作成日時順に並び替えた状態で取得', async () => {
-    const user = new AnonymousUser();
     await userRepository.save(user);
 
     const topics = [];

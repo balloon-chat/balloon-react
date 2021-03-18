@@ -1,17 +1,17 @@
 import { IUserRepository } from 'src/domain/user/repository/userRepository';
 import { UserId } from 'src/domain/user/models/userId';
-import { User } from 'src/domain/user/models/user';
+import { LoginUser } from 'src/domain/user/models/user';
 import { FakeBaseRepository } from 'tests/data/FakeBaseRepository';
 
 export class FakeUserRepository implements IUserRepository {
-  private repository = new FakeBaseRepository<UserId, User>();
+  private repository = new FakeBaseRepository<string, LoginUser>();
 
-  find(userId: UserId): Promise<User | undefined> {
-    return Promise.resolve(this.repository.find(userId));
+  find(userId: UserId): Promise<LoginUser | undefined> {
+    return Promise.resolve(this.repository.find(userId.value));
   }
 
-  save(user: User): Promise<void> {
-    this.repository.save(user.id, user);
+  save(user: LoginUser): Promise<void> {
+    this.repository.save(user.id.value, user);
     return Promise.resolve();
   }
 

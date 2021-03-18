@@ -23,6 +23,10 @@ export class FirebaseUserDatabase implements IUserDatabase {
     return UserDto.fromJSON(snapshot.toJSON());
   }
 
+  async save(user: UserDto): Promise<void> {
+    return this.userRef(user.id).set(user);
+  }
+
   private usersRef = () => this.database.ref('/users');
   private userRef = (userId: string) => this.usersRef().child(userId);
 }

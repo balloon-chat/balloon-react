@@ -16,6 +16,8 @@ const usecase: ICreateTopic = new CreateTopic(topicRepository, topicImageReposit
 // Blobの実装がテストで利用できないので、一時的にundefinedを用いる。
 const thumbnail: Blob = undefined!;
 
+const user = new LoginUser(new UserId(), new UserName('test'), 'test');
+
 afterEach(() => {
   (topicRepository as FakeTopicRepository).clean();
   (userRepository as FakeUserRepository).clean();
@@ -27,7 +29,6 @@ test('新しいTopicを作成', async () => {
     User Repository: LoginUser
     Topic Repository: []
    */
-  const user = new LoginUser(new UserId(), new UserName('test'));
   await userRepository.save(user);
   const title = 'new topic';
   const description = 'description';
@@ -64,7 +65,6 @@ test('登録されたユーザーのみが作成可能', async () => {
 });
 
 test('不正なタイトルでTopicを作成', async () => {
-  const user = new LoginUser(new UserId(), new UserName('test'));
   await userRepository.save(user);
 
   const title = '';
@@ -72,7 +72,6 @@ test('不正なタイトルでTopicを作成', async () => {
 });
 
 describe('不正な説明文でTopicを作成', () => {
-  const user = new LoginUser(new UserId(), new UserName('test'));
   const title = 'title';
 
   beforeEach(async () => {

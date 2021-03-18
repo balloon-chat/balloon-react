@@ -1,32 +1,35 @@
-import { LoginUser, User } from 'src/domain/user/models/user';
+import { LoginUser } from 'src/domain/user/models/user';
 import { UserId } from 'src/domain/user/models/userId';
 import { UserName } from 'src/domain/user/models/userName';
 
 export class UserDto {
   constructor(
       readonly id: string,
-      readonly name: string,
+      readonly name?: string,
+      readonly photoUrl?: string,
   ) {
   }
 
   static from(user: LoginUser): UserDto {
     return new UserDto(
         user.id.value,
-        user.name.value,
+        user.name?.value,
+        user.photoUrl,
     );
   }
 
   static fromJSON(json: Object | null): UserDto | undefined {
     if (json && isUserJSON(json)) {
       const src = json as UserJSON;
-      return new UserDto(src.id, src.name);
+      return new UserDto(src.id, src.name, src.photoUrl);
     }
   }
 
-  toUser(): User {
-    return new User(
+  toUser(): LoginUser {
+    return new LoginUser(
         new UserId(this.id),
         this.name ? new UserName(this.name) : undefined,
+        this.photoUrl,
     );
   }
 
@@ -34,16 +37,19 @@ export class UserDto {
     return {
       id: this.id,
       name: this.name,
+      photoUrl: this.photoUrl,
     };
   }
 }
 
 type UserJSON = {
   id: string,
-  name: string,
+  name?: string,
+  photoUrl?: string,
 };
 
 const isUserJSON = (obj: any): obj is UserJSON => {
   return typeof obj.id === 'string'
-      && typeof obj.name === 'string';
+      && (typeof obj.name === 'string' || typeof obj.name === 'undefined')
+      && (typeof obj.photoUrl === 'string' || typeof obj.photoUrl === 'undefined');
 };

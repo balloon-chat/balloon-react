@@ -2,7 +2,7 @@ import { FakeTopicRepository } from 'tests/data/topic/fakeTopicRepository';
 import { FakeMessageRepository } from 'tests/data/message/FakeMessageRepository';
 import { FakeUserRepository } from 'tests/data/user/FakeUserRepository';
 import { GetTopic, IGetTopic } from 'src/domain/topic/usecases/getTopic';
-import { AnonymousUser } from 'src/domain/user/models/user';
+import { AnonymousUser, LoginUser } from 'src/domain/user/models/user';
 import { TopicFactory } from 'src/domain/topic/models/topic';
 import { TopicTitle } from 'src/domain/topic/models/topicTitle';
 import { TopicEntity } from 'src/domain/topic/repository/topicEntity';
@@ -10,6 +10,8 @@ import { MessageFactory } from 'src/domain/message/models/message';
 import { MessageBody } from 'src/domain/message/models/messageBody';
 import { MessageEntity } from 'src/domain/message/repository/messageEntity';
 import { TopicId } from 'src/domain/topic/models/topicId';
+import { UserId } from 'src/domain/user/models/userId';
+import { UserName } from 'src/domain/user/models/userName';
 
 const topicRepository = new FakeTopicRepository();
 const messageRepository = new FakeMessageRepository();
@@ -18,6 +20,7 @@ const userRepository = new FakeUserRepository();
 const usecase: IGetTopic = new GetTopic(messageRepository, topicRepository, userRepository);
 
 const thumbnailUrl = 'some.img';
+const user = new LoginUser(new UserId(), new UserName('test'), 'test');
 
 afterEach(() => {
   topicRepository.clean();
@@ -32,7 +35,6 @@ test('Topicに関するデータを取得', async () => {
     MessageRepository: [Message],
     UserRepository: User
    */
-  const user = new AnonymousUser();
   await userRepository.save(user);
 
   const topic = TopicFactory.create(new TopicTitle('test'), user.id, thumbnailUrl, 'description');
