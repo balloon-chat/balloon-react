@@ -18,7 +18,8 @@
         "image": "Image",
         "head": "Head",
         "reactImagesUploading": "ReactImageUploading",
-        "app": "firebase"
+        "app": "firebase",
+        "link": "Link"
       }
     ]
   }

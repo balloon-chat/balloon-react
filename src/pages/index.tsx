@@ -1,12 +1,14 @@
 import React from 'react';
 import { TopicList } from 'src/components/topic/TopicList';
-import { NavBarLarge } from 'src/components/navbar/NavBar';
+import { NavBarHome } from 'src/components/navbar/NavBar';
 import { ContainerCard } from 'src/components/topic/ContainerCard';
 import { TopicContainer } from 'src/pages/topics';
 import styled from 'styled-components';
 import { GetStaticProps } from 'next';
 import { TopicService } from 'src/domain/topic/service/topicService';
 import { TopicEntity, TopicEntityFactory } from 'src/view/types/topic';
+import firebase from 'firebase/app';
+import 'firebase/auth';
 
 type Props = {
   pickup: {
@@ -14,12 +16,13 @@ type Props = {
     topics: TopicEntity[],
   },
   newest: TopicEntity[],
+  uid: string | null,
 };
 
 // tslint:disable-next-line:variable-name
 const IndexPage: React.FC<Props> = (props) => {
   return (<>
-    <NavBarLarge/>
+    <NavBarHome/>
     <TopicContainer>
       <ContainerCard>
         <Title>
@@ -71,6 +74,7 @@ const TitleImage = styled.img`
 export const getStaticProps: GetStaticProps<Props> = async () => {
   const service = new TopicService();
   const data = await service.fetchRecommendTopics();
+  const uid = (await firebase.auth().currentUser?.getIdToken()) ?? null;
   if (!data) {
     return {
       props: {
@@ -79,6 +83,7 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
           topics: [],
         },
         newest: [],
+        uid,
       },
     };
   }
@@ -108,6 +113,7 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
         topics: pickup.length > 1 ? pickup.slice(1, pickup.length) : [],
       },
       newest,
+      uid,
     },
     revalidate: 60 * 30, // 30min
   };

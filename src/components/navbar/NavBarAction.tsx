@@ -1,40 +1,32 @@
 import styled from 'styled-components';
 import Image from 'next/image';
+import Link from 'next/link';
 
 type Props = {
   title: string,
-  imgSrc: string,
+  imgSrc?: string,
   link: string,
-};
-// tslint:disable-next-line:variable-name
-export const NavButtonLarge = ({ title, imgSrc, link }: Props) => {
-  return (<NavButtonLargeContainer href={link}>
-    <ActionIconContainer>
-      <Image height={32} width={32} src={imgSrc}/>
-    </ActionIconContainer>
-    <div>{title}</div>
-  </NavButtonLargeContainer>);
 };
 
 // tslint:disable-next-line:variable-name
 export const NavButton = ({ title, imgSrc, link }: Props) => {
-  return (<NavButtonContainer href={link}>
-    <ActionIconContainer>
-      <Image height={32} width={32} src={imgSrc}/>
-    </ActionIconContainer>
-    <div>{title}</div>
-  </NavButtonContainer>);
+  return (<Link href={link}>
+    <NavButtonContainer>
+      {imgSrc && <Image height={20} width={20} src={imgSrc}/>}
+      <ActionTitle hasIcon={imgSrc !== undefined}>{title}</ActionTitle>
+    </NavButtonContainer>
+  </Link>);
 };
 
 // tslint:disable-next-line:variable-name
-const NavButtonContainer = styled.a`
+const NavButtonContainer = styled.div`
   align-items: center;
   display: flex;
   color: inherit;
-  flex: 1;
   font-size: 16px;
   justify-content: center;
-  padding: 8px 0;
+  padding: 8px 16px;
+  letter-spacing: .25px;
   text-align: center;
   text-decoration: none;
 
@@ -45,12 +37,6 @@ const NavButtonContainer = styled.a`
 `;
 
 // tslint:disable-next-line:variable-name
-const NavButtonLargeContainer = styled(NavButtonContainer)`
-  padding: 16px 0;
-`;
-
-// tslint:disable-next-line:variable-name
-const ActionIconContainer = styled.div`
-  height: 32px;
-  margin-right: 16px;
+const ActionTitle = styled.div<{ hasIcon: boolean }>`
+  margin-left: ${({ hasIcon }) => hasIcon ? 16 : 0}px;
 `;

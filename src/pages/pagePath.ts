@@ -8,6 +8,7 @@ export const topicPath = {
 export const rootPath = {
   index: '/',
   login: '/login',
+  logout: '/logout',
   topicPath,
 };
 
