@@ -23,8 +23,9 @@ export const useUser = ({ returnTo }: UseUserArgument = { returnTo: rootPath.ind
   useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-        // TODO: fix this.
-        const loginUser = new LoginUser(new UserId(user.uid), new UserName(user.displayName!), user.photoURL!);
+        const name = user.displayName ? new UserName(user.displayName) : undefined;
+        const photoUrl = user.photoURL ?? undefined;
+        const loginUser = new LoginUser(new UserId(user.uid), name, photoUrl);
         setUser(loginUser);
         dispatcher(setUserId(loginUser.id.value));
       } else {
