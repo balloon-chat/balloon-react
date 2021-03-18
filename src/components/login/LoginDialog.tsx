@@ -4,20 +4,22 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import firebase from 'firebase/app';
 import 'firebase/auth';
+import { useDispatch } from 'react-redux';
+import { createUser } from 'src/data/redux/user/action';
 import { isOuterPath, rootPath } from 'src/pages/pagePath';
 
 // tslint:disable-next-line:variable-name
 export const LoginDialog = () => {
+  const dispatcher = useDispatch();
   const router = useRouter();
   const { return_to } = router.query;
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    const unsubscribe = firebase.auth().onAuthStateChanged(user => {
+    firebase.auth().onAuthStateChanged(user => {
       setIsLoggedIn(user !== null);
+      if (user) dispatcher(createUser({ uid: user.uid, name: user.displayName, photoUrl: user.photoURL }));
     });
-
-    return unsubscribe();
   },        []);
 
   useEffect(() => {
