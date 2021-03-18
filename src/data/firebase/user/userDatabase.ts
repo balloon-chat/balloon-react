@@ -3,7 +3,7 @@ import { UserDto } from 'src/data/core/user/userDto';
 import firebase from 'firebase';
 
 export class FirebaseUserDatabase implements IUserDatabase {
-  constructor(
+  private constructor(
       private readonly database = firebase.database(),
   ) {
   }
@@ -21,6 +21,10 @@ export class FirebaseUserDatabase implements IUserDatabase {
   async find(userId: string): Promise<UserDto | undefined> {
     const snapshot = await this.userRef(userId).get();
     return UserDto.fromJSON(snapshot.toJSON());
+  }
+
+  async save(user: UserDto): Promise<void> {
+    return this.userRef(user.id).set(user);
   }
 
   private usersRef = () => this.database.ref('/users');

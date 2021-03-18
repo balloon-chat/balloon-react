@@ -1,6 +1,6 @@
 import React from 'react';
 import { TopicList } from 'src/components/topic/TopicList';
-import { NavBarLarge } from 'src/components/navbar/NavBar';
+import { NavBarHome } from 'src/components/navbar/NavBar';
 import { ContainerCard } from 'src/components/topic/ContainerCard';
 import { TopicContainer } from 'src/pages/topics';
 import styled from 'styled-components';
@@ -17,9 +17,9 @@ type Props = {
 };
 
 // tslint:disable-next-line:variable-name
-const IndexPage: React.FC<Props> = (props) => {
+const IndexPage: React.FC<Props> = ({ pickup, newest }) => {
   return (<>
-    <NavBarLarge/>
+    <NavBarHome/>
     <TopicContainer>
       <ContainerCard>
         <Title>
@@ -27,14 +27,14 @@ const IndexPage: React.FC<Props> = (props) => {
           <div>注目の話題</div>
         </Title>
         <Container>
-          <TopicList topics={props.pickup.topics} pickup={props.pickup.main}/>
+          <TopicList topics={pickup.topics} pickup={pickup.main}/>
         </Container>
         <Title>
           <TitleImage src={'/images/character_yellow.png'}/>
           <div>最新の話題</div>
         </Title>
         <Container>
-          <TopicList topics={props.newest}/>
+          <TopicList topics={newest}/>
         </Container>
       </ContainerCard>
     </TopicContainer>
@@ -71,6 +71,7 @@ const TitleImage = styled.img`
 export const getStaticProps: GetStaticProps<Props> = async () => {
   const service = new TopicService();
   const data = await service.fetchRecommendTopics();
+
   if (!data) {
     return {
       props: {
@@ -110,7 +111,7 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
       newest,
     },
     revalidate: 60 * 30, // 30min
-  };
+  } as const;
 };
 
 export default IndexPage;

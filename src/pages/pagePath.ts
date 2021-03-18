@@ -7,4 +7,15 @@ export const topicPath = {
 
 export const rootPath = {
   index: '/',
+  login: '/login',
+  logout: '/logout',
+  topicPath,
+};
+
+/**
+ * リダイレクト先のパスが外部リンクかを確認する。
+ */
+export const isOuterPath = (path: string): boolean => {
+  const httpProtocolRegex = new RegExp(/^https*:+/).compile();
+  return httpProtocolRegex.test(path);
 };

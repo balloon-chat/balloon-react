@@ -16,7 +16,7 @@ export class AnonymousUser extends User {
 }
 
 export class LoginUser extends User {
-  constructor(id: UserId, public readonly name: UserName) {
+  constructor(id: UserId, name?: UserName, public readonly photoUrl?: string) {
     super(id, name);
   }
 }

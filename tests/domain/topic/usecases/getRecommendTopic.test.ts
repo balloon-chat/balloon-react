@@ -26,6 +26,8 @@ const usecase: IGetRecommendTopics = new GetRecommendTopics(
     recommendTopicRepository,
 );
 
+const user = new LoginUser(new UserId(), new UserName('test'), 'test');
+
 beforeEach(() => {
   messageRepository.clean();
   topicRepository.clean();
@@ -41,7 +43,6 @@ test('おすすめの話題を取得する', async () => {
     Message Repository         : Message
     User Repository            : User
    */
-  const user = new LoginUser(new UserId(), new UserName('test'));
   await userRepository.save(user);
 
   const topic = TopicFactory.create(new TopicTitle('title'), user.id, 'url.jpg');
@@ -76,7 +77,6 @@ test('おすすめの話題が作成されていないとき', async () => {
     Message Repository         : Message
     User Repository            : User
    */
-  const user = new LoginUser(new UserId(), new UserName('test'));
   await userRepository.save(user);
 
   const topic = TopicFactory.create(new TopicTitle('title'), user.id, 'url.jpg');
@@ -96,7 +96,6 @@ test('話題が存在しないとき', async () => {
     Recommend Topic Repository : newest=[Topic1, Topic2] pickup=[Topic1, Topic2]
     User Repository            : User
    */
-  const user = new LoginUser(new UserId(), new UserName('test'));
   await userRepository.save(user);
 
   const topic1 = TopicFactory.create(new TopicTitle('title'), user.id, 'url.jpg');

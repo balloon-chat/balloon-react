@@ -3,7 +3,7 @@ import { TopicDto } from 'src/data/core/topic/topicDto';
 import firebase from 'firebase';
 
 export class FirebaseTopicDatabase implements ITopicDatabase {
-  constructor(
+  private constructor(
       private readonly database = firebase.database(),
   ) {
   }

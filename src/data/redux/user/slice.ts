@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { setUserIdReducer } from 'src/data/redux/user/reducer';
 
 const initialState: UserState = {
-  uid: undefined,
+  uid: null,
 };
 
 const userSlice = createSlice({
