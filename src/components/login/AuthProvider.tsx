@@ -9,9 +9,11 @@ export const AuthProvider: React.FC = ({ children }) => {
   const dispatcher = useDispatch();
 
   useEffect(() => {
-    firebase.auth().onAuthStateChanged((user) => {
+    const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
       if (user) dispatcher(setUserId(user.uid));
     });
+
+    return unsubscribe();
   });
 
   return (<>{children}</>);

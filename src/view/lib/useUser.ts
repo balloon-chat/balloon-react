@@ -21,7 +21,7 @@ export const useUser = ({ returnTo }: UseUserArgument = { returnTo: rootPath.ind
   const dispatcher = useDispatch();
 
   useEffect(() => {
-    firebase.auth().onAuthStateChanged((user) => {
+    const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         const loginUser = new LoginUser(new UserId(user.uid), new UserName(user.displayName!));
         setUser(loginUser);
@@ -30,6 +30,8 @@ export const useUser = ({ returnTo }: UseUserArgument = { returnTo: rootPath.ind
         setUser(null);
       }
     });
+
+    return unsubscribe();
   },        []);
 
   useEffect(() => {
