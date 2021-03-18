@@ -7,7 +7,7 @@ import 'firebase/auth';
 export const GoogleLoginButton = () => {
   const signIn = async () => {
     const provider = new firebase.auth.GoogleAuthProvider();
-    await firebase.auth().signInWithRedirect(provider);
+    await firebase.auth().signInWithPopup(provider);
   };
 
   return (<LoginButton onClick={() => signIn()}>

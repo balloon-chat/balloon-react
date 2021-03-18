@@ -19,7 +19,6 @@ export const LoginDialog = () => {
   },        []);
 
   useEffect(() => {
-    console.log(return_to);
     if (!isLoggedIn) return;
 
     // TODO: improve this validation
