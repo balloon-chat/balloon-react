@@ -3,7 +3,7 @@ import { UserDto } from 'src/data/core/user/userDto';
 import firebase from 'firebase';
 
 export class FirebaseUserDatabase implements IUserDatabase {
-  constructor(
+  private constructor(
       private readonly database = firebase.database(),
   ) {
   }

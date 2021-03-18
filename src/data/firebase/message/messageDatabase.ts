@@ -4,7 +4,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import firebase from 'firebase';
 
 export class FirebaseMessageDatabase implements IMessageDatabase {
-  constructor(
+  private constructor(
       private readonly database = firebase.database(),
   ) {
   }
