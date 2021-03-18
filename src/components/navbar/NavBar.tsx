@@ -16,8 +16,7 @@ export const NavBarHome = () => {
 
 // tslint:disable-next-line:variable-name
 export const NavBar: React.FC = ({ children }) => {
-  const { uid } = useUserSelector();
-  const isLoggedIn = uid !== null;
+  const { isLoggedIn } = useUserSelector();
 
   return (<NavContainer>
     <NavMainContainer>

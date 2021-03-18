@@ -13,6 +13,9 @@ import { TopicService } from 'src/domain/topic/service/topicService';
 import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
 import { setTopicId } from 'src/data/redux/topic/slice';
+import { useUserSelector } from 'src/data/redux/user/selector';
+import { UserId } from 'src/domain/user/models/userId';
+import { setUserId } from 'src/data/redux/user/slice';
 
 type Props = {
   topic: TopicEntity | null,
@@ -21,12 +24,17 @@ type Props = {
 // tslint:disable-next-line:variable-name
 const TopicPage = ({ topic }: Props) => {
   const dispatcher = useDispatch();
+  const { isLoggedIn } = useUserSelector();
 
   useEffect(() => {
     dispatcher(setTopicId({ topicId: topic?.id ?? null }));
 
+    // ユーザーが未ログイン時は、一時的なIDを付与する
+    if (!isLoggedIn) dispatcher(setUserId(new UserId().value));
+
     return () => {
       dispatcher(setTopicId({ topicId: null }));
+      if (!isLoggedIn) dispatcher(setUserId(null));
     };
   },        []);
 
