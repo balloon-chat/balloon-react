@@ -33,8 +33,8 @@ export class FirebaseMessageDatabase implements IMessageDatabase {
           snapshots.forEach((snapshot) => {
             const dto = MessageDto.fromJSON(snapshot.toJSON());
             if (dto) data.push(dto);
-            if (!behaviorSubject.closed) behaviorSubject.next(data);
           });
+          if (!behaviorSubject.closed) behaviorSubject.next(data);
         },
         (error) => {
           if (!behaviorSubject.closed) behaviorSubject.error(error);
