@@ -4,7 +4,7 @@ import { IGetTopics } from 'src/domain/topic/usecases/getTopics';
 
 export interface IGetRecommendTopics {
   /**
-   * おすすめの話題、最新の話題を取得する。
+   * おすすめの話題を取得する。
    */
   execute(): Promise<RecommendTopics | undefined>;
 }
@@ -12,7 +12,6 @@ export interface IGetRecommendTopics {
 export class RecommendTopics {
   constructor(
       public readonly pickups: TopicData[],
-      public readonly newest: TopicData[],
   ) {
   }
 }
@@ -28,11 +27,7 @@ export class GetRecommendTopics implements IGetRecommendTopics {
     const recommends = await this.recommendTopicRepository.find();
     if (!recommends) return;
 
-    const [pickups, newest] = await Promise.all([
-      this.getTopicsUseCase.execute(recommends.pickupTopicIds),
-      this.getTopicsUseCase.execute(recommends.newestTopicIds),
-    ]);
-
-    return new RecommendTopics(pickups, newest);
+    const pickups = await this.getTopicsUseCase.execute(recommends.pickupTopicIds);
+    return new RecommendTopics(pickups);
   }
 }

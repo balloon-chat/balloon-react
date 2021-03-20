@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { NavBar } from 'src/components/navbar/NavBar';
-import { TopicList } from 'src/components/topic/TopicList';
+import { ScrollableTopicList } from 'src/components/topic/TopicList';
 import styled from 'styled-components';
 import { ContainerCard } from 'src/components/topic/ContainerCard';
 import { GetServerSideProps } from 'next';
@@ -27,7 +27,7 @@ const TopicIndexPage: React.FC<Props> = ({ topics, pickup }) => {
     <TopicContainer>
       <ContainerCard>
         <Container>
-          <TopicList pickup={pickup}/>
+          <ScrollableTopicList pickup={pickup}/>
         </Container>
       </ContainerCard>
     </TopicContainer>

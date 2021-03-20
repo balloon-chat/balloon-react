@@ -9,10 +9,37 @@ import { useTopicState } from 'src/data/redux/topic/selector';
 
 export type TopicListProps = {
   pickup?: TopicEntity | null,
+  topics: TopicEntity[],
 };
 
+/**
+ * 引数で渡されたTopicのみを表示するコンポーネント
+ * @param pickup　強調して表示するTopic
+ * @param topics 一覧で表示するTopic
+ */
 // tslint:disable-next-line:variable-name
-export const TopicList: React.FC<TopicListProps> = ({ pickup }) => {
+export const TopicList: React.FC<TopicListProps> = ({ topics, pickup }) => {
+  return (<>
+    {
+      pickup && <PickupCard>
+          <TopicCard {...pickup}/>
+      </PickupCard>
+    }
+    <TopicListContainer>
+      {topics && topics.map((topic, index) => {
+        return (<li key={index}><TopicCard {...topic}/></li>);
+      })}
+    </TopicListContainer>
+  </>);
+};
+
+/**
+ * Reduxの状態に合わせて、Topicの一覧を表示するコンポーネント。
+ * 無限スクロールが実装されている。
+ * @param pickup　強調して表示するTopic
+ */
+// tslint:disable-next-line:variable-name
+export const ScrollableTopicList: React.FC<{ pickup?: TopicEntity | null }> = ({ pickup }) => {
   const dispatcher = useDispatch();
   const { topics } = useTopicState();
 
@@ -21,7 +48,9 @@ export const TopicList: React.FC<TopicListProps> = ({ pickup }) => {
   };
 
   const fetchData = () => {
-    dispatcher(fetchTopicsFrom({ from: topics[topics.length - 1].id }));
+    dispatcher(fetchTopicsFrom({
+      from: topics.length > 1 ? topics[topics.length - 1].id : undefined,
+    } as const));
   };
 
   return (<>
