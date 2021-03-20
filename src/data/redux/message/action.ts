@@ -1,6 +1,7 @@
 import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { MessageService } from 'src/domain/message/service/MessageService';
-import { messageStateName, ReduxMessageEntity } from 'src/data/redux/message/state';
+import { messageStateName } from 'src/data/redux/message/state';
+import { MessageEntity } from 'src/view/types/message';
 
 export const SEND_MESSAGE = `${messageStateName}/send`;
 
@@ -13,5 +14,5 @@ export const sendMessage = createAsyncThunk<void, { message: string, userId: str
 );
 
 export type ObserveStart = PayloadAction<{ topicId: string }>;
-export type ObserveFulfilled = PayloadAction<{ topicId: string, messages: ReduxMessageEntity[] }>;
+export type ObserveFulfilled = PayloadAction<{ topicId: string, messages: MessageEntity[] }>;
 export type MessageActions = ObserveStart | ObserveFulfilled;

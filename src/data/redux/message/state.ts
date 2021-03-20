@@ -1,12 +1,7 @@
+import { MessageEntity } from 'src/view/types/message';
+
 export const messageStateName = 'messageState';
 
-export type ReduxMessageEntity = {
-  id: string,
-  message: string,
-  sender?: string,
-  createdAt: number,
-};
-
 export type MessageState = {
-  messages: ReduxMessageEntity[],
+  messages: MessageEntity[],
 };

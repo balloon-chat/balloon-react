@@ -9,9 +9,9 @@ import { useRouter } from 'next/router';
 import { setIsTopicCreated } from 'src/data/redux/topic/slice';
 import { ImageFileContext } from 'src/components/topic/edit/context';
 import { TopicThumbnail } from 'src/components/topic/edit/TopicThumbnail';
-import { CreateTopicDialog } from 'src/components/topic/edit/CreateTopicDialog';
 import { TopicTitle } from 'src/domain/topic/models/topicTitle';
 import { TopicDescription } from 'src/domain/topic/models/topicDescription';
+import { LoadDialog } from 'src/components/common/LoadDialog';
 
 // tslint:disable-next-line:variable-name
 export const EditTopic = () => {
@@ -55,7 +55,7 @@ export const EditTopic = () => {
   };
 
   return (<>
-    {isTopicCreating && <CreateTopicDialog/>}
+    {isTopicCreating && <LoadDialog message={'話題を作成しています。'}/>}
     <Form onSubmit={handleSubmit}>
       <InputRow>
         <Title>タイトル</Title>

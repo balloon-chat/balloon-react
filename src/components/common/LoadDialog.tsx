@@ -1,11 +1,16 @@
+import React from 'react';
 import styled from 'styled-components';
 
+type Props = {
+  message: string,
+};
+
 // tslint:disable-next-line:variable-name
-export const CreateTopicDialog = () => {
+export const LoadDialog: React.FC<Props> = ({ message }) => {
   return (<DialogContainer>
     <Dialog>
       <DialogImage src={'/images/character_blue.png'} width={100}/>
-      <DialogMessage>話題を作成しています。</DialogMessage>
+      <DialogMessage>{message}</DialogMessage>
     </Dialog>
   </DialogContainer>);
 };
@@ -42,7 +47,7 @@ const Dialog = styled.div`
 const DialogMessage = styled.div`
   margin-top: 24px;
   font-size: 20px;
-  color: rgba(0,0,0,.8);
+  color: rgba(0, 0, 0, .8);
 `;
 
 // tslint:disable-next-line:variable-name

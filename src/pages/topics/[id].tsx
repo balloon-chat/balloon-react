@@ -1,6 +1,6 @@
 // tslint:disable-next-line:variable-name
 import React, { useEffect } from 'react';
-import { Chat } from 'src/components/chat/Chat';
+import { MessageList } from 'src/components/chat/MessageList';
 import { MessageField } from 'src/components/chat/MessageField';
 import { UserService } from 'src/domain/user/service/userService';
 import { NavBar } from 'src/components/navbar/NavBar';
@@ -44,7 +44,7 @@ const TopicPage = ({ topic }: Props) => {
           <Head>
             <title>{topicPath.title(topic.title)}</title>
           </Head>
-          <Chat/>
+          <MessageList/>
           <MessageField/>
         </>
     )}

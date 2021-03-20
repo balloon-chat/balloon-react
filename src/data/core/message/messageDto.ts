@@ -1,5 +1,3 @@
-import { Message } from 'src/domain/message/models/message';
-import { MessageData } from 'src/domain/message/usecases/observeMessageData';
 import { MessageEntity } from 'src/domain/message/repository/messageEntity';
 import { MessageId } from 'src/domain/message/models/messageId';
 import { MessageBody } from 'src/domain/message/models/messageBody';
@@ -18,18 +16,7 @@ export class MessageDto {
     return dto.map((d: MessageDto) => d.toEntity());
   }
 
-  static from(message: Message): MessageDto;
-  static from(message: MessageData): MessageDto;
-  static from(message: Message | MessageData) {
-    if (message instanceof Message) {
-      return new MessageDto(
-          message.id.value,
-          message.body.value,
-          message.createdAt,
-          message.sender.id.value,
-      );
-    }
-
+  static from(message: MessageEntity): MessageDto {
     return new MessageDto(
         message.id.value,
         message.body.value,
