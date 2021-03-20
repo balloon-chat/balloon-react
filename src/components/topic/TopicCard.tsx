@@ -2,30 +2,35 @@ import { topicPath } from 'src/view/route/pagePath';
 import styled from 'styled-components';
 import { TopicEntity } from 'src/view/types/topic';
 import Image from 'next/image';
+import { dateFormat } from 'src/view/util/format';
+import React from 'react';
 
 // tslint:disable-next-line:variable-name
-export const TopicCard = ({ props }: { props: TopicEntity }) => {
-  const createdAt = new Date(props.createdAt);
-  const year = `000${createdAt.getFullYear()}`.slice(-4);
-  const month = `00${createdAt.getMonth()}`.slice(-2);
-  const day = `00${createdAt.getDay()}`.slice(-2);
-
+export const TopicCard: React.FC<TopicEntity> = ({
+    id,
+    title,
+    thumbnailUrl,
+    label,
+    description,
+    createdAt,
+    commentCount,
+}) => {
   return (<Card>
-    <Container href={topicPath.topic(props.id)}>
+    <Container href={topicPath.topic(id)}>
       <Thumbnail>
         <ThumbnailImageContainer>
-          <Image src={props.thumbnailUrl} layout={'fill'} objectFit={'cover'}/>
+          <Image src={thumbnailUrl} layout={'fill'} objectFit={'cover'}/>
         </ThumbnailImageContainer>
         {
-          props.label && <Label labelColor={props.label.color}>{props.label.title}</Label>
+          label && <Label labelColor={label.color}>{label.title}</Label>
         }
       </Thumbnail>
       <TopicInformation>
-        <TopicTitle>{props.title}</TopicTitle>
-        {props.description && <TopicDescription>{props.description}</TopicDescription>}
+        <TopicTitle>{title}</TopicTitle>
+        {description && <TopicDescription>{description}</TopicDescription>}
         <TopicFooter>
-          <div>{`${props.commentCount}件のコメント`}</div>
-          <TimeStamp>{`${year}.${month}.${day}`}</TimeStamp>
+          <div>{`${commentCount}件のコメント`}</div>
+          <TimeStamp>{dateFormat(new Date(createdAt), '.')}</TimeStamp>
         </TopicFooter>
       </TopicInformation>
     </Container>

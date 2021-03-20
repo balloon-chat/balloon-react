@@ -1,7 +1,7 @@
-import styled from 'styled-components';
 import React from 'react';
 import { TopicCard } from 'src/components/topic/TopicCard';
 import { TopicEntity } from 'src/view/types/topic';
+import styled from 'styled-components';
 
 export type TopicListProps = {
   pickup?: TopicEntity | null,
@@ -9,16 +9,16 @@ export type TopicListProps = {
 };
 
 // tslint:disable-next-line:variable-name
-export const TopicList: React.FC<TopicListProps> = (props) => {
+export const TopicList: React.FC<TopicListProps> = ({ pickup, topics }) => {
   return (<>
     {
-      props.pickup && <PickupCard>
-          <TopicCard props={props.pickup}/>
+      pickup && <PickupCard>
+          <TopicCard {...pickup}/>
       </PickupCard>
     }
     <TopicListContainer>
-      {props.topics && props.topics.map((topic, index) => {
-        return (<li key={index}><TopicCard props={topic}/></li>);
+      {topics && topics.map((topic, index) => {
+        return (<li key={index}><TopicCard {...topic}/></li>);
       })}
     </TopicListContainer>
   </>);
