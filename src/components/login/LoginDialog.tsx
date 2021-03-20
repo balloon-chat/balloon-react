@@ -1,42 +1,8 @@
 import { GoogleLoginButton } from 'src/components/login/LoginButton';
 import styled from 'styled-components';
-import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
-import firebase from 'firebase/app';
-import 'firebase/auth';
-import { useDispatch } from 'react-redux';
-import { createUser } from 'src/data/redux/user/action';
-import { isOuterPath, rootPath } from 'src/pages/pagePath';
 
 // tslint:disable-next-line:variable-name
 export const LoginDialog = () => {
-  const dispatcher = useDispatch();
-  const router = useRouter();
-  const { return_to } = router.query;
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  useEffect(() => {
-    const unsubscribe = firebase.auth().onAuthStateChanged(user => {
-      setIsLoggedIn(user !== null);
-      if (user) dispatcher(createUser({ uid: user.uid, name: user.displayName, photoUrl: user.photoURL }));
-    });
-
-    return () => {
-      unsubscribe();
-    };
-  },        []);
-
-  useEffect(() => {
-    if (!isLoggedIn) return;
-
-    // TODO: improve this validation
-    if (return_to && typeof return_to === 'string' && !isOuterPath(return_to)) {
-      router.push(return_to).then();
-    } else {
-      router.push(rootPath.index).then();
-    }
-  },        [return_to, isLoggedIn]);
-
   return (<DialogContainer>
     <TitleContainer>
       <img src={'/images/character_blue.png'} height={60}/>
