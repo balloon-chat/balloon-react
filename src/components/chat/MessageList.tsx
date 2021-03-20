@@ -5,6 +5,7 @@ import { observeStart } from 'src/data/redux/message/slice';
 import { useTopicState } from 'src/data/redux/topic/selector';
 import { Message } from 'src/components/chat/Message';
 import styled from 'styled-components';
+import { LoadDialog } from 'src/components/common/LoadDialog';
 
 // tslint:disable-next-line:variable-name
 export const MessageList = () => {
@@ -16,9 +17,13 @@ export const MessageList = () => {
     if (topicId) dispatcher(observeStart({ topicId }));
   },        [topicId]);
 
-  return (<ChatContainer>{
-    messages.map((message, index) => (<Message key={index} {...message}/>))
-  }</ChatContainer>);
+  return (<ChatContainer>
+    {
+      messages.length === 0
+        ? <LoadDialog message={'読み込み中...'}/>
+        : messages.map((message, index) => (<Message key={index} {...message}/>))
+    }
+  </ChatContainer>);
 };
 
 // tslint:disable-next-line:variable-name
