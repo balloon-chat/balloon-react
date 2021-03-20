@@ -33,13 +33,17 @@ export class FirebaseTopicDatabase implements ITopicDatabase {
     return data;
   }
 
-  async findAllSortByCreatedAt(limit: number): Promise<TopicDto[]> {
-    const snapshots = await this.topicsRef().limitToLast(limit).once('value');
+  async findAllSortByCreatedAt(limit: number, from?: string): Promise<TopicDto[]> {
+    let query = this.topicsRef().limitToLast(limit);
+    if (from) query = query.startAfter(from);
+
+    const snapshots = await query.get();
     const data: TopicDto[] = [];
     snapshots.forEach((snapshot) => {
       const dto = TopicDto.fromJSON(snapshot.toJSON());
       if (dto) data.push(dto);
     });
+
     return data.reverse(); // 降順にする
   }
 

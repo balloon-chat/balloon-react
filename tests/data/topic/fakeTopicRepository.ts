@@ -14,8 +14,14 @@ export class FakeTopicRepository implements ITopicRepository {
     return Promise.resolve(this.repository.findAll());
   }
 
-  findAllOrderByCreatedAt(limit: number): Promise<TopicEntity[]> {
+  findAllOrderByCreatedAt(limit: number, from?: TopicId): Promise<TopicEntity[]> {
     const result = this.repository.findAll().sort((a, b) => b.createdAt - a.createdAt);
+
+    if (from) {
+      const fromIndex = result.findIndex((topic) => topic.id.value === from.value);
+      return Promise.resolve(result.slice(fromIndex, fromIndex + limit));
+    }
+
     return Promise.resolve(result.slice(0, limit));
   }
 

@@ -2,25 +2,41 @@ import React from 'react';
 import { TopicCard } from 'src/components/topic/TopicCard';
 import { TopicEntity } from 'src/view/types/topic';
 import styled from 'styled-components';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import { useDispatch } from 'react-redux';
+import { fetchTopicsFrom } from 'src/data/redux/topic/action';
+import { useTopicState } from 'src/data/redux/topic/selector';
 
 export type TopicListProps = {
   pickup?: TopicEntity | null,
-  topics: TopicEntity[];
 };
 
 // tslint:disable-next-line:variable-name
-export const TopicList: React.FC<TopicListProps> = ({ pickup, topics }) => {
+export const TopicList: React.FC<TopicListProps> = ({ pickup }) => {
+  const dispatcher = useDispatch();
+  const { topics } = useTopicState();
+
+  const loader = () => {
+    return <div>Loading...</div>;
+  };
+
+  const fetchData = () => {
+    dispatcher(fetchTopicsFrom({ from: topics[topics.length - 1].id }));
+  };
+
   return (<>
     {
       pickup && <PickupCard>
           <TopicCard {...pickup}/>
       </PickupCard>
     }
-    <TopicListContainer>
-      {topics && topics.map((topic, index) => {
-        return (<li key={index}><TopicCard {...topic}/></li>);
-      })}
-    </TopicListContainer>
+    <InfiniteScroll dataLength={topics.length} next={fetchData} hasMore={true} loader={loader}>
+      <TopicListContainer>
+        {topics && topics.map((topic, index) => {
+          return (<li key={index}><TopicCard {...topic}/></li>);
+        })}
+      </TopicListContainer>
+    </InfiniteScroll>
   </>);
 };
 

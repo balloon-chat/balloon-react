@@ -21,8 +21,8 @@ export class TopicRepository implements ITopicRepository {
     return TopicDto.toTopicEntities(dto);
   }
 
-  async findAllOrderByCreatedAt(limit: number): Promise<TopicEntity[]> {
-    const dto = await this.topicDatabase.findAllSortByCreatedAt(limit);
+  async findAllOrderByCreatedAt(limit: number, from?: TopicId): Promise<TopicEntity[]> {
+    const dto = await this.topicDatabase.findAllSortByCreatedAt(limit, from?.value);
     return TopicDto.toTopicEntities(dto);
   }
 

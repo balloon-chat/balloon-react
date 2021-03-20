@@ -7,7 +7,11 @@ export interface ITopicRepository {
 
   findAll(): Promise<TopicEntity[]>;
 
-  findAllOrderByCreatedAt(limit: number): Promise<TopicEntity[]>;
+  /**
+   * @param limit 取得する最大の項目数
+   * @param from 取得する基準となる{@lnk TopicId}(ページングで用いる)
+   */
+  findAllOrderByCreatedAt(limit: number, from?: TopicId): Promise<TopicEntity[]>;
 
   save(topic: TopicEntity): Promise<void>;
 }

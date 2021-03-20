@@ -19,7 +19,8 @@
         "head": "Head",
         "reactImagesUploading": "ReactImageUploading",
         "app": "firebase",
-        "link": "Link"
+        "link": "Link",
+        "reactInfiniteScrollComponent": "InfiniteScroll"
       }
     ]
   }
