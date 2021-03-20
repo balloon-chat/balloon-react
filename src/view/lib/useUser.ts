@@ -6,7 +6,7 @@ import { UserId } from 'src/domain/user/models/userId';
 import { UserName } from 'src/domain/user/models/userName';
 import { useDispatch } from 'react-redux';
 import { setUserId } from 'src/data/redux/user/slice';
-import { rootPath } from 'src/pages/pagePath';
+import { rootPath } from 'src/view/route/pagePath';
 
 type UseUserArgument = {
   returnTo: string | null,

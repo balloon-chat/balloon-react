@@ -6,7 +6,7 @@ import { UserService } from 'src/domain/user/service/userService';
 import { NavBar } from 'src/components/navbar/NavBar';
 import { TopicNotFound } from 'src/components/topic/TopicNotFound';
 import Head from 'next/head';
-import { topicPath } from 'src/pages/pagePath';
+import { topicPath } from 'src/view/route/pagePath';
 import { GetServerSideProps } from 'next';
 import { TopicEntity, TopicEntityFactory } from 'src/view/types/topic';
 import { TopicService } from 'src/domain/topic/service/topicService';

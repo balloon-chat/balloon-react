@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Button } from 'src/components/topic/Button';
-import { rootPath } from 'src/pages/pagePath';
+import { rootPath } from 'src/view/route/pagePath';
 
 // tslint:disable-next-line:variable-name
 export const TopicNotFound = () => {

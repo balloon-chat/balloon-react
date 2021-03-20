@@ -1,11 +1,12 @@
 import { NavButton } from 'src/components/navbar/NavBarAction';
-import { rootPath, topicPath } from 'src/pages/pagePath';
+import { rootPath, topicPath } from 'src/view/route/pagePath';
 import styled from 'styled-components';
 import { useUserSelector } from 'src/data/redux/user/selector';
 import React from 'react';
 import 'firebase/auth';
 import Link from 'next/link';
 import { NavBarHeader } from 'src/components/navbar/NavBarHeader';
+import { useRouter } from 'next/router';
 
 // tslint:disable-next-line:variable-name
 export const NavBarHome = () => {
@@ -16,6 +17,7 @@ export const NavBarHome = () => {
 
 // tslint:disable-next-line:variable-name
 export const NavBar: React.FC = ({ children }) => {
+  const router = useRouter();
   const { isLoggedIn } = useUserSelector();
 
   return (<NavContainer>
@@ -28,8 +30,12 @@ export const NavBar: React.FC = ({ children }) => {
       </Link>
       <ActionContainer>
         <li><NavButton link={topicPath.create} title={'話題を作る'} imgSrc={'/svg/speech_balloon.svg'}/></li>
-        {!isLoggedIn && <li><NavButton link={rootPath.login} title={'ログイン'}/></li>}
-        {isLoggedIn && <li><NavButton link={rootPath.logout} title={'ログアウト'}/></li>}
+        <li>
+          {isLoggedIn
+              ? <NavButton link={rootPath.logout} title={'ログアウト'}/>
+              : <NavButton link={rootPath.login} linkQuery={{ return_to: router.asPath }} title={'ログイン'}/>
+          }
+        </li>
       </ActionContainer>
     </NavMainContainer>
     <div>{children}</div>
@@ -55,16 +61,13 @@ const NavMainContainer = styled.div`
 // tslint:disable-next-line:variable-name
 const NavTitle = styled.div`
   align-items: center;
+  cursor: pointer;
   color: inherit;
   display: flex;
   font-size: 16px;
   height: 100%;
   text-align: center;
   margin-right: 16px;
-
-  &:hover {
-    background-color: rgba(0, 0, 0, .1);
-  }
 `;
 
 // tslint:disable-next-line:variable-name
