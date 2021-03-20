@@ -1,4 +1,4 @@
-import { topicPath } from 'src/pages/pagePath';
+import { topicPath } from 'src/view/route/pagePath';
 import styled from 'styled-components';
 import { TopicEntity } from 'src/view/types/topic';
 import Image from 'next/image';

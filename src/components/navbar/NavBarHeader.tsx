@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import Image from 'next/image';
 import Link from 'next/link';
-import { rootPath } from 'src/pages/pagePath';
+import { rootPath } from 'src/view/route/pagePath';
 
 // tslint:disable-next-line:variable-name
 export const NavBarHeader = () => {

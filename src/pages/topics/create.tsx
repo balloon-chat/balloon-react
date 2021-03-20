@@ -5,12 +5,17 @@ import { ContainerCard } from 'src/components/topic/ContainerCard';
 import styled from 'styled-components';
 import 'firebase/auth';
 import { useUser } from 'src/view/lib/useUser';
-import { rootPath } from 'src/pages/pagePath';
+import { LoadDialog } from 'src/components/common/LoadDialog';
+import { rootPath } from 'src/view/route/pagePath';
 
 // tslint:disable-next-line:variable-name
 const CreateTopicPage = () => {
 
-  const {} = useUser({ returnTo: rootPath.topicPath.create });
+  const { user } = useUser({ returnTo: rootPath.topicPath.create });
+
+  if (!user) {
+    return <LoadDialog message={'ログイン状況を確認しています。'}/>;
+  }
 
   return (<>
     <NavBar/>
