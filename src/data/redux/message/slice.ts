@@ -4,7 +4,7 @@ import { observeFulfilledReducer, observeStartReducer } from 'src/data/redux/mes
 import { MessageState, messageStateName } from 'src/data/redux/message/state';
 
 const initialState: MessageState = {
-  messages: [],
+  messages: null,
 };
 
 const slice = createSlice({

@@ -19,9 +19,9 @@ export const MessageList = () => {
 
   return (<ChatContainer>
     {
-      messages.length === 0
-        ? <LoadDialog message={'読み込み中...'}/>
-        : messages.map((message, index) => (<Message key={index} {...message}/>))
+      messages
+        ? messages.map((message, index) => (<Message key={index} {...message}/>))
+        : <LoadDialog message={'読み込み中...'}/>
     }
   </ChatContainer>);
 };
