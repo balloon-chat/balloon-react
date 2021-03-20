@@ -18,7 +18,10 @@ export const rootPath = {
  * @param hostName ベースとなるURL(example.com, example.com:3000)
  * @return {boolean} 内部リンクの場合trueを返す
  */
-export const isOuterPath = (path: string): boolean => {
-  const httpProtocolRegex = new RegExp(/^https*:+/).compile();
-  return httpProtocolRegex.test(path);
+export const isInnerPath = (path: string, hostName?: string): boolean => {
+  const pathRegex = new RegExp(/^\//);
+  if (!hostName) return pathRegex.test(path);
+
+  const protocolRegex = new RegExp(`^https?://.*\.?${hostName}`);
+  return protocolRegex.test(path) || pathRegex.test(path);
 };
