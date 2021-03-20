@@ -9,7 +9,7 @@ import { UserName } from 'src/domain/user/models/userName';
 import { UserId } from 'src/domain/user/models/userId';
 import { TopicTitle } from 'src/domain/topic/models/topicTitle';
 import { TopicEntity } from 'src/domain/topic/repository/topicEntity';
-import { TopicData } from 'src/domain/topic/usecases/types';
+import { TopicDataFactory } from 'src/domain/topic/usecases/types';
 import { RecommendTopicEntity } from 'src/domain/topic/repository/recommendTopicEntity';
 import { MessageFactory } from 'src/domain/message/models/message';
 import { MessageBody } from 'src/domain/message/models/messageBody';
@@ -39,7 +39,7 @@ test('おすすめの話題を取得する', async () => {
   /*
   初期データ:
     Topic Repository           : Topic
-    Recommend Topic Repository : newest=[Topic] pickup=[Topic]
+    Recommend Topic Repository : pickup=[Topic]
     Message Repository         : Message
     User Repository            : User
    */
@@ -51,22 +51,16 @@ test('おすすめの話題を取得する', async () => {
   const message = MessageFactory.create(new MessageBody('test'), user);
   await messageRepository.save(topic.id, MessageEntity.from(message));
 
-  const recommend = new RecommendTopicEntity([topic.id], [topic.id]);
+  const recommend = new RecommendTopicEntity([topic.id]);
   await recommendTopicRepository.save(recommend);
 
+  /*
+  Expected:
+     return: [Topic]
+   */
   const result = await usecase.execute();
   expect(result).not.toBeUndefined();
-  const expected: TopicData = {
-    id: topic.id,
-    title: topic.title,
-    description: topic.description,
-    thumbnailUrl: topic.thumbnailUrl,
-    createdAt: new Date(topic.createdAt),
-    createdBy: user,
-    commentCount: 1,
-  };
-  expect(result?.pickups[0]).toStrictEqual(expected);
-  expect(result?.newest[0]).toStrictEqual(expected);
+  expect(result?.pickups[0]).toStrictEqual(TopicDataFactory.create(topic, 1, user));
 });
 
 test('おすすめの話題が作成されていないとき', async () => {
@@ -85,6 +79,10 @@ test('おすすめの話題が作成されていないとき', async () => {
   const message = MessageFactory.create(new MessageBody('test'), user);
   await messageRepository.save(topic.id, MessageEntity.from(message));
 
+  /*
+  Expected:
+    return: undefined
+   */
   const result = await usecase.execute();
   expect(result).toBeUndefined();
 });
@@ -93,7 +91,7 @@ test('話題が存在しないとき', async () => {
   /*
   初期データ:
     Topic Repository           : Topic1
-    Recommend Topic Repository : newest=[Topic1, Topic2] pickup=[Topic1, Topic2]
+    Recommend Topic Repository : pickup=[Topic1, Topic2]
     User Repository            : User
    */
   await userRepository.save(user);
@@ -102,12 +100,15 @@ test('話題が存在しないとき', async () => {
   const topic2 = TopicFactory.create(new TopicTitle('title'), user.id, 'url.jpg');
   await topicRepository.save(TopicEntity.from(topic1));
 
-  const recommend = new RecommendTopicEntity([topic1.id, topic2.id], [topic1.id, topic2.id]);
+  const recommend = new RecommendTopicEntity([topic1.id, topic2.id]);
   await recommendTopicRepository.save(recommend);
 
+  /*
+  Expected:
+    保存されている話題のみを取得する。
+    return: Topic1
+   */
   const result = await usecase.execute();
   expect(result).not.toBeUndefined();
-  // 保存されている話題のみを取得する。
-  expect(result?.newest.length).toBe(1);
-  expect(result?.pickups.length).toBe(1);
+  expect(result?.pickups[0]).toStrictEqual(TopicDataFactory.create(topic1, 0, user));
 });

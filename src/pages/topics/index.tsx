@@ -1,21 +1,33 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NavBar } from 'src/components/navbar/NavBar';
-import { TopicList, TopicListProps } from 'src/components/topic/TopicList';
-import { UserService } from 'src/domain/user/service/userService';
+import { ScrollableTopicList } from 'src/components/topic/TopicList';
 import styled from 'styled-components';
 import { ContainerCard } from 'src/components/topic/ContainerCard';
 import { GetServerSideProps } from 'next';
 import { TopicService } from 'src/domain/topic/service/topicService';
-import { TopicEntityFactory } from 'src/view/types/topic';
+import { TopicEntity, TopicEntityFactory } from 'src/view/types/topic';
+import { useDispatch } from 'react-redux';
+import { setTopics } from 'src/data/redux/topic/slice';
+
+type Props = {
+  pickup?: TopicEntity | null,
+  topics: TopicEntity[];
+};
 
 // tslint:disable-next-line:variable-name
-const TopicIndexPage: React.FC<TopicListProps> = (props) => {
+const TopicIndexPage: React.FC<Props> = ({ topics, pickup }) => {
+  const dispatcher = useDispatch();
+
+  useEffect(() => {
+    dispatcher(setTopics({ topics }));
+  },        []);
+
   return (<>
     <NavBar/>
     <TopicContainer>
       <ContainerCard>
         <Container>
-          <TopicList pickup={props.pickup} topics={props.topics}/>
+          <ScrollableTopicList pickup={pickup}/>
         </Container>
       </ContainerCard>
     </TopicContainer>
@@ -43,12 +55,10 @@ const Container = styled.main`
   width: 100%;
 `;
 
-export const getServerSideProps: GetServerSideProps<TopicListProps> = async () => {
-  // TODO: remove this
-  new UserService().getCurrentUserId();
-
+export const getServerSideProps: GetServerSideProps<Props> = async () => {
   const service = new TopicService();
   const topics = await service.fetchTopics(50);
+
   const entities = topics
       .map(topic => TopicEntityFactory.create(topic))
       .map((entity, index) => {

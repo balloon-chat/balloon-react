@@ -1,12 +1,14 @@
-import React from 'react';
-import { TopicList } from 'src/components/topic/TopicList';
+import React, { useEffect } from 'react';
+import { ScrollableTopicList, TopicList } from 'src/components/topic/TopicList';
 import { NavBarHome } from 'src/components/navbar/NavBar';
 import { ContainerCard } from 'src/components/topic/ContainerCard';
 import { TopicContainer } from 'src/pages/topics';
 import styled from 'styled-components';
-import { GetStaticProps } from 'next';
+import { GetServerSideProps } from 'next';
 import { TopicService } from 'src/domain/topic/service/topicService';
 import { TopicEntity, TopicEntityFactory } from 'src/view/types/topic';
+import { useDispatch } from 'react-redux';
+import { setTopics } from 'src/data/redux/topic/slice';
 
 type Props = {
   pickup: {
@@ -18,6 +20,12 @@ type Props = {
 
 // tslint:disable-next-line:variable-name
 const IndexPage: React.FC<Props> = ({ pickup, newest }) => {
+  const dispatcher = useDispatch();
+
+  useEffect(() => {
+    dispatcher(setTopics({ topics: newest }));
+  },        []);
+
   return (<>
     <NavBarHome/>
     <TopicContainer>
@@ -34,7 +42,7 @@ const IndexPage: React.FC<Props> = ({ pickup, newest }) => {
           <div>最新の話題</div>
         </Title>
         <Container>
-          <TopicList topics={newest}/>
+          <ScrollableTopicList/>
         </Container>
       </ContainerCard>
     </TopicContainer>
@@ -68,11 +76,11 @@ const TitleImage = styled.img`
   height: 80px;
 `;
 
-export const getStaticProps: GetStaticProps<Props> = async () => {
+export const getServerSideProps: GetServerSideProps<Props> = async () => {
   const service = new TopicService();
-  const data = await service.fetchRecommendTopics();
+  const recommends = await service.fetchRecommendTopics();
 
-  if (!data) {
+  if (!recommends) {
     return {
       props: {
         pickup: {
@@ -84,7 +92,7 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
     };
   }
 
-  const pickup = data.pickups
+  const pickup = recommends.pickups
       .map(topic => TopicEntityFactory.create(topic))
       .map((topic, index) => {
         if (index > 2) return topic;
@@ -100,7 +108,8 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
         } as const;
       });
 
-  const newest = data.newest.map(topic => TopicEntityFactory.create(topic));
+  const newest = (await service.fetchTopics(50))
+      .map(topic => TopicEntityFactory.create(topic));
 
   return {
     props: {
@@ -110,7 +119,6 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
       },
       newest,
     },
-    revalidate: 60 * 30, // 30min
   } as const;
 };
 

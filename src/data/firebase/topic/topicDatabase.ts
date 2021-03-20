@@ -1,6 +1,7 @@
 import { ITopicDatabase } from 'src/data/core/topic/topicDatabase';
 import { TopicDto } from 'src/data/core/topic/topicDto';
-import firebase from 'firebase';
+import firebase from 'firebase/app';
+import 'firebase/database';
 
 export class FirebaseTopicDatabase implements ITopicDatabase {
   private constructor(
@@ -33,13 +34,17 @@ export class FirebaseTopicDatabase implements ITopicDatabase {
     return data;
   }
 
-  async findAllSortByCreatedAt(limit: number): Promise<TopicDto[]> {
-    const snapshots = await this.topicsRef().limitToLast(limit).once('value');
+  async findAllSortByCreatedAt(limit: number, from?: string): Promise<TopicDto[]> {
+    let query = this.topicsRef().orderByChild('createdAt').limitToLast(limit);
+    if (from) query = query.startAfter(from);
+
+    const snapshots = await query.once('value');
     const data: TopicDto[] = [];
     snapshots.forEach((snapshot) => {
       const dto = TopicDto.fromJSON(snapshot.toJSON());
       if (dto) data.push(dto);
     });
+
     return data.reverse(); // 降順にする
   }
 
@@ -48,6 +53,6 @@ export class FirebaseTopicDatabase implements ITopicDatabase {
     await ref.set(topic.toJSON());
   }
 
-  private topicsRef = () => this.database.ref('/topics/');
+  private topicsRef = () => this.database.ref('/topics');
   private topicRef = (topicId: string) => this.topicsRef().child(topicId);
 }

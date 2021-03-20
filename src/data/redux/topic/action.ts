@@ -5,7 +5,8 @@ import { TopicService } from 'src/domain/topic/service/topicService';
 import { TopicEntity, TopicEntityFactory } from 'src/view/types/topic';
 
 export const CREATE_TOPIC = `${topicStateName}/create`;
-export const FETCH_TOPIC = `${topicStateName}/fetch`;
+export const FETCH_TOPIC = `${topicStateName}/fetch_topic`;
+export const FETCH_TOPICS = `${topicStateName}/fetch_topics`;
 
 export const createTopic = createAsyncThunk<Topic, {
   title: string, userId: string, description: string, thumbnail: File | Blob,
@@ -27,5 +28,15 @@ export const fetchTopic = createAsyncThunk<TopicEntity | undefined, { topicId: s
     },
 );
 
+export const fetchTopicsFrom = createAsyncThunk<TopicEntity[], { from?: string }>(
+    FETCH_TOPICS,
+    async ({ from }) => {
+      const service = new TopicService();
+      const topics = await service.fetchTopics(50, from);
+      return topics.map((topic) => TopicEntityFactory.create(topic));
+    },
+);
+
 export type SetIsTopicCreated = PayloadAction<{ isTopicCreated: boolean }>;
 export type SetTopicId = PayloadAction<{ topicId: string | null }>;
+export type SetTopics = PayloadAction<{ topics: TopicEntity[] }>;
