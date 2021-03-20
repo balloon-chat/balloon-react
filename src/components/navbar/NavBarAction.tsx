@@ -1,16 +1,18 @@
 import styled from 'styled-components';
 import Image from 'next/image';
 import Link from 'next/link';
+import { ParsedUrlQueryInput } from 'querystring';
 
 type Props = {
   title: string,
   imgSrc?: string,
   link: string,
+  linkQuery?: string | ParsedUrlQueryInput,
 };
 
 // tslint:disable-next-line:variable-name
-export const NavButton = ({ title, imgSrc, link }: Props) => {
-  return (<Link href={link}>
+export const NavButton = ({ title, imgSrc, link, linkQuery }: Props) => {
+  return (<Link href={{ pathname: link, query: linkQuery }}>
     <NavButtonContainer>
       {imgSrc && <Image height={20} width={20} src={imgSrc}/>}
       <ActionTitle hasIcon={imgSrc !== undefined}>{title}</ActionTitle>
