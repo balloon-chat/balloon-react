@@ -1,5 +1,5 @@
 import { CaseReducer } from '@reduxjs/toolkit';
-import { SetIsTopicCreated, SetTopicId } from 'src/data/redux/topic/action';
+import { SetIsTopicCreated, SetTopicId, SetTopics } from 'src/data/redux/topic/action';
 import { TopicState } from 'src/data/redux/topic/state';
 
 export const setIsTopicCreatedReducer: CaseReducer<TopicState, SetIsTopicCreated> = (state, { payload }) => ({
@@ -11,3 +11,8 @@ export const setTopicIdReducer: CaseReducer<TopicState, SetTopicId> = (state, { 
   ...state,
   topicId: payload.topicId,
 } as const);
+
+export const setTopicsReducer: CaseReducer<TopicState, SetTopics> = (state, { payload }) => ({
+  ...state,
+  topics: payload.topics,
+});
