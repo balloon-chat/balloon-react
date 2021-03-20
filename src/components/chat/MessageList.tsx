@@ -1,15 +1,15 @@
-import styled from 'styled-components';
 import { useMessageState } from 'src/data/redux/message/selector';
 import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import { observeStart } from 'src/data/redux/message/slice';
 import { useTopicState } from 'src/data/redux/topic/selector';
+import { Message } from 'src/components/chat/Message';
+import styled from 'styled-components';
 
 // tslint:disable-next-line:variable-name
-export const Chat = () => {
-  const messages = useMessageState().messages;
-  const topicId = useTopicState().topicId;
-
+export const MessageList = () => {
+  const { messages } = useMessageState();
+  const { topicId } = useTopicState();
   const dispatcher = useDispatch();
 
   useEffect(() => {
@@ -17,14 +17,7 @@ export const Chat = () => {
   },        [topicId]);
 
   return (<ChatContainer>{
-    messages.map((message, index) => (
-        <div key={index}>
-          <p style={{ marginBottom: 0 }}>{message.message}</p>
-          <p style={{ color: 'rgba(0,0,0,.5)', marginTop: 0 }}>
-            [id] {message.id} [sender] {message.sender} [at] {message.createdAt}
-          </p>
-        </div>
-    ))
+    messages.map((message, index) => (<Message key={index} {...message}/>))
   }</ChatContainer>);
 };
 
@@ -34,4 +27,9 @@ const ChatContainer = styled.div`
   flex-direction: column;
   flex: 1 1 auto;
   background-color: #FDFDFD;
+  overflow-y: scroll;
+
+  & > div {
+    margin-bottom: 16px;
+  }
 `;

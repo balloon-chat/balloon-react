@@ -1,23 +1,36 @@
 import { AddMessage, IAddMessage } from 'src/domain/message/usecases/addMessage';
 import { UserId } from 'src/domain/user/models/userId';
 import { Observable } from 'rxjs';
-import { IObserveMessageData, MessageData, ObserveMessageData } from 'src/domain/message/usecases/observeMessageData';
 import { TopicId } from 'src/domain/topic/models/topicId';
 import { MessageRepository } from 'src/data/core/message/messageRepository';
 import { IMessageRepository } from 'src/domain/message/repository/messageRepository';
 import { FirebaseMessageDatabase } from 'src/data/firebase/message/messageDatabase';
+import { MessageEntity, MessageEntityFactory } from 'src/view/types/message';
+import { IObserveMessages, ObserveMessages } from 'src/domain/message/usecases/observeMessages';
+import { IUserRepository } from 'src/domain/user/repository/userRepository';
+import { UserRepository } from 'src/data/core/user/userRepository';
+import { FirebaseUserDatabase } from 'src/data/firebase/user/userDatabase';
+import { map } from 'rxjs/operators';
 
 export class MessageService {
   private readonly addMessageUsecase: IAddMessage;
-  private readonly observeMessageDataUsecase: IObserveMessageData;
+  private readonly observeMessageUsecase: IObserveMessages;
 
-  constructor(messageRepository: IMessageRepository = new MessageRepository(FirebaseMessageDatabase.instance)) {
+  constructor(
+      messageRepository: IMessageRepository = new MessageRepository(FirebaseMessageDatabase.instance),
+      userRepository: IUserRepository = new UserRepository(FirebaseUserDatabase.instance),
+  ) {
     this.addMessageUsecase = new AddMessage(messageRepository);
-    this.observeMessageDataUsecase = new ObserveMessageData(messageRepository);
+    this.observeMessageUsecase = new ObserveMessages(messageRepository, userRepository);
   }
 
-  observeMessageData(topicId: string): Observable<MessageData[]> {
-    return this.observeMessageDataUsecase.execute(new TopicId(topicId));
+  observeMessageData(topicId: string): Observable<MessageEntity[]> {
+    return this.observeMessageUsecase.execute(new TopicId(topicId))
+        .pipe(map(messages => {
+          return messages.map(message => {
+            return MessageEntityFactory.create(message, '匿名ユーザー', '/images/character_blue.png');
+          });
+        }));
   }
 
   async sendMessage(message: string, userId: string, topicId: string): Promise<void> {
