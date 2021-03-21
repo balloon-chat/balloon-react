@@ -20,7 +20,8 @@
         "reactImagesUploading": "ReactImageUploading",
         "app": "firebase",
         "link": "Link",
-        "reactInfiniteScrollComponent": "InfiniteScroll"
+        "reactInfiniteScrollComponent": "InfiniteScroll",
+        "reactCopyToClipboard": "CopyToClipboard"
       }
     ]
   }
