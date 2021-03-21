@@ -1,8 +1,5 @@
 import { useMessageState } from 'src/data/redux/message/selector';
-import { useDispatch } from 'react-redux';
-import React, { useEffect } from 'react';
-import { observeStart } from 'src/data/redux/message/slice';
-import { useTopicState } from 'src/data/redux/topic/selector';
+import React from 'react';
 import { Message } from 'src/components/chat/Message';
 import styled from 'styled-components';
 import { LoadDialog } from 'src/components/common/LoadDialog';
@@ -11,12 +8,6 @@ import { InviteDialog } from 'src/components/chat/InviteDialog';
 // tslint:disable-next-line:variable-name
 export const MessageList = () => {
   const { messages } = useMessageState();
-  const { topicId } = useTopicState();
-  const dispatcher = useDispatch();
-
-  useEffect(() => {
-    if (topicId) dispatcher(observeStart({ topicId }));
-  },        [topicId]);
 
   return (<Container>
     <ChatContainer>
