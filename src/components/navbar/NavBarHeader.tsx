@@ -97,7 +97,7 @@ const RollingTitle = styled(RollingTitleSpacer)`
 
     40% {
       opacity: 0;
-      transform: translateY(60px);
+      transform: translateY(15px);
     }
 
     100% {
