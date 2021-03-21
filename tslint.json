@@ -21,7 +21,9 @@
         "app": "firebase",
         "link": "Link",
         "reactInfiniteScrollComponent": "InfiniteScroll",
-        "reactCopyToClipboard": "CopyToClipboard"
+        "reactCopyToClipboard": "CopyToClipboard",
+        "matterJs": "Matter",
+        "p5": "P5Types"
       }
     ]
   }
