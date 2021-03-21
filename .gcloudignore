@@ -1,0 +1,15 @@
+/node_modules
+README.md
+/.git
+
+# next
+/.next/
+/out/
+
+# configurations
+/.circleci
+/.github
+/.idea
+
+# jest
+junit.xml
