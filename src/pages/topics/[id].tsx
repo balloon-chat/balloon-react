@@ -1,8 +1,6 @@
 // tslint:disable-next-line:variable-name
 import React, { useEffect } from 'react';
-import { MessageList } from 'src/components/chat/MessageList';
 import { MessageField } from 'src/components/chat/MessageField';
-import { UserService } from 'src/domain/user/service/userService';
 import { NavBar } from 'src/components/navbar/NavBar';
 import { TopicNotFound } from 'src/components/topic/TopicNotFound';
 import Head from 'next/head';
@@ -16,6 +14,9 @@ import { setTopicId } from 'src/data/redux/topic/slice';
 import { useUserSelector } from 'src/data/redux/user/selector';
 import { UserId } from 'src/domain/user/models/userId';
 import { setUserId } from 'src/data/redux/user/slice';
+import { Sketch } from 'src/components/p5/Sketch';
+import { observeStart } from 'src/data/redux/message/slice';
+import { useTopicState } from 'src/data/redux/topic/selector';
 
 type Props = {
   topic: TopicEntity | null,
@@ -25,6 +26,7 @@ type Props = {
 const TopicPage = ({ topic }: Props) => {
   const dispatcher = useDispatch();
   const { isLoggedIn } = useUserSelector();
+  const { topicId } = useTopicState();
 
   useEffect(() => {
     dispatcher(setTopicId({ topicId: topic?.id ?? null }));
@@ -38,13 +40,17 @@ const TopicPage = ({ topic }: Props) => {
     };
   },        []);
 
+  useEffect(() => {
+    if (topicId) dispatcher(observeStart({ topicId }));
+  },        [topicId]);
+
   return (<Container>
     <NavBar/>
     {topic && (<>
           <Head>
             <title>{topicPath.title(topic.title)}</title>
           </Head>
-          <MessageList/>
+          <Sketch/>
           <MessageField/>
         </>
     )}
@@ -61,8 +67,6 @@ const Container = styled.div`
 `;
 
 export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
-  new UserService().getCurrentUserId(); // TODO: remove this
-
   const { id } = context.query;
   if (typeof id !== 'string') return { props: { topic: null } };
 
