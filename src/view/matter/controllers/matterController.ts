@@ -7,6 +7,8 @@ import { MatterListAdapter } from 'src/view/matter/lib/matterListAdapter';
 
 export class MatterController {
 
+  public readonly adapter: MatterListAdapter;
+
   constructor(
       public readonly engine: Matter.Engine,
       public readonly walls: Matter.Body[],
@@ -14,6 +16,8 @@ export class MatterController {
       public readonly characterController: CharacterController,
       public readonly canvas: CanvasParameter,
   ) {
+    this.adapter = new MatterListAdapter(this);
+
     // 重力を無効化する
     this.disableGravity();
     this.addObjects(this.walls);
