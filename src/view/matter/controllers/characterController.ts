@@ -13,7 +13,7 @@ export class CharacterController {
     return this._characters;
   }
 
-  show() {
+  inspect() {
     let str: string = 'charactersに入っている要素\n';
     for (const character of Array.from(this.characters.values())) {
       str += `${character}\n`;
