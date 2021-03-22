@@ -1,7 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import P5Types from 'p5';
 import { MatterControllerFactory } from 'src/view/matter/controllers/matterControllerFactory';
-import { CharacterFactory } from 'src/view/matter/actors/characterFactory';
 import { drawVertices } from 'src/view/matter/util/drawVertices';
 import { useMessageState } from 'src/data/redux/message/selector';
 import styled from 'styled-components';
@@ -15,14 +14,11 @@ const controller = MatterControllerFactory.create(
 export const Canvas: React.FC = () => {
   const { messages } = useMessageState();
   const renderRef = useRef<HTMLDivElement>(null);
-  const [isSetUpDone, setIsSetUpDone] = useState(false);
 
   useEffect(() => {
-    if (!messages || !isSetUpDone) return;
-    messages.forEach((message) => {
-      controller.addCharacter(CharacterFactory.create(controller.canvas, message.body));
-    });
-  },        [messages, isSetUpDone]);
+    if (!messages) return;
+    controller.adapter.submit(messages);
+  },        [messages]);
 
   useEffect(() => {
     if (!renderRef.current) return;
@@ -50,10 +46,7 @@ export const Canvas: React.FC = () => {
       drawVertices(p5, object.vertices);
     });
 
-    controller.addCharacter(CharacterFactory.create(controller.canvas, 'Hello'));
-
     controller.run();
-    setIsSetUpDone(true);
   };
 
   const draw = (p5: P5Types) => {

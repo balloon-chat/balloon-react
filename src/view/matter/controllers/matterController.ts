@@ -1,10 +1,13 @@
-import Matter from 'matter-js';
+import Matter, { Common } from 'matter-js';
 import { CharacterController } from 'src/view/matter/controllers/characterController';
 import { Character } from 'src/view/matter/actors/character';
 import { CharacterFactory } from 'src/view/matter/actors/characterFactory';
-import { CanvasParameter } from 'src/view/matter/controllers/canvasParameter';
+import { CanvasParameter } from 'src/view/matter/models/canvasParameter';
+import { MatterListAdapter } from 'src/view/matter/lib/matterListAdapter';
 
 export class MatterController {
+
+  public readonly adapter: MatterListAdapter;
 
   constructor(
       public readonly engine: Matter.Engine,
@@ -13,6 +16,8 @@ export class MatterController {
       public readonly characterController: CharacterController,
       public readonly canvas: CanvasParameter,
   ) {
+    this.adapter = new MatterListAdapter(this);
+
     // 重力を無効化する
     this.disableGravity();
     this.addObjects(this.walls);
@@ -47,7 +52,7 @@ export class MatterController {
             break;
           case 'addButton':
             console.log(`Clicked ${clickObj.label} button.`);
-            const character = CharacterFactory.create(this.canvas, '新しく追加したオブジェクトです');
+            const character = CharacterFactory.create(this.canvas, `${Common.nextId()}`, '新しく追加したオブジェクトです');
             this.addCharacter(character);
             break;
           default:
@@ -71,8 +76,25 @@ export class MatterController {
     Matter.Engine.run(this.engine);
   }
 
+  /**
+   * キャラクターをワールドに追加
+   */
+  addCharacter(character: Character): void {
+    this.addObject(character.object);
+    this.characterController.add(character);
+  }
+
+  /**
+   * ワールドからキャラクターを削除
+   */
+  removeCharacter(character: Character): void {
+    this.removeObject(character.object);
+    this.characterController.remove(character);
+    this.characterController.inspect();
+  }
+
   /** 重力を無効にする */
-  disableGravity() {
+  private disableGravity() {
     this.engine.world.gravity.y = 0;
   }
 
@@ -80,7 +102,7 @@ export class MatterController {
    * ワールドにオブジェクトを追加（単体）
    * @param object {Matter.Body} 追加したいオブジェクト
    */
-  addObject(object: Matter.Body): void {
+  private addObject(object: Matter.Body): void {
     Matter.World.add(this.engine.world, object);
   }
 
@@ -88,7 +110,7 @@ export class MatterController {
    * ワールドにオブジェクトを追加（複数）
    * @param objects {Matter.Body[]} 追加したいオブジェクトの配列
    */
-  addObjects(objects: Matter.Body[]): void {
+  private addObjects(objects: Matter.Body[]): void {
     Matter.World.add(this.engine.world, objects);
   }
 
@@ -96,27 +118,7 @@ export class MatterController {
    * ワールドのオブジェクトを削除（単体）
    * @param object {Matter.Body} 削除したいオブジェクト
    */
-  removeObject(object: Matter.Body): void {
+  private removeObject(object: Matter.Body): void {
     Matter.World.remove(this.engine.world, object);
-  }
-
-  /**
-   * キャラクターをワールドに追加
-   *  @param {Character} character 追加するキャラクター
-   */
-  addCharacter(character: Character): void {
-    if (this.characterController.isIdCollision(character)) alert('Collision!');
-    this.addObject(character.object);
-    this.characterController.add(character);
-  }
-
-  /**
-   * ワールドからキャラクターを削除
-   * @param {Character} character
-   */
-  removeCharacter(character: Character): void {
-    this.removeObject(character.object);
-    this.characterController.removeByCharacter(character);
-    this.characterController.show();
   }
 }

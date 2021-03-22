@@ -1,5 +1,4 @@
-import Matter from 'matter-js';
-import { randomId } from 'src/view/matter/util/randomId';
+import Matter, { Common } from 'matter-js';
 import P5Types from 'p5';
 import { drawVertices } from 'src/view/matter/util/drawVertices';
 
@@ -16,17 +15,17 @@ export class Character {
   // tslint:disable-next-line:variable-name
   private readonly _object: Matter.Body;
 
-  constructor(object: Matter.Body, text: string) {
+  constructor(
+      readonly id: string,
+      object: Matter.Body,
+      text: string,
+  ) {
     this._object = object;
-    this._object.id = randomId();
+    this._object.id = Common.nextId();
     // Matter.Body.scale(this._object, 2, 1);
     this._text = text;
     // ラベルの設定
     this._object.label = 'character';
-  }
-
-  get id(): number {
-    return this._object.id;
   }
 
   get object(): Matter.Body {

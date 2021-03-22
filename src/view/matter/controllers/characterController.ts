@@ -3,17 +3,17 @@ import { Character } from 'src/view/matter/actors/character';
 export class CharacterController {
 
   // tslint:disable-next-line:variable-name
-  private readonly _characters: Map<number, Character>;
+  private readonly _characters: Map<string, Character>;
 
   constructor() {
-    this._characters = new Map<number, Character>();
+    this._characters = new Map();
   }
 
   get characters() {
     return this._characters;
   }
 
-  show() {
+  inspect() {
     let str: string = 'charactersに入っている要素\n';
     for (const character of Array.from(this.characters.values())) {
       str += `${character}\n`;
@@ -25,31 +25,17 @@ export class CharacterController {
    *  @param {Character} character
    */
   add(character: Character) {
-    this.characters.set(character.object.id, character);
+    this.characters.set(character.id, character);
   }
 
-  /** マップのキャラクターを削除 (オブジェクト指定)
-   *  @param {Character} character
-   */
-  removeByCharacter(character: Character) {
-    this.characters.delete(character.object.id);
+  remove(character: Character) {
+    this.characters.delete(character.id);
   }
 
-  /** idに応じてキャラクターを返す
-   *  @param {number} id
-   *  @return {Character}
-   */
-  getCharacter(id: number): Character | undefined {
-    return this.characters.get(id);
-  }
-
-  /** idが衝突していないかを調べる
-   *  @param {Character} character
-   */
-  isIdCollision(character: Character): boolean {
-    for (const key of Array.from(this.characters.keys())) {
-      if (this.characters.get(key)?.id === character.id) return true;
+  getCharacter(id: string | number): Character | undefined {
+    if (typeof id === 'string') {
+      return this.characters.get(id);
     }
-    return false;
+    return Array.from(this.characters.values()).find((c) => c.object.id === id);
   }
 }
