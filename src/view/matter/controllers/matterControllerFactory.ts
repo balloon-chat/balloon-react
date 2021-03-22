@@ -1,5 +1,5 @@
 import Matter, { Bodies } from 'matter-js';
-import { CanvasParameter } from 'src/view/matter/controllers/canvasParameter';
+import { CanvasParameter } from 'src/view/matter/models/canvasParameter';
 import { MatterController } from 'src/view/matter/controllers/matterController';
 import { CharacterController } from 'src/view/matter/controllers/characterController';
 

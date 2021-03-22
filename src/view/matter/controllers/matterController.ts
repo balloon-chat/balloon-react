@@ -1,8 +1,9 @@
-import Matter from 'matter-js';
+import Matter, { Common } from 'matter-js';
 import { CharacterController } from 'src/view/matter/controllers/characterController';
 import { Character } from 'src/view/matter/actors/character';
 import { CharacterFactory } from 'src/view/matter/actors/characterFactory';
-import { CanvasParameter } from 'src/view/matter/controllers/canvasParameter';
+import { CanvasParameter } from 'src/view/matter/models/canvasParameter';
+import { MatterListAdapter } from 'src/view/matter/lib/matterListAdapter';
 
 export class MatterController {
 
@@ -47,7 +48,7 @@ export class MatterController {
             break;
           case 'addButton':
             console.log(`Clicked ${clickObj.label} button.`);
-            const character = CharacterFactory.create(this.canvas, '新しく追加したオブジェクトです');
+            const character = CharacterFactory.create(this.canvas, `${Common.nextId()}`, '新しく追加したオブジェクトです');
             this.addCharacter(character);
             break;
           default:
