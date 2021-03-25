@@ -52,7 +52,8 @@ export const Canvas: React.FC = () => {
   const draw = (p5: P5Types) => {
     // キャンバスのサイズ変更 現在のキャンバスサイズとウインドウのサイズが異なれば変更する
     if (controller.canvas.checkCanvasSize()) {
-      console.log('canvas is resized');
+      console.log('canvas is resized\n' + 'width: ' + document.documentElement.clientWidth + 'px' 
+      + '\nheight: ' + document.documentElement.clientHeight + 'px');
       p5.resizeCanvas(document.documentElement.clientWidth, document.documentElement.clientHeight);
       controller.canvas.setSize(document.documentElement.clientWidth, document.documentElement.clientHeight);
     }

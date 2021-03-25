@@ -44,19 +44,18 @@ export class MatterController {
     Matter.Events.on(mouseConstraint, 'mousedown', (event) => {
       const clickObj = event.source.body;
       if (clickObj) {
+        console.log(clickObj);
+        console.log(`Clicked ${clickObj.label} button.`);
         switch (clickObj.label) {
           case 'character':
-            console.log(`Clicked ${clickObj.label} button.`);
             const clickCharacter = this.characterController.getCharacter(clickObj.id);
             if (clickCharacter) this.removeCharacter(clickCharacter);
             break;
           case 'addButton':
-            console.log(`Clicked ${clickObj.label} button.`);
             const character = CharacterFactory.create(this.canvas, `${Common.nextId()}`, '新しく追加したオブジェクトです');
             this.addCharacter(character);
             break;
           default:
-            console.log(`Clicked ${clickObj.label} button.`);
             break;
         }
       }

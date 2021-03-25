@@ -13,7 +13,7 @@ export class MatterControllerFactory {
 
     // Bodyを生成
     const walls = createWalls(canvas, 0);
-    const button = Matter.Bodies.rectangle(0, 0, 200, 100, { isStatic: true, label: 'addButton' });
+    const button = Matter.Bodies.rectangle(100, 50, 200, 100, { isStatic: true, label: 'addButton' });
 
     return new MatterController(
         engine,

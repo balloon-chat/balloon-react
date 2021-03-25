@@ -15,10 +15,12 @@ export class Character {
   // tslint:disable-next-line:variable-name
   private readonly _object: Matter.Body;
 
+  private readonly textSize = 10;
   constructor(
       readonly id: string,
       object: Matter.Body,
       text: string,
+      readonly radius: number,
   ) {
     this._object = object;
     this._object.id = Common.nextId();
@@ -40,14 +42,23 @@ export class Character {
     if (this.object.render.fillStyle) {
       return p5.color(this.object.render.fillStyle);
     }
-    console.log('Cannot get object color. rgb is to be white');
+    console.log(this + '\nCannot get object color. rgb is to be white');
     return p5.color('white');
   }
 
   draw(p5: P5Types) {
+    //bodyの描画
     p5.fill(this.getColor(p5));
     drawVertices(p5, this.object.vertices);
     p5.fill(0);
-    p5.text(this.text, this.object.position.x, this.object.position.y);
+
+    // textの描画
+    const degree = 50;
+    const radian = degree * Math.PI / 180;
+    const rSine = this.radius * Math.sin(radian);
+    const rCosine = this.radius * Math.cos(radian);
+    p5.textSize(this.textSize);
+    p5.textAlign('center', 'center');
+    p5.text(this.text, this.object.position.x - rCosine, this.object.position.y - rSine, 2 * rCosine, 2 * rSine);
   }
 }
