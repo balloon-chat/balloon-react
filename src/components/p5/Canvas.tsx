@@ -52,8 +52,7 @@ export const Canvas: React.FC = () => {
   const draw = (p5: P5Types) => {
     // キャンバスのサイズ変更 現在のキャンバスサイズとウインドウのサイズが異なれば変更する
     if (controller.canvas.checkCanvasSize()) {
-      console.log('canvas is resized\n' + 'width: ' + document.documentElement.clientWidth + 'px' 
-      + '\nheight: ' + document.documentElement.clientHeight + 'px');
+      console.log(`canvas is resized\nwidth: ${document.documentElement.clientWidth} px\nheight: ${document.documentElement.clientHeight} px`);
       p5.resizeCanvas(document.documentElement.clientWidth, document.documentElement.clientHeight);
       controller.canvas.setSize(document.documentElement.clientWidth, document.documentElement.clientHeight);
     }
@@ -62,7 +61,9 @@ export const Canvas: React.FC = () => {
     p5.background(255);
 
     p5.fill(p5.color('blue'));
-    drawVertices(p5, controller.button.vertices);
+    drawVertices(p5, controller.addButton.vertices);
+    p5.fill(p5.color('green'));
+    drawVertices(p5, controller.removeAllButton.vertices);
 
     // キャラクターの描画
     const characters = Array.from(controller.characterController.characters.values());
