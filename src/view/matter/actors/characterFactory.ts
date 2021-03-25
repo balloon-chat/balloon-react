@@ -4,10 +4,14 @@ import { CanvasParameter } from 'src/view/matter/models/canvasParameter';
 
 export class CharacterFactory {
   static create(canvas: CanvasParameter, id: string, text: string): Character {
+    const radius: number = 250;
+    const x = canvas.center.x + Math.random() * 10;
+    const y = canvas.center.y + Math.random() * 10;
     return new Character(
         id,
-        Bodies.circle(canvas.center.x, canvas.center.y, 30, { restitution: 0, friction: 0 }),
+        Bodies.circle(x, y, radius, { restitution: 0 }),
         text,
+        radius,
     );
   }
 }
