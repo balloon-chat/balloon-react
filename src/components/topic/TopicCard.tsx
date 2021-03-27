@@ -7,13 +7,13 @@ import React from 'react';
 
 // tslint:disable-next-line:variable-name
 export const TopicCard: React.FC<TopicEntity> = ({
-    id,
-    title,
-    thumbnailUrl,
-    label,
-    description,
-    createdAt,
-    commentCount,
+  id,
+  title,
+  thumbnailUrl,
+  label,
+  description,
+  createdAt,
+  commentCount,
 }) => {
   return (<Card>
     <Container href={topicPath.topic(id)}>
@@ -43,7 +43,7 @@ const Card = styled.article`
   border-radius: 5px;
   overflow: hidden;
   background-color: white;
-  box-shadow: 0 1px 1px 0 rgb(131 131 131 / 50%);
+  box-shadow: 0 10px 20px -2px rgb(0 64 128 / 20%);
 `;
 
 // tslint:disable-next-line:variable-name
