@@ -7,6 +7,7 @@ import 'firebase/auth';
 import Link from 'next/link';
 import { NavBarHeader } from 'src/components/navbar/NavBarHeader';
 import { useRouter } from 'next/router';
+import { mediaQuery } from 'src/components/constants/mediaQuery';
 
 // tslint:disable-next-line:variable-name
 export const NavBarHome = () => {
@@ -45,7 +46,6 @@ export const NavBar: React.FC = ({ children }) => {
 // tslint:disable-next-line:variable-name
 const NavContainer = styled.div`
   background-color: white;
-  border-bottom: 1px solid rgba(0, 0, 0, .1);
 `;
 
 // tslint:disable-next-line:variable-name
@@ -67,7 +67,14 @@ const NavTitle = styled.div`
   font-size: 16px;
   height: 100%;
   text-align: center;
-  margin-right: 16px;
+  padding: 16px 0;
+  flex-grow: 1;
+  justify-content: center;
+
+  @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
+    flex-grow: 0;
+    padding: 0;
+  }
 `;
 
 // tslint:disable-next-line:variable-name
@@ -82,9 +89,18 @@ const ActionContainer = styled.ul`
   flex-grow: 1;
   margin: 0;
   padding: 0;
+  position: absolute;
+  visibility: hidden;
   justify-content: flex-end;
+
 
   & > li {
     display: inline-block;
+  }
+
+  // モバイル、タブレット版では消去
+  @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
+    position: relative;
+    visibility: visible;
   }
 `;

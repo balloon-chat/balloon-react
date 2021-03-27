@@ -7,6 +7,7 @@ import 'firebase/auth';
 import { useUser } from 'src/view/lib/useUser';
 import { LoadDialog } from 'src/components/common/LoadDialog';
 import { rootPath } from 'src/view/route/pagePath';
+import { BottomNavigation } from 'src/components/navbar/BottomNavigation';
 
 // tslint:disable-next-line:variable-name
 const CreateTopicPage = () => {
@@ -24,6 +25,7 @@ const CreateTopicPage = () => {
         <EditTopic/>
       </ContainerCard>
     </Body>
+    <BottomNavigation currentLocation={'create'}/>
   </>);
 };
 
