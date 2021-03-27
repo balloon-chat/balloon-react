@@ -13,3 +13,4 @@ export const createUser = createAsyncThunk<void, { uid: string, name: string | n
 
 export type SetUserId = PayloadAction<string | null>;
 export type SetIsUserLoggedIn = PayloadAction<boolean>;
+export type SetPhotoUrl = PayloadAction<string | null>;
