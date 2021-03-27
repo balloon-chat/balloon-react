@@ -16,9 +16,16 @@ export class CanvasParameter {
     this.height = height;
   }
 
-  /* キャンバスサイズとウィンドウサイズが同じかどうか調べる */
-  checkCanvasSize(): boolean {
-    return (this.width !== document.documentElement.clientWidth)
-        || (this.height !== document.documentElement.clientHeight);
+  /**
+   * キャンバスサイズの変更を検知し、変更があったときのみ、{@param onResize}を呼び出す。
+   * @param parent キャンバスの親要素　この要素のパラメータに基づいて、変更の検知を行う。
+   * @param onResize サイズ変更時に呼び出されるコールバック関数
+   */
+  checkResize(parent: HTMLDivElement, onResize: (width: number, height: number) => void): boolean {
+    const newWidth = parent.clientWidth;
+    const newHeight = parent.clientHeight;
+    const sizeChanged = (this.width !== newWidth) || (this.height !== newHeight);
+    if (sizeChanged) onResize(newWidth, newHeight);
+    return sizeChanged;
   }
 }
