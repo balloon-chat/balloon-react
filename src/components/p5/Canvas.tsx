@@ -35,10 +35,8 @@ export const Canvas: React.FC = () => {
   },        [renderRef]);
 
   const setup = (p5: P5Types, canvasParentRef: Element) => {
-    p5.createCanvas(
-        canvasParentRef.clientWidth,
-        canvasParentRef.clientHeight,
-    ).parent(canvasParentRef);
+    const renderer = p5.createCanvas(canvasParentRef.clientWidth, canvasParentRef.clientHeight);
+    renderer.parent(canvasParentRef);
 
     // 壁の描画
     controller.walls.forEach(object => {
@@ -50,11 +48,12 @@ export const Canvas: React.FC = () => {
   };
 
   const draw = (p5: P5Types) => {
-    // キャンバスのサイズ変更 現在のキャンバスサイズとウインドウのサイズが異なれば変更する
-    if (controller.canvas.checkCanvasSize()) {
-      console.log(`canvas is resized\nwidth: ${document.documentElement.clientWidth} px\nheight: ${document.documentElement.clientHeight} px`);
-      p5.resizeCanvas(document.documentElement.clientWidth, document.documentElement.clientHeight);
-      controller.canvas.setSize(document.documentElement.clientWidth, document.documentElement.clientHeight);
+    // キャンバスサイズの更新
+    if (renderRef.current) {
+      controller.canvas.checkResize(renderRef.current, (width, height) => {
+        p5.resizeCanvas(width, height);
+        controller.canvas.setSize(width, height);
+      });
     }
 
     // 背面を白で塗りつぶす
