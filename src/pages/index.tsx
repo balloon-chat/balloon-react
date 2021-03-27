@@ -9,6 +9,7 @@ import { TopicService } from 'src/domain/topic/service/topicService';
 import { TopicEntity, TopicEntityFactory } from 'src/view/types/topic';
 import { useDispatch } from 'react-redux';
 import { setTopics } from 'src/data/redux/topic/slice';
+import { BottomNavigation } from 'src/components/navbar/BottomNavigation';
 
 type Props = {
   pickup: {
@@ -46,6 +47,7 @@ const IndexPage: React.FC<Props> = ({ pickup, newest }) => {
         </Container>
       </ContainerCard>
     </TopicContainer>
+    <BottomNavigation currentLocation={'home'}/>
   </>);
 };
 

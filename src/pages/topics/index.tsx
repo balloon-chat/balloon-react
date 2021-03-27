@@ -8,6 +8,7 @@ import { TopicService } from 'src/domain/topic/service/topicService';
 import { TopicEntity, TopicEntityFactory } from 'src/view/types/topic';
 import { useDispatch } from 'react-redux';
 import { setTopics } from 'src/data/redux/topic/slice';
+import { BottomNavigation } from 'src/components/navbar/BottomNavigation';
 
 type Props = {
   pickup?: TopicEntity | null,
@@ -31,6 +32,7 @@ const TopicIndexPage: React.FC<Props> = ({ topics, pickup }) => {
         </Container>
       </ContainerCard>
     </TopicContainer>
+    <BottomNavigation currentLocation={'join'}/>
   </>);
 };
 

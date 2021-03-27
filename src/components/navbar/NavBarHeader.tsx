@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import Image from 'next/image';
 import Link from 'next/link';
 import { rootPath } from 'src/view/route/pagePath';
+import { mediaQuery } from 'src/components/constants/mediaQuery';
 
 // tslint:disable-next-line:variable-name
 export const NavBarHeader = () => {
@@ -35,7 +36,11 @@ export const Container = styled.div`
   display: flex;
   justify-content: center;
   flex-direction: column;
-  padding: 80px 32px;
+  padding: 32px 32px;
+
+  @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
+    padding: 80px 32px;
+  }
 `;
 
 // tslint:disable-next-line:variable-name
@@ -152,12 +157,12 @@ export const CreateTopicButton = styled.button`
   display: flex;
   color: white;
   cursor: pointer;
-  font-size: 24px;
+  font-size: 20px;
   font-weight: bold;
   max-width: 500px;
   justify-content: center;
   outline: none;
-  padding: 8px 32px;
+  padding: 4px;
   width: 100%;
 
   & > span {
@@ -166,5 +171,10 @@ export const CreateTopicButton = styled.button`
 
   & > img {
     margin-bottom: 16px;
+  }
+
+  @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
+    font-size: 24px;
+    padding: 8px 32px;
   }
 `;
