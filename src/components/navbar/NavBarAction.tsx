@@ -1,21 +1,24 @@
 import styled from 'styled-components';
-import Image from 'next/image';
 import Link from 'next/link';
 import { ParsedUrlQueryInput } from 'querystring';
 import React from 'react';
 
 type Props = {
   title: string;
-  imgSrc?: string;
   link: string;
   linkQuery?: string | ParsedUrlQueryInput;
 };
 
-export const NavButton = ({ title, imgSrc, link, linkQuery }: Props) => (
+export const NavButton: React.FC<Props> = ({
+  title,
+  link,
+  linkQuery,
+  children,
+}) => (
   <Link href={{ pathname: link, query: linkQuery }}>
     <NavButtonContainer>
-      {imgSrc && <Image height={20} width={20} src={imgSrc} />}
-      <ActionTitle hasIcon={imgSrc !== undefined}>{title}</ActionTitle>
+      {children}
+      <ActionTitle hasIcon={children !== undefined}>{title}</ActionTitle>
     </NavButtonContainer>
   </Link>
 );
@@ -34,6 +37,10 @@ const NavButtonContainer = styled.div`
   &:hover {
     background-color: rgba(0, 0, 0, 0.1);
     cursor: pointer;
+  }
+
+  & > svg {
+    fill: currentColor;
   }
 `;
 
