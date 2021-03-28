@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import Image from 'next/image';
 import Link from 'next/link';
 import { rootPath } from 'src/view/route/pagePath';
 import { mediaQuery } from 'src/components/constants/mediaQuery';
+import SpeechBalloon from 'src/components/svgs/speech_balloon.svg';
 
 export const NavBarHeader = () => (
   <Container>
@@ -22,7 +22,7 @@ export const NavBarHeader = () => (
     </TitleRow>
     <Link href={rootPath.topicPath.create}>
       <CreateTopicButton>
-        <Image src="/svg/speech_balloon_white.svg" width={32} height={32} />
+        <SpeechBalloon width={32} height={32} fill="white" />
         <span>話題を作る</span>
       </CreateTopicButton>
     </Link>

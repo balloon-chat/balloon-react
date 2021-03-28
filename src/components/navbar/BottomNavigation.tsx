@@ -5,37 +5,42 @@ import {
 } from 'src/components/navbar/BottomNavigationButton';
 import { rootPath } from 'src/view/route/pagePath';
 import { mediaQuery } from 'src/components/constants/mediaQuery';
-import { svgImagePath } from 'src/components/constants/imagePath';
 import { useUserSelector } from 'src/data/redux/user/selector';
 import React from 'react';
+import Home from 'src/components/svgs/home.svg';
+import Edit from 'src/components/svgs/edit.svg';
+import Search from 'src/components/svgs/search.svg';
+import Login from 'src/components/svgs/login.svg';
 
 type Props = {
   currentLocation?: 'home' | 'create' | 'join' | 'my-page';
 };
 
-// tslint:disable-next-line:variable-name
 export const BottomNavigation = ({ currentLocation }: Props) => {
   const { isLoggedIn } = useUserSelector();
   return (
     <Container>
       <BottomNavigationButton
+        isActive={currentLocation === 'home'}
         label="ホーム"
-        imgSrc={svgImagePath.home}
         linkTo={rootPath.index}
-        current={currentLocation === 'home'}
-      />
+      >
+        <Home />
+      </BottomNavigationButton>
       <BottomNavigationButton
         label="話題を作る"
-        imgSrc={svgImagePath.edit}
         linkTo={rootPath.topicPath.create}
-        current={currentLocation === 'create'}
-      />
+        isActive={currentLocation === 'create'}
+      >
+        <Edit />
+      </BottomNavigationButton>
       <BottomNavigationButton
         label="話題を探す"
-        imgSrc={svgImagePath.search}
         linkTo={rootPath.topicPath.index}
-        current={currentLocation === 'join'}
-      />
+        isActive={currentLocation === 'join'}
+      >
+        <Search />
+      </BottomNavigationButton>
       {isLoggedIn ? (
         <MyPageNavigationButton
           label="マイページ"
@@ -45,16 +50,16 @@ export const BottomNavigation = ({ currentLocation }: Props) => {
       ) : (
         <BottomNavigationButton
           label="ログイン"
-          imgSrc={svgImagePath.login}
           linkTo={rootPath.login}
-          current={false}
-        />
+          isActive={false}
+        >
+          <Login />
+        </BottomNavigationButton>
       )}
     </Container>
   );
 };
 
-// tslint:disable-next-line:variable-name
 const Container = styled.nav`
   background-color: white;
   display: flex;

@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 import React, { useEffect, useState } from 'react';
-import { SVGIcon } from 'src/components/common/SVGIcon';
 import { useRouter } from 'next/router';
 import CopyToClipboard from 'react-copy-to-clipboard';
+import ContentCopy from 'src/components/svgs/content_copy.svg';
 
 export const InviteDialog = () => {
   const router = useRouter();
@@ -24,7 +24,7 @@ export const InviteDialog = () => {
             <CopyToClipboard text={url} onCopy={() => setIsClosed(true)}>
               <TopicLinkButton>
                 <div>リンクをコピー</div>
-                <SVGIcon color="rgba(0,0,0,.8)" url="/svg/content_copy.svg" />
+                <ContentCopy fill="rgba(0,0,0,.8)" />
               </TopicLinkButton>
             </CopyToClipboard>
           </ActionContainer>

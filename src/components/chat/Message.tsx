@@ -52,5 +52,5 @@ const TimeStamp = styled.span`
   color: rgba(0, 0, 0, 0.5);
   font-size: 0.75em;
 `;
-// tslint:disable-next-line:variable-name
+
 const MessageBody = styled.div``;

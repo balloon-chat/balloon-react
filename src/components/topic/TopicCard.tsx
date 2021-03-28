@@ -65,7 +65,6 @@ const ThumbnailImageContainer = styled.div`
   width: 100%;
 `;
 
-// tslint:disable-next-line:variable-name
 const Label = styled.div<{ labelColor: string }>`
   color: white;
   background-color: ${(props) => props.labelColor};
@@ -76,7 +75,6 @@ const Label = styled.div<{ labelColor: string }>`
   font-weight: bold;
 `;
 
-// tslint:disable-next-line:variable-name
 const TopicInformation = styled.div`
   box-sizing: border-box;
   display: flex;
@@ -85,7 +83,6 @@ const TopicInformation = styled.div`
   padding: 16px;
 `;
 
-// tslint:disable-next-line:variable-name
 const TopicTitle = styled.div`
   font-weight: bold;
   font-size: 16px;
@@ -96,12 +93,10 @@ const TopicTitle = styled.div`
   white-space: nowrap;
 `;
 
-// tslint:disable-next-line:variable-name
 const TopicDescription = styled.div`
   font-size: 12px;
 `;
 
-// tslint:disable-next-line:variable-name
 const TopicFooter = styled.div`
   display: flex;
   flex-direction: row;
@@ -111,7 +106,6 @@ const TopicFooter = styled.div`
   margin-top: 8px;
 `;
 
-// tslint:disable-next-line:variable-name
 const TimeStamp = styled.div`
   font-weight: bold;
 `;

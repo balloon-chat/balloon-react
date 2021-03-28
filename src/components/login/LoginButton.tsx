@@ -1,8 +1,8 @@
 import styled from 'styled-components';
-import Image from 'next/image';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import React from 'react';
+import Google from 'src/components/svgs/google.svg';
 
 export const GoogleLoginButton = () => {
   const signIn = async () => {
@@ -12,7 +12,7 @@ export const GoogleLoginButton = () => {
 
   return (
     <LoginButton onClick={() => signIn()}>
-      <Image src="/images/icon-google.svg" width={24} height={24} />
+      <Google width={24} height={24} />
       <ButtonText>Googleで続ける</ButtonText>
     </LoginButton>
   );

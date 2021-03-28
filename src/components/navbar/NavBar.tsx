@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { NavBarHeader } from 'src/components/navbar/NavBarHeader';
 import { useRouter } from 'next/router';
 import { mediaQuery } from 'src/components/constants/mediaQuery';
+import SpeechBalloon from 'src/components/svgs/speech_balloon.svg';
 
 export const NavBarHome = () => (
   <NavBar>
@@ -30,11 +31,9 @@ export const NavBar: React.FC = ({ children }) => {
         </Link>
         <ActionContainer>
           <li>
-            <NavButton
-              link={topicPath.create}
-              title="話題を作る"
-              imgSrc="/svg/speech_balloon.svg"
-            />
+            <NavButton link={topicPath.create} title="話題を作る">
+              <SpeechBalloon />
+            </NavButton>
           </li>
           <li>
             {isLoggedIn ? (
@@ -85,13 +84,11 @@ const NavTitle = styled.div`
   }
 `;
 
-// tslint:disable-next-line:variable-name
 const TitleIcon = styled.img`
   margin-right: 8px;
   height: 24px;
 `;
 
-// tslint:disable-next-line:variable-name
 const ActionContainer = styled.ul`
   display: flex;
   flex-grow: 1;
