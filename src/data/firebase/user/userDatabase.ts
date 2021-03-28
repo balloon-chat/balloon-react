@@ -5,7 +5,6 @@ import firebase from 'firebase';
 export class FirebaseUserDatabase implements IUserDatabase {
   private constructor(private readonly database = firebase.database()) {}
 
-  // tslint:disable-next-line:variable-name
   private static _instance: IUserDatabase;
 
   static get instance(): IUserDatabase {

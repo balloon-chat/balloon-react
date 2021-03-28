@@ -6,7 +6,6 @@ import 'firebase/database';
 export class FirebaseRecommendTopicDatabase implements IRecommendTopicDatabase {
   private constructor(private readonly database = firebase.database()) {}
 
-  // tslint:disable-next-line:variable-name
   private static _instance: IRecommendTopicDatabase;
 
   static get instance(): IRecommendTopicDatabase {

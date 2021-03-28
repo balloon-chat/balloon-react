@@ -6,7 +6,6 @@ import 'firebase/database';
 export class FirebaseTopicDatabase implements ITopicDatabase {
   private constructor(private readonly database = firebase.database()) {}
 
-  // tslint:disable-next-line:variable-name
   private static _instance: ITopicDatabase;
 
   static get instance(): ITopicDatabase {

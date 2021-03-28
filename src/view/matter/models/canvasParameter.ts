@@ -2,7 +2,6 @@ export class CanvasParameter {
   // eslint-disable-next-line no-empty-function
   constructor(public width: number, public height: number) {}
 
-  // tslint:disable-next-line:variable-name
   get center() {
     return {
       x: this.width * 0.5,
