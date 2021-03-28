@@ -52,7 +52,7 @@ export class Character {
     p5.fill(0);
 
     // textの描画
-    const textSize = 70;
+    const textSize = 16;
     const degree = 50; // 度数法で入力 ( 0 < degree < 90 )
     const radian = (degree * Math.PI) / 180; // 弧度法
     const rSine = this.radius * Math.sin(radian);
