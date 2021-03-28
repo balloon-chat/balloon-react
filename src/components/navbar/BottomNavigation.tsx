@@ -16,7 +16,6 @@ type Props = {
   currentLocation?: 'home' | 'create' | 'join' | 'my-page';
 };
 
-// tslint:disable-next-line:variable-name
 export const BottomNavigation = ({ currentLocation }: Props) => {
   const { isLoggedIn } = useUserSelector();
   return (
@@ -61,7 +60,6 @@ export const BottomNavigation = ({ currentLocation }: Props) => {
   );
 };
 
-// tslint:disable-next-line:variable-name
 const Container = styled.nav`
   background-color: white;
   display: flex;

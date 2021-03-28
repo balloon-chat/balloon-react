@@ -10,7 +10,6 @@ type Props = {
   isActive?: boolean,
 };
 
-// tslint:disable-next-line:variable-name
 export const BottomNavigationButton: React.FC<Props> = ({
   linkTo,
   label,
@@ -31,7 +30,6 @@ type MyPageButtonProps = {
   label: string;
 };
 
-// tslint:disable-next-line:variable-name
 export const MyPageNavigationButton = ({
   linkTo,
   label,
@@ -52,7 +50,6 @@ export const MyPageNavigationButton = ({
   );
 };
 
-// tslint:disable-next-line:variable-name
 const LinkContainer = styled.a<{ isActive: boolean }>`
   align-items: center;
   color: ${(props) => (props.isActive ? 'rgba(0,0,0,1)' : 'rgba(0,0,0,.6)')};
@@ -68,12 +65,10 @@ const LinkContainer = styled.a<{ isActive: boolean }>`
   }
 `;
 
-// tslint:disable-next-line:variable-name
 const Label = styled.div`
   font-size: 12px;
 `;
 
-// tslint:disable-next-line:variable-name
 const UserImage = styled.img`
   border-radius: 50%;
 `;

@@ -13,7 +13,6 @@ type Props = {
   description: string;
 };
 
-// tslint:disable-next-line:variable-name
 export const TopicThumbnail = ({
   title,
   description,
@@ -64,7 +63,6 @@ export const TopicThumbnail = ({
   );
 };
 
-// tslint:disable-next-line:variable-name
 const ThumbnailImage = styled.img`
   object-fit: contain;
   max-height: 400px;

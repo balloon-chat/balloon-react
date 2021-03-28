@@ -84,13 +84,11 @@ const NavTitle = styled.div`
   }
 `;
 
-// tslint:disable-next-line:variable-name
 const TitleIcon = styled.img`
   margin-right: 8px;
   height: 24px;
 `;
 
-// tslint:disable-next-line:variable-name
 const ActionContainer = styled.ul`
   display: flex;
   flex-grow: 1;
