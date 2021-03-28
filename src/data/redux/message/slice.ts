@@ -14,12 +14,11 @@ const slice = createSlice({
     observeStart: observeStartReducer,
     observeFulfilled: observeFulfilledReducer,
   },
-  extraReducers: builder => {
-    builder
-        .addCase(sendMessage.fulfilled, (state) => state);
+  extraReducers: (builder) => {
+    builder.addCase(sendMessage.fulfilled, (state) => state);
   },
 });
 
 export const messageReducer = slice.reducer;
-export const observeStart = slice.actions.observeStart;
-export const observeFulfilled = slice.actions.observeFulfilled;
+export const { observeStart } = slice.actions;
+export const { observeFulfilled } = slice.actions;

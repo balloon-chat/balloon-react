@@ -2,13 +2,14 @@ import React, { CSSProperties } from 'react';
 import styled from 'styled-components';
 import { SVGIcon } from 'src/components/common/SVGIcon';
 
-// tslint:disable-next-line:variable-name
-export const UploadDialog: React.FC<{ isDragging: boolean }> = ({ isDragging }) => {
-  return (<UploadDialogContainer style={uploadDialogStyle(isDragging)}>
-    <SVGIcon url={'/svg/upload_file-24px.svg'}/>
+export const UploadDialog: React.FC<{ isDragging: boolean }> = ({
+  isDragging,
+}) => (
+  <UploadDialogContainer style={uploadDialogStyle(isDragging)}>
+    <SVGIcon url="/svg/upload_file-24px.svg" />
     <div>ドロップして画像をアップロード</div>
-  </UploadDialogContainer>);
-};
+  </UploadDialogContainer>
+);
 
 const uploadDialogStyle = (isDragging: Boolean): CSSProperties => ({
   bottom: isDragging ? 24 : 0,
@@ -16,7 +17,6 @@ const uploadDialogStyle = (isDragging: Boolean): CSSProperties => ({
   visibility: isDragging ? 'visible' : 'hidden',
 } as const);
 
-// tslint:disable-next-line:variable-name
 const UploadDialogContainer = styled.div`
   border-radius: 5px;
   color: white;

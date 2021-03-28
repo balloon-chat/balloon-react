@@ -1,7 +1,6 @@
 export class CanvasParameter {
-
-  constructor(public width: number, public height: number) {
-  }
+  // eslint-disable-next-line no-empty-function
+  constructor(public width: number, public height: number) {}
 
   // tslint:disable-next-line:variable-name
   get center() {
@@ -18,13 +17,16 @@ export class CanvasParameter {
 
   /**
    * キャンバスサイズの変更を検知し、変更があったときのみ、{@param onResize}を呼び出す。
-   * @param parent キャンバスの親要素　この要素のパラメータに基づいて、変更の検知を行う。
+   * @param parent キャンバスの親要素 この要素のパラメータに基づいて、変更の検知を行う。
    * @param onResize サイズ変更時に呼び出されるコールバック関数
    */
-  checkResize(parent: HTMLDivElement, onResize: (width: number, height: number) => void): boolean {
+  checkResize(
+    parent: HTMLDivElement,
+    onResize: (width: number, height: number) => void,
+  ): boolean {
     const newWidth = parent.clientWidth;
     const newHeight = parent.clientHeight;
-    const sizeChanged = (this.width !== newWidth) || (this.height !== newHeight);
+    const sizeChanged = this.width !== newWidth || this.height !== newHeight;
     if (sizeChanged) onResize(newWidth, newHeight);
     return sizeChanged;
   }

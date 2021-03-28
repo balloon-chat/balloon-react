@@ -8,7 +8,6 @@ import { useDispatch } from 'react-redux';
 import { useRouter } from 'next/router';
 import { useUserSelector } from 'src/data/redux/user/selector';
 
-// tslint:disable-next-line:variable-name
 const LoginPage = () => {
   const dispatcher = useDispatch();
   const router = useRouter();
@@ -16,18 +15,22 @@ const LoginPage = () => {
   const { isLoggedIn } = useUserSelector();
 
   useEffect(() => {
-    const unsubscribe = firebase.auth().onAuthStateChanged(user => {
-      if (user) dispatcher(createUser({ uid: user.uid, name: user.displayName, photoUrl: user.photoURL }));
+    const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        dispatcher(
+          createUser({
+            uid: user.uid,
+            name: user.displayName,
+            photoUrl: user.photoURL,
+          }),
+        );
+      }
     });
 
     return () => {
       unsubscribe();
     };
-  },        []);
-
-  useEffect(() => {
-    console.log(return_to);
-  },        [return_to]);
+  }, []);
 
   useEffect(() => {
     if (!isLoggedIn) return;
@@ -37,17 +40,18 @@ const LoginPage = () => {
     } else {
       router.push(rootPath.index).then();
     }
-  },        [return_to, isLoggedIn]);
+  }, [return_to, isLoggedIn]);
 
-  return (<Container>
-    <LoginDialog/>
-  </Container>);
+  return (
+    <Container>
+      <LoginDialog />
+    </Container>
+  );
 };
 
-// tslint:disable-next-line:variable-name
 const Container = styled.div`
   align-items: center;
-  background-color: #AEE1E1;
+  background-color: #aee1e1;
   display: flex;
   height: 100%;
   justify-content: center;

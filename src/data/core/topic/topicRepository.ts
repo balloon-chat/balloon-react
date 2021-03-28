@@ -5,11 +5,7 @@ import { ITopicDatabase } from 'src/data/core/topic/topicDatabase';
 import { TopicDto } from 'src/data/core/topic/topicDto';
 
 export class TopicRepository implements ITopicRepository {
-
-  constructor(
-      private readonly topicDatabase: ITopicDatabase,
-  ) {
-  }
+  constructor(private readonly topicDatabase: ITopicDatabase) {}
 
   async find(topicId: TopicId): Promise<TopicEntity | undefined> {
     const dto = await this.topicDatabase.find(topicId.value);
@@ -21,13 +17,18 @@ export class TopicRepository implements ITopicRepository {
     return TopicDto.toTopicEntities(dto);
   }
 
-  async findAllOrderByCreatedAt(limit: number, from?: TopicId): Promise<TopicEntity[]> {
-    const dto = await this.topicDatabase.findAllSortByCreatedAt(limit, from?.value);
+  async findAllOrderByCreatedAt(
+    limit: number,
+    from?: TopicId,
+  ): Promise<TopicEntity[]> {
+    const dto = await this.topicDatabase.findAllSortByCreatedAt(
+      limit,
+      from?.value,
+    );
     return TopicDto.toTopicEntities(dto);
   }
 
   async save(topic: TopicEntity): Promise<void> {
     await this.topicDatabase.save(TopicDto.from(topic));
   }
-
 }

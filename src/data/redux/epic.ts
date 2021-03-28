@@ -5,4 +5,8 @@ import { RootState } from 'src/data/redux/state';
 
 type Actions = MessageActions;
 export const rootEpic = combineEpics(messageEpic);
-export const epicMiddleware = createEpicMiddleware<Actions, Actions, RootState>();
+export const epicMiddleware = createEpicMiddleware<
+  Actions,
+  Actions,
+  RootState
+>();

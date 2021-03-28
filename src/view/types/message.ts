@@ -1,18 +1,22 @@
 import { Message } from 'src/domain/message/models/message';
-import { LoginUser } from 'src/domain/user/models/user';
+import { LoginUser } from 'src/domain/user/models/loginUser';
 
 export type MessageEntity = {
-  id: string,
-  body: string,
-  createdAt: number,
-  senderId: string,
-  senderName: string,
-  senderPhotoUrl: string,
+  id: string;
+  body: string;
+  createdAt: number;
+  senderId: string;
+  senderName: string;
+  senderPhotoUrl: string;
 };
 
 export class MessageEntityFactory {
-  static create(message: Message, defaultSenderName: string, defaultSenderPhotoUrl: string): MessageEntity {
-    const sender = message.sender;
+  static create(
+    message: Message,
+    defaultSenderName: string,
+    defaultSenderPhotoUrl: string,
+  ): MessageEntity {
+    const { sender } = message;
     let senderName = defaultSenderName;
     let senderPhotoUrl = defaultSenderPhotoUrl;
 

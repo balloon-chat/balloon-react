@@ -8,8 +8,8 @@ import { DeleteImageButton, UploadImageButton } from 'src/components/topic/edit/
 import { UploadDialog } from 'src/components/topic/edit/UploadDialog';
 
 type Props = {
-  title: string,
-  description: string,
+  title: string;
+  description: string;
 };
 
 // tslint:disable-next-line:variable-name
@@ -23,39 +23,36 @@ export const TopicThumbnail = ({ title, description }: Props) => {
     if (image?.file) setImageFile(image.file);
   };
 
-  return (<ReactImageUploading
+  return (
+    <ReactImageUploading
       dataURLKey={dataURLKey}
       maxNumber={2}
       onChange={(imageList) => updateImage(imageList[imageList.length - 1])}
       value={image ? [image] : []}
-  >
-    {({
-      onImageUpload,
-      onImageRemoveAll,
-      isDragging,
-      dragProps,
-    }) => (
+    >
+      {({ onImageUpload, onImageRemoveAll, isDragging, dragProps }) => (
         <div {...dragProps}>
-         <UploadDialog isDragging={isDragging as boolean}/>
-          {
-            image
-                ? <ThumbnailImage src={image[dataURLKey]} alt={''}/>
-                : <ThumbnailTemplate title={title} description={description}/>
-          }
-          {
-            image
-                ? <DeleteImageButton onClick={onImageRemoveAll}>
-                  <SVGIcon url={'/svg/delete-24px.svg'}/>
-                  アップロードした画像を削除
-                </DeleteImageButton>
-                : <UploadImageButton onClick={onImageUpload}>
-                  <SVGIcon url={'/svg/upload_file-24px.svg'}/>
-                  サムネイル画像をアップロード
-                </UploadImageButton>
-          }
+          <UploadDialog isDragging={isDragging as boolean} />
+          {image ? (
+            <ThumbnailImage src={image[dataURLKey]} alt="" />
+          ) : (
+            <ThumbnailTemplate title={title} description={description} />
+          )}
+          {image ? (
+            <DeleteImageButton onClick={onImageRemoveAll}>
+              <SVGIcon url="/svg/delete-24px.svg" />
+              アップロードした画像を削除
+            </DeleteImageButton>
+          ) : (
+            <UploadImageButton onClick={onImageUpload}>
+              <SVGIcon url="/svg/upload_file-24px.svg" />
+              サムネイル画像をアップロード
+            </UploadImageButton>
+          )}
         </div>
-    )}
-  </ReactImageUploading>);
+      )}
+    </ReactImageUploading>
+  );
 };
 
 // tslint:disable-next-line:variable-name

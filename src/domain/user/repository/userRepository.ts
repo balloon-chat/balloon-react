@@ -1,5 +1,5 @@
 import { UserId } from 'src/domain/user/models/userId';
-import { LoginUser } from 'src/domain/user/models/user';
+import { LoginUser } from 'src/domain/user/models/loginUser';
 
 /**
  * ユーザーの公開情報を保存するリポジトリ

@@ -8,7 +8,9 @@ export class TopicDescription {
   }
 
   static require(value: string): boolean {
-    return value !== '' && value.length <= TopicDescription.MAX_DESCRIPTION_LENGTH;
+    return (
+      value !== '' && value.length <= TopicDescription.MAX_DESCRIPTION_LENGTH
+    );
   }
 
   /**
@@ -18,5 +20,6 @@ export class TopicDescription {
     if (value && TopicDescription.require(value)) {
       return new TopicDescription(value);
     }
+    return undefined;
   }
 }

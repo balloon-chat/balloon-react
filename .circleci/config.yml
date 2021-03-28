@@ -26,8 +26,11 @@ jobs:
           command: yarn install
       - save_modules
       - run:
-          name: lint
+          name: type-check
           command: yarn type-check
+      - run:
+          name: lint
+          command: yarn lint
   test:
     executor: node
     steps:

@@ -8,10 +8,10 @@ export class CharacterFactory {
     const x = canvas.center.x + Math.random() * 10;
     const y = canvas.center.y + Math.random() * 10;
     return new Character(
-        id,
-        Bodies.circle(x, y, radius, { restitution: 0 }),
-        text,
-        radius,
+      id,
+      Bodies.circle(x, y, radius, { restitution: 0 }),
+      text,
+      radius,
     );
   }
 }

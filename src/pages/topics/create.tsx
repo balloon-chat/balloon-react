@@ -9,33 +9,31 @@ import { LoadDialog } from 'src/components/common/LoadDialog';
 import { rootPath } from 'src/view/route/pagePath';
 import { BottomNavigation } from 'src/components/navbar/BottomNavigation';
 
-// tslint:disable-next-line:variable-name
 const CreateTopicPage = () => {
-
   const { user } = useUser({ returnTo: rootPath.topicPath.create });
 
   if (!user) {
-    return <LoadDialog message={'ログイン状況を確認しています。'}/>;
+    return <LoadDialog message="ログイン状況を確認しています。" />;
   }
 
-  return (<>
-    <NavBar/>
-    <Body>
-      <ContainerCard>
-        <EditTopic/>
-      </ContainerCard>
-    </Body>
-    <BottomNavigation currentLocation={'create'}/>
-  </>);
+  return (
+    <>
+      <NavBar />
+      <Body>
+        <ContainerCard>
+          <EditTopic />
+        </ContainerCard>
+      </Body>
+      <BottomNavigation currentLocation="create" />
+    </>
+  );
 };
 
-// tslint:disable-next-line:variable-name
 const Body = styled.div`
   box-sizing: border-box;
-  background-color: #AEE1E1;
+  background-color: #aee1e1;
   width: 100%;
   padding-top: 16px;
 `;
 
-// tslint:disable-next-line:variable-name
 export default CreateTopicPage;

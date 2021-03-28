@@ -11,35 +11,35 @@ import { setTopics } from 'src/data/redux/topic/slice';
 import { BottomNavigation } from 'src/components/navbar/BottomNavigation';
 
 type Props = {
-  pickup?: TopicEntity | null,
+  pickup?: TopicEntity | null;
   topics: TopicEntity[];
 };
 
-// tslint:disable-next-line:variable-name
 const TopicIndexPage: React.FC<Props> = ({ topics, pickup }) => {
   const dispatcher = useDispatch();
 
   useEffect(() => {
     dispatcher(setTopics({ topics }));
-  },        []);
+  }, []);
 
-  return (<>
-    <NavBar/>
-    <TopicContainer>
-      <ContainerCard>
-        <Container>
-          <ScrollableTopicList pickup={pickup}/>
-        </Container>
-      </ContainerCard>
-    </TopicContainer>
-    <BottomNavigation currentLocation={'join'}/>
-  </>);
+  return (
+    <>
+      <NavBar />
+      <TopicContainer>
+        <ContainerCard>
+          <Container>
+            <ScrollableTopicList pickup={pickup} />
+          </Container>
+        </ContainerCard>
+      </TopicContainer>
+      <BottomNavigation currentLocation="join" />
+    </>
+  );
 };
 
-// tslint:disable-next-line:variable-name
 export const TopicContainer = styled.div`
   box-sizing: border-box;
-  background-color: #AEE1E1;
+  background-color: #aee1e1;
   width: 100%;
   padding: 32px 16px;
 
@@ -48,7 +48,6 @@ export const TopicContainer = styled.div`
   }
 `;
 
-// tslint:disable-next-line:variable-name
 const Container = styled.main`
   box-sizing: border-box;
   display: flex;
@@ -62,18 +61,18 @@ export const getServerSideProps: GetServerSideProps<Props> = async () => {
   const topics = await service.fetchTopics(50);
 
   const entities = topics
-      .map(topic => TopicEntityFactory.create(topic))
-      .map((entity, index) => {
-        if (index !== 0) return entity;
-        // 最初の話題にのみ、ラベルを付ける
-        return {
-          ...entity,
-          label: {
-            title: 'Pickup!',
-            color: '#78C4D4',
-          },
-        } as const;
-      });
+    .map((topic) => TopicEntityFactory.create(topic))
+    .map((entity, index) => {
+      if (index !== 0) return entity;
+      // 最初の話題にのみ、ラベルを付ける
+      return {
+        ...entity,
+        label: {
+          title: 'Pickup!',
+          color: '#78C4D4',
+        },
+      } as const;
+    });
 
   return {
     props: {

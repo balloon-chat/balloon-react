@@ -17,6 +17,7 @@ type TestCase = {
 };
 
 class TestObjectDiffUtil extends DiffUtilCallback<TestObject> {
+  // eslint-disable-next-line class-methods-use-this
   areItemsTheSame(oldItem: TestObject, newItem: TestObject): boolean {
     return oldItem.id === newItem.id;
   }

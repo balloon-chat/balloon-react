@@ -1,6 +1,10 @@
 import { UserState, userStateName } from 'src/data/redux/user/state';
 import { createSlice } from '@reduxjs/toolkit';
-import { setIsUserLoggedInReducer, setPhotoUrlReducer, setUserIdReducer } from 'src/data/redux/user/reducer';
+import {
+  setIsUserLoggedInReducer,
+  setPhotoUrlReducer,
+  setUserIdReducer,
+} from 'src/data/redux/user/reducer';
 
 const initialState: UserState = {
   uid: null,
@@ -18,10 +22,6 @@ const userSlice = createSlice({
   },
 } as const);
 
-export const {
-  setUserId,
-  setIsUserLoggedIn,
-  setPhotoUrl,
-} = userSlice.actions;
+export const { setUserId, setIsUserLoggedIn, setPhotoUrl } = userSlice.actions;
 
 export const userReducer = userSlice.reducer;

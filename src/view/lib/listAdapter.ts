@@ -4,11 +4,10 @@ import { DiffUtilCallback } from 'src/view/lib/diffUtilCallback';
  * データの差分検出を行い、コールバックにより実装クラスに通知する。
  */
 export abstract class ListAdapter<T> {
-
   private previousList: T[] = [];
 
-  protected constructor(private readonly diffUtil: DiffUtilCallback<T>) {
-  }
+  // eslint-disable-next-line no-empty-function
+  protected constructor(private readonly diffUtil: DiffUtilCallback<T>) {}
 
   /**
    * データを更新

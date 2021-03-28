@@ -5,17 +5,21 @@ import { User } from 'src/domain/user/models/user';
 import { Topic } from 'src/domain/topic/models/topic';
 
 export type TopicData = {
-  id: TopicId,
-  title: TopicTitle,
-  description?: TopicDescription,
-  thumbnailUrl: string,
-  createdAt: Date,
-  createdBy: User,
-  commentCount: number,
+  id: TopicId;
+  title: TopicTitle;
+  description?: TopicDescription;
+  thumbnailUrl: string;
+  createdAt: Date;
+  createdBy: User;
+  commentCount: number;
 };
 
 export class TopicDataFactory {
-  static create(topic: Topic, commentCount: number, createdBy: User): TopicData {
+  static create(
+    topic: Topic,
+    commentCount: number,
+    createdBy: User,
+  ): TopicData {
     return {
       id: topic.id,
       title: topic.title,

@@ -3,10 +3,7 @@ import { UserDto } from 'src/data/core/user/userDto';
 import firebase from 'firebase';
 
 export class FirebaseUserDatabase implements IUserDatabase {
-  private constructor(
-      private readonly database = firebase.database(),
-  ) {
-  }
+  private constructor(private readonly database = firebase.database()) {}
 
   // tslint:disable-next-line:variable-name
   private static _instance: IUserDatabase;
@@ -28,5 +25,6 @@ export class FirebaseUserDatabase implements IUserDatabase {
   }
 
   private usersRef = () => this.database.ref('/users');
+
   private userRef = (userId: string) => this.usersRef().child(userId);
 }

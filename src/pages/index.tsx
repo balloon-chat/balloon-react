@@ -13,45 +13,45 @@ import { BottomNavigation } from 'src/components/navbar/BottomNavigation';
 
 type Props = {
   pickup: {
-    main: TopicEntity | null,
-    topics: TopicEntity[],
-  },
-  newest: TopicEntity[],
+    main: TopicEntity | null;
+    topics: TopicEntity[];
+  };
+  newest: TopicEntity[];
 };
 
-// tslint:disable-next-line:variable-name
 const IndexPage: React.FC<Props> = ({ pickup, newest }) => {
   const dispatcher = useDispatch();
 
   useEffect(() => {
     dispatcher(setTopics({ topics: newest }));
-  },        []);
+  }, []);
 
-  return (<>
-    <NavBarHome/>
-    <TopicContainer>
-      <ContainerCard>
-        <Title>
-          <TitleImage src={'/images/character_yellow.png'}/>
-          <div>注目の話題</div>
-        </Title>
-        <Container>
-          <TopicList topics={pickup.topics} pickup={pickup.main}/>
-        </Container>
-        <Title>
-          <TitleImage src={'/images/character_yellow.png'}/>
-          <div>最新の話題</div>
-        </Title>
-        <Container>
-          <ScrollableTopicList/>
-        </Container>
-      </ContainerCard>
-    </TopicContainer>
-    <BottomNavigation currentLocation={'home'}/>
-  </>);
+  return (
+    <>
+      <NavBarHome />
+      <TopicContainer>
+        <ContainerCard>
+          <Title>
+            <TitleImage src="/images/character_yellow.png" />
+            <div>注目の話題</div>
+          </Title>
+          <Container>
+            <TopicList topics={pickup.topics} pickup={pickup.main} />
+          </Container>
+          <Title>
+            <TitleImage src="/images/character_yellow.png" />
+            <div>最新の話題</div>
+          </Title>
+          <Container>
+            <ScrollableTopicList />
+          </Container>
+        </ContainerCard>
+      </TopicContainer>
+      <BottomNavigation currentLocation="home" />
+    </>
+  );
 };
 
-// tslint:disable-next-line:variable-name
 const Container = styled.main`
   box-sizing: border-box;
   display: flex;
@@ -60,7 +60,6 @@ const Container = styled.main`
   width: 100%;
 `;
 
-// tslint:disable-next-line:variable-name
 const Title = styled.div`
   align-items: center;
   display: flex;
@@ -72,7 +71,6 @@ const Title = styled.div`
   width: 100%;
 `;
 
-// tslint:disable-next-line:variable-name
 const TitleImage = styled.img`
   margin-right: 32px;
   height: 80px;
@@ -95,23 +93,22 @@ export const getServerSideProps: GetServerSideProps<Props> = async () => {
   }
 
   const pickup = recommends.pickups
-      .map(topic => TopicEntityFactory.create(topic))
-      .map((topic, index) => {
-        if (index > 2) return topic;
+    .map((topic) => TopicEntityFactory.create(topic))
+    .map((topic, index) => {
+      if (index > 2) return topic;
 
-        // 上位3つの話題にラベルを付ける
-        const labelColors = ['#FFBE0F', '#78C4D4', '#CC561E'];
-        return {
-          ...topic,
-          label: {
-            title: `No.${index + 1}`,
-            color: labelColors[index],
-          },
-        } as const;
-      });
+      // 上位3つの話題にラベルを付ける
+      const labelColors = ['#FFBE0F', '#78C4D4', '#CC561E'];
+      return {
+        ...topic,
+        label: {
+          title: `No.${index + 1}`,
+          color: labelColors[index],
+        },
+      } as const;
+    });
 
-  const newest = (await service.fetchTopics(50))
-      .map(topic => TopicEntityFactory.create(topic));
+  const newest = (await service.fetchTopics(50)).map((topic) => TopicEntityFactory.create(topic));
 
   return {
     props: {

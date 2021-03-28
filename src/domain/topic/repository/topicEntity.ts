@@ -6,23 +6,22 @@ import { TopicDescription } from 'src/domain/topic/models/topicDescription';
 
 export class TopicEntity {
   constructor(
-      public readonly id: TopicId,
-      public readonly title: TopicTitle,
-      public readonly createdAt: number,
-      public readonly createdBy: UserId,
-      public readonly thumbnailURL: string,
-      public readonly description: TopicDescription | null,
-  ) {
-  }
+    public readonly id: TopicId,
+    public readonly title: TopicTitle,
+    public readonly createdAt: number,
+    public readonly createdBy: UserId,
+    public readonly thumbnailURL: string,
+    public readonly description: TopicDescription | null,
+  ) {}
 
   static from(topic: Topic): TopicEntity {
     return new TopicEntity(
-        topic.id,
-        topic.title,
-        topic.createdAt,
-        topic.createdBy,
-        topic.thumbnailUrl,
-        topic.description ?? null,
+      topic.id,
+      topic.title,
+      topic.createdAt,
+      topic.createdBy,
+      topic.thumbnailUrl,
+      topic.description ?? null,
     );
   }
 }

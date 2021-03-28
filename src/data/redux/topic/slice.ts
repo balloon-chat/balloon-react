@@ -1,6 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { TopicState, topicStateName, topicStates } from 'src/data/redux/topic/state';
-import { setIsTopicCreatedReducer, setTopicIdReducer, setTopicsReducer } from 'src/data/redux/topic/reducer';
+import {
+  setIsTopicCreatedReducer,
+  setTopicIdReducer,
+  setTopicsReducer,
+} from 'src/data/redux/topic/reducer';
 import { createTopic, fetchTopic, fetchTopicsFrom } from 'src/data/redux/topic/action';
 import { TopicEntity } from 'src/view/types/topic';
 
@@ -18,22 +22,22 @@ const topicSlice = createSlice({
     setTopicId: setTopicIdReducer,
     setTopics: setTopicsReducer,
   },
-  extraReducers: builder => {
+  extraReducers: (builder) => {
     builder
-        .addCase(createTopic.fulfilled, (state, { payload }) => ({
-          ...state,
-          topicId: payload.id.value,
-          isTopicCreated: true,
-        }))
-        .addCase(fetchTopic.fulfilled, (state, { payload }) => ({
-          ...state,
-          state: payload === undefined ? topicStates.NotFound : undefined,
-          currentTopic: payload,
-        }))
-        .addCase(fetchTopicsFrom.fulfilled, (state, { payload }) => ({
-          ...state,
-          topics: [...state.topics, ...payload],
-        }));
+      .addCase(createTopic.fulfilled, (state, { payload }) => ({
+        ...state,
+        topicId: payload.id.value,
+        isTopicCreated: true,
+      }))
+      .addCase(fetchTopic.fulfilled, (state, { payload }) => ({
+        ...state,
+        state: payload === undefined ? topicStates.NotFound : undefined,
+        currentTopic: payload,
+      }))
+      .addCase(fetchTopicsFrom.fulfilled, (state, { payload }) => ({
+        ...state,
+        topics: [...state.topics, ...payload],
+      }));
   },
 });
 

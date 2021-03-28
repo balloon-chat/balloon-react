@@ -3,15 +3,17 @@ import { FakeMessageRepository } from 'tests/data/message/FakeMessageRepository'
 import { FakeUserRepository } from 'tests/data/user/FakeUserRepository';
 import { TopicFactory } from 'src/domain/topic/models/topic';
 import { TopicTitle } from 'src/domain/topic/models/topicTitle';
-import { AnonymousUser, LoginUser } from 'src/domain/user/models/user';
 import { TopicEntity } from 'src/domain/topic/repository/topicEntity';
 import { MessageFactory } from 'src/domain/message/models/message';
 import { MessageBody } from 'src/domain/message/models/messageBody';
 import { MessageEntity } from 'src/domain/message/repository/messageEntity';
-import { GetTopics, IGetTopics } from 'src/domain/topic/usecases/getTopics';
-import { TopicData } from 'src/domain/topic/usecases/types';
+import { GetTopics } from 'src/domain/topic/usecases/getTopics';
+import { TopicData } from 'src/domain/topic/models/topicData';
 import { UserId } from 'src/domain/user/models/userId';
 import { UserName } from 'src/domain/user/models/userName';
+import { AnonymousUser } from 'src/domain/user/models/anonymousUser';
+import { LoginUser } from 'src/domain/user/models/loginUser';
+import { IGetTopics } from 'src/domain/topic/types/getTopics';
 
 const topicRepository = new FakeTopicRepository();
 const messageRepository = new FakeMessageRepository();
@@ -39,11 +41,12 @@ describe('TopicのIDにより取得', () => {
     const topics = [];
     for (let i = 0; i < 50; i += 1) {
       const topic = TopicFactory.create(new TopicTitle('test'), user.id, thumbnailUrl, '');
+      // eslint-disable-next-line no-await-in-loop
       await topicRepository.save(TopicEntity.from(topic));
       topics.push(topic);
     }
 
-    const results = await usecase.execute(topics.map(topic => topic.id));
+    const results = await usecase.execute(topics.map((topic) => topic.id));
     for (let i = 0; i < topics.length; i += 1) {
       const result = results[i];
       const topic = topics[i];
@@ -133,6 +136,7 @@ describe('上限を設定して取得', () => {
     const topics = [];
     for (let i = 0; i < 50; i += 1) {
       const topic = TopicFactory.create(new TopicTitle('test'), user.id, thumbnailUrl, '');
+      // eslint-disable-next-line no-await-in-loop
       await topicRepository.save(TopicEntity.from(topic));
       topics.push(topic);
     }
@@ -148,6 +152,7 @@ describe('上限を設定して取得', () => {
     for (let i = 0; i < 10; i += 1) {
       const createdAt = (Math.random() + 1) * 1000000000000;
       const topic = TopicFactory.create(new TopicTitle('test'), user.id, thumbnailUrl, undefined, createdAt);
+      // eslint-disable-next-line no-await-in-loop
       await topicRepository.save(TopicEntity.from(topic));
       topics.push(topic);
     }

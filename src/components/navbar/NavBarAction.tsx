@@ -2,25 +2,24 @@ import styled from 'styled-components';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ParsedUrlQueryInput } from 'querystring';
+import React from 'react';
 
 type Props = {
-  title: string,
-  imgSrc?: string,
-  link: string,
-  linkQuery?: string | ParsedUrlQueryInput,
+  title: string;
+  imgSrc?: string;
+  link: string;
+  linkQuery?: string | ParsedUrlQueryInput;
 };
 
-// tslint:disable-next-line:variable-name
-export const NavButton = ({ title, imgSrc, link, linkQuery }: Props) => {
-  return (<Link href={{ pathname: link, query: linkQuery }}>
+export const NavButton = ({ title, imgSrc, link, linkQuery }: Props) => (
+  <Link href={{ pathname: link, query: linkQuery }}>
     <NavButtonContainer>
-      {imgSrc && <Image height={20} width={20} src={imgSrc}/>}
+      {imgSrc && <Image height={20} width={20} src={imgSrc} />}
       <ActionTitle hasIcon={imgSrc !== undefined}>{title}</ActionTitle>
     </NavButtonContainer>
-  </Link>);
-};
+  </Link>
+);
 
-// tslint:disable-next-line:variable-name
 const NavButtonContainer = styled.div`
   align-items: center;
   display: flex;
@@ -28,17 +27,16 @@ const NavButtonContainer = styled.div`
   font-size: 16px;
   justify-content: center;
   padding: 8px 16px;
-  letter-spacing: .25px;
+  letter-spacing: 0.25px;
   text-align: center;
   text-decoration: none;
 
   &:hover {
-    background-color: rgba(0, 0, 0, .1);
+    background-color: rgba(0, 0, 0, 0.1);
     cursor: pointer;
   }
 `;
 
-// tslint:disable-next-line:variable-name
 const ActionTitle = styled.div<{ hasIcon: boolean }>`
-  margin-left: ${({ hasIcon }) => hasIcon ? 16 : 0}px;
+  margin-left: ${({ hasIcon }) => (hasIcon ? 16 : 0)}px;
 `;

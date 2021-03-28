@@ -1,16 +1,19 @@
 import { FakeTopicRepository } from 'tests/data/topic/fakeTopicRepository';
-import { AnonymousUser, LoginUser } from 'src/domain/user/models/user';
-import { CreateTopic, ICreateTopic } from 'src/domain/topic/usecases/createTopic';
+import { CreateTopic } from 'src/domain/topic/usecases/createTopic';
 import { TopicTitle } from 'src/domain/topic/models/topicTitle';
 import { FakeUserRepository } from 'tests/data/user/FakeUserRepository';
 import { UserId } from 'src/domain/user/models/userId';
 import { UserName } from 'src/domain/user/models/userName';
 import { TopicDescription } from 'src/domain/topic/models/topicDescription';
 import { FakeTopicImageRepository } from 'tests/data/topic/fakeTopicImageRepository';
+import { AnonymousUser } from 'src/domain/user/models/anonymousUser';
+import { LoginUser } from 'src/domain/user/models/loginUser';
+import { ICreateTopic } from 'src/domain/topic/types/createTopic';
 
 const topicRepository = new FakeTopicRepository();
 const topicImageRepository = new FakeTopicImageRepository();
 const userRepository = new FakeUserRepository();
+// eslint-disable-next-line max-len
 const usecase: ICreateTopic = new CreateTopic(topicRepository, topicImageRepository, userRepository);
 
 // Blobの実装がテストで利用できないので、一時的にundefinedを用いる。

@@ -22,6 +22,6 @@ export const isInnerPath = (path: string, hostName?: string): boolean => {
   const pathRegex = new RegExp(/^\//);
   if (!hostName) return pathRegex.test(path);
 
-  const protocolRegex = new RegExp(`^https?://.*\.?${hostName}`);
+  const protocolRegex = new RegExp(`^https?://.*.?${hostName}`);
   return protocolRegex.test(path) || pathRegex.test(path);
 };

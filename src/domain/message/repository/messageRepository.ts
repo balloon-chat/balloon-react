@@ -4,8 +4,10 @@ import { TopicId } from 'src/domain/topic/models/topicId';
 import { Observable } from 'rxjs';
 
 export interface IMessageRepository {
-
-  find(topicId: TopicId, messageId: MessageId): Promise<MessageEntity |  undefined>;
+  find(
+    topicId: TopicId,
+    messageId: MessageId
+  ): Promise<MessageEntity | undefined>;
 
   /**
    * 指定した Topic 内のメッセージの総数を取得

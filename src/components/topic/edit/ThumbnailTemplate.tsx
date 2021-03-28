@@ -1,14 +1,16 @@
-import { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { ImageFileContext } from 'src/components/topic/edit/context';
 
 type Props = {
-  title: string,
-  description?: string,
+  title: string;
+  description?: string;
 };
 
-// tslint:disable-next-line:variable-name
-export const ThumbnailTemplate = ({ title, description }: Props) => {
+export const ThumbnailTemplate = ({
+  title,
+  description,
+}: Props) => {
   const [context, setContext] = useState<CanvasRenderingContext2D>();
   const [image, setImage] = useState<HTMLImageElement>();
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -24,7 +26,7 @@ export const ThumbnailTemplate = ({ title, description }: Props) => {
     const image = new Image();
     image.src = '/images/topic_template.png';
     image.onload = () => setImage(image);
-  },        []);
+  }, []);
 
   useEffect(() => {
     if (!context) return;
@@ -36,31 +38,29 @@ export const ThumbnailTemplate = ({ title, description }: Props) => {
     // 作成された画像をコンテキストに反映
     context?.canvas.toBlob(async (blob) => {
       if (blob) setImageFile(blob);
-    },                     'image/jpeg');
+    }, 'image/jpeg');
+  }, [context, image, title, description]);
 
-  },        [context, image, title, description]);
-
-  return (<Canvas width={1200} ref={canvasRef}/>);
+  return <Canvas width={1200} ref={canvasRef} />;
 };
 
-// tslint:disable-next-line:variable-name
 const Canvas = styled.canvas`
   width: 100%;
 `;
 
-const textHeight = (textMetrics: TextMetrics) => {
+function getTextHeight(textMetrics: TextMetrics) {
   return textMetrics.fontBoundingBoxAscent - textMetrics.fontBoundingBoxDescent;
-};
+}
 
 const draw = (
-    context: CanvasRenderingContext2D,
-    image: HTMLImageElement,
-    title: string,
-    description?: string,
+  context: CanvasRenderingContext2D,
+  image: HTMLImageElement,
+  title: string,
+  description?: string,
 ) => {
-  const canvas = context.canvas;
-  const width = canvas.width;
-  const height = width / image.naturalWidth * image.naturalHeight;
+  const { canvas } = context;
+  const { width } = canvas;
+  const height = (width / image.naturalWidth) * image.naturalHeight;
   canvas.height = height;
 
   /*
@@ -76,33 +76,32 @@ const draw = (
 
   context.font = titleFont;
   const titleMetrics = context.measureText(title);
-  const titleHeight = textHeight(titleMetrics);
+  const titleHeight = getTextHeight(titleMetrics);
 
   if (description) {
-
     context.font = descriptionFont;
     const descriptionMetrics = context.measureText(description);
-    const descriptionHeight = textHeight(descriptionMetrics);
+    const descriptionHeight = getTextHeight(descriptionMetrics);
 
     context.font = titleFont;
     context.fillText(
-        title,
-        (width - titleMetrics.width) / 2,
-        (height + titleHeight - descriptionHeight) / 2,
+      title,
+      (width - titleMetrics.width) / 2,
+      (height + titleHeight - descriptionHeight) / 2,
     );
 
     context.font = descriptionFont;
     context.fillText(
-        description,
-        (width - descriptionMetrics.width) / 2,
-        (height + titleHeight + descriptionHeight) / 2 + 16,
+      description,
+      (width - descriptionMetrics.width) / 2,
+      (height + titleHeight + descriptionHeight) / 2 + 16,
     );
   } else {
     context.font = titleFont;
     context.fillText(
-        title,
-        (width - titleMetrics.width) / 2,
-        (height + titleHeight) / 2,
+      title,
+      (width - titleMetrics.width) / 2,
+      (height + titleHeight) / 2,
     );
   }
 };

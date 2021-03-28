@@ -6,16 +6,15 @@ import { CanvasParameter } from 'src/view/matter/models/canvasParameter';
 import { MatterListAdapter } from 'src/view/matter/lib/matterListAdapter';
 
 export class MatterController {
-
   public readonly adapter: MatterListAdapter;
 
   constructor(
-      public readonly engine: Matter.Engine,
-      public readonly walls: Matter.Body[],
-      public readonly addButton: Matter.Body,
-      public readonly removeAllButton: Matter.Body,
-      public readonly characterController: CharacterController,
-      public readonly canvas: CanvasParameter,
+    public readonly engine: Matter.Engine,
+    public readonly walls: Matter.Body[],
+    public readonly addButton: Matter.Body,
+    public readonly removeAllButton: Matter.Body,
+    public readonly characterController: CharacterController,
+    public readonly canvas: CanvasParameter,
   ) {
     this.adapter = new MatterListAdapter(this);
 
@@ -34,9 +33,13 @@ export class MatterController {
     Matter.Events.on(this.engine, 'beforeUpdate', () => {
       const objects = Matter.Composite.allBodies(this.engine.world);
       const maxSpeed = 10;
-      objects.forEach(object => {
+      objects.forEach((object) => {
         if (object.speed >= maxSpeed) {
-          Matter.Body.setVelocity(object, Matter.Vector.mult(Matter.Vector.normalise(object.velocity), maxSpeed));
+          const velocity = Matter.Vector.mult(
+            Matter.Vector.normalise(object.velocity),
+            maxSpeed,
+          );
+          Matter.Body.setVelocity(object, velocity);
         }
       });
     });
@@ -49,18 +52,24 @@ export class MatterController {
         console.log(`Clicked ${clickObj.label} button.`);
         switch (clickObj.label) {
           case 'character':
-            const clickCharacter = this.characterController.getCharacter(clickObj.id);
+            const clickCharacter = this.characterController.getCharacter(
+              clickObj.id,
+            );
             if (clickCharacter) this.removeCharacter(clickCharacter);
             break;
           case 'addButton':
-            const character = CharacterFactory.create(this.canvas, `${Common.nextId()}`, '新しく追加したオブジェクトです');
+            const character = CharacterFactory.create(
+              this.canvas,
+              `${Common.nextId()}`,
+              '新しく追加したオブジェクトです',
+            );
             this.addCharacter(character);
             break;
           case 'removeAllButton':
-            const characters = Array.from(this.characterController.characters.values());
-            for (const character of characters) {
-              this.removeCharacter(character);
-            }
+            const characters = Array.from(
+              this.characterController.characters.values(),
+            );
+            characters.forEach((character) => this.removeCharacter(character));
             break;
           default:
             break;
@@ -70,14 +79,16 @@ export class MatterController {
 
     // 回転を防止
     Matter.Events.on(this.engine, 'beforeUpdate', () => {
-      const characters = Array.from(this.characterController.characters.values());
-      for (const character of characters) {
+      const characters = Array.from(
+        this.characterController.characters.values(),
+      );
+      characters.forEach((character) => {
         Matter.Body.setAngularVelocity(character.object, 0);
-      }
+      });
     });
   }
 
-  /**エンジンを動かす */
+  /** エンジンを動かす */
   run() {
     Matter.Engine.run(this.engine);
   }

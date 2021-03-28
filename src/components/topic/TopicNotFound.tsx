@@ -3,15 +3,15 @@ import styled from 'styled-components';
 import { Button } from 'src/components/topic/Button';
 import { rootPath } from 'src/view/route/pagePath';
 
-// tslint:disable-next-line:variable-name
-export const TopicNotFound = () => {
-  return(<Container>
+export const TopicNotFound = () => (
+  <Container>
     <Title>話題が見つかりませんでした</Title>
-    <a href={rootPath.index}><Button>ホームに戻る</Button></a>
-  </Container>);
-};
+    <a href={rootPath.index}>
+      <Button>ホームに戻る</Button>
+    </a>
+  </Container>
+);
 
-// tslint:disable-next-line:variable-name
 const Container = styled.div`
   display: flex;
   padding: 32px;
@@ -19,7 +19,6 @@ const Container = styled.div`
   align-items: center;
 `;
 
-// tslint:disable-next-line:variable-name
 const Title = styled.h1`
   font-weight: bold;
 `;

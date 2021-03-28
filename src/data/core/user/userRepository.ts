@@ -1,14 +1,11 @@
 import { IUserRepository } from 'src/domain/user/repository/userRepository';
 import { IUserDatabase } from 'src/data/core/user/userDatabase';
 import { UserId } from 'src/domain/user/models/userId';
-import { LoginUser } from 'src/domain/user/models/user';
 import { UserDto } from 'src/data/core/user/userDto';
+import { LoginUser } from 'src/domain/user/models/loginUser';
 
 export class UserRepository implements IUserRepository {
-  constructor(
-      private readonly userDatabase: IUserDatabase,
-  ) {
-  }
+  constructor(private readonly userDatabase: IUserDatabase) {}
 
   async find(userId: UserId): Promise<LoginUser | undefined> {
     const dto = await this.userDatabase.find(userId.value);

@@ -1,8 +1,7 @@
 import styled from 'styled-components';
 
-// tslint:disable-next-line:variable-name
 export const Button = styled.button`
-  background-color: #5B87FA;
+  background-color: #5b87fa;
   border-style: none;
   border-radius: 5px;
   color: white;
