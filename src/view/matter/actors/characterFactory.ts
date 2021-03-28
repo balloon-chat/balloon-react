@@ -4,7 +4,7 @@ import { CanvasParameter } from 'src/view/matter/models/canvasParameter';
 
 export class CharacterFactory {
   static create(canvas: CanvasParameter, id: string, text: string): Character {
-    const radius: number = 250;
+    const radius: number = 65;
     const x = canvas.center.x + Math.random() * 10;
     const y = canvas.center.y + Math.random() * 10;
     return new Character(
