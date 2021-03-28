@@ -2,26 +2,20 @@ import { IMessageRepository } from 'src/domain/message/repository/messageReposit
 import { ITopicRepository } from 'src/domain/topic/repository/topicRepository';
 import { IUserRepository } from 'src/domain/user/repository/userRepository';
 import { TopicId } from 'src/domain/topic/models/topicId';
-import { TopicData } from 'src/domain/topic/usecases/types';
-
-export interface IGetTopic {
-  execute(topicId: TopicId): Promise<TopicData | undefined>;
-}
+import { TopicData } from 'src/domain/topic/models/topicData';
 
 export class GetTopic {
-
   constructor(
-      private readonly messageRepository: IMessageRepository,
-      private readonly topicRepository: ITopicRepository,
-      private readonly userRepository: IUserRepository,
-  ) {
-  }
+    private readonly messageRepository: IMessageRepository,
+    private readonly topicRepository: ITopicRepository,
+    private readonly userRepository: IUserRepository,
+  ) {}
 
   async execute(topicId: TopicId): Promise<TopicData | undefined> {
     const topic = await this.topicRepository.find(topicId);
-    if (!topic) return;
+    if (!topic) return undefined;
     const createdBy = await this.userRepository.find(topic.createdBy);
-    if (!createdBy) return;
+    if (!createdBy) return undefined;
 
     const commentCount = await this.messageRepository.messageCount(topic.id);
 

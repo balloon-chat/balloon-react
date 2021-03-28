@@ -1,8 +1,8 @@
 import { FakeUserRepository } from 'tests/data/user/FakeUserRepository';
 import { CreateUser, ICreateUser } from 'src/domain/user/usecases/createUser';
-import { LoginUser } from 'src/domain/user/models/user';
 import { UserName } from 'src/domain/user/models/userName';
 import { UserId } from 'src/domain/user/models/userId';
+import { LoginUser } from 'src/domain/user/models/loginUser';
 
 const userRepository = new FakeUserRepository();
 

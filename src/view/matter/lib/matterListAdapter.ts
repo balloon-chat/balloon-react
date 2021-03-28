@@ -5,13 +5,16 @@ import { MatterController } from 'src/view/matter/controllers/matterController';
 import { MessageEntityDiffUtil } from 'src/view/matter/lib/messageEntityDiffUtil';
 
 export class MatterListAdapter extends ListAdapter<MessageEntity> {
-
   constructor(private readonly controller: MatterController) {
     super(new MessageEntityDiffUtil());
   }
 
   protected onAddItem(item: MessageEntity): void {
-    const character = CharacterFactory.create(this.controller.canvas, item.id, item.body);
+    const character = CharacterFactory.create(
+      this.controller.canvas,
+      item.id,
+      item.body,
+    );
     this.controller.addCharacter(character);
   }
 

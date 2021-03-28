@@ -1,17 +1,18 @@
+import React from 'react';
 import styled from 'styled-components';
 import Image from 'next/image';
 import Link from 'next/link';
 import { rootPath } from 'src/view/route/pagePath';
 import { mediaQuery } from 'src/components/constants/mediaQuery';
 
-// tslint:disable-next-line:variable-name
-export const NavBarHeader = () => {
-
-  return (<Container>
+export const NavBarHeader = () => (
+  <Container>
     <TitleRow>
       <RollingTitleWrapper>
-        <RollingTitleSpacer aria-hidden={'true'}>コミュニケーション</RollingTitleSpacer>
-        <RollingTitleContainer aria-hidden={'true'}>
+        <RollingTitleSpacer aria-hidden="true">
+          コミュニケーション
+        </RollingTitleSpacer>
+        <RollingTitleContainer aria-hidden="true">
           <RollingTitle>コミュニケーション</RollingTitle>
           <RollingTitle>アイデア出し</RollingTitle>
           <RollingTitle>会議</RollingTitle>
@@ -21,14 +22,13 @@ export const NavBarHeader = () => {
     </TitleRow>
     <Link href={rootPath.topicPath.create}>
       <CreateTopicButton>
-        <Image src={'/svg/speech_balloon_white.svg'} width={32} height={32}/>
+        <Image src="/svg/speech_balloon_white.svg" width={32} height={32} />
         <span>話題を作る</span>
       </CreateTopicButton>
     </Link>
-  </Container>);
-};
+  </Container>
+);
 
-// tslint:disable-next-line:variable-name
 export const Container = styled.div`
   align-items: center;
   box-sizing: border-box;
@@ -43,7 +43,6 @@ export const Container = styled.div`
   }
 `;
 
-// tslint:disable-next-line:variable-name
 export const TitleRow = styled.div`
   display: flex;
   flex-direction: row;
@@ -52,17 +51,14 @@ export const TitleRow = styled.div`
   flex-wrap: wrap;
 `;
 
-// tslint:disable-next-line:variable-name
 export const Title = styled.h1`
   font-weight: normal;
 `;
 
-// tslint:disable-next-line:variable-name
 const RollingTitleSpacer = styled.h1`
   visibility: hidden;
 `;
 
-// tslint:disable-next-line:variable-name
 const RollingTitle = styled(RollingTitleSpacer)`
   position: absolute;
   top: 0;
@@ -111,7 +107,6 @@ const RollingTitle = styled(RollingTitleSpacer)`
   }
 `;
 
-// tslint:disable-next-line:variable-name
 export const RollingTitleWrapper = styled.div`
   position: relative;
   white-space: nowrap;
@@ -125,7 +120,6 @@ export const RollingTitleWrapper = styled.div`
   }
 `;
 
-// tslint:disable-next-line:variable-name
 export const RollingTitleContainer = styled.div`
   position: absolute;
   top: 0;
@@ -147,11 +141,10 @@ export const RollingTitleContainer = styled.div`
   }
 `;
 
-// tslint:disable-next-line:variable-name
 export const CreateTopicButton = styled.button`
   align-items: center;
   box-sizing: border-box;
-  background-color: #78C4D4;
+  background-color: #78c4d4;
   border: none;
   border-radius: 50px;
   display: flex;

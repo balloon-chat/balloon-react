@@ -1,18 +1,17 @@
 import { GoogleLoginButton } from 'src/components/login/LoginButton';
 import styled from 'styled-components';
+import React from 'react';
 
-// tslint:disable-next-line:variable-name
-export const LoginDialog = () => {
-  return (<DialogContainer>
+export const LoginDialog = () => (
+  <DialogContainer>
     <TitleContainer>
-      <img src={'/images/character_blue.png'} height={60}/>
+      <img alt="" src="/images/character_blue.png" height={60} />
       <h3>おもちゃっとへようこそ！</h3>
     </TitleContainer>
-    <GoogleLoginButton/>
-  </DialogContainer>);
-};
+    <GoogleLoginButton />
+  </DialogContainer>
+);
 
-// tslint:disable-next-line:variable-name
 const DialogContainer = styled.div`
   box-sizing: border-box;
   align-items: center;
@@ -25,7 +24,6 @@ const DialogContainer = styled.div`
   width: 350px;
 `;
 
-// tslint:disable-next-line:variable-name
 const TitleContainer = styled.div`
   align-items: center;
   display: flex;

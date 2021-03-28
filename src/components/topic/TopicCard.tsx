@@ -5,7 +5,6 @@ import Image from 'next/image';
 import { dateFormat } from 'src/view/util/format';
 import React from 'react';
 
-// tslint:disable-next-line:variable-name
 export const TopicCard: React.FC<TopicEntity> = ({
   id,
   title,
@@ -14,16 +13,14 @@ export const TopicCard: React.FC<TopicEntity> = ({
   description,
   createdAt,
   commentCount,
-}) => {
-  return (<Card>
+}) => (
+  <Card>
     <Container href={topicPath.topic(id)}>
       <Thumbnail>
         <ThumbnailImageContainer>
-          <Image src={thumbnailUrl} layout={'fill'} objectFit={'cover'}/>
+          <Image src={thumbnailUrl} layout="fill" objectFit="cover" />
         </ThumbnailImageContainer>
-        {
-          label && <Label labelColor={label.color}>{label.title}</Label>
-        }
+        {label && <Label labelColor={label.color}>{label.title}</Label>}
       </Thumbnail>
       <TopicInformation>
         <TopicTitle>{title}</TopicTitle>
@@ -34,10 +31,9 @@ export const TopicCard: React.FC<TopicEntity> = ({
         </TopicFooter>
       </TopicInformation>
     </Container>
-  </Card>);
-};
+  </Card>
+);
 
-// tslint:disable-next-line:variable-name
 const Card = styled.article`
   box-sizing: border-box;
   border-radius: 5px;
@@ -46,7 +42,6 @@ const Card = styled.article`
   box-shadow: 0 10px 20px -2px rgb(0 64 128 / 20%);
 `;
 
-// tslint:disable-next-line:variable-name
 const Container = styled.a`
   display: flex;
   flex-direction: column;
@@ -54,7 +49,7 @@ const Container = styled.a`
   text-decoration: none;
   height: 100%;
 `;
-// tslint:disable-next-line:variable-name
+
 const Thumbnail = styled.div`
   box-sizing: border-box;
   height: 250px;
@@ -63,7 +58,6 @@ const Thumbnail = styled.div`
   overflow: hidden;
 `;
 
-// tslint:disable-next-line:variable-name
 const ThumbnailImageContainer = styled.div`
   overflow: hidden;
   max-height: 250px;
@@ -74,7 +68,7 @@ const ThumbnailImageContainer = styled.div`
 // tslint:disable-next-line:variable-name
 const Label = styled.div<{ labelColor: string }>`
   color: white;
-  background-color: ${props => props.labelColor};
+  background-color: ${(props) => props.labelColor};
   position: absolute;
   left: 0;
   bottom: 0;

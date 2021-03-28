@@ -1,7 +1,7 @@
 import { IUserRepository } from 'src/domain/user/repository/userRepository';
-import { LoginUser } from 'src/domain/user/models/user';
 import { UserName } from 'src/domain/user/models/userName';
 import { UserId } from 'src/domain/user/models/userId';
+import { LoginUser } from 'src/domain/user/models/loginUser';
 
 export interface ICreateUser {
   /**
@@ -14,10 +14,13 @@ export interface ICreateUser {
 }
 
 export class CreateUser implements ICreateUser {
-  constructor(private readonly userRepository: IUserRepository) {
-  }
+  constructor(private readonly userRepository: IUserRepository) {}
 
-  async execute(userId: string, name?: string, thumbnailUrl?: string): Promise<void> {
+  async execute(
+    userId: string,
+    name?: string,
+    thumbnailUrl?: string,
+  ): Promise<void> {
     const userName = name ? new UserName(name) : undefined;
     const user = new LoginUser(new UserId(userId), userName, thumbnailUrl);
 

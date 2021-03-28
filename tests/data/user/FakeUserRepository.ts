@@ -1,7 +1,7 @@
 import { IUserRepository } from 'src/domain/user/repository/userRepository';
 import { UserId } from 'src/domain/user/models/userId';
-import { LoginUser } from 'src/domain/user/models/user';
 import { FakeBaseRepository } from 'tests/data/FakeBaseRepository';
+import { LoginUser } from 'src/domain/user/models/loginUser';
 
 export class FakeUserRepository implements IUserRepository {
   private repository = new FakeBaseRepository<string, LoginUser>();

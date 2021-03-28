@@ -4,12 +4,8 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import firebase from 'firebase';
 
 export class FirebaseMessageDatabase implements IMessageDatabase {
-  private constructor(
-      private readonly database = firebase.database(),
-  ) {
-  }
+  private constructor(private readonly database = firebase.database()) {}
 
-  // tslint:disable-next-line:variable-name
   private static _instance: IMessageDatabase;
 
   static get instance(): IMessageDatabase {
@@ -19,7 +15,10 @@ export class FirebaseMessageDatabase implements IMessageDatabase {
     return this._instance;
   }
 
-  async find(topicId: string, messageId: string): Promise<MessageDto | undefined> {
+  async find(
+    topicId: string,
+    messageId: string,
+  ): Promise<MessageDto | undefined> {
     const snapshot = await this.messageRef(topicId, messageId).once('value');
     return MessageDto.fromJSON(snapshot.toJSON());
   }
@@ -27,18 +26,19 @@ export class FirebaseMessageDatabase implements IMessageDatabase {
   observeAll(topicId: string): Observable<MessageDto[]> {
     const behaviorSubject = new BehaviorSubject<MessageDto[]>([]);
     this.messagesRef(topicId).on(
-        'value',
-        (snapshots) => {
-          const data: MessageDto[] = [];
-          snapshots.forEach((snapshot) => {
-            const dto = MessageDto.fromJSON(snapshot.toJSON());
-            if (dto) data.push(dto);
-          });
-          if (!behaviorSubject.closed) behaviorSubject.next(data);
-        },
-        (error) => {
-          if (!behaviorSubject.closed) behaviorSubject.error(error);
+      'value',
+      (snapshots) => {
+        const data: MessageDto[] = [];
+        snapshots.forEach((snapshot) => {
+          const dto = MessageDto.fromJSON(snapshot.toJSON());
+          if (dto) data.push(dto);
         });
+        if (!behaviorSubject.closed) behaviorSubject.next(data);
+      },
+      (error) => {
+        if (!behaviorSubject.closed) behaviorSubject.error(error);
+      },
+    );
 
     return behaviorSubject.asObservable();
   }
@@ -54,5 +54,7 @@ export class FirebaseMessageDatabase implements IMessageDatabase {
   }
 
   private messagesRef = (topicId: string) => this.database.ref(`/messages/${topicId}`);
+
+  // eslint-disable-next-line max-len
   private messageRef = (topicId: string, messageId: string) => this.messagesRef(topicId).child(messageId);
 }

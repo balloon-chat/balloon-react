@@ -8,74 +8,87 @@ import { fetchTopicsFrom } from 'src/data/redux/topic/action';
 import { useTopicState } from 'src/data/redux/topic/selector';
 
 export type TopicListProps = {
-  pickup?: TopicEntity | null,
-  topics: TopicEntity[],
+  pickup?: TopicEntity | null;
+  topics: TopicEntity[];
 };
 
 /**
  * 引数で渡されたTopicのみを表示するコンポーネント
- * @param pickup　強調して表示するTopic
+ * @param pickup 強調して表示するTopic
  * @param topics 一覧で表示するTopic
  */
-// tslint:disable-next-line:variable-name
-export const TopicList: React.FC<TopicListProps> = ({ topics, pickup }) => {
-  return (<>
-    {
-      pickup && <PickupCard>
-          <TopicCard {...pickup}/>
+
+export const TopicList: React.FC<TopicListProps> = ({ topics, pickup }) => (
+  <>
+    {pickup && (
+      <PickupCard>
+        <TopicCard {...pickup} />
       </PickupCard>
-    }
+    )}
     <TopicListContainer>
-      {topics && topics.map((topic, index) => {
-        return (<li key={index}><TopicCard {...topic}/></li>);
-      })}
+      {topics
+        && topics.map((topic, index) => (
+          <li key={index}>
+            <TopicCard {...topic} />
+          </li>
+        ))}
     </TopicListContainer>
-  </>);
-};
+  </>
+);
 
 /**
  * Reduxの状態に合わせて、Topicの一覧を表示するコンポーネント。
  * 無限スクロールが実装されている。
- * @param pickup　強調して表示するTopic
+ * @param pickup 強調して表示するTopic
  */
-// tslint:disable-next-line:variable-name
-export const ScrollableTopicList: React.FC<{ pickup?: TopicEntity | null }> = ({ pickup }) => {
+
+export const ScrollableTopicList: React.FC<{ pickup?: TopicEntity | null }> = ({
+  pickup,
+}) => {
   const dispatcher = useDispatch();
   const { topics } = useTopicState();
 
-  const loader = () => {
-    return <div>Loading...</div>;
-  };
+  const loader = () => <div>Loading...</div>;
 
   const fetchData = () => {
-    dispatcher(fetchTopicsFrom({
-      from: topics.length > 1 ? topics[topics.length - 1].id : undefined,
-    } as const));
+    dispatcher(
+      fetchTopicsFrom({
+        from: topics.length > 1 ? topics[topics.length - 1].id : undefined,
+      } as const),
+    );
   };
 
-  return (<>
-    {
-      pickup && <PickupCard>
-          <TopicCard {...pickup}/>
-      </PickupCard>
-    }
-    <InfiniteScroll dataLength={topics.length} next={fetchData} hasMore={true} loader={loader}>
-      <TopicListContainer>
-        {topics && topics.map((topic, index) => {
-          return (<li key={index}><TopicCard {...topic}/></li>);
-        })}
-      </TopicListContainer>
-    </InfiniteScroll>
-  </>);
+  return (
+    <>
+      {pickup && (
+        <PickupCard>
+          <TopicCard {...pickup} />
+        </PickupCard>
+      )}
+      <InfiniteScroll
+        dataLength={topics.length}
+        next={fetchData}
+        hasMore
+        loader={loader}
+      >
+        <TopicListContainer>
+          {topics
+            && topics.map((topic, index) => (
+              <li key={index}>
+                <TopicCard {...topic} />
+              </li>
+            ))}
+        </TopicListContainer>
+      </InfiniteScroll>
+    </>
+  );
 };
 
-// tslint:disable-next-line:variable-name
 const PickupCard = styled.div`
   max-width: 1050px;
   margin-bottom: 16px;
 `;
 
-// tslint:disable-next-line:variable-name
 const TopicListContainer = styled.ul`
   align-items: stretch;
   display: flex;

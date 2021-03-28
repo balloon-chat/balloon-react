@@ -1,20 +1,21 @@
-import { GetRecommendTopics, IGetRecommendTopics } from 'src/domain/topic/usecases/getRecommendTopics';
+import { GetRecommendTopics } from 'src/domain/topic/usecases/getRecommendTopics';
 import { FakeMessageRepository } from 'tests/data/message/FakeMessageRepository';
 import { FakeTopicRepository } from 'tests/data/topic/fakeTopicRepository';
 import { FakeUserRepository } from 'tests/data/user/FakeUserRepository';
 import { FakeRecommendTopicRepository } from 'tests/data/topic/fakeRecommendTopicRepository';
 import { TopicFactory } from 'src/domain/topic/models/topic';
-import { LoginUser } from 'src/domain/user/models/user';
 import { UserName } from 'src/domain/user/models/userName';
 import { UserId } from 'src/domain/user/models/userId';
 import { TopicTitle } from 'src/domain/topic/models/topicTitle';
 import { TopicEntity } from 'src/domain/topic/repository/topicEntity';
-import { TopicDataFactory } from 'src/domain/topic/usecases/types';
+import { TopicDataFactory } from 'src/domain/topic/models/topicData';
 import { RecommendTopicEntity } from 'src/domain/topic/repository/recommendTopicEntity';
 import { MessageFactory } from 'src/domain/message/models/message';
 import { MessageBody } from 'src/domain/message/models/messageBody';
 import { MessageEntity } from 'src/domain/message/repository/messageEntity';
 import { GetTopics } from 'src/domain/topic/usecases/getTopics';
+import { LoginUser } from 'src/domain/user/models/loginUser';
+import { IGetRecommendTopics } from 'src/domain/topic/types/getRecommendTopics';
 
 const messageRepository = new FakeMessageRepository();
 const topicRepository = new FakeTopicRepository();
@@ -22,8 +23,8 @@ const recommendTopicRepository = new FakeRecommendTopicRepository();
 const userRepository = new FakeUserRepository();
 
 const usecase: IGetRecommendTopics = new GetRecommendTopics(
-    new GetTopics(messageRepository, topicRepository, userRepository),
-    recommendTopicRepository,
+  new GetTopics(messageRepository, topicRepository, userRepository),
+  recommendTopicRepository,
 );
 
 const user = new LoginUser(new UserId(), new UserName('test'), 'test');

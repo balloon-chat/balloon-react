@@ -1,4 +1,3 @@
-// tslint:disable-next-line:variable-name
 import React, { useEffect } from 'react';
 import { MessageField } from 'src/components/chat/MessageField';
 import { NavBar } from 'src/components/navbar/NavBar';
@@ -19,10 +18,9 @@ import { observeStart } from 'src/data/redux/message/slice';
 import { useTopicState } from 'src/data/redux/topic/selector';
 
 type Props = {
-  topic: TopicEntity | null,
+  topic: TopicEntity | null;
 };
 
-// tslint:disable-next-line:variable-name
 const TopicPage = ({ topic }: Props) => {
   const dispatcher = useDispatch();
   const { isLoggedIn } = useUserSelector();
@@ -38,27 +36,29 @@ const TopicPage = ({ topic }: Props) => {
       dispatcher(setTopicId({ topicId: null }));
       if (!isLoggedIn) dispatcher(setUserId(null));
     };
-  },        []);
+  }, []);
 
   useEffect(() => {
     if (topicId) dispatcher(observeStart({ topicId }));
-  },        [topicId]);
+  }, [topicId]);
 
-  return (<Container>
-    <NavBar/>
-    {topic && (<>
+  return (
+    <Container>
+      <NavBar />
+      {topic && (
+        <>
           <Head>
             <title>{topicPath.title(topic.title)}</title>
           </Head>
-          <Sketch/>
-          <MessageField/>
+          <Sketch />
+          <MessageField />
         </>
-    )}
-    {!topic && (<TopicNotFound/>)}
-  </Container>);
+      )}
+      {!topic && <TopicNotFound />}
+    </Container>
+  );
 };
 
-// tslint:disable-next-line:variable-name
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -66,7 +66,9 @@ const Container = styled.div`
   height: 100%;
 `;
 
-export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
+export const getServerSideProps: GetServerSideProps<Props> = async (
+  context,
+) => {
   const { id } = context.query;
   if (typeof id !== 'string') return { props: { topic: null } };
 

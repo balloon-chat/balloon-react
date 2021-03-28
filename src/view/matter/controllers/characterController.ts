@@ -1,8 +1,6 @@
 import { Character } from 'src/view/matter/actors/character';
 
 export class CharacterController {
-
-  // tslint:disable-next-line:variable-name
   private readonly _characters: Map<string, Character>;
 
   constructor() {
@@ -15,9 +13,10 @@ export class CharacterController {
 
   inspect() {
     let str: string = 'charactersに入っている要素\n';
-    for (const character of Array.from(this.characters.values())) {
+    const characters = Array.from(this.characters.values());
+    characters.forEach((character) => {
       str += `Body: ${character.object.id}\nText: ${character.text}\n`;
-    }
+    });
     console.log(str);
   }
 

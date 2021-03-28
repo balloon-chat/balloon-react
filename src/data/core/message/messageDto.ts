@@ -5,12 +5,11 @@ import { UserId } from 'src/domain/user/models/userId';
 
 export class MessageDto {
   constructor(
-      readonly id: string,
-      readonly body: string,
-      readonly createdAt: number,
-      readonly senderId: string,
-  ) {
-  }
+    readonly id: string,
+    readonly body: string,
+    readonly createdAt: number,
+    readonly senderId: string,
+  ) {}
 
   static toEntities(dto: MessageDto[]): MessageEntity[] {
     return dto.map((d: MessageDto) => d.toEntity());
@@ -18,31 +17,27 @@ export class MessageDto {
 
   static from(message: MessageEntity): MessageDto {
     return new MessageDto(
-        message.id.value,
-        message.body.value,
-        message.createdAt,
-        message.senderId.value,
+      message.id.value,
+      message.body.value,
+      message.createdAt,
+      message.senderId.value,
     );
   }
 
   static fromJSON(json: Object | null): MessageDto | undefined {
     if (json && isMessageJSON(json)) {
       const src = json as MessageJSON;
-      return new MessageDto(
-          src.id,
-          src.body,
-          src.createdAt,
-          src.senderId,
-      );
+      return new MessageDto(src.id, src.body, src.createdAt, src.senderId);
     }
+    return undefined;
   }
 
   toEntity(): MessageEntity {
     return new MessageEntity(
-        new MessageId(this.id),
-        new MessageBody(this.body),
-        this.createdAt,
-        new UserId(this.senderId),
+      new MessageId(this.id),
+      new MessageBody(this.body),
+      this.createdAt,
+      new UserId(this.senderId),
     );
   }
 
@@ -57,15 +52,13 @@ export class MessageDto {
 }
 
 export type MessageJSON = {
-  id: string,
-  body: string,
-  createdAt: number,
-  senderId: string,
+  id: string;
+  body: string;
+  createdAt: number;
+  senderId: string;
 };
 
-const isMessageJSON = (obj: any): obj is MessageJSON => {
-  return typeof obj.id === 'string'
-      && typeof obj.body === 'string'
-      && typeof obj.createdAt === 'number'
-      && typeof obj.senderId === 'string';
-};
+const isMessageJSON = (obj: any): obj is MessageJSON => typeof obj.id === 'string'
+  && typeof obj.body === 'string'
+  && typeof obj.createdAt === 'number'
+  && typeof obj.senderId === 'string';

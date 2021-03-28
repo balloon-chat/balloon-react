@@ -1,8 +1,7 @@
 import { FakeTopicRepository } from 'tests/data/topic/fakeTopicRepository';
 import { FakeMessageRepository } from 'tests/data/message/FakeMessageRepository';
 import { FakeUserRepository } from 'tests/data/user/FakeUserRepository';
-import { GetTopic, IGetTopic } from 'src/domain/topic/usecases/getTopic';
-import { AnonymousUser, LoginUser } from 'src/domain/user/models/user';
+import { GetTopic } from 'src/domain/topic/usecases/getTopic';
 import { TopicFactory } from 'src/domain/topic/models/topic';
 import { TopicTitle } from 'src/domain/topic/models/topicTitle';
 import { TopicEntity } from 'src/domain/topic/repository/topicEntity';
@@ -12,6 +11,9 @@ import { MessageEntity } from 'src/domain/message/repository/messageEntity';
 import { TopicId } from 'src/domain/topic/models/topicId';
 import { UserId } from 'src/domain/user/models/userId';
 import { UserName } from 'src/domain/user/models/userName';
+import { AnonymousUser } from 'src/domain/user/models/anonymousUser';
+import { LoginUser } from 'src/domain/user/models/loginUser';
+import { IGetTopic } from 'src/domain/topic/types/getTopic';
 
 const topicRepository = new FakeTopicRepository();
 const messageRepository = new FakeMessageRepository();

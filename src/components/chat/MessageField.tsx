@@ -5,15 +5,13 @@ import { sendMessage as sendMessageAction } from 'src/data/redux/message/action'
 import { useTopicState } from 'src/data/redux/topic/selector';
 import { useUserSelector } from 'src/data/redux/user/selector';
 
-// tslint:disable-next-line:variable-name
 export const MessageField = () => {
-
   const dispatcher = useDispatch();
 
   const [text, setText] = useState('');
   const [isVisible, setIsVisible] = useState(true);
 
-  const topicId = useTopicState().topicId;
+  const { topicId } = useTopicState();
   const userId = useUserSelector().uid;
 
   const handleInput = (value: string | null) => {
@@ -33,20 +31,21 @@ export const MessageField = () => {
     if (topicId && userId) dispatcher(sendMessageAction({ message, userId, topicId }));
   };
 
-  return (<MessageForm>
-    <TextFieldContainer>
-      {isVisible && <Placeholder aria-hidden={true}>メッセージを送信</Placeholder>}
-      <TextField
-          contentEditable={true}
+  return (
+    <MessageForm>
+      <TextFieldContainer>
+        {isVisible && <Placeholder aria-hidden>メッセージを送信</Placeholder>}
+        <TextField
+          contentEditable
           onInput={(e) => handleInput(e.currentTarget.textContent)}
           onKeyPress={handleKeyPress}
-          role={'text'}
-      />
-    </TextFieldContainer>
-  </MessageForm>);
+          role="textbox"
+        />
+      </TextFieldContainer>
+    </MessageForm>
+  );
 };
 
-// tslint:disable-next-line:variable-name
 const MessageForm = styled.form`
   box-sizing: border-box;
   display: flex;
@@ -54,10 +53,9 @@ const MessageForm = styled.form`
   width: 100%;
 `;
 
-// tslint:disable-next-line:variable-name
 const TextFieldContainer = styled.div`
   background-color: white;
-  border: rgba(0, 0, 0, .2) solid 1px;
+  border: rgba(0, 0, 0, 0.2) solid 1px;
   border-radius: 8px;
   box-shadow: black;
   margin-bottom: 24px;
@@ -65,12 +63,10 @@ const TextFieldContainer = styled.div`
   width: 100%;
 `;
 
-// tslint:disable-next-line:variable-name
 const TextFieldCommon = styled.div`
   padding: 8px;
 `;
 
-// tslint:disable-next-line:variable-name
 const TextField = styled(TextFieldCommon)`
   outline: none;
   white-space: pre-wrap;
@@ -78,7 +74,6 @@ const TextField = styled(TextFieldCommon)`
   -webkit-user-modify: read-write-plaintext-only;
 `;
 
-// tslint:disable-next-line:variable-name
 const Placeholder = styled(TextFieldCommon)`
   color: #72767d;
   left: 0;

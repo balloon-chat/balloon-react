@@ -1,7 +1,6 @@
 import assert from 'assert';
 
 export class UserName {
-
   static readonly MAX_NAME_SIZE = 20;
 
   constructor(public readonly value: string) {

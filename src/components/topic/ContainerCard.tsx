@@ -1,12 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 
-// tslint:disable-next-line:variable-name
-export const ContainerCard: React.FC = ({ children }) => {
-  return (<Card>{children}</Card>);
-};
+export const ContainerCard: React.FC = ({ children }) => (
+  <Card>{children}</Card>
+);
 
-// tslint:disable-next-line:variable-name
 const Card = styled.div`
   box-sizing: border-box;
   border-radius: 5px;

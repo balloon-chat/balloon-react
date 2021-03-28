@@ -6,11 +6,10 @@ import { useMessageState } from 'src/data/redux/message/selector';
 import styled from 'styled-components';
 
 const controller = MatterControllerFactory.create(
-    document.documentElement.clientWidth,
-    document.documentElement.clientHeight,
+  document.documentElement.clientWidth,
+  document.documentElement.clientHeight,
 );
 
-// tslint:disable-next-line:variable-name
 export const Canvas: React.FC = () => {
   const { messages } = useMessageState();
   const renderRef = useRef<HTMLDivElement>(null);
@@ -18,28 +17,33 @@ export const Canvas: React.FC = () => {
   useEffect(() => {
     if (!messages) return;
     controller.adapter.submit(messages);
-  },        [messages]);
+  }, [messages]);
 
   useEffect(() => {
-    if (!renderRef.current) return;
+    if (!renderRef.current) return undefined;
     const parent = renderRef.current;
 
     const p5 = new P5Types((p: P5Types) => {
+      // eslint-disable-next-line no-param-reassign
       p.setup = () => setup(p, parent);
+      // eslint-disable-next-line no-param-reassign
       p.draw = () => draw(p);
     });
 
     return () => {
       p5.remove();
     };
-  },        [renderRef]);
+  }, [renderRef]);
 
   const setup = (p5: P5Types, canvasParentRef: Element) => {
-    const renderer = p5.createCanvas(canvasParentRef.clientWidth, canvasParentRef.clientHeight);
+    const renderer = p5.createCanvas(
+      canvasParentRef.clientWidth,
+      canvasParentRef.clientHeight,
+    );
     renderer.parent(canvasParentRef);
 
     // 壁の描画
-    controller.walls.forEach(object => {
+    controller.walls.forEach((object) => {
       p5.fill(p5.color('white'));
       drawVertices(p5, object.vertices);
     });
@@ -65,16 +69,15 @@ export const Canvas: React.FC = () => {
     drawVertices(p5, controller.removeAllButton.vertices);
 
     // キャラクターの描画
-    const characters = Array.from(controller.characterController.characters.values());
-    for (const character of characters) {
-      character.draw(p5);
-    }
+    const characters = Array.from(
+      controller.characterController.characters.values(),
+    );
+    characters.forEach((character) => character.draw(p5));
   };
 
-  return (<Container ref={renderRef}/>);
+  return <Container ref={renderRef} />;
 };
 
-// tslint:disable-next-line:variable-name
 const Container = styled.div`
   box-sizing: border-box;
   flex: 1 1 auto;

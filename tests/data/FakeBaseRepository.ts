@@ -3,6 +3,7 @@ import { map } from 'rxjs/operators';
 
 export class FakeBaseRepository<K, V> {
   private data = new Map<K, V>();
+
   private behaviorSubject = new BehaviorSubject<Map<K, V>>(this.data);
 
   save(key: K, value: V) {
@@ -20,12 +21,12 @@ export class FakeBaseRepository<K, V> {
 
   observe(key: K): Observable<V | undefined> {
     return this.behaviorSubject
-        .pipe(map(data => data.get(key)));
+      .pipe(map((data) => data.get(key)));
   }
 
   observeAll(): Observable<V[]> {
     return this.behaviorSubject
-        .pipe(map(data => Array.from(data.values())));
+      .pipe(map((data) => Array.from(data.values())));
   }
 
   delete(key: K) {

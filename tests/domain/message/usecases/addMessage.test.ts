@@ -1,9 +1,10 @@
 import { UserId } from 'src/domain/user/models/userId';
 import { IMessageRepository } from 'src/domain/message/repository/messageRepository';
 import { FakeMessageRepository } from 'tests/data/message/FakeMessageRepository';
-import { AddMessage, IAddMessage } from 'src/domain/message/usecases/addMessage';
+import { AddMessage } from 'src/domain/message/usecases/addMessage';
 import { MessageBody } from 'src/domain/message/models/messageBody';
 import { TopicId } from 'src/domain/topic/models/topicId';
+import { IAddMessage } from 'src/domain/message/types/addMessage';
 
 const messageRepository: IMessageRepository = new FakeMessageRepository();
 const usecase: IAddMessage = new AddMessage(messageRepository);

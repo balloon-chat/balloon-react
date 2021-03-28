@@ -16,9 +16,11 @@ export class FakeMessageRepository implements IMessageRepository {
   }
 
   observeAll(topicId: TopicId): Observable<MessageEntity[]> {
-    return this.repository.observe(topicId).pipe(map((messages) => {
-      return messages ? Array.from(messages.values()) : [];
-    }));
+    return this.repository
+      .observe(topicId)
+      .pipe(
+        map((messages) => (messages ? Array.from(messages.values()) : [])),
+      );
   }
 
   save(topicId: TopicId, message: MessageEntity): Promise<void> {

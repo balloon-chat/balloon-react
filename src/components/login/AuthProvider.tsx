@@ -4,7 +4,6 @@ import firebase from 'firebase/app';
 import 'firebase/auth';
 import { setIsUserLoggedIn, setPhotoUrl, setUserId } from 'src/data/redux/user/slice';
 
-// tslint:disable-next-line:variable-name
 export const AuthProvider: React.FC = ({ children }) => {
   const dispatcher = useDispatch();
 
@@ -18,7 +17,7 @@ export const AuthProvider: React.FC = ({ children }) => {
     return () => {
       unsubscribe();
     };
-  },        []);
+  }, []);
 
-  return (<>{children}</>);
+  return <>{children}</>;
 };

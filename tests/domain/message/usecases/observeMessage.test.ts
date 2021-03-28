@@ -2,14 +2,16 @@ import { IMessageRepository } from 'src/domain/message/repository/messageReposit
 import { FakeMessageRepository } from 'tests/data/message/FakeMessageRepository';
 import { FakeUserRepository } from 'tests/data/user/FakeUserRepository';
 import { TopicId } from 'src/domain/topic/models/topicId';
-import { AnonymousUser, LoginUser } from 'src/domain/user/models/user';
 import { Message, MessageFactory } from 'src/domain/message/models/message';
 import { MessageBody } from 'src/domain/message/models/messageBody';
-import { IObserveMessages, ObserveMessages } from 'src/domain/message/usecases/observeMessages';
+import { ObserveMessages } from 'src/domain/message/usecases/observeMessages';
 import { MessageEntity } from 'src/domain/message/repository/messageEntity';
 import { UserId } from 'src/domain/user/models/userId';
 import { UserName } from 'src/domain/user/models/userName';
 import { MessageId } from 'src/domain/message/models/messageId';
+import { AnonymousUser } from 'src/domain/user/models/anonymousUser';
+import { LoginUser } from 'src/domain/user/models/loginUser';
+import { IObserveMessages } from 'src/domain/message/types/observeMessages';
 
 const messageRepository: IMessageRepository = new FakeMessageRepository();
 const userRepository = new FakeUserRepository();
@@ -35,7 +37,7 @@ test('ログインユーザーの作成したMessageを取得', async (done) => 
   await messageRepository.save(topicId, MessageEntity.from(message));
 
   usecase.execute(topicId).subscribe({
-    next: async value => {
+    next: async (value) => {
       /*
       Expected:
         Result: Message(body=MessageBody, sender=User)
@@ -61,7 +63,7 @@ test('削除されたユーザーからのメッセージを取得', async (done
   await messageRepository.save(topicId, MessageEntity.from(message));
 
   usecase.execute(topicId).subscribe({
-    next: async value => {
+    next: async (value) => {
       /*
       Expected:
         匿名ユーザーとして取得する。
@@ -89,7 +91,7 @@ test('匿名ユーザーからのメッセージを取得', async (done) => {
   await messageRepository.save(topicId, MessageEntity.from(message));
 
   usecase.execute(topicId).subscribe({
-    next: async value => {
+    next: async (value) => {
       /*
       Expected:
         Result: Message(body=MessageBody, sender=AnonymousUser)
@@ -107,11 +109,12 @@ test('作成日を降順にして取得', async (done) => {
   const topicId = new TopicId();
   for (let i = 0; i < 50; i += 1) {
     const message = new Message(new MessageId(), new MessageBody('test'), Math.random(), user);
+    // eslint-disable-next-line no-await-in-loop
     await messageRepository.save(topicId, MessageEntity.from(message));
   }
 
   usecase.execute(topicId).subscribe({
-    next: async result => {
+    next: async (result) => {
       /*
       Expected:
         Result: Message(body=MessageBody, sender=User)

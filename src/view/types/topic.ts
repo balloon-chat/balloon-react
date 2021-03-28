@@ -1,16 +1,16 @@
-import { TopicData } from 'src/domain/topic/usecases/types';
+import { TopicData } from 'src/domain/topic/models/topicData';
 
 export type TopicEntity = {
-  id: string,
-  title: string,
-  description?: string | null,
-  createdAt: number,
-  thumbnailUrl: string,
-  commentCount: number,
+  id: string;
+  title: string;
+  description?: string | null;
+  createdAt: number;
+  thumbnailUrl: string;
+  commentCount: number;
   label?: {
-    title: string,
-    color: string,
-  } | null,
+    title: string;
+    color: string;
+  } | null;
 };
 
 export class TopicEntityFactory {

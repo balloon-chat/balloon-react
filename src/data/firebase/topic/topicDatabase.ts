@@ -4,10 +4,7 @@ import firebase from 'firebase/app';
 import 'firebase/database';
 
 export class FirebaseTopicDatabase implements ITopicDatabase {
-  private constructor(
-      private readonly database = firebase.database(),
-  ) {
-  }
+  private constructor(private readonly database = firebase.database()) {}
 
   // tslint:disable-next-line:variable-name
   private static _instance: ITopicDatabase;
@@ -34,7 +31,10 @@ export class FirebaseTopicDatabase implements ITopicDatabase {
     return data;
   }
 
-  async findAllSortByCreatedAt(limit: number, from?: string): Promise<TopicDto[]> {
+  async findAllSortByCreatedAt(
+    limit: number,
+    from?: string,
+  ): Promise<TopicDto[]> {
     let query = this.topicsRef().orderByChild('createdAt').limitToLast(limit);
     if (from) query = query.startAfter(from);
 
@@ -54,5 +54,6 @@ export class FirebaseTopicDatabase implements ITopicDatabase {
   }
 
   private topicsRef = () => this.database.ref('/topics');
+
   private topicRef = (topicId: string) => this.topicsRef().child(topicId);
 }

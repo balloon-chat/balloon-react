@@ -8,21 +8,22 @@ import { map } from 'rxjs/operators';
 import { MessageDto } from 'src/data/core/message/messageDto';
 
 export class MessageRepository implements IMessageRepository {
+  constructor(private readonly messageDatabase: IMessageDatabase) {}
 
-  constructor(
-      private readonly messageDatabase: IMessageDatabase,
-  ) {
-  }
-
-  async find(topicId: TopicId, messageId: MessageId): Promise<MessageEntity | undefined> {
+  async find(
+    topicId: TopicId,
+    messageId: MessageId,
+  ): Promise<MessageEntity | undefined> {
     const dto = await this.messageDatabase.find(topicId.value, messageId.value);
     return dto?.toEntity();
   }
 
   observeAll(topicId: TopicId): Observable<MessageEntity[]> {
-    return this.messageDatabase.observeAll(topicId.value).pipe<MessageEntity[]>(
+    return this.messageDatabase
+      .observeAll(topicId.value)
+      .pipe<MessageEntity[]>(
         map((dto: MessageDto[]) => MessageDto.toEntities(dto)),
-    );
+      );
   }
 
   async save(topicId: TopicId, message: MessageEntity): Promise<void> {

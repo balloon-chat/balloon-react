@@ -10,17 +10,17 @@ import { drawVertices } from 'src/view/matter/util/drawVertices';
  *  @param {number} radius 円の半径
  */
 export class Character {
-
   // tslint:disable-next-line:variable-name
   protected readonly _text: string;
+
   // tslint:disable-next-line:variable-name
   private readonly _object: Matter.Body;
 
   constructor(
-      readonly id: string,
-      object: Matter.Body,
-      text: string,
-      readonly radius: number,
+    readonly id: string,
+    object: Matter.Body,
+    text: string,
+    readonly radius: number,
   ) {
     this._object = object;
     this._object.id = Common.nextId();
@@ -54,11 +54,17 @@ export class Character {
     // textの描画
     const textSize = 70;
     const degree = 50; // 度数法で入力 ( 0 < degree < 90 )
-    const radian = degree * Math.PI / 180; // 弧度法
+    const radian = (degree * Math.PI) / 180; // 弧度法
     const rSine = this.radius * Math.sin(radian);
     const rCosine = this.radius * Math.cos(radian);
     p5.textSize(textSize);
     p5.textAlign('center', 'center');
-    p5.text(this.text, this.object.position.x - rCosine, this.object.position.y - rSine, 2 * rCosine, 2 * rSine);
+    p5.text(
+      this.text,
+      this.object.position.x - rCosine,
+      this.object.position.y - rSine,
+      2 * rCosine,
+      2 * rSine,
+    );
   }
 }
