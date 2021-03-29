@@ -1,8 +1,6 @@
 import React, { useEffect } from 'react';
 import { ScrollableTopicList, TopicList } from 'src/components/topic/TopicList';
 import { NavBarHome } from 'src/components/navbar/NavBar';
-import { ContainerCard } from 'src/components/topic/ContainerCard';
-import { TopicContainer } from 'src/pages/topics';
 import styled from 'styled-components';
 import { GetServerSideProps } from 'next';
 import { TopicService } from 'src/domain/topic/service/topicService';
@@ -10,6 +8,10 @@ import { TopicEntity, TopicEntityFactory } from 'src/view/types/topic';
 import { useDispatch } from 'react-redux';
 import { setTopics } from 'src/data/redux/topic/slice';
 import { BottomNavigation } from 'src/components/navbar/bottomNavigation/BottomNavigation';
+import { TopicContainer } from 'src/components/topic/TopicContainer';
+import { useRouter } from 'next/router';
+import { rootPath } from 'src/view/route/pagePath';
+import { Button } from 'src/components/common/Button';
 
 type Props = {
   pickup: {
@@ -19,33 +21,42 @@ type Props = {
   newest: TopicEntity[];
 };
 
-const IndexPage: React.FC<Props> = ({ pickup, newest }) => {
+const IndexPage: React.FC<Props> = ({
+  pickup,
+  newest,
+}) => {
   const dispatcher = useDispatch();
+  const router = useRouter();
 
   useEffect(() => {
     dispatcher(setTopics({ topics: newest }));
   }, []);
 
+  const showMore = async () => {
+    await router.push(rootPath.topicPath.index);
+  };
+
   return (
     <>
       <NavBarHome />
       <TopicContainer>
-        <ContainerCard>
-          <Title>
-            <TitleImage src="/images/character_yellow.png" />
-            <div>注目の話題</div>
-          </Title>
-          <Container>
-            <TopicList topics={pickup.topics} pickup={pickup.main} />
-          </Container>
-          <Title>
-            <TitleImage src="/images/character_yellow.png" />
-            <div>最新の話題</div>
-          </Title>
-          <Container>
-            <ScrollableTopicList />
-          </Container>
-        </ContainerCard>
+        <Title>
+          <TitleImage src="/images/character_yellow.png" />
+          <div>注目の話題</div>
+        </Title>
+        <Container>
+          <TopicList topics={pickup.topics} pickup={pickup.main} />
+        </Container>
+      </TopicContainer>
+      <TopicContainer color="#E5F6FB">
+        <Title>
+          <TitleImage src="/images/character_green.png" />
+          <div>最新の話題</div>
+        </Title>
+        <Container>
+          <ScrollableTopicList />
+          <ShowMoreButton onClick={showMore}>もっと見る</ShowMoreButton>
+        </Container>
       </TopicContainer>
       <BottomNavigation currentLocation="home" />
     </>
@@ -56,8 +67,8 @@ const Container = styled.main`
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  padding: 16px;
   width: 100%;
+  margin: 0 auto;
 `;
 
 const Title = styled.div`
@@ -65,15 +76,23 @@ const Title = styled.div`
   display: flex;
   font-weight: bold;
   font-size: 24px;
-  margin: 32px auto;
+  margin: 32px 0;
   text-align: center;
-  justify-content: center;
+  justify-content: start;
   width: 100%;
 `;
 
 const TitleImage = styled.img`
-  margin-right: 32px;
-  height: 80px;
+  margin-right: 16px;
+  height: 48px;
+`;
+
+const ShowMoreButton = styled(Button)`
+  box-shadow: 0 10px 40px -2px rgb(0 64 128 / 20%);
+  width: 100%;
+  padding: 16px;
+  margin: 16px auto 32px auto;
+  max-width: 500px;
 `;
 
 export const getServerSideProps: GetServerSideProps<Props> = async () => {

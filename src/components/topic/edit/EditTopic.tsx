@@ -1,6 +1,6 @@
 import React, { FormEvent, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Button } from 'src/components/topic/Button';
+import { Button } from 'src/components/common/Button';
 import { useDispatch } from 'react-redux';
 import { useUserSelector } from 'src/data/redux/user/selector';
 import { createTopic } from 'src/data/redux/topic/action';

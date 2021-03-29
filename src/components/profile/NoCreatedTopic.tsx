@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import React from 'react';
-import { Button } from 'src/components/topic/Button';
+import { Button } from 'src/components/common/Button';
 import { useRouter } from 'next/router';
 import { rootPath } from 'src/view/route/pagePath';
 
