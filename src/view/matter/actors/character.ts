@@ -50,22 +50,23 @@ export class Character {
     p5.pop();
 
     // textの描画
-    p5.textFont('ＭＳ ゴシック');
     const textSize = 16;
     const degree = 50; // 度数法で入力 ( 0 < degree < 90 )
     const radian = (degree * Math.PI) / 180; // 弧度法
     const rCosine = this.radius * Math.cos(radian);
     const textBoxWidth = 2 * rCosine;
     let sliceStr = this.text;
-    let startPosition;  
-    let printText = "";
-    let list = [];
+    let startPosition;
+    let printText = '';
+    const list = [];
     // listにtextを区切って格納
-    for(let i = 0, textWidth = 0; i < this.text.length; i++){
-      if(textWidth + p5.textWidth(sliceStr.charAt(0)) > textBoxWidth){
-        list.push(printText)
+    p5.push();
+    p5.textFont('ＭＳ ゴシック');
+    for (let i = 0, textWidth = 0; i < this.text.length; i += 1) {
+      if (textWidth + p5.textWidth(sliceStr.charAt(0)) > textBoxWidth) {
+        list.push(printText);
         textWidth = 0;
-        printText = "";
+        printText = '';
       }
       printText += sliceStr.charAt(0);
       textWidth += p5.textWidth(sliceStr.charAt(0));
@@ -73,24 +74,24 @@ export class Character {
     }
     list.push(printText);
     // startPositionの決定
-    if(list.length % 2 === 0){
+    if (list.length % 2 === 0) {
       startPosition = {
         x: this.object.position.x,
-        y: this.object.position.y - textSize * 0.5 - textSize * (list.length * 0.5 - 1)
-      }
-    }else{
+        y: this.object.position.y - textSize * 0.5 - textSize * (list.length * 0.5 - 1),
+      };
+    } else {
       startPosition = {
         x: this.object.position.x,
-        y: this.object.position.y - textSize * Math.floor(list.length * 0.5)
-      }
+        y: this.object.position.y - textSize * Math.floor(list.length * 0.5),
+      };
     }
     // 格納したtextの描画
-    for(let i = 0; i < list.length; i++){
-      p5.push();
+    for (let i = 0; i < list.length; i += 1) {
       p5.fill(0)
         .textAlign('center', 'center')
         .textSize(textSize)
         .text(list[i], startPosition.x, startPosition.y + textSize * i);
-    };
+    }
+    p5.pop();
   }
 }
