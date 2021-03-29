@@ -48,6 +48,7 @@ const Container = styled.nav`
 
   @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
     pointer-events: none;
+    visibility: hidden;
     z-index: -1;
   }
 `;

@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { NavBar } from 'src/components/navbar/NavBar';
 import styled from 'styled-components';
-import { TopicContainer } from 'src/pages/topics';
-import { ContainerCard } from 'src/components/topic/ContainerCard';
 import { UserProfile } from 'src/components/profile/UserProfile';
 import { BottomNavigation } from 'src/components/navbar/bottomNavigation/BottomNavigation';
 import { GetServerSideProps } from 'next';
@@ -20,7 +18,10 @@ type Props = {
   createdByUser: TopicEntity[]
 }
 
-const ProfilePage = ({ createdByUser, user }: Props) => {
+const ProfilePage = ({
+  createdByUser,
+  user,
+}: Props) => {
   const { id } = useRouter().query;
   const { uid } = useUserSelector();
 
@@ -33,34 +34,50 @@ const ProfilePage = ({ createdByUser, user }: Props) => {
   return (
     <>
       <NavBar />
-      <TopicContainer>
-        <ContainerCard>
-          <Container>
+      {user && (
+        <UserProfileContainer>
+          <UserProfile {...user} />
+        </UserProfileContainer>
+      )}
+      <Container>
+        <InnerBody>
+          <TopicListContainer>
+            <CreatedTopicsTitle>
+              {user?.name ? `${user.name} が作成した話題` : '作成した話題'}
+            </CreatedTopicsTitle>
             {
-              user && <UserProfile {...user} />
+              createdByUser.length === 0
+                ? <NoCreatedTopic isCurrentUser={isCurrentUser} />
+                : <TopicList topics={createdByUser} />
             }
-            <TopicListContainer>
-              <CreatedTopicsTitle>作成した話題</CreatedTopicsTitle>
-              {
-                createdByUser.length !== 0
-                  ? <NoCreatedTopic isCurrentUser={isCurrentUser} />
-                  : <TopicList topics={createdByUser} />
-              }
-            </TopicListContainer>
-          </Container>
-        </ContainerCard>
-      </TopicContainer>
+          </TopicListContainer>
+        </InnerBody>
+      </Container>
       <BottomNavigation currentLocation="my-profile" />
     </>
   );
 };
 
+const UserProfileContainer = styled.div`
+  background-color: white;
+  margin: 32px auto;
+  max-width: 1050px;
+`;
+
 const Container = styled.div`
   align-items: center;
   box-sizing: border-box;
+  background-color: #caeaeb;
   display: flex;
   flex-direction: column;
   padding: 16px;
+  width: 100%;
+  min-height: 100%;
+`;
+
+const InnerBody = styled.div`
+  margin: 32px auto;
+  max-width: 1050px;
   width: 100%;
 `;
 
@@ -75,7 +92,12 @@ const TopicListContainer = styled.div`
 `;
 
 export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
-  const emptyResult = { props: { user: null, createdByUser: [] } };
+  const emptyResult = {
+    props: {
+      user: null,
+      createdByUser: [],
+    },
+  };
 
   const { id } = context.query;
   if (typeof id !== 'string') return emptyResult;

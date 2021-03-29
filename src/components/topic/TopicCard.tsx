@@ -37,9 +37,10 @@ export const TopicCard: React.FC<TopicEntity> = ({
 const Card = styled.article`
   box-sizing: border-box;
   border-radius: 5px;
+  border: 2px solid white;
   overflow: hidden;
   background-color: white;
-  box-shadow: 0 10px 20px -2px rgb(0 64 128 / 20%);
+  box-shadow: 0 10px 40px -2px rgb(0 64 128 / 20%);
 `;
 
 const Container = styled.a`

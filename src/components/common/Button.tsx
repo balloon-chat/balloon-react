@@ -8,4 +8,8 @@ export const Button = styled.button`
   cursor: pointer;
   font-weight: bold;
   padding: 8px 24px;
+
+  &:focus {
+    outline: none;
+  }
 `;

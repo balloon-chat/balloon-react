@@ -1,7 +1,7 @@
 import { NavBar } from 'src/components/navbar/NavBar';
 import { EditTopic } from 'src/components/topic/edit/EditTopic';
 import React from 'react';
-import { ContainerCard } from 'src/components/topic/ContainerCard';
+import { ContainerCard } from 'src/components/common/ContainerCard';
 import styled from 'styled-components';
 import 'firebase/auth';
 import { useUser } from 'src/view/lib/useUser';

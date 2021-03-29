@@ -98,7 +98,7 @@ const TopicListContainer = styled.ul`
   list-style: none;
   max-width: 1050px;
   width: 100%;
-  padding: 0;
+  padding: 0 0 16px;
   margin: 0;
 
   & > li {

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button } from 'src/components/topic/Button';
+import { Button } from 'src/components/common/Button';
 import { rootPath } from 'src/view/route/pagePath';
 
 export const TopicNotFound = () => (
