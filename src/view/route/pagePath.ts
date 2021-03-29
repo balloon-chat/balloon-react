@@ -5,11 +5,16 @@ export const topicPath = {
   title: (title: string) => `${title} | ふうせんちゃっと`,
 };
 
+export const usersPath = {
+  user: (id: string) => `/users/${id}`,
+};
+
 export const rootPath = {
   index: '/',
   login: '/login',
   logout: '/logout',
   topicPath,
+  usersPath,
 };
 
 /**

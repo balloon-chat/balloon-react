@@ -19,7 +19,7 @@ export const NavBarActionDialog = ({ onClose }:Props) => {
 
   const navigateToProfile = async () => {
     if (!uid) return;
-    await router.push(rootPath.profilePath.user(uid));
+    await router.push(rootPath.usersPath.user(uid));
   };
 
   const logout = async () => {
