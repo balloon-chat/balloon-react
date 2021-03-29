@@ -12,10 +12,10 @@ import { useDispatch } from 'react-redux';
 import { setTopicId } from 'src/data/redux/topic/slice';
 import { useUserSelector } from 'src/data/redux/user/selector';
 import { UserId } from 'src/domain/user/models/userId';
-import { setUserId } from 'src/data/redux/user/slice';
 import { Sketch } from 'src/components/p5/Sketch';
 import { observeStart } from 'src/data/redux/message/slice';
 import { useTopicState } from 'src/data/redux/topic/selector';
+import { setUser } from 'src/data/redux/user/slice';
 
 type Props = {
   topic: TopicEntity | null;
@@ -30,11 +30,23 @@ const TopicPage = ({ topic }: Props) => {
     dispatcher(setTopicId({ topicId: topic?.id ?? null }));
 
     // ユーザーが未ログイン時は、一時的なIDを付与する
-    if (!isLoggedIn) dispatcher(setUserId(new UserId().value));
+    if (!isLoggedIn) {
+      dispatcher(setUser({
+        uid: new UserId().value,
+        photoUrl: null,
+        name: null,
+      }));
+    }
 
     return () => {
       dispatcher(setTopicId({ topicId: null }));
-      if (!isLoggedIn) dispatcher(setUserId(null));
+      if (!isLoggedIn) {
+        dispatcher(setUser({
+          uid: null,
+          photoUrl: null,
+          name: null,
+        }));
+      }
     };
   }, []);
 

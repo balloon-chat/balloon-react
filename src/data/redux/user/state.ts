@@ -1,7 +1,8 @@
 export const userStateName = 'userState';
 
 export type UserState = {
-  uid: string | null;
-  isLoggedIn: boolean;
-  photoUrl: string | null;
+  uid: string | null
+  isLoggedIn: boolean
+  photoUrl: string | null
+  name: string | null
 };
