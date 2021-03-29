@@ -30,6 +30,21 @@ export class FirebaseTopicDatabase implements ITopicDatabase {
     return data;
   }
 
+  async findAllCreatedBy(userId: string): Promise<TopicDto[]> {
+    const snapshots = await this.topicsRef()
+      .orderByChild('createdBy')
+      .equalTo(userId)
+      .once('value');
+
+    const data: TopicDto[] = [];
+    snapshots.forEach((snapshot) => {
+      const dto = TopicDto.fromJSON(snapshot.toJSON());
+      if (dto) data.push(dto);
+    });
+
+    return data;
+  }
+
   async findAllSortByCreatedAt(
     limit: number,
     from?: string,
