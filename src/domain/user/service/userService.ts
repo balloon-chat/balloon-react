@@ -1,10 +1,16 @@
 import { IUserRepository } from 'src/domain/user/repository/userRepository';
 import { UserRepository } from 'src/data/core/user/userRepository';
 import { FirebaseUserDatabase } from 'src/data/firebase/user/userDatabase';
-import { CreateUser, ICreateUser } from 'src/domain/user/usecases/createUser';
+import { CreateUser } from 'src/domain/user/usecases/createUser';
+import { UserEntity, UserEntityFactory } from 'src/view/types/user';
+import { ICreateUser } from 'src/domain/user/types/createUser';
+import { IGetUser } from 'src/domain/user/types/getUser';
+import { GetUser } from 'src/domain/user/usecases/getUser';
 
 export class UserService {
   private readonly createUserUsecase: ICreateUser;
+
+  private readonly getUserUsecase: IGetUser
 
   constructor(
     userRepository: IUserRepository = new UserRepository(
@@ -12,6 +18,7 @@ export class UserService {
     ),
   ) {
     this.createUserUsecase = new CreateUser(userRepository);
+    this.getUserUsecase = new GetUser(userRepository);
   }
 
   createUser(
@@ -24,5 +31,11 @@ export class UserService {
       name ?? undefined,
       photoUrl ?? undefined,
     );
+  }
+
+  async getUser(userId: string): Promise<UserEntity|null> {
+    const user = await this.getUserUsecase.execute(userId);
+    if (!user) return null;
+    return UserEntityFactory.create(user);
   }
 }
