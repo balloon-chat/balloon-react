@@ -7,7 +7,7 @@ import 'firebase/auth';
 import { useUser } from 'src/view/lib/useUser';
 import { LoadDialog } from 'src/components/common/LoadDialog';
 import { rootPath } from 'src/view/route/pagePath';
-import { BottomNavigation } from 'src/components/navbar/BottomNavigation';
+import { BottomNavigation } from 'src/components/navbar/bottomNavigation/BottomNavigation';
 
 const CreateTopicPage = () => {
   const { user } = useUser({ returnTo: rootPath.topicPath.create });

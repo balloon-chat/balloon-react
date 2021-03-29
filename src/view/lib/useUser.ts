@@ -4,9 +4,10 @@ import firebase from 'firebase';
 import { UserId } from 'src/domain/user/models/userId';
 import { UserName } from 'src/domain/user/models/userName';
 import { useDispatch } from 'react-redux';
-import { setUserId } from 'src/data/redux/user/slice';
 import { rootPath } from 'src/view/route/pagePath';
 import { LoginUser } from 'src/domain/user/models/loginUser';
+import { UserEntity, UserEntityFactory } from 'src/view/types/user';
+import { setUser as setUserAction } from 'src/data/redux/user/slice';
 
 type UseUserArgument = {
   returnTo: string | null;
@@ -19,23 +20,28 @@ type UseUserArgument = {
 export const useUser = (
   { returnTo }: UseUserArgument = { returnTo: rootPath.index },
 ) => {
-  const [user, setUser] = useState<LoginUser | null>();
+  const [user, setUser] = useState<UserEntity | null>();
   const dispatcher = useDispatch();
 
   useEffect(() => {
-    const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        const name = user.displayName
-          ? new UserName(user.displayName)
-          : undefined;
-        const photoUrl = user.photoURL ?? undefined;
-        const loginUser = new LoginUser(new UserId(user.uid), name, photoUrl);
-        setUser(loginUser);
-        dispatcher(setUserId(loginUser.id.value));
-      } else {
-        setUser(null);
-      }
-    });
+    const unsubscribe = firebase.auth()
+      .onAuthStateChanged((user) => {
+        if (user) {
+          const name = user.displayName
+            ? new UserName(user.displayName)
+            : undefined;
+          const photoUrl = user.photoURL ?? undefined;
+          const loginUser = new LoginUser(new UserId(user.uid), name, photoUrl);
+          setUser(UserEntityFactory.create(loginUser));
+          dispatcher(setUserAction({
+            uid: loginUser.id.value,
+            name: loginUser.name?.value ?? null,
+            photoUrl: loginUser.photoUrl ?? null,
+          }));
+        } else {
+          setUser(null);
+        }
+      });
 
     return () => {
       unsubscribe();

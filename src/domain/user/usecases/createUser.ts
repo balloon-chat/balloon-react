@@ -3,17 +3,7 @@ import { UserName } from 'src/domain/user/models/userName';
 import { UserId } from 'src/domain/user/models/userId';
 import { LoginUser } from 'src/domain/user/models/loginUser';
 
-export interface ICreateUser {
-  /**
-   * ユーザーの公開情報を保存する
-   * @param userId ユーザーのID
-   * @param name ユーザーの表示名
-   * @param thumbnailUrl ユーザーのアイコン画像のURL
-   */
-  execute(userId: string, name?: string, thumbnailUrl?: string): Promise<void>;
-}
-
-export class CreateUser implements ICreateUser {
+export class CreateUser implements CreateUser {
   constructor(private readonly userRepository: IUserRepository) {}
 
   async execute(

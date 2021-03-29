@@ -5,6 +5,8 @@ export interface ITopicDatabase {
 
   findAll(): Promise<TopicDto[]>;
 
+  findAllCreatedBy(userId: string): Promise<TopicDto[]>;
+
   findAllSortByCreatedAt(limit: number, from?: string): Promise<TopicDto[]>;
 
   save(topic: TopicDto): Promise<void>;

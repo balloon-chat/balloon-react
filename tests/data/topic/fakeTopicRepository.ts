@@ -2,6 +2,7 @@ import { ITopicRepository } from 'src/domain/topic/repository/topicRepository';
 import { TopicEntity } from 'src/domain/topic/repository/topicEntity';
 import { TopicId } from 'src/domain/topic/models/topicId';
 import { FakeBaseRepository } from 'tests/data/FakeBaseRepository';
+import { UserId } from 'src/domain/user/models/userId';
 
 export class FakeTopicRepository implements ITopicRepository {
   private readonly repository = new FakeBaseRepository<TopicId, TopicEntity>();
@@ -12,6 +13,13 @@ export class FakeTopicRepository implements ITopicRepository {
 
   findAll(): Promise<TopicEntity[]> {
     return Promise.resolve(this.repository.findAll());
+  }
+
+  findAllCreatedBy(userId: UserId): Promise<TopicEntity[]> {
+    const result = this.repository
+      .findAll()
+      .filter((topic) => topic.createdBy.value === userId.value);
+    return Promise.resolve(result);
   }
 
   findAllOrderByCreatedAt(limit: number, from?: TopicId): Promise<TopicEntity[]> {

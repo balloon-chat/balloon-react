@@ -1,5 +1,6 @@
 import { TopicEntity } from 'src/domain/topic/repository/topicEntity';
 import { TopicId } from 'src/domain/topic/models/topicId';
+import { UserId } from 'src/domain/user/models/userId';
 
 export interface ITopicRepository {
   find(topicId: TopicId): Promise<TopicEntity | undefined>;
@@ -14,6 +15,8 @@ export interface ITopicRepository {
     limit: number,
     from?: TopicId
   ): Promise<TopicEntity[]>;
+
+  findAllCreatedBy(userId: UserId): Promise<TopicEntity[]>
 
   save(topic: TopicEntity): Promise<void>;
 }

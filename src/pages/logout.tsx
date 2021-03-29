@@ -4,7 +4,7 @@ import 'firebase/auth';
 import { useRouter } from 'next/router';
 import { rootPath } from 'src/view/route/pagePath';
 import { useDispatch } from 'react-redux';
-import { setUserId } from 'src/data/redux/user/slice';
+import { logout } from 'src/data/redux/user/slice';
 import { LoadDialog } from 'src/components/common/LoadDialog';
 
 const LogoutPage = () => {
@@ -13,7 +13,7 @@ const LogoutPage = () => {
 
   useEffect(() => {
     firebase.auth().signOut().then();
-    dispatcher(setUserId(null));
+    dispatcher(logout({}));
     router.push(rootPath.index).then();
   }, []);
 

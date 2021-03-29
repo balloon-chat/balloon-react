@@ -9,6 +9,7 @@ import { NavBarHeader } from 'src/components/navbar/NavBarHeader';
 import { useRouter } from 'next/router';
 import { mediaQuery } from 'src/components/constants/mediaQuery';
 import SpeechBalloon from 'src/components/svgs/speech_balloon.svg';
+import { NavBarUserButton } from 'src/components/navbar/NavBarUserButton';
 
 export const NavBarHome = () => (
   <NavBar>
@@ -36,15 +37,15 @@ export const NavBar: React.FC = ({ children }) => {
             </NavButton>
           </li>
           <li>
-            {isLoggedIn ? (
-              <NavButton link={rootPath.logout} title="ログアウト" />
-            ) : (
-              <NavButton
-                link={rootPath.login}
-                linkQuery={{ return_to: router.asPath }}
-                title="ログイン"
-              />
-            )}
+            {isLoggedIn
+              ? <NavBarUserButton />
+              : (
+                <NavButton
+                  link={rootPath.login}
+                  linkQuery={{ return_to: router.asPath }}
+                  title="ログイン"
+                />
+              )}
           </li>
         </ActionContainer>
       </NavMainContainer>
@@ -64,6 +65,7 @@ const NavMainContainer = styled.div`
   margin: 0 auto;
   padding: 0 16px;
   max-width: 1050px;
+  justify-content: space-between;
 `;
 
 const NavTitle = styled.div`
@@ -75,7 +77,6 @@ const NavTitle = styled.div`
   height: 100%;
   text-align: center;
   padding: 16px 0;
-  flex-grow: 1;
   justify-content: center;
 
   @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
@@ -91,20 +92,25 @@ const TitleIcon = styled.img`
 
 const ActionContainer = styled.ul`
   display: flex;
-  flex-grow: 1;
   margin: 0;
+  align-items: center;
   padding: 0;
-  position: absolute;
-  visibility: hidden;
   justify-content: flex-end;
 
   & > li {
-    display: inline-block;
+    box-sizing: border-box;
+    visibility: hidden;
+    height: 100%;
+  }
+  
+  & > li:last-child {
+    visibility: visible;
   }
 
-  // モバイル、タブレット版では消去
   @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
-    position: relative;
-    visibility: visible;
+    & > li {
+      display: inline-block;
+      visibility: visible;
+    }
   }
 `;

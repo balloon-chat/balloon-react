@@ -23,7 +23,7 @@ export const NavButton: React.FC<Props> = ({
   </Link>
 );
 
-const NavButtonContainer = styled.div`
+const NavButtonContainer = styled.a`
   align-items: center;
   display: flex;
   color: inherit;
@@ -33,11 +33,6 @@ const NavButtonContainer = styled.div`
   letter-spacing: 0.25px;
   text-align: center;
   text-decoration: none;
-
-  &:hover {
-    background-color: rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-  }
 
   & > svg {
     fill: currentColor;
