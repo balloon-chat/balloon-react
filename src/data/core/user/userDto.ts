@@ -1,12 +1,12 @@
 import { UserId } from 'src/domain/user/models/userId';
-import { UserName } from 'src/domain/user/models/userName';
 import { LoginUser } from 'src/domain/user/models/loginUser';
+import { UserName } from 'src/domain/user/models/userName';
 
 export class UserDto {
   constructor(
     readonly id: string,
-    readonly name?: string,
-    readonly photoUrl?: string,
+    readonly name: string,
+    readonly photoUrl: string,
   ) {}
 
   static from(user: LoginUser): UserDto {
@@ -24,7 +24,11 @@ export class UserDto {
   toUser(): LoginUser {
     return new LoginUser(
       new UserId(this.id),
-      this.name ? new UserName(this.name) : undefined,
+      /**
+       * 取得時にはloginIdをnullにする
+       */
+      null,
+      new UserName(this.name),
       this.photoUrl,
     );
   }
@@ -40,10 +44,10 @@ export class UserDto {
 
 type UserJSON = {
   id: string;
-  name?: string;
-  photoUrl?: string;
+  name: string;
+  photoUrl: string;
 };
 
 const isUserJSON = (obj: any): obj is UserJSON => typeof obj.id === 'string'
-  && (typeof obj.name === 'string' || typeof obj.name === 'undefined')
-  && (typeof obj.photoUrl === 'string' || typeof obj.photoUrl === 'undefined');
+  && typeof obj.name === 'string'
+  && typeof obj.photoUrl === 'string';
