@@ -22,7 +22,7 @@ const userRepository = new FakeUserRepository();
 const usecase: IGetTopics = new GetTopics(messageRepository, topicRepository, userRepository);
 
 const thumbnailUrl = 'some.img';
-const user = new LoginUser(new UserId(), new UserName('test'), 'test');
+const user = new LoginUser(new UserId(), null, new UserName('test'), 'test');
 
 afterEach(() => {
   topicRepository.clean();
@@ -59,7 +59,8 @@ describe('TopicのIDにより取得', () => {
         commentCount: 0,
         thumbnailUrl: topic.thumbnailUrl,
       };
-      expect(result).toStrictEqual(expected);
+      expect(result)
+        .toStrictEqual(expected);
     }
   });
 
@@ -74,7 +75,8 @@ describe('TopicのIDにより取得', () => {
     const topic = TopicFactory.create(new TopicTitle('test'), user.id, thumbnailUrl);
 
     const results = await usecase.execute([topic.id]);
-    expect(results.length).toEqual(0);
+    expect(results.length)
+      .toEqual(0);
   });
 
   test('存在しないユーザーによって作成されたTopic', async () => {
@@ -91,7 +93,8 @@ describe('TopicのIDにより取得', () => {
 
     const results = await usecase.execute([topic.id]);
     // ユーザー情報がない場合は、そのTopicを取得しない
-    expect(results.length).toEqual(0);
+    expect(results.length)
+      .toEqual(0);
   });
 });
 
@@ -112,7 +115,8 @@ describe('上限を設定して取得', () => {
     await messageRepository.save(topic.id, MessageEntity.from(message));
 
     const results = await usecase.execute(50);
-    expect(results.length).toEqual(1);
+    expect(results.length)
+      .toEqual(1);
     const result = results[0];
 
     const expected: TopicData = {
@@ -124,7 +128,8 @@ describe('上限を設定して取得', () => {
       thumbnailUrl: topic.thumbnailUrl,
       commentCount: 1,
     };
-    expect(result).toStrictEqual(expected);
+    expect(result)
+      .toStrictEqual(expected);
   });
 
   test('上限以下のTopicを取得', async () => {
@@ -142,7 +147,8 @@ describe('上限を設定して取得', () => {
     }
 
     const results = await usecase.execute(10);
-    expect(results.length).toEqual(10);
+    expect(results.length)
+      .toEqual(10);
   });
 
   test('作成日時順に並び替えた状態で取得', async () => {
@@ -163,7 +169,8 @@ describe('上限を設定して取得', () => {
       const previous = data[i - 1];
       return previous.createdAt >= v.createdAt;
     });
-    expect(isSortedByCreatedAt).toBeTruthy();
+    expect(isSortedByCreatedAt)
+      .toBeTruthy();
   });
 
   test('Topicを保存する前に取得', async () => {
@@ -173,7 +180,8 @@ describe('上限を設定して取得', () => {
        UserRepository: []
       */
     const results = await usecase.execute(50);
-    expect(results.length).toEqual(0);
+    expect(results.length)
+      .toEqual(0);
   });
 
   test('存在しないユーザーによって作成されたTopic', async () => {
@@ -190,6 +198,7 @@ describe('上限を設定して取得', () => {
 
     const results = await usecase.execute(50);
     // ユーザー情報がない場合は、そのTopicを取得しない
-    expect(results.length).toEqual(0);
+    expect(results.length)
+      .toEqual(0);
   });
 });

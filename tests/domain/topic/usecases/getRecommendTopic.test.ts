@@ -27,7 +27,7 @@ const usecase: IGetRecommendTopics = new GetRecommendTopics(
   recommendTopicRepository,
 );
 
-const user = new LoginUser(new UserId(), new UserName('test'), 'test');
+const user = new LoginUser(new UserId(), null, new UserName('test'), 'test');
 
 beforeEach(() => {
   messageRepository.clean();
@@ -60,8 +60,11 @@ test('おすすめの話題を取得する', async () => {
      return: [Topic]
    */
   const result = await usecase.execute();
-  expect(result).not.toBeUndefined();
-  expect(result?.pickups[0]).toStrictEqual(TopicDataFactory.create(topic, 1, user));
+  expect(result)
+    .not
+    .toBeUndefined();
+  expect(result?.pickups[0])
+    .toStrictEqual(TopicDataFactory.create(topic, 1, user));
 });
 
 test('おすすめの話題が作成されていないとき', async () => {
@@ -85,7 +88,8 @@ test('おすすめの話題が作成されていないとき', async () => {
     return: undefined
    */
   const result = await usecase.execute();
-  expect(result).toBeUndefined();
+  expect(result)
+    .toBeUndefined();
 });
 
 test('話題が存在しないとき', async () => {
@@ -110,6 +114,9 @@ test('話題が存在しないとき', async () => {
     return: Topic1
    */
   const result = await usecase.execute();
-  expect(result).not.toBeUndefined();
-  expect(result?.pickups[0]).toStrictEqual(TopicDataFactory.create(topic1, 0, user));
+  expect(result)
+    .not
+    .toBeUndefined();
+  expect(result?.pickups[0])
+    .toStrictEqual(TopicDataFactory.create(topic1, 0, user));
 });
