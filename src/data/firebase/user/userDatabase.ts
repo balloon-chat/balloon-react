@@ -17,32 +17,28 @@ export class FirebaseUserDatabase implements IUserDatabase {
   }
 
   async find(userId: string): Promise<UserDto | undefined> {
-    const snapshot = await this.userRef(userId)
-      .get();
+    const snapshot = await this.userRef(userId).get();
     return UserDto.fromJSON(snapshot.toJSON());
   }
 
   async findByLoginId(loginId: string): Promise<UserDto | undefined> {
     const snapshot = await this.usersRef()
-      .equalTo(loginId, 'loginId')
+      .orderByChild('loginId')
+      .equalTo(loginId)
       .once('value');
-
     let user: UserDto | null = null;
     snapshot.forEach((snapshot) => {
-      const dto = UserDto.fromJSON(snapshot);
+      const dto = UserDto.fromJSON(snapshot.toJSON());
       if (dto) user = dto;
     });
-
     return user ?? undefined;
   }
 
   async save(user: UserDto): Promise<void> {
-    return this.userRef(user.id)
-      .set(user);
+    return this.userRef(user.id).set(user);
   }
 
   private usersRef = () => this.database.ref('/users');
 
-  private userRef = (userId: string) => this.usersRef()
-    .child(userId);
+  private userRef = (userId: string) => this.usersRef().child(userId);
 }
