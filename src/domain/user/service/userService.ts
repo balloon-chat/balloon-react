@@ -35,12 +35,13 @@ export class UserService {
     loginId: string,
     name: string,
     photo: string | File,
-  ): Promise<void> {
-    await this.createUserUsecase.execute(
+  ): Promise<UserEntity> {
+    const user = await this.createUserUsecase.execute(
       loginId,
       name,
       photo,
     );
+    return UserEntityFactory.create(user);
   }
 
   async getUser(userId: string): Promise<UserEntity|null> {

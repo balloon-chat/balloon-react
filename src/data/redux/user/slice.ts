@@ -5,7 +5,7 @@ import {
   setIsUserLoggedInReducer,
   setUserReducer,
 } from 'src/data/redux/user/reducer';
-import { login } from 'src/data/redux/user/action';
+import { createUser, login } from 'src/data/redux/user/action';
 
 const initialState: UserState = {
   uid: null,
@@ -27,6 +27,13 @@ const userSlice = createSlice({
       .addCase(login.fulfilled, (state, { payload }) => ({
         ...state,
         isLoggedIn: payload.isLoggedIn,
+      }))
+      .addCase(createUser.fulfilled, (state, { payload }) => ({
+        ...state,
+        uid: payload.uid,
+        name: payload.name,
+        photoUrl: payload.photoUrl,
+        isLoggedIn: true,
       }));
   },
 });

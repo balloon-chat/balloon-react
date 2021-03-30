@@ -1,12 +1,13 @@
 import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { userStateName } from 'src/data/redux/user/state';
 import { UserService } from 'src/domain/user/service/userService';
+import { UserEntity } from 'src/view/types/user';
 
 export const CREATE_USER = `${userStateName}/create`;
 export const LOGIN = `${userStateName}/login`;
 
 export const createUser = createAsyncThunk<
-  void,
+  UserEntity,
   {
     loginId: string,
     name: string,
@@ -18,7 +19,7 @@ export const createUser = createAsyncThunk<
   photo,
 }) => {
   const service = new UserService();
-  await service.createUser(loginId, name, photo);
+  return service.createUser(loginId, name, photo);
 });
 
 export const login = createAsyncThunk<
