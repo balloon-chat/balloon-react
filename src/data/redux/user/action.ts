@@ -1,20 +1,43 @@
 import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { userStateName } from 'src/data/redux/user/state';
 import { UserService } from 'src/domain/user/service/userService';
+import { UserEntity } from 'src/view/types/user';
 
 export const CREATE_USER = `${userStateName}/create`;
-export const createUser = createAsyncThunk<void,
-  { uid: string; name: string | null; photoUrl: string | null }>(CREATE_USER, async ({
-    uid,
-    name,
-    photoUrl,
-  }) => {
-    const service = new UserService();
-    await service.createUser(uid, name, photoUrl);
-  });
+export const LOGIN = `${userStateName}/login`;
+
+export const createUser = createAsyncThunk<
+  UserEntity,
+  {
+    loginId: string,
+    name: string,
+    photo: string | File,
+}
+>(CREATE_USER, async ({
+  loginId,
+  name,
+  photo,
+}) => {
+  const service = new UserService();
+  return service.createUser(loginId, name, photo);
+});
+
+export const login = createAsyncThunk<
+  {isLoggedIn: boolean},
+  {loginId: string}
+>(LOGIN, async ({ loginId }) => {
+  const service = new UserService();
+  const user = await service.getUserByLoginId(loginId);
+  return {
+    isLoggedIn: user !== null,
+  } as const;
+});
 
 export type SetUser = PayloadAction<{
-  uid: string | null, photoUrl: string | null, name: string | null
+  uid: string|null,
+  photoUrl: string|null,
+  name: string|null
 }>
+
 export type SetIsUserLoggedIn = PayloadAction<boolean>;
 export type Logout = PayloadAction<{}>;

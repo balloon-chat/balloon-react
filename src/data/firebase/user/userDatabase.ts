@@ -2,8 +2,10 @@ import { IUserDatabase } from 'src/data/core/user/userDatabase';
 import { UserDto } from 'src/data/core/user/userDto';
 import firebase from 'firebase';
 
+// TODO: firestoreに移行
 export class FirebaseUserDatabase implements IUserDatabase {
-  private constructor(private readonly database = firebase.database()) {}
+  private constructor(private readonly database = firebase.database()) {
+  }
 
   private static _instance: IUserDatabase;
 
@@ -17,6 +19,19 @@ export class FirebaseUserDatabase implements IUserDatabase {
   async find(userId: string): Promise<UserDto | undefined> {
     const snapshot = await this.userRef(userId).get();
     return UserDto.fromJSON(snapshot.toJSON());
+  }
+
+  async findByLoginId(loginId: string): Promise<UserDto | undefined> {
+    const snapshot = await this.usersRef()
+      .orderByChild('loginId')
+      .equalTo(loginId)
+      .once('value');
+    let user: UserDto | null = null;
+    snapshot.forEach((snapshot) => {
+      const dto = UserDto.fromJSON(snapshot.toJSON());
+      if (dto) user = dto;
+    });
+    return user ?? undefined;
   }
 
   async save(user: UserDto): Promise<void> {

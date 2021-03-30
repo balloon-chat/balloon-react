@@ -22,7 +22,7 @@ const userRepository = new FakeUserRepository();
 const usecase: IGetTopic = new GetTopic(messageRepository, topicRepository, userRepository);
 
 const thumbnailUrl = 'some.img';
-const user = new LoginUser(new UserId(), new UserName('test'), 'test');
+const user = new LoginUser(new UserId(), null, new UserName('test'), 'test');
 
 afterEach(() => {
   topicRepository.clean();
@@ -46,12 +46,19 @@ test('Topicに関するデータを取得', async () => {
   await messageRepository.save(topic.id, MessageEntity.from(message));
 
   const result = await usecase.execute(topic.id);
-  expect(result).not.toBeUndefined();
-  expect(result?.id).toEqual(topic.id);
-  expect(result?.title).toEqual(topic.title);
-  expect(result?.description).toEqual(topic.description);
-  expect(result?.createdBy).toEqual(user);
-  expect(result?.commentCount).toEqual(1);
+  expect(result)
+    .not
+    .toBeUndefined();
+  expect(result?.id)
+    .toEqual(topic.id);
+  expect(result?.title)
+    .toEqual(topic.title);
+  expect(result?.description)
+    .toEqual(topic.description);
+  expect(result?.createdBy)
+    .toEqual(user);
+  expect(result?.commentCount)
+    .toEqual(1);
 });
 
 test('保存する前に取得', async () => {
@@ -62,7 +69,8 @@ test('保存する前に取得', async () => {
      UserRepository: null
     */
   const results = await usecase.execute(new TopicId());
-  expect(results).toBeUndefined();
+  expect(results)
+    .toBeUndefined();
 });
 
 test('作成したユーザーが存在しない場合、取得しない', async () => {
@@ -79,5 +87,6 @@ test('作成したユーザーが存在しない場合、取得しない', async
 
   const result = await usecase.execute(topic.id);
   // ユーザー情報がない場合は、そのTopicを取得しない
-  expect(result).toBeUndefined();
+  expect(result)
+    .toBeUndefined();
 });

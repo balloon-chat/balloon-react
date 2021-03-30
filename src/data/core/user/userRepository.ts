@@ -12,6 +12,11 @@ export class UserRepository implements IUserRepository {
     return dto?.toUser();
   }
 
+  async findByLoginId(loginId: string): Promise<LoginUser | undefined> {
+    const dto = await this.userDatabase.findByLoginId(loginId);
+    return dto?.toUser();
+  }
+
   async save(user: LoginUser): Promise<void> {
     await this.userDatabase.save(UserDto.from(user));
   }

@@ -19,7 +19,7 @@ const usecase: ICreateTopic = new CreateTopic(topicRepository, topicImageReposit
 // Blobの実装がテストで利用できないので、一時的にundefinedを用いる。
 const thumbnail: Blob = undefined!;
 
-const user = new LoginUser(new UserId(), new UserName('test'), 'test');
+const user = new LoginUser(new UserId(), null, new UserName('test'), 'test');
 
 afterEach(() => {
   (topicRepository as FakeTopicRepository).clean();
@@ -43,11 +43,15 @@ test('新しいTopicを作成', async () => {
    */
   const createdTopic = await usecase.execute(title, description, user.id, thumbnail);
   // 作成されたTopicを返す
-  expect(createdTopic.createdBy).toBe(user.id);
-  expect(createdTopic.title).toStrictEqual(new TopicTitle(title));
-  expect(createdTopic.description?.value).toBe(description);
+  expect(createdTopic.createdBy)
+    .toBe(user.id);
+  expect(createdTopic.title)
+    .toStrictEqual(new TopicTitle(title));
+  expect(createdTopic.description?.value)
+    .toBe(description);
   // Topic Repositoryに保存されている
-  expect(await topicRepository.find(createdTopic.id) !== undefined).toBeTruthy();
+  expect(await topicRepository.find(createdTopic.id) !== undefined)
+    .toBeTruthy();
 });
 
 test('登録されたユーザーのみが作成可能', async () => {
@@ -63,15 +67,20 @@ test('登録されたユーザーのみが作成可能', async () => {
     throw UserNotFoundException
     Topic Repository: []
    */
-  await expect(usecase.execute('title', 'description', user.id, thumbnail)).rejects.toThrow();
-  expect(await topicRepository.findAll()).toStrictEqual([]);
+  await expect(usecase.execute('title', 'description', user.id, thumbnail))
+    .rejects
+    .toThrow();
+  expect(await topicRepository.findAll())
+    .toStrictEqual([]);
 });
 
 test('不正なタイトルでTopicを作成', async () => {
   await userRepository.save(user);
 
   const title = '';
-  await expect(usecase.execute(title, 'description', user.id, thumbnail)).rejects.toThrow();
+  await expect(usecase.execute(title, 'description', user.id, thumbnail))
+    .rejects
+    .toThrow();
 });
 
 describe('不正な説明文でTopicを作成', () => {
@@ -84,16 +93,20 @@ describe('不正な説明文でTopicを作成', () => {
   test('空文字の場合、登録されない', async () => {
     const emptyDescription = '';
     const created = await usecase.execute(title, emptyDescription, user.id, thumbnail);
-    expect(created.description).toBeUndefined();
+    expect(created.description)
+      .toBeUndefined();
     const savedTopic = await topicRepository.find(created.id);
-    expect(savedTopic?.description).toBeNull();
+    expect(savedTopic?.description)
+      .toBeNull();
   });
 
   test('文字数が不正な場合、登録されない', async () => {
     const overSizeDescription = 'a'.repeat(TopicDescription.MAX_DESCRIPTION_LENGTH + 1);
     const created = await usecase.execute(title, overSizeDescription, user.id, thumbnail);
-    expect(created.description).toBeUndefined();
+    expect(created.description)
+      .toBeUndefined();
     const savedTopic = await topicRepository.find(created.id);
-    expect(savedTopic?.description).toBeNull();
+    expect(savedTopic?.description)
+      .toBeNull();
   });
 });

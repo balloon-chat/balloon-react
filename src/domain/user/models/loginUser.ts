@@ -3,7 +3,18 @@ import { UserName } from 'src/domain/user/models/userName';
 import { User } from 'src/domain/user/models/user';
 
 export class LoginUser extends User {
-  constructor(id: UserId, name?: UserName, public readonly photoUrl?: string) {
+  /**
+   * @param id アプリケーション内で用いられるユーザーのID
+   * @param loginId ログイン時に用いられるID
+   * @param name ユーザー名
+   * @param photoUrl ユーザーアイコンのURL
+   */
+  constructor(
+    id: UserId,
+    readonly loginId: string | null,
+    readonly name: UserName,
+    readonly photoUrl: string,
+  ) {
     super(id, name);
   }
 }

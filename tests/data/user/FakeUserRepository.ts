@@ -18,4 +18,12 @@ export class FakeUserRepository implements IUserRepository {
   clean() {
     this.repository.clean();
   }
+
+  findByLoginId(loginId: string): Promise<LoginUser | undefined> {
+    const users = this.repository
+      .findAll()
+      .filter((user) => user.loginId === loginId);
+
+    return Promise.resolve(users[0]);
+  }
 }

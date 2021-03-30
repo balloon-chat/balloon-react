@@ -1,12 +1,15 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { LoginDialog } from 'src/components/login/LoginDialog';
 import styled from 'styled-components';
 import firebase from 'firebase';
-import { createUser } from 'src/data/redux/user/action';
-import { isInnerPath, rootPath } from 'src/view/route/pagePath';
 import { useDispatch } from 'react-redux';
 import { useRouter } from 'next/router';
 import { useUserSelector } from 'src/data/redux/user/selector';
+import { EditProfileDialog } from 'src/components/login/EditProfileDialog';
+import { WelcomeDialog } from 'src/components/login/WelcomeDialog';
+import { createUser, login } from 'src/data/redux/user/action';
+import { isInnerPath, rootPath } from 'src/view/route/pagePath';
+import { LoadDialog } from 'src/components/common/LoadDialog';
 
 const LoginPage = () => {
   const dispatcher = useDispatch();
@@ -14,18 +17,36 @@ const LoginPage = () => {
   const { return_to } = router.query;
   const { isLoggedIn } = useUserSelector();
 
+  const [uid, setUid] = useState<string>();
+  const [name, setName] = useState<string | null>();
+  const [photoUrl, setPhotoUrl] = useState<string | null>();
+  const [imageFile, setImageFile] = useState<File | null>(null);
+
+  /**
+   * ユーザー情報の編集状態を管理
+   */
+  const [isEditing, setIsEditing] = useState(false);
+  /**
+   * ユーザーの作成状態を管理
+   */
+  const [isCreating, setIsCreating] = useState(false);
+
   useEffect(() => {
-    const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        dispatcher(
-          createUser({
-            uid: user.uid,
-            name: user.displayName,
-            photoUrl: user.photoURL,
-          }),
-        );
-      }
-    });
+    const unsubscribe = firebase.auth()
+      .onAuthStateChanged((user) => {
+        if (user) {
+          setUid(user.uid);
+          setName(user.displayName);
+          setPhotoUrl(user.photoURL);
+
+          // ログインを試行
+          // すでにユーザーが登録されている場合は、ログインが成功する。
+          dispatcher(login({ loginId: user?.uid }));
+
+          // ユーザー名、または画像が指定されないときには、編集ダイアログを表示
+          setIsEditing(!user.displayName || !user.photoURL);
+        }
+      });
 
     return () => {
       unsubscribe();
@@ -42,10 +63,57 @@ const LoginPage = () => {
     }
   }, [return_to, isLoggedIn]);
 
+  const handleOnSaveEdit = (name: string, photoUrl: string, imageFile: File | null) => {
+    setName(name);
+    setPhotoUrl(photoUrl);
+    setImageFile(imageFile);
+
+    // 編集ダイアログを閉じる
+    setIsEditing(false);
+  };
+
+  const createNewUser = () => {
+    if (uid && name && photoUrl) {
+      setIsCreating(true);
+      dispatcher(
+        createUser({
+          loginId: uid,
+          name,
+          photo: imageFile ?? photoUrl,
+        }),
+      );
+    }
+  };
+
   return (
-    <Container>
-      <LoginDialog />
-    </Container>
+    <>
+      {
+        uid && !isEditing && (
+          <WelcomeDialog
+            name={name!}
+            imgUrl={photoUrl ?? ''}
+            onEdit={() => setIsEditing(true)}
+            onCreateUser={createNewUser}
+          />
+        )
+      }
+      {
+        isEditing && (
+          <EditProfileDialog
+            name={name ?? null}
+            photoUrl={photoUrl ?? null}
+            onCancel={() => setIsEditing(false)}
+            onSave={handleOnSaveEdit}
+          />
+        )
+      }
+      {
+        isCreating && <LoadDialog message="ユーザー情報を登録しています。" />
+      }
+      <Container>
+        <LoginDialog />
+      </Container>
+    </>
   );
 };
 

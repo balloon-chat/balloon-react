@@ -5,13 +5,14 @@ import {
   setIsUserLoggedInReducer,
   setUserReducer,
 } from 'src/data/redux/user/reducer';
+import { createUser, login } from 'src/data/redux/user/action';
 
 const initialState: UserState = {
   uid: null,
   isLoggedIn: false,
   photoUrl: null,
   name: null,
-};
+} as const;
 
 const userSlice = createSlice({
   name: userStateName,
@@ -21,7 +22,21 @@ const userSlice = createSlice({
     setIsUserLoggedIn: setIsUserLoggedInReducer,
     logout: logoutReducer,
   },
-} as const);
+  extraReducers: (builder) => {
+    builder
+      .addCase(login.fulfilled, (state, { payload }) => ({
+        ...state,
+        isLoggedIn: payload.isLoggedIn,
+      }))
+      .addCase(createUser.fulfilled, (state, { payload }) => ({
+        ...state,
+        uid: payload.uid,
+        name: payload.name,
+        photoUrl: payload.photoUrl,
+        isLoggedIn: true,
+      }));
+  },
+});
 
 export const {
   setUser,

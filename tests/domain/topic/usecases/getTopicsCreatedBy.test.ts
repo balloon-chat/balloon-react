@@ -20,6 +20,8 @@ const usecase: IGetTopicsCreatedBy = new GetTopicsCreatedBy(
   new GetTopic(messageRepository, topicRepository, userRepository),
 );
 
+const photoUrl = 'test.img';
+
 afterEach(() => {
   topicRepository.clean();
   messageRepository.clean();
@@ -32,8 +34,8 @@ test('指定したユーザーが作成したトピックを取得', async () =>
     UserRepository : UserA, UserB
     TopicRepository: TopicA(createdBy=UserA), TopicB(createdBy=UserB)
    */
-  const userA = new LoginUser(new UserId(), new UserName('A'), undefined);
-  const userB = new LoginUser(new UserId(), new UserName('B'), undefined);
+  const userA = new LoginUser(new UserId(), null, new UserName('A'), photoUrl);
+  const userB = new LoginUser(new UserId(), null, new UserName('B'), photoUrl);
   await userRepository.save(userA);
   await userRepository.save(userB);
 
@@ -48,7 +50,8 @@ test('指定したユーザーが作成したトピックを取得', async () =>
     0,
     userA,
   );
-  expect(results).toStrictEqual([expected]);
+  expect(results)
+    .toStrictEqual([expected]);
 });
 
 test('作成日順に取得', async () => {
@@ -57,7 +60,7 @@ test('作成日順に取得', async () => {
      UserRepository : UserA
      TopicRepository: Topic(createdBy=UserA) * 50
     */
-  const user = new LoginUser(new UserId(), new UserName('Test'), undefined);
+  const user = new LoginUser(new UserId(), null, new UserName('Test'), photoUrl);
   await userRepository.save(user);
 
   for (let i = 0; i < 10; i += 1) {
@@ -73,5 +76,6 @@ test('作成日順に取得', async () => {
     const previous = data[i - 1];
     return previous.createdAt >= v.createdAt;
   });
-  expect(isSortedByCreatedAt).toBeTruthy();
+  expect(isSortedByCreatedAt)
+    .toBeTruthy();
 });

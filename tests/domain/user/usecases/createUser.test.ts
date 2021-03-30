@@ -4,10 +4,11 @@ import { UserName } from 'src/domain/user/models/userName';
 import { UserId } from 'src/domain/user/models/userId';
 import { LoginUser } from 'src/domain/user/models/loginUser';
 import { ICreateUser } from 'src/domain/user/types/createUser';
+import { FakeUserImageRepository } from 'tests/data/user/FakeUserImageRepository';
 
 const userRepository = new FakeUserRepository();
-
-const usecase: ICreateUser = new CreateUser(userRepository);
+const userImageRepository = new FakeUserImageRepository();
+const usecase: ICreateUser = new CreateUser(userRepository, userImageRepository);
 
 beforeEach(() => {
   userRepository.clean();
@@ -18,29 +19,37 @@ test('ユーザー情報を新規作成', async () => {
   初期データ:
     User Repository: null
    */
-  const user = new LoginUser(new UserId(), new UserName('test'), 'test');
-  await usecase.execute(user.id.value, user.name?.value, user.photoUrl);
+  const loginId = 'test login id';
+  const name = 'test name';
+  const photoUrl = 'test photo url';
   /*
   Expected:
+    return         : 作成されたユーザー
     User Repository: User
    */
-  const result = await userRepository.find(user.id);
-  expect(result).toStrictEqual(user);
+  const result = await usecase.execute(loginId, name, photoUrl);
+  const expected = new LoginUser(
+    result.id,
+    loginId,
+    new UserName(name),
+    photoUrl,
+  );
+  expect(result).toStrictEqual(expected);
+  expect(await userRepository.find(result.id)).toStrictEqual(expected);
 });
 
-test('すでに存在しているユーザーに対して、作成処理をする。', async () => {
+test('すでにユーザーが存在していた場合、保存されたデータを取得する', async () => {
   /*
   初期データ:
     User Repository: null
    */
-  const userId = new UserId();
-
-  const registeredUser = new LoginUser(userId, new UserName('registered'), 'registered');
+  const loginId = 'test';
+  const registeredUser = new LoginUser(new UserId(), loginId, new UserName('registered'), 'registered');
   await userRepository.save(registeredUser);
 
-  await usecase.execute(userId.value, 'new user', 'new user');
+  await usecase.execute(loginId, 'new user', 'new user');
 
-  // すでに登録されていた場合は、何もしない。
-  const result = await userRepository.find(userId);
+  // すでに登録されていた場合は、データの更新はされない。
+  const result = await userRepository.findByLoginId(loginId);
   expect(result).toStrictEqual(registeredUser);
 });
