@@ -60,8 +60,6 @@ export class Character {
     let printText = '';
     const list = [];
     // listにtextを区切って格納
-    p5.push();
-    p5.textFont('ＭＳ ゴシック');
     for (let i = 0, textWidth = 0; i < this.text.length; i += 1) {
       if (textWidth + p5.textWidth(sliceStr.charAt(0)) > textBoxWidth) {
         list.push(printText);
@@ -72,9 +70,15 @@ export class Character {
       textWidth += p5.textWidth(sliceStr.charAt(0));
       sliceStr = sliceStr.slice(1, sliceStr.length);
     }
+    console.log(list);
     list.push(printText);
     // startPositionの決定
-    if (list.length % 2 === 0) {
+    if (list.length === 1) {
+      startPosition = {
+        x: this.object.position.x,
+        y: this.object.position.y,
+      };
+    } else if (list.length % 2 === 0) {
       startPosition = {
         x: this.object.position.x - rCosine,
         y: this.object.position.y - textSize * 0.5 - textSize * (list.length * 0.5 - 1),
@@ -86,12 +90,18 @@ export class Character {
       };
     }
     // 格納したtextの描画
-    for (let i = 0; i < list.length; i += 1) {
+    if (list.length === 1) {
       p5.fill(0)
-        .textAlign('left', 'center')
+        .textAlign('center', 'center')
         .textSize(textSize)
-        .text(list[i], startPosition.x, startPosition.y + textSize * i);
+        .text(list[0], startPosition.x, startPosition.y);
+    } else {
+      for (let i = 0; i < list.length; i += 1) {
+        p5.fill(0)
+          .textAlign('left', 'center')
+          .textSize(textSize)
+          .text(list[i], startPosition.x, startPosition.y + textSize * i);
+      }
     }
-    p5.pop();
   }
 }
