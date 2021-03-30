@@ -50,7 +50,6 @@ export class Character {
     p5.pop();
 
     // textの描画
-    p5.textFont('ＭＳ ゴシック');
     const textSize = 16;
     const degree = 50; // 度数法で入力 ( 0 < degree < 90 )
     const radian = (degree * Math.PI) / 180; // 弧度法
@@ -61,6 +60,8 @@ export class Character {
     let printText = '';
     const list = [];
     // listにtextを区切って格納
+    p5.push();
+    p5.textFont('ＭＳ ゴシック');
     for (let i = 0, textWidth = 0; i < this.text.length; i += 1) {
       if (textWidth + p5.textWidth(sliceStr.charAt(0)) > textBoxWidth) {
         list.push(printText);
@@ -86,11 +87,11 @@ export class Character {
     }
     // 格納したtextの描画
     for (let i = 0; i < list.length; i += 1) {
-      p5.push();
       p5.fill(0)
         .textAlign('left', 'center')
         .textSize(textSize)
         .text(list[i], startPosition.x, startPosition.y + textSize * i);
     }
+    p5.pop();
   }
 }
