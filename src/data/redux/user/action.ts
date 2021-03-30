@@ -28,7 +28,6 @@ export const login = createAsyncThunk<
 >(LOGIN, async ({ loginId }) => {
   const service = new UserService();
   const user = await service.getUserByLoginId(loginId);
-  console.log(user);
   return {
     isLoggedIn: user !== null,
   } as const;

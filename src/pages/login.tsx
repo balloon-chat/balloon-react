@@ -38,8 +38,13 @@ const LoginPage = () => {
           setUid(user.uid);
           setName(user.displayName);
           setPhotoUrl(user.photoURL);
-          setIsEditing(!user.displayName || !user.photoURL);
+
+          // ログインを試行
+          // すでにユーザーが登録されている場合は、ログインが成功する。
           dispatcher(login({ loginId: user?.uid }));
+
+          // ユーザー名、または画像が指定されないときには、編集ダイアログを表示
+          setIsEditing(!user.displayName || !user.photoURL);
         }
       });
 
@@ -62,6 +67,8 @@ const LoginPage = () => {
     setName(name);
     setPhotoUrl(photoUrl);
     setImageFile(imageFile);
+
+    // 編集ダイアログを閉じる
     setIsEditing(false);
   };
 
