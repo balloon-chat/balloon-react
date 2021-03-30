@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
-export const Button = styled.button`
-  background-color: #5b87fa;
+export const Button = styled.button<{isEnabled?: boolean}>`
+  background-color: ${(props) => (props.isEnabled ?? true ? '#5b87fa' : '#ccc')};
   border-style: none;
   border-radius: 5px;
   color: white;
@@ -14,7 +14,7 @@ export const Button = styled.button`
   }
 `;
 
-export const TextButton = styled(Button)`
+export const TextButton = styled(Button)<{isEnabled?: boolean}>`
   background-color: transparent;
-  color: #5b87fa;
+  color: ${(props) => (props.isEnabled ?? true ? '#5b87fa' : '#999')};
 `;
