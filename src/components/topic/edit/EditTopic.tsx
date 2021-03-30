@@ -12,6 +12,8 @@ import { TopicThumbnail } from 'src/components/topic/edit/TopicThumbnail';
 import { TopicTitle } from 'src/domain/topic/models/topicTitle';
 import { TopicDescription } from 'src/domain/topic/models/topicDescription';
 import { LoadDialog } from 'src/components/common/LoadDialog';
+import { TextField } from 'src/components/common/TextField';
+import { rootPath } from 'src/view/route/pagePath';
 
 export const EditTopic = () => {
   const dispatcher = useDispatch();
@@ -33,7 +35,7 @@ export const EditTopic = () => {
 
   const navigateToTopic = async (topicId: string) => {
     dispatcher(setIsTopicCreated({ isTopicCreated: true }));
-    await router.push(`/topics/${topicId}`);
+    await router.push(rootPath.topicPath.topic(topicId));
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -52,11 +54,11 @@ export const EditTopic = () => {
     }
 
     if (!TopicTitle.require(title)) {
-      setTitleError('エラー: この項目は必須です。');
+      setTitleError('この項目は必須です。');
     }
     if (description && !TopicDescription.require(description)) {
       setDescriptionError(
-        `エラー: 文字数は${TopicDescription.MAX_DESCRIPTION_LENGTH}以下です。`,
+        `文字数は${TopicDescription.MAX_DESCRIPTION_LENGTH}以下です。`,
       );
     }
   };
@@ -65,42 +67,20 @@ export const EditTopic = () => {
     <>
       {isTopicCreating && <LoadDialog message="話題を作成しています。" />}
       <Form onSubmit={handleSubmit}>
-        <InputRow>
-          <Title>タイトル</Title>
-          <Input
-            maxLength={TopicTitle.MAX_TITLE_LENGTH}
-            placeholder="例: 『今日の晩ごはんは〇〇食べたい！』"
-            onChange={(e) => setTitle(e.target.value)}
-          />
-          <InputRowFooter>
-            {titleError && <InputErrorMessage>{titleError}</InputErrorMessage>}
-            <CharacterCount>
-              {title.length}
-              {' '}
-              /
-              {TopicTitle.MAX_TITLE_LENGTH}
-            </CharacterCount>
-          </InputRowFooter>
-        </InputRow>
-        <InputRow>
-          <Title>簡単な説明</Title>
-          <Input
-            maxLength={TopicDescription.MAX_DESCRIPTION_LENGTH}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="例: 『みんなで今日の晩御飯のメニューの妄想を語り合いましょう。』"
-          />
-          <InputRowFooter>
-            {descriptionError && (
-              <InputErrorMessage>{descriptionError}</InputErrorMessage>
-            )}
-            <CharacterCount>
-              {description.length}
-              {' '}
-              /
-              {TopicDescription.MAX_DESCRIPTION_LENGTH}
-            </CharacterCount>
-          </InputRowFooter>
-        </InputRow>
+        <TextField
+          title="タイトル"
+          placeholder="例: 『今日の晩ごはんは〇〇食べたい！』"
+          onChange={(v) => setTitle(v)}
+          maxLength={TopicTitle.MAX_TITLE_LENGTH}
+          error={titleError}
+        />
+        <TextField
+          title="簡単な説明"
+          placeholder="例: 『みんなで今日の晩御飯のメニューの妄想を語り合いましょう。』"
+          onChange={(v) => setDescription(v)}
+          maxLength={TopicDescription.MAX_DESCRIPTION_LENGTH}
+          error={descriptionError}
+        />
         <ThumbnailInputRow>
           <Title>サムネイル</Title>
           <ImageFileContext.Provider
@@ -123,56 +103,10 @@ const Form = styled.form`
   margin: 0 auto;
 `;
 
-const InputRow = styled.label`
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 24px;
-`;
-
-const InputRowFooter = styled.div`
-  display: flex;
-  flex-direction: row;
-  margin-top: 4px;
-`;
-
 const Title = styled.div`
   font-size: 20px;
   font-weight: bold;
   margin-bottom: 4px;
-`;
-
-const Input = styled.input`
-  padding: 8px;
-  outline: none;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-
-  :focus {
-    border: 1px solid #5b87fa;
-    outline: none;
-  }
-
-  :required {
-    color: #630015;
-    border-color: #c20c33;
-    background-color: #ffd9e1;
-  }
-
-  :valid {
-    color: #333;
-    border-color: #ccc;
-    background: #fff;
-  }
-`;
-
-const InputErrorMessage = styled.div`
-  color: #c20c33;
-  font-size: 15px;
-`;
-
-const CharacterCount = styled.div`
-  margin-left: auto;
-  color: grey;
 `;
 
 const ThumbnailInputRow = styled.div`

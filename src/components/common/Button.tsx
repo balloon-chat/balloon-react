@@ -13,3 +13,8 @@ export const Button = styled.button`
     outline: none;
   }
 `;
+
+export const TextButton = styled(Button)`
+  background-color: transparent;
+  color: #5b87fa;
+`;
