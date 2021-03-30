@@ -1,13 +1,11 @@
 import { useEffect, useState } from 'react';
 import router from 'next/router';
 import firebase from 'firebase';
-import { UserId } from 'src/domain/user/models/userId';
-import { UserName } from 'src/domain/user/models/userName';
 import { useDispatch } from 'react-redux';
 import { rootPath } from 'src/view/route/pagePath';
-import { LoginUser } from 'src/domain/user/models/loginUser';
-import { UserEntity, UserEntityFactory } from 'src/view/types/user';
+import { UserEntity } from 'src/view/types/user';
 import { setUser as setUserAction } from 'src/data/redux/user/slice';
+import { UserService } from 'src/domain/user/service/userService';
 
 type UseUserArgument = {
   returnTo: string | null;
@@ -22,22 +20,28 @@ export const useUser = (
 ) => {
   const [user, setUser] = useState<UserEntity | null>();
   const dispatcher = useDispatch();
+  const service = new UserService();
+
+  const getUser = async (loginId: string): Promise<UserEntity | null> => {
+    const loginUser = await service.getUserByLoginId(loginId);
+
+    if (loginUser) {
+      dispatcher(setUserAction({
+        uid: loginUser.uid,
+        name: loginUser.name,
+        photoUrl: loginUser.photoUrl,
+      }));
+    }
+
+    return loginUser;
+  };
 
   useEffect(() => {
     const unsubscribe = firebase.auth()
       .onAuthStateChanged((user) => {
         if (user) {
-          const name = user.displayName
-            ? new UserName(user.displayName)
-            : undefined;
-          const photoUrl = user.photoURL ?? undefined;
-          const loginUser = new LoginUser(new UserId(user.uid), name, photoUrl);
-          setUser(UserEntityFactory.create(loginUser));
-          dispatcher(setUserAction({
-            uid: loginUser.id.value,
-            name: loginUser.name?.value ?? null,
-            photoUrl: loginUser.photoUrl ?? null,
-          }));
+          getUser(user.uid)
+            .then((loginUser) => setUser(loginUser));
         } else {
           setUser(null);
         }
