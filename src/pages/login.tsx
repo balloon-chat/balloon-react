@@ -10,26 +10,27 @@ import { WelcomeDialog } from 'src/components/login/WelcomeDialog';
 import { createUser, login } from 'src/data/redux/user/action';
 import { isInnerPath, rootPath } from 'src/view/route/pagePath';
 import { LoadDialog } from 'src/components/common/LoadDialog';
+import { LoginStates } from 'src/data/redux/user/state';
+
+const DialogStates = {
+  SHOW_WELCOME: 'welcome',
+  SHOW_EDIT: 'edit',
+};
+
+type DialogState = typeof DialogStates[keyof typeof DialogStates];
 
 const LoginPage = () => {
   const dispatcher = useDispatch();
   const router = useRouter();
   const { return_to } = router.query;
-  const { isLoggedIn } = useUserSelector();
+  const { loginState } = useUserSelector();
 
   const [uid, setUid] = useState<string>();
   const [name, setName] = useState<string | null>();
   const [photoUrl, setPhotoUrl] = useState<string | null>();
   const [imageFile, setImageFile] = useState<File | null>(null);
 
-  /**
-   * ユーザー情報の編集状態を管理
-   */
-  const [isEditing, setIsEditing] = useState(false);
-  /**
-   * ユーザーの作成状態を管理
-   */
-  const [isCreating, setIsCreating] = useState(false);
+  const [dialogState, setDialogState] = useState<DialogState | null>(null);
 
   useEffect(() => {
     const unsubscribe = firebase.auth()
@@ -42,9 +43,6 @@ const LoginPage = () => {
           // ログインを試行
           // すでにユーザーが登録されている場合は、ログインが成功する。
           dispatcher(login({ loginId: user?.uid }));
-
-          // ユーザー名、または画像が指定されないときには、編集ダイアログを表示
-          setIsEditing(!user.displayName || !user.photoURL);
         }
       });
 
@@ -54,27 +52,40 @@ const LoginPage = () => {
   }, []);
 
   useEffect(() => {
-    if (!isLoggedIn) return;
+    if (loginState === LoginStates.USER_NOF_FOUND) {
+      // Googleログインは成功したが、ユーザーが登録されていない
+      if (name && photoUrl) {
+        setDialogState(DialogStates.SHOW_WELCOME);
+      } else {
+        setDialogState(DialogStates.SHOW_EDIT);
+      }
+    } else {
+      setDialogState(null);
+    }
+  }, [loginState]);
+
+  useEffect(() => {
+    if (loginState !== LoginStates.LOGGED_IN) return;
 
     if (return_to && typeof return_to === 'string' && isInnerPath(return_to)) {
-      router.push(return_to).then();
+      router.push(return_to)
+        .then();
     } else {
-      router.push(rootPath.index).then();
+      router.push(rootPath.index)
+        .then();
     }
-  }, [return_to, isLoggedIn]);
+  }, [return_to, loginState]);
 
   const handleOnSaveEdit = (name: string, photoUrl: string, imageFile: File | null) => {
     setName(name);
     setPhotoUrl(photoUrl);
     setImageFile(imageFile);
-
-    // 編集ダイアログを閉じる
-    setIsEditing(false);
+    setDialogState(DialogStates.SHOW_WELCOME);
   };
 
   const createNewUser = () => {
     if (uid && name && photoUrl) {
-      setIsCreating(true);
+      setDialogState(null); // close dialog
       dispatcher(
         createUser({
           loginId: uid,
@@ -88,30 +99,39 @@ const LoginPage = () => {
   return (
     <>
       {
-        uid && !isEditing && (
+        loginState === LoginStates.FINDING && (
+          <LoadDialog message="ユーザー情報を確認しています。" />
+        )
+      }
+      {
+        dialogState === DialogStates.SHOW_WELCOME && (
           <WelcomeDialog
             name={name!}
             imgUrl={photoUrl ?? ''}
-            onEdit={() => setIsEditing(true)}
+            onEdit={() => setDialogState(DialogStates.SHOW_EDIT)}
             onCreateUser={createNewUser}
           />
         )
       }
       {
-        isEditing && (
+        dialogState === DialogStates.SHOW_EDIT && (
           <EditProfileDialog
             name={name ?? null}
             photoUrl={photoUrl ?? null}
-            onCancel={() => setIsEditing(false)}
+            onCancel={() => setDialogState(DialogStates.SHOW_WELCOME)}
             onSave={handleOnSaveEdit}
           />
         )
       }
       {
-        isCreating && <LoadDialog message="ユーザー情報を登録しています。" />
+        loginState === LoginStates.CREATING && (
+          <LoadDialog message="ユーザー情報を登録しています。" />
+        )
       }
       <Container>
-        <LoginDialog />
+        {loginState === LoginStates.NOT_LOGGED_IN && (
+          <LoginDialog />
+        )}
       </Container>
     </>
   );

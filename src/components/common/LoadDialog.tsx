@@ -1,43 +1,24 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Dialog } from 'src/components/common/Dialog';
 
 type Props = {
   message: string;
 };
 
 export const LoadDialog: React.FC<Props> = ({ message }) => (
-  <DialogContainer>
-    <Dialog>
+  <Dialog onClose={() => {}}>
+    <Container>
       <DialogImage src="/images/character_blue.png" width={100} />
       <DialogMessage>{message}</DialogMessage>
-    </Dialog>
-  </DialogContainer>
+    </Container>
+  </Dialog>
 );
 
-const DialogContainer = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
+const Container = styled.div`
   align-items: center;
-  z-index: 10;
-`;
-
-const Dialog = styled.div`
-  box-sizing: border-box;
-  padding: 32px 62px;
-  background-color: white;
   display: flex;
-  border-radius: 5px;
   flex-direction: column;
-  text-align: center;
-  align-items: center;
-  white-space: nowrap;
-  max-width: 100%;
 `;
 
 const DialogMessage = styled.div`

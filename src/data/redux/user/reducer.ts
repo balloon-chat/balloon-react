@@ -1,5 +1,5 @@
 import { CaseReducer } from '@reduxjs/toolkit';
-import { UserState } from 'src/data/redux/user/state';
+import { LoginStates, UserState } from 'src/data/redux/user/state';
 import { Logout, SetIsUserLoggedIn, SetUser } from 'src/data/redux/user/action';
 
 export const setUserReducer: CaseReducer<UserState, SetUser> = (
@@ -12,11 +12,13 @@ export const setUserReducer: CaseReducer<UserState, SetUser> = (
   photoUrl: payload.photoUrl,
 } as const);
 
-export const setIsUserLoggedInReducer: CaseReducer<UserState,
-  SetIsUserLoggedIn> = (state, { payload }) => ({
-    ...state,
-    isLoggedIn: payload,
-  });
+export const setIsUserLoggedInReducer: CaseReducer<
+  UserState,
+  SetIsUserLoggedIn
+> = (state, { payload }) => ({
+  ...state,
+  loginState: payload ? LoginStates.LOGGED_IN : LoginStates.NOT_LOGGED_IN,
+});
 
 export const logoutReducer: CaseReducer<UserState, Logout> = (
   state,
@@ -26,5 +28,5 @@ export const logoutReducer: CaseReducer<UserState, Logout> = (
   uid: null,
   name: null,
   photoUrl: null,
-  isLoggedIn: false,
+  loginState: LoginStates.NOT_LOGGED_IN,
 });

@@ -16,6 +16,7 @@ import { Sketch } from 'src/components/p5/Sketch';
 import { observeStart } from 'src/data/redux/message/slice';
 import { useTopicState } from 'src/data/redux/topic/selector';
 import { setUser } from 'src/data/redux/user/slice';
+import { LoginStates } from 'src/data/redux/user/state';
 
 type Props = {
   topic: TopicEntity | null;
@@ -23,14 +24,14 @@ type Props = {
 
 const TopicPage = ({ topic }: Props) => {
   const dispatcher = useDispatch();
-  const { isLoggedIn } = useUserSelector();
+  const { loginState } = useUserSelector();
   const { topicId } = useTopicState();
 
   useEffect(() => {
     dispatcher(setTopicId({ topicId: topic?.id ?? null }));
 
     // ユーザーが未ログイン時は、一時的なIDを付与する
-    if (!isLoggedIn) {
+    if (loginState === LoginStates.NOT_LOGGED_IN) {
       dispatcher(setUser({
         uid: new UserId().value,
         photoUrl: null,
@@ -40,7 +41,7 @@ const TopicPage = ({ topic }: Props) => {
 
     return () => {
       dispatcher(setTopicId({ topicId: null }));
-      if (!isLoggedIn) {
+      if (loginState === LoginStates.NOT_LOGGED_IN) {
         dispatcher(setUser({
           uid: null,
           photoUrl: null,
