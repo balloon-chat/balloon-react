@@ -23,13 +23,13 @@ export const createUser = createAsyncThunk<
 });
 
 export const login = createAsyncThunk<
-  {isLoggedIn: boolean},
+  {userFound: boolean},
   {loginId: string}
 >(LOGIN, async ({ loginId }) => {
   const service = new UserService();
   const user = await service.getUserByLoginId(loginId);
   return {
-    isLoggedIn: user !== null,
+    userFound: user !== null,
   } as const;
 });
 

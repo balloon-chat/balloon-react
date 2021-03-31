@@ -10,6 +10,7 @@ import { useRouter } from 'next/router';
 import { mediaQuery } from 'src/components/constants/mediaQuery';
 import SpeechBalloon from 'src/components/svgs/speech_balloon.svg';
 import { NavBarUserButton } from 'src/components/navbar/NavBarUserButton';
+import { LoginStates } from 'src/data/redux/user/state';
 
 export const NavBarHome = () => (
   <NavBar>
@@ -19,7 +20,7 @@ export const NavBarHome = () => (
 
 export const NavBar: React.FC = ({ children }) => {
   const router = useRouter();
-  const { isLoggedIn } = useUserSelector();
+  const { loginState } = useUserSelector();
 
   return (
     <NavContainer>
@@ -37,7 +38,7 @@ export const NavBar: React.FC = ({ children }) => {
             </NavButton>
           </li>
           <li>
-            {isLoggedIn
+            {loginState === LoginStates.LOGGED_IN
               ? <NavBarUserButton />
               : (
                 <NavButton

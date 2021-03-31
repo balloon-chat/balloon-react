@@ -82,7 +82,11 @@ export const EditProfileDialog = ({
       />
       <ButtonContainer>
         {name && photoUrl && <TextButton onClick={() => onCancel()}>修正を破棄</TextButton>}
-        <Button onClick={() => handleOnSave()}>修正を保存</Button>
+        <Button onClick={() => handleOnSave()}>
+          {
+            name && photoUrl ? '修正を保存' : '保存'
+          }
+        </Button>
       </ButtonContainer>
     </Dialog>
   );
