@@ -36,6 +36,7 @@ const Container = styled.div`
   background-color: white;
   border-radius: 5px;
   padding: 32px 24px;
+  min-width: calc(100% - 16px);
   max-width: calc(100% - 16px);
   
   @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
