@@ -10,8 +10,9 @@ import { setTopics } from 'src/data/redux/topic/slice';
 import { BottomNavigation } from 'src/components/navbar/bottomNavigation/BottomNavigation';
 import { TopicContainer } from 'src/components/topic/TopicContainer';
 import { useRouter } from 'next/router';
-import { rootPath } from 'src/view/route/pagePath';
+import { pageTitle, rootPath } from 'src/view/route/pagePath';
 import { Button } from 'src/components/common/Button';
+import Head from 'next/head';
 
 type Props = {
   pickup: {
@@ -38,6 +39,9 @@ const IndexPage: React.FC<Props> = ({
 
   return (
     <>
+      <Head>
+        <title>{pageTitle.index}</title>
+      </Head>
       <NavBarHome />
       <TopicContainer>
         <Title>

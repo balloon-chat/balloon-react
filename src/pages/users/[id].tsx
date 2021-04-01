@@ -12,6 +12,8 @@ import { useRouter } from 'next/router';
 import { useUserSelector } from 'src/data/redux/user/selector';
 import { UserService } from 'src/domain/user/service/userService';
 import { UserEntity } from 'src/view/types/user';
+import { pageTitle } from 'src/view/route/pagePath';
+import Head from 'next/head';
 
 type Props = {
   user: UserEntity | null
@@ -33,6 +35,9 @@ const ProfilePage = ({
 
   return (
     <>
+      <Head>
+        <title>{pageTitle.users.profile(user?.name ?? '')}</title>
+      </Head>
       <NavBar />
       {user && (
         <UserProfileContainer>
