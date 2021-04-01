@@ -3,7 +3,7 @@ import { MessageField } from 'src/components/chat/MessageField';
 import { NavBar } from 'src/components/navbar/NavBar';
 import { TopicNotFound } from 'src/components/topic/TopicNotFound';
 import Head from 'next/head';
-import { topicPath } from 'src/view/route/pagePath';
+import { pageTitle } from 'src/view/route/pagePath';
 import { GetServerSideProps } from 'next';
 import { TopicEntity, TopicEntityFactory } from 'src/view/types/topic';
 import { TopicService } from 'src/domain/topic/service/topicService';
@@ -61,7 +61,7 @@ const TopicPage = ({ topic }: Props) => {
       {topic && (
         <>
           <Head>
-            <title>{topicPath.title(topic.title)}</title>
+            <title>{pageTitle.topics.topic(topic.title)}</title>
           </Head>
           <Sketch />
           <MessageField />

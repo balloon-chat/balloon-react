@@ -8,9 +8,10 @@ import Link from 'next/link';
 import { NavBarHeader } from 'src/components/navbar/NavBarHeader';
 import { useRouter } from 'next/router';
 import { mediaQuery } from 'src/components/constants/mediaQuery';
-import SpeechBalloon from 'src/components/svgs/speech_balloon.svg';
 import { NavBarUserButton } from 'src/components/navbar/NavBarUserButton';
 import { LoginStates } from 'src/data/redux/user/state';
+import Image from 'next/image';
+import { imagePath } from 'src/components/constants/imagePath';
 
 export const NavBarHome = () => (
   <NavBar>
@@ -26,16 +27,14 @@ export const NavBar: React.FC = ({ children }) => {
     <NavContainer>
       <NavMainContainer>
         <Link href={rootPath.index}>
-          <NavTitle>
-            <TitleIcon src="/images/character_blue.png" />
-            <div>おもちゃっと</div>
-          </NavTitle>
+          <NavTitleContainer>
+            <Image src={imagePath.character.blue} height={24} width={40} objectFit="contain" />
+            <NavTitle>おもちゃっと</NavTitle>
+          </NavTitleContainer>
         </Link>
         <ActionContainer>
           <li>
-            <NavButton link={topicPath.create} title="話題を作る">
-              <SpeechBalloon />
-            </NavButton>
+            <NavButton link={topicPath.create} title="話題を作る" />
           </li>
           <li>
             {loginState === LoginStates.LOGGED_IN
@@ -69,7 +68,7 @@ const NavMainContainer = styled.div`
   justify-content: space-between;
 `;
 
-const NavTitle = styled.div`
+const NavTitleContainer = styled.div`
   align-items: center;
   cursor: pointer;
   color: inherit;
@@ -86,9 +85,9 @@ const NavTitle = styled.div`
   }
 `;
 
-const TitleIcon = styled.img`
-  margin-right: 8px;
-  height: 24px;
+const NavTitle = styled.div`
+  margin-left: 8px;
+  white-space: nowrap;
 `;
 
 const ActionContainer = styled.ul`

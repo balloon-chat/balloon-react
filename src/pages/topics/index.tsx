@@ -9,6 +9,8 @@ import { useDispatch } from 'react-redux';
 import { setTopics } from 'src/data/redux/topic/slice';
 import { BottomNavigation } from 'src/components/navbar/bottomNavigation/BottomNavigation';
 import { TopicContainer } from 'src/components/topic/TopicContainer';
+import { pageTitle } from 'src/view/route/pagePath';
+import Head from 'next/head';
 
 type Props = {
   pickup?: TopicEntity | null;
@@ -24,6 +26,9 @@ const TopicIndexPage: React.FC<Props> = ({ topics, pickup }) => {
 
   return (
     <>
+      <Head>
+        <title>{pageTitle.topics.index}</title>
+      </Head>
       <NavBar />
       <TopicContainer>
         <Container>

@@ -10,8 +10,11 @@ import { setTopics } from 'src/data/redux/topic/slice';
 import { BottomNavigation } from 'src/components/navbar/bottomNavigation/BottomNavigation';
 import { TopicContainer } from 'src/components/topic/TopicContainer';
 import { useRouter } from 'next/router';
-import { rootPath } from 'src/view/route/pagePath';
+import { pageTitle, rootPath } from 'src/view/route/pagePath';
 import { Button } from 'src/components/common/Button';
+import Head from 'next/head';
+import Image from 'next/image';
+import { imagePath } from 'src/components/constants/imagePath';
 
 type Props = {
   pickup: {
@@ -38,21 +41,24 @@ const IndexPage: React.FC<Props> = ({
 
   return (
     <>
+      <Head>
+        <title>{pageTitle.index}</title>
+      </Head>
       <NavBarHome />
       <TopicContainer>
-        <Title>
-          <TitleImage src="/images/character_yellow.png" />
+        <SectionTitle>
+          <SectionImage src={imagePath.character.yellow} height={50} width={80} objectFit="contain" objectPosition="center left" />
           <div>注目の話題</div>
-        </Title>
+        </SectionTitle>
         <Container>
           <TopicList topics={pickup.topics} pickup={pickup.main} />
         </Container>
       </TopicContainer>
       <TopicContainer color="#E5F6FB">
-        <Title>
-          <TitleImage src="/images/character_green.png" />
+        <SectionTitle>
+          <SectionImage src={imagePath.character.green} height={50} width={80} objectFit="contain" objectPosition="center left" />
           <div>最新の話題</div>
-        </Title>
+        </SectionTitle>
         <Container>
           <ScrollableTopicList />
           <ShowMoreButton onClick={showMore}>もっと見る</ShowMoreButton>
@@ -71,7 +77,7 @@ const Container = styled.main`
   margin: 0 auto;
 `;
 
-const Title = styled.div`
+const SectionTitle = styled.div`
   align-items: center;
   display: flex;
   font-weight: bold;
@@ -82,9 +88,9 @@ const Title = styled.div`
   width: 100%;
 `;
 
-const TitleImage = styled.img`
-  margin-right: 16px;
+const SectionImage = styled(Image)`
   height: 48px;
+  margin-right: 16px;
 `;
 
 const ShowMoreButton = styled(Button)`
