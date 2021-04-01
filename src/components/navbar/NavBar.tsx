@@ -11,6 +11,8 @@ import { mediaQuery } from 'src/components/constants/mediaQuery';
 import SpeechBalloon from 'src/components/svgs/speech_balloon.svg';
 import { NavBarUserButton } from 'src/components/navbar/NavBarUserButton';
 import { LoginStates } from 'src/data/redux/user/state';
+import Image from 'next/image';
+import { imagePath } from 'src/components/constants/imagePath';
 
 export const NavBarHome = () => (
   <NavBar>
@@ -27,7 +29,7 @@ export const NavBar: React.FC = ({ children }) => {
       <NavMainContainer>
         <Link href={rootPath.index}>
           <NavTitle>
-            <TitleIcon src="/images/character_blue.png" />
+            <TitleIcon src={imagePath.character.blue} height={24} width={40} objectFit="contain" />
             <div>おもちゃっと</div>
           </NavTitle>
         </Link>
@@ -86,9 +88,8 @@ const NavTitle = styled.div`
   }
 `;
 
-const TitleIcon = styled.img`
+const TitleIcon = styled(Image)`
   margin-right: 8px;
-  height: 24px;
 `;
 
 const ActionContainer = styled.ul`

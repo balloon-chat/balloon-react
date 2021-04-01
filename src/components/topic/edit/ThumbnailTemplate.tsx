@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { ImageFileContext } from 'src/components/topic/edit/context';
+import { imagePath } from 'src/components/constants/imagePath';
 
 type Props = {
   title: string;
@@ -24,7 +25,7 @@ export const ThumbnailTemplate = ({
 
     // 画像を一度だけ読み込んで、再利用する。
     const image = new Image();
-    image.src = '/images/topic_template.png';
+    image.src = imagePath.topic.thumbnailTemplate;
     image.onload = () => setImage(image);
   }, []);
 

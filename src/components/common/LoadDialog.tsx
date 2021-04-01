@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Dialog } from 'src/components/common/Dialog';
+import Image from 'next/image';
+import { imagePath } from 'src/components/constants/imagePath';
 
 type Props = {
   message: string;
@@ -9,7 +11,7 @@ type Props = {
 export const LoadDialog: React.FC<Props> = ({ message }) => (
   <Dialog onClose={() => {}}>
     <Container>
-      <DialogImage src="/images/character_blue.png" width={100} />
+      <DialogImage src={imagePath.character.blue} width={100} height={100} objectFit="contain" />
       <DialogMessage>{message}</DialogMessage>
     </Container>
   </Dialog>
@@ -27,7 +29,7 @@ const DialogMessage = styled.div`
   color: rgba(0, 0, 0, 0.8);
 `;
 
-const DialogImage = styled.img`
+const DialogImage = styled(Image)`
   animation-name: rotate;
   animation-duration: 1.5s;
   animation-iteration-count: infinite;
