@@ -13,13 +13,20 @@ export class MatterControllerFactory {
 
     // Bodyを生成
     const walls = createWalls(canvas, 0);
-    const addButton = Matter.Bodies.rectangle(100, 50, 200, 100, {
+    const addButton = Matter.Bodies.rectangle(100, 50, 200, 200, {
+      friction: 1,
       isStatic: true,
       label: 'addButton',
     });
-    const removeAllButton = Matter.Bodies.rectangle(100, 150, 200, 100, {
+    const removeAllButton = Matter.Bodies.rectangle(100, 250, 200, 200, {
+      friction: 1,
       isStatic: true,
       label: 'removeAllButton',
+    });
+    const shakeAllButton = Matter.Bodies.rectangle(100, 450, 200, 200, {
+      friction: 1,
+      isStatic: true,
+      label: 'shakeAllButton',
     });
 
     return new MatterController(
@@ -27,6 +34,7 @@ export class MatterControllerFactory {
       walls,
       addButton,
       removeAllButton,
+      shakeAllButton,
       characterController,
       canvas,
     );
@@ -46,9 +54,7 @@ const createWalls = (
   const options: Matter.IBodyDefinition = {
     isStatic: true,
     restitution,
-    render: {
-      fillStyle: 'red',
-    },
+    friction: 1,
   };
 
   return [

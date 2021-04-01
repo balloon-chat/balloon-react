@@ -67,7 +67,8 @@ export const Canvas: React.FC = () => {
     drawVertices(p5, controller.addButton.vertices);
     p5.fill(p5.color('green'));
     drawVertices(p5, controller.removeAllButton.vertices);
-
+    p5.fill(p5.color('red'));
+    drawVertices(p5, controller.shakeAllButton.vertices);
     // キャラクターの描画
     const characters = Array.from(
       controller.characterController.characters.values(),
