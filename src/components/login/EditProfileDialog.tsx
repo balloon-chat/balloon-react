@@ -5,6 +5,7 @@ import { TextField } from 'src/components/common/TextField';
 import { Button, TextButton } from 'src/components/common/Button';
 import ReactImageUploading, { ImageType } from 'react-images-uploading';
 import { AvatarImage } from 'src/components/common/AvatarImage';
+import { imagePath } from '../constants/imagePath';
 
 type Props = {
   photoUrl: string | null,
@@ -65,7 +66,7 @@ export const EditProfileDialog = ({
               <AvatarImage
                 size={126}
                 floating
-                src={image?.dataURL ?? photoUrl ?? '/images/character_blue.png'}
+                src={image?.dataURL ?? photoUrl ?? imagePath.character.blue}
               />
               <TextButton onClick={onImageUpload}>アイコンを変更</TextButton>
             </ProfileImageContainer>

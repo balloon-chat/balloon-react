@@ -1,11 +1,13 @@
 import { GoogleLoginButton } from 'src/components/login/LoginButton';
 import styled from 'styled-components';
 import React from 'react';
+import Image from 'next/image';
+import { imagePath } from 'src/components/constants/imagePath';
 
 export const LoginDialog = () => (
   <DialogContainer>
     <TitleContainer>
-      <img alt="" src="/images/character_blue.png" height={60} />
+      <Image alt="" src={imagePath.character.blue} height={60} width={100} objectFit="contain" />
       <h3>おもちゃっとへようこそ！</h3>
     </TitleContainer>
     <GoogleLoginButton />

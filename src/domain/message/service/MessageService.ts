@@ -13,6 +13,7 @@ import { FirebaseUserDatabase } from 'src/data/firebase/user/userDatabase';
 import { map } from 'rxjs/operators';
 import { IObserveMessages } from 'src/domain/message/types/observeMessages';
 import { IAddMessage } from 'src/domain/message/types/addMessage';
+import { imagePath } from 'src/components/constants/imagePath';
 
 export class MessageService {
   private readonly addMessageUsecase: IAddMessage;
@@ -41,7 +42,7 @@ export class MessageService {
         map((messages) => messages.map((message) => MessageEntityFactory.create(
           message,
           '匿名ユーザー',
-          '/images/character_blue.png',
+          imagePath.character.blue,
         ))),
       );
   }
