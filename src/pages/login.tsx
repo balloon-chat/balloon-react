@@ -8,9 +8,10 @@ import { useUserSelector } from 'src/data/redux/user/selector';
 import { EditProfileDialog } from 'src/components/login/EditProfileDialog';
 import { WelcomeDialog } from 'src/components/login/WelcomeDialog';
 import { createUser, login } from 'src/data/redux/user/action';
-import { isInnerPath, rootPath } from 'src/view/route/pagePath';
+import { isInnerPath, pageTitle, rootPath } from 'src/view/route/pagePath';
 import { LoadDialog } from 'src/components/common/LoadDialog';
 import { LoginStates } from 'src/data/redux/user/state';
+import Head from 'next/head';
 
 const DialogStates = {
   SHOW_WELCOME: 'welcome',
@@ -98,6 +99,9 @@ const LoginPage = () => {
 
   return (
     <>
+      <Head>
+        <title>{pageTitle.login}</title>
+      </Head>
       {
         loginState === LoginStates.FINDING && (
           <LoadDialog message="ユーザー情報を確認しています。" />

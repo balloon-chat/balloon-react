@@ -6,8 +6,9 @@ import styled from 'styled-components';
 import 'firebase/auth';
 import { useUser } from 'src/view/lib/useUser';
 import { LoadDialog } from 'src/components/common/LoadDialog';
-import { rootPath } from 'src/view/route/pagePath';
+import { pageTitle, rootPath } from 'src/view/route/pagePath';
 import { BottomNavigation } from 'src/components/navbar/bottomNavigation/BottomNavigation';
+import Head from 'next/head';
 
 const CreateTopicPage = () => {
   const { user } = useUser({ returnTo: rootPath.topicPath.create });
@@ -18,6 +19,9 @@ const CreateTopicPage = () => {
 
   return (
     <>
+      <Head>
+        <title>{pageTitle.topics.create}</title>
+      </Head>
       <NavBar />
       <Body>
         <ContainerCard>

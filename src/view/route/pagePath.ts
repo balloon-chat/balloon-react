@@ -2,7 +2,6 @@ export const topicPath = {
   index: '/topics',
   create: '/topics/create',
   topic: (id: string) => `/topics/${id}`,
-  title: (title: string) => `${title} | ふうせんちゃっと`,
 };
 
 export const usersPath = {
@@ -15,6 +14,27 @@ export const rootPath = {
   logout: '/logout',
   topicPath,
   usersPath,
+};
+
+const getPageTitle = (subTitle?: string) => {
+  if (subTitle) {
+    return `${subTitle} - おもちゃっと`;
+  }
+  return 'おもちゃっと';
+};
+
+export const pageTitle = {
+  index: getPageTitle(),
+  login: getPageTitle('ログイン'),
+  logout: getPageTitle('ログアウト'),
+  topics: {
+    index: getPageTitle('話題一覧'),
+    create: getPageTitle('話題を作成'),
+    topic: (topicTitle: string) => getPageTitle(topicTitle),
+  },
+  users: {
+    profile: (name: string) => getPageTitle(name),
+  },
 };
 
 /**
