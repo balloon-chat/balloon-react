@@ -9,16 +9,14 @@ type Props = {
   linkQuery?: string | ParsedUrlQueryInput;
 };
 
-export const NavButton: React.FC<Props> = ({
+export const NavButton = ({
   title,
   link,
   linkQuery,
-  children,
-}) => (
+}: Props) => (
   <Link href={{ pathname: link, query: linkQuery }}>
     <NavButtonContainer>
-      {children}
-      <ActionTitle hasIcon={children !== undefined}>{title}</ActionTitle>
+      <ActionTitle>{title}</ActionTitle>
     </NavButtonContainer>
   </Link>
 );
@@ -39,6 +37,7 @@ const NavButtonContainer = styled.a`
   }
 `;
 
-const ActionTitle = styled.div<{ hasIcon: boolean }>`
-  margin-left: ${({ hasIcon }) => (hasIcon ? 16 : 0)}px;
+const ActionTitle = styled.div`
+  box-sizing: border-box;
+  white-space: nowrap;
 `;
