@@ -22,7 +22,7 @@ export class MatterController {
 
     // 重力を無効化する
     this.disableGravity();
-    this.addObjects(this.walls);
+    // this.addObjects(this.walls);
 
     // 適当なオブジェクトをワールドに追加（ほぼデバッグ用）
     this.addObject(this.addButton);
@@ -40,7 +40,7 @@ export class MatterController {
       const characters = Array.from(
         this.characterController.characters.values(),
       );
-      characters.forEach((character) => character.beforeUpdate());
+      characters.forEach((character) => character.beforeUpdate(this.canvas));
     });
 
     // もしオブジェクトがクリックされたならば削除する

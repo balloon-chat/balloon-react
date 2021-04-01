@@ -1,5 +1,6 @@
 import Matter, { Common } from 'matter-js';
 import P5Types from 'p5';
+import { CanvasParameter } from 'src/view/matter/models/canvasParameter';
 
 /**
  * キャラクター（オブジェクトとテキストの情報を持っている）
@@ -105,9 +106,10 @@ export class Character {
     }
   }
 
-  beforeUpdate() {
+  beforeUpdate(canvas: CanvasParameter) {
     this.controllSpeed();
     this.preventRotate();
+    this.preventInvisible(canvas);
   }
 
   controllSpeed() {
@@ -141,5 +143,42 @@ export class Character {
 
   preventRotate() {
     Matter.Body.setAngle(this.object, 0);
+  }
+
+  isVisible(canvas: CanvasParameter): boolean {
+    const radius = this.object.circleRadius !== undefined ? this.object.circleRadius : 0;
+    // x座標の判定
+    if (this.object.position.x + radius < 0 || this.object.position.x - radius > canvas.width) {
+      return false;
+    }
+    // y座標の判定
+    if (this.object.position.y + radius < 0 || this.object.position.y - radius > canvas.height) {
+      return false;
+    }
+    return true;
+  }
+
+  preventInvisible(canvas: CanvasParameter) {
+    if (this.isVisible(canvas) === true) return;
+
+    const radius = this.object.circleRadius !== undefined ? this.object.circleRadius : 0;
+    // eslint-disable-next-line prefer-destructuring
+    const position: Matter.Vector = {
+      x: this.object.position.x,
+      y: this.object.position.y,
+    };
+    if (position.x + radius < 0) {
+      position.x = canvas.width + radius;
+    } else if (position.x - radius > canvas.width) {
+      position.x = 0 - radius;
+    }
+
+    if (position.y + radius < 0) {
+      position.y = canvas.height + radius;
+    } else if (position.y - radius > canvas.height) {
+      position.y = 0 - radius;
+    }
+
+    Matter.Body.setPosition(this.object, position);
   }
 }
