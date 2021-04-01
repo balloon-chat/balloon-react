@@ -152,9 +152,9 @@ export class MatterController {
    * ワールドにオブジェクトを追加（複数）
    * @param objects {Matter.Body[]} 追加したいオブジェクトの配列
    */
-  private addObjects(objects: Matter.Body[]): void {
-    Matter.World.add(this.engine.world, objects);
-  }
+  // private addObjects(objects: Matter.Body[]): void {
+  //   Matter.World.add(this.engine.world, objects);
+  // }
 
   /**
    * ワールドのオブジェクトを削除（単体）
