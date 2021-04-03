@@ -44,7 +44,7 @@ export class Character {
   }
 
   draw(p5: P5Types) {
-    const radius: number = (this.object.circleRadius !== undefined) ? this.object.circleRadius : 0;
+    const radius = this.object.circleRadius ?? 0;
     // bodyの描画
     p5.push();
     p5.fill(this.getColor(p5))
@@ -107,12 +107,12 @@ export class Character {
   }
 
   beforeUpdate(canvas: CanvasParameter) {
-    this.controllSpeed();
+    this.controlSpeed();
     this.preventRotate();
     this.preventInvisible(canvas);
   }
 
-  controllSpeed() {
+  controlSpeed() {
     if (this.object.speed > this.maxSpeed) {
       const velocity = Matter.Vector.mult(
         Matter.Vector.normalise(this.object.velocity),
@@ -146,7 +146,7 @@ export class Character {
   }
 
   isVisible(canvas: CanvasParameter): boolean {
-    const radius = this.object.circleRadius !== undefined ? this.object.circleRadius : 0;
+    const radius = this.object.circleRadius ?? 0;
     // x座標の判定
     if (this.object.position.x + radius < 0 || this.object.position.x - radius > canvas.width) {
       return false;
@@ -159,14 +159,14 @@ export class Character {
   }
 
   preventInvisible(canvas: CanvasParameter) {
-    if (this.isVisible(canvas) === true) return;
+    if (this.isVisible(canvas)) return;
 
-    const radius = this.object.circleRadius !== undefined ? this.object.circleRadius : 0;
-    // eslint-disable-next-line prefer-destructuring
+    const radius = this.object.circleRadius ?? 0;
     const position: Matter.Vector = {
       x: this.object.position.x,
       y: this.object.position.y,
-    };
+    } as const;
+
     if (position.x + radius < 0) {
       position.x = canvas.width + radius;
     } else if (position.x - radius > canvas.width) {
