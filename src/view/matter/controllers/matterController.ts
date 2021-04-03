@@ -1,4 +1,5 @@
-import Matter, { Common } from 'matter-js';
+/* eslint-disable no-param-reassign */
+import Matter, { Common, Vector } from 'matter-js';
 import { CharacterController } from 'src/view/matter/controllers/characterController';
 import { Character } from 'src/view/matter/actors/character';
 import { CharacterFactory } from 'src/view/matter/actors/characterFactory';
@@ -13,6 +14,7 @@ export class MatterController {
     public readonly walls: Matter.Body[],
     public readonly addButton: Matter.Body,
     public readonly removeAllButton: Matter.Body,
+    public readonly shakeAllButton: Matter.Body,
     public readonly characterController: CharacterController,
     public readonly canvas: CanvasParameter,
   ) {
@@ -20,44 +22,41 @@ export class MatterController {
 
     // 重力を無効化する
     this.disableGravity();
-    this.addObjects(this.walls);
+    // this.addObjects(this.walls);
 
+    // 適当なオブジェクトをワールドに追加（ほぼデバッグ用）
     this.addObject(this.addButton);
+    // ワールドのオブジェクトを消す（リロードするとまた現れる）
     this.addObject(this.removeAllButton);
+    // ワールドのオブジェクトすべてを動かす
+    this.addObject(this.shakeAllButton);
 
     // マウス操作を可能にする
     const mouseConstraint = Matter.MouseConstraint.create(this.engine);
     Matter.World.add(this.engine.world, mouseConstraint);
 
-    // すり抜けしないようにスピードを制限する (アップデート前)
+    // characterのアップデート前に行う動作（スピード調整等）
     Matter.Events.on(this.engine, 'beforeUpdate', () => {
-      const objects = Matter.Composite.allBodies(this.engine.world);
-      const maxSpeed = 10;
-      objects.forEach((object) => {
-        if (object.speed >= maxSpeed) {
-          const velocity = Matter.Vector.mult(
-            Matter.Vector.normalise(object.velocity),
-            maxSpeed,
-          );
-          Matter.Body.setVelocity(object, velocity);
-        }
-      });
+      const characters = Array.from(
+        this.characterController.characters.values(),
+      );
+      characters.forEach((character) => character.beforeUpdate(this.canvas));
     });
 
     // もしオブジェクトがクリックされたならば削除する
     Matter.Events.on(mouseConstraint, 'mousedown', (event) => {
       const clickObj = event.source.body;
       if (clickObj) {
-        console.log(clickObj);
         console.log(`Clicked ${clickObj.label} button.`);
         switch (clickObj.label) {
-          case 'character':
+          case 'character': {
             const clickCharacter = this.characterController.getCharacter(
               clickObj.id,
             );
             if (clickCharacter) this.removeCharacter(clickCharacter);
             break;
-          case 'addButton':
+          }
+          case 'addButton': {
             const character = CharacterFactory.create(
               this.canvas,
               `${Common.nextId()}`,
@@ -65,26 +64,39 @@ export class MatterController {
             );
             this.addCharacter(character);
             break;
-          case 'removeAllButton':
+          }
+          case 'removeAllButton': {
             const characters = Array.from(
               this.characterController.characters.values(),
             );
             characters.forEach((character) => this.removeCharacter(character));
             break;
-          default:
+          }
+          case 'shakeAllButton': {
+            const characters = Array.from(
+              this.characterController.characters.values(),
+            );
+            characters.forEach((character) => {
+              const sign = {
+                x: Math.random() < 0.5 ? -1 : 1,
+                y: Math.random() < 0.5 ? -1 : 1,
+              };
+              const velocity: Vector = Vector.mult(
+                Matter.Vector.normalise({
+                  x: sign.x * Math.random(),
+                  y: sign.y * Math.random(),
+                }),
+                character.maxSpeed,
+              );
+              Matter.Body.setVelocity(character.object, velocity);
+            });
             break;
+          }
+          default: {
+            break;
+          }
         }
       }
-    });
-
-    // 回転を防止
-    Matter.Events.on(this.engine, 'beforeUpdate', () => {
-      const characters = Array.from(
-        this.characterController.characters.values(),
-      );
-      characters.forEach((character) => {
-        Matter.Body.setAngularVelocity(character.object, 0);
-      });
     });
   }
 
@@ -99,6 +111,18 @@ export class MatterController {
   addCharacter(character: Character): void {
     this.addObject(character.object);
     this.characterController.add(character);
+    const sign = {
+      x: Math.random() < 0.5 ? -1 : 1,
+      y: Math.random() < 0.5 ? -1 : 1,
+    };
+    const velocity: Vector = Vector.mult(
+      Matter.Vector.normalise({
+        x: sign.x * Math.random(),
+        y: sign.y * Math.random(),
+      }),
+      character.maxSpeed * Math.random(),
+    );
+    Matter.Body.setVelocity(character.object, velocity);
   }
 
   /**
@@ -112,6 +136,7 @@ export class MatterController {
 
   /** 重力を無効にする */
   private disableGravity() {
+    this.engine.world.gravity.x = 0;
     this.engine.world.gravity.y = 0;
   }
 
@@ -127,9 +152,9 @@ export class MatterController {
    * ワールドにオブジェクトを追加（複数）
    * @param objects {Matter.Body[]} 追加したいオブジェクトの配列
    */
-  private addObjects(objects: Matter.Body[]): void {
-    Matter.World.add(this.engine.world, objects);
-  }
+  // private addObjects(objects: Matter.Body[]): void {
+  //   Matter.World.add(this.engine.world, objects);
+  // }
 
   /**
    * ワールドのオブジェクトを削除（単体）
