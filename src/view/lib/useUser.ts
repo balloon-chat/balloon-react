@@ -52,15 +52,19 @@ export const useUser = (
     };
   }, []);
 
+  const navigate = async () => {
+    await router.push(rootPath.index);
+
+    const query = returnTo ? { return_to: returnTo } : null;
+    await router.push({
+      pathname: rootPath.login,
+      query,
+    });
+  };
+
   useEffect(() => {
     if (user === null) {
-      const query = returnTo ? { return_to: returnTo } : null;
-      router
-        .push({
-          pathname: rootPath.login,
-          query,
-        })
-        .then();
+      navigate().then();
     }
   }, [user]);
 
