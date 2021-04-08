@@ -19,7 +19,6 @@ export class MatterController {
     public readonly canvas: CanvasParameter,
   ) {
     this.adapter = new MatterListAdapter(this);
-
     // 重力を無効化する
     this.disableGravity();
     // this.addObjects(this.walls);

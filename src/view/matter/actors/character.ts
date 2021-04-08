@@ -148,9 +148,10 @@ export class Character {
   }
 
   isVisible(canvas: CanvasParameter): boolean {
-    const radius = this.object.circleRadius !== undefined ? this.object.circleRadius : 0;
+    const radius = this.object.circleRadius ?? 0;
     // x座標の判定
-    if (this.object.position.x + radius < 0 || this.object.position.x - radius > canvas.width) {
+    // eslint-disable-next-line max-len
+    if (this.object.position.x + radius * 1.25 < 0 || this.object.position.x - radius * 1.25 > canvas.width) {
       return false;
     }
     // y座標の判定
@@ -167,16 +168,16 @@ export class Character {
       x: this.object.position.x,
       y: this.object.position.y,
     };
-    if (position.x + this.radius < 0) {
-      position.x = canvas.width + this.radius;
-    } else if (position.x - this.radius > canvas.width) {
-      position.x = 0 - this.radius;
+    if (position.x + this.radius * 1.25 * 2 < 0) {
+      position.x = canvas.width + this.radius * 1.25 * 2;
+    } else if (position.x - this.radius * 1.25 * 2 > canvas.width) {
+      position.x = 0 - this.radius * 1.25 * 2;
     }
 
-    if (position.y + this.radius < 0) {
-      position.y = canvas.height + this.radius;
-    } else if (position.y - this.radius > canvas.height) {
-      position.y = 0 - this.radius;
+    if (position.y + this.radius * 2 < 0) {
+      position.y = canvas.height + this.radius * 2;
+    } else if (position.y - this.radius * 2 > canvas.height) {
+      position.y = 0 - this.radius * 2;
     }
 
     Matter.Body.setPosition(this.object, position);

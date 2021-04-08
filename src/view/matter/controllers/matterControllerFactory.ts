@@ -1,3 +1,4 @@
+/* eslint-disable no-bitwise */
 import Matter, { Bodies } from 'matter-js';
 import { CanvasParameter } from 'src/view/matter/models/canvasParameter';
 import { MatterController } from 'src/view/matter/controllers/matterController';
@@ -17,16 +18,31 @@ export class MatterControllerFactory {
       friction: 1,
       isStatic: true,
       label: 'addButton',
+      collisionFilter: {
+        group: 0,
+        category: 0x0004,
+        mask: 0x0004 | 0x0001,
+      },
     });
     const removeAllButton = Matter.Bodies.rectangle(50, 250, 100, 100, {
       friction: 1,
       isStatic: true,
       label: 'removeAllButton',
+      collisionFilter: {
+        group: 0,
+        category: 0x0004,
+        mask: 0x0004 | 0x0001,
+      },
     });
     const shakeAllButton = Matter.Bodies.rectangle(50, 350, 100, 100, {
       friction: 1,
       isStatic: true,
       label: 'shakeAllButton',
+      collisionFilter: {
+        group: 0,
+        category: 0x0004,
+        mask: 0x0004 | 0x0001,
+      },
     });
 
     return new MatterController(

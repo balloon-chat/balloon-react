@@ -1,3 +1,4 @@
+/* eslint-disable no-bitwise */
 import { Character } from 'src/view/matter/actors/character';
 import { Bodies } from 'matter-js';
 import { CanvasParameter } from 'src/view/matter/models/canvasParameter';
@@ -38,6 +39,11 @@ export class CharacterFactory {
         inertia: Infinity,
         frictionAir: 0,
         restitution: 0.3,
+        collisionFilter: {
+          group: 0,
+          category: 0x0002,
+          mask: 0x0002 | 0x0001,
+        },
       }),
       text,
       radius,
