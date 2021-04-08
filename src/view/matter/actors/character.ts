@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import Matter, { Common } from 'matter-js';
 import P5Types from 'p5';
 import { CanvasParameter } from 'src/view/matter/models/canvasParameter';
@@ -17,6 +18,10 @@ export class Character {
 
   public readonly maxSpeed = 20;
 
+  static scaleX = 1.25;
+
+  static scaleY = 1;
+
   constructor(
     readonly id: string,
     object: Matter.Body,
@@ -29,7 +34,7 @@ export class Character {
     this._text = text;
     // ラベルの設定
     this._object.label = 'character';
-    Matter.Body.scale(this.object, 1.25, 1);
+    Matter.Body.scale(this.object, Character.scaleX, Character.scaleY);
   }
 
   get object(): Matter.Body {
@@ -46,7 +51,7 @@ export class Character {
     p5.fill(this.color)
       .noStroke()
       // eslint-disable-next-line max-len
-      .ellipse(this.object.position.x, this.object.position.y, this.radius * 2 * 1.25, this.radius * 2);
+      .ellipse(this.object.position.x, this.object.position.y, this.radius * 2 * Character.scaleX, this.radius * 2 * Character.scaleY);
     p5.pop();
 
     p5.push();
@@ -63,7 +68,7 @@ export class Character {
     const degree = 40; // 度数法で入力 ( 0 < degree < 90 )
     const radian = (degree * Math.PI) / 180; // 弧度法
     const rCosine = this.radius * Math.cos(radian);
-    const textBoxWidth = 2 * rCosine * 1.25;
+    const textBoxWidth = 2 * rCosine * Character.scaleX;
     let sliceStr = this.text;
     let startPosition;
     let printText = '';
@@ -90,7 +95,7 @@ export class Character {
       };
     } else {
       startPosition = {
-        x: this.object.position.x - (rCosine * 1.25),
+        x: this.object.position.x - (rCosine * Character.scaleX),
         y: this.object.position.y - textSize * 0.5,
       };
     }
@@ -150,34 +155,33 @@ export class Character {
   isVisible(canvas: CanvasParameter): boolean {
     const radius = this.object.circleRadius ?? 0;
     // x座標の判定
-    // eslint-disable-next-line max-len
-    if (this.object.position.x + radius * 1.25 < 0 || this.object.position.x - radius * 1.25 > canvas.width) {
+    if (this.object.position.x + radius * Character.scaleX < 0 || this.object.position.x - radius * Character.scaleX > canvas.width) {
       return false;
     }
     // y座標の判定
-    if (this.object.position.y + radius < 0 || this.object.position.y - radius > canvas.height) {
+    if (this.object.position.y + radius * Character.scaleY < 0 || this.object.position.y - radius * Character.scaleY > canvas.height) {
       return false;
     }
     return true;
   }
 
   preventInvisible(canvas: CanvasParameter) {
-    if (this.isVisible(canvas) === true) return;
+    if (this.isVisible(canvas)) return;
     // eslint-disable-next-line prefer-destructuring
     const position: Matter.Vector = {
       x: this.object.position.x,
       y: this.object.position.y,
     };
-    if (position.x + this.radius * 1.25 * 2 < 0) {
+    if (position.x + this.radius * Character.scaleX * 2 < 0) {
       position.x = canvas.width + this.radius * 1.25 * 2;
-    } else if (position.x - this.radius * 1.25 * 2 > canvas.width) {
+    } else if (position.x - this.radius * Character.scaleX * 2 > canvas.width) {
       position.x = 0 - this.radius * 1.25 * 2;
     }
 
-    if (position.y + this.radius * 2 < 0) {
-      position.y = canvas.height + this.radius * 2;
-    } else if (position.y - this.radius * 2 > canvas.height) {
-      position.y = 0 - this.radius * 2;
+    if (position.y + this.radius * Character.scaleY * 2 < 0) {
+      position.y = canvas.height + this.radius * Character.scaleY * 2;
+    } else if (position.y - this.radius * Character.scaleY * 2 > canvas.height) {
+      position.y = 0 - this.radius * Character.scaleY * 2;
     }
 
     Matter.Body.setPosition(this.object, position);
