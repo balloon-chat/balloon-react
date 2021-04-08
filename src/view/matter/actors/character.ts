@@ -7,24 +7,29 @@ import { CanvasParameter } from 'src/view/matter/models/canvasParameter';
  *  @param {Matter.Body} object オブジェクトデータ
  *  @param {string} text テキストデータ
  *  @param {string} id 識別用文字列
+ *  @param {number} radius 半径
+ *  @param {string} color 色
  */
 export class Character {
   protected readonly _text: string;
 
   private readonly _object: Matter.Body;
 
-  public readonly maxSpeed = 50;
+  public readonly maxSpeed = 20;
 
   constructor(
     readonly id: string,
     object: Matter.Body,
     text: string,
+    readonly radius: number,
+    readonly color: string,
   ) {
     this._object = object;
     this._object.id = Common.nextId();
     this._text = text;
     // ラベルの設定
     this._object.label = 'character';
+    Matter.Body.scale(this.object, 1.25, 1);
   }
 
   get object(): Matter.Body {
@@ -35,32 +40,36 @@ export class Character {
     return this._text;
   }
 
-  getColor(p5: P5Types): P5Types.Color {
-    if (this.object.render.fillStyle) {
-      return p5.color(this.object.render.fillStyle);
-    }
-    console.log(`${this}\nCannot get object color. rgb is to be white`);
-    return p5.color('white');
-  }
-
   draw(p5: P5Types) {
-    const radius: number = (this.object.circleRadius !== undefined) ? this.object.circleRadius : 0;
     // bodyの描画
     p5.push();
-    p5.fill(this.getColor(p5))
-      .circle(this.object.position.x, this.object.position.y, radius * 2);
+    p5.fill(this.color)
+      .noStroke()
+      // eslint-disable-next-line max-len
+      .ellipse(this.object.position.x, this.object.position.y, this.radius * 2 * 1.25, this.radius * 2);
+    p5.pop();
+
+    p5.push();
+    p5.fill('#585858')
+      .noStroke()
+      // eslint-disable-next-line max-len
+      .circle(this.object.position.x - this.radius * 0.35, this.object.position.y - this.radius * 0.45, this.radius * 0.15)
+      // eslint-disable-next-line max-len
+      .circle(this.object.position.x + this.radius * 0.35, this.object.position.y - this.radius * 0.45, this.radius * 0.15);
     p5.pop();
 
     // textの描画
-    const textSize = 32;
+    const textSize = 16;
     const degree = 40; // 度数法で入力 ( 0 < degree < 90 )
     const radian = (degree * Math.PI) / 180; // 弧度法
-    const rCosine = radius * Math.cos(radian);
-    const textBoxWidth = 2 * rCosine;
+    const rCosine = this.radius * Math.cos(radian);
+    const textBoxWidth = 2 * rCosine * 1.25;
     let sliceStr = this.text;
     let startPosition;
     let printText = '';
     const list = [];
+
+    p5.textSize(textSize);
     // listにtextを区切って格納
     for (let i = 0, textWidth = 0; i < this.text.length; i += 1) {
       if (textWidth + p5.textWidth(sliceStr.charAt(0)) > textBoxWidth) {
@@ -79,15 +88,10 @@ export class Character {
         x: this.object.position.x,
         y: this.object.position.y,
       };
-    } else if (list.length % 2 === 0) {
-      startPosition = {
-        x: this.object.position.x - rCosine,
-        y: this.object.position.y - textSize * 0.5 - textSize * (list.length * 0.5 - 1),
-      };
     } else {
       startPosition = {
-        x: this.object.position.x - rCosine,
-        y: this.object.position.y - textSize * Math.floor(list.length * 0.5),
+        x: this.object.position.x - (rCosine * 1.25),
+        y: this.object.position.y - textSize * 0.5,
       };
     }
     // 格納したtextの描画
@@ -122,12 +126,12 @@ export class Character {
       return;
     }
     let deceleration;
-    if (this.object.speed < 1.0) {
+    if (this.object.speed < 0.5) {
       // オブジェクトの速さがほぼ0であれば完全に停止
       deceleration = 0.0;
     } else if (this.object.speed < this.maxSpeed * 0.2) {
       // オブジェクトの速さがmaxSpeedの10分の2を下回ると急激に減速する。
-      deceleration = 0.7;
+      deceleration = 0.9;
     } else {
       // speed >= max * 0.1 && speed <= max ならば減速率0.98とする
       deceleration = 0.98;
@@ -137,8 +141,6 @@ export class Character {
       deceleration,
     );
     Matter.Body.setVelocity(this.object, velocity);
-    console.log(deceleration);
-    console.log(`x: ${this.object.velocity.x}, y: ${this.object.velocity.y}\nspeed: ${this.object.speed}`);
   }
 
   preventRotate() {
@@ -160,23 +162,21 @@ export class Character {
 
   preventInvisible(canvas: CanvasParameter) {
     if (this.isVisible(canvas) === true) return;
-
-    const radius = this.object.circleRadius !== undefined ? this.object.circleRadius : 0;
     // eslint-disable-next-line prefer-destructuring
     const position: Matter.Vector = {
       x: this.object.position.x,
       y: this.object.position.y,
     };
-    if (position.x + radius < 0) {
-      position.x = canvas.width + radius;
-    } else if (position.x - radius > canvas.width) {
-      position.x = 0 - radius;
+    if (position.x + this.radius < 0) {
+      position.x = canvas.width + this.radius;
+    } else if (position.x - this.radius > canvas.width) {
+      position.x = 0 - this.radius;
     }
 
-    if (position.y + radius < 0) {
-      position.y = canvas.height + radius;
-    } else if (position.y - radius > canvas.height) {
-      position.y = 0 - radius;
+    if (position.y + this.radius < 0) {
+      position.y = canvas.height + this.radius;
+    } else if (position.y - this.radius > canvas.height) {
+      position.y = 0 - this.radius;
     }
 
     Matter.Body.setPosition(this.object, position);
