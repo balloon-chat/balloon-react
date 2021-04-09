@@ -13,17 +13,17 @@ export class MatterControllerFactory {
 
     // Bodyを生成
     const walls = createWalls(canvas, 0);
-    const addButton = Matter.Bodies.rectangle(100, 50, 200, 200, {
+    const addButton = Matter.Bodies.rectangle(50, 150, 100, 100, {
       friction: 1,
       isStatic: true,
       label: 'addButton',
     });
-    const removeAllButton = Matter.Bodies.rectangle(100, 250, 200, 200, {
+    const removeAllButton = Matter.Bodies.rectangle(50, 250, 100, 100, {
       friction: 1,
       isStatic: true,
       label: 'removeAllButton',
     });
-    const shakeAllButton = Matter.Bodies.rectangle(100, 450, 200, 200, {
+    const shakeAllButton = Matter.Bodies.rectangle(50, 350, 100, 100, {
       friction: 1,
       isStatic: true,
       label: 'shakeAllButton',
