@@ -111,12 +111,12 @@ export class Character {
   }
 
   beforeUpdate(canvas: CanvasParameter) {
-    this.controllSpeed();
+    this.controlSpeed();
     this.preventRotate();
     this.preventInvisible(canvas);
   }
 
-  controllSpeed() {
+  controlSpeed() {
     if (this.object.speed > this.maxSpeed) {
       const velocity = Matter.Vector.mult(
         Matter.Vector.normalise(this.object.velocity),
@@ -148,7 +148,7 @@ export class Character {
   }
 
   isVisible(canvas: CanvasParameter): boolean {
-    const radius = this.object.circleRadius !== undefined ? this.object.circleRadius : 0;
+    const radius = this.object.circleRadius ?? 0;
     // x座標の判定
     if (this.object.position.x + radius < 0 || this.object.position.x - radius > canvas.width) {
       return false;
