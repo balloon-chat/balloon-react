@@ -8,7 +8,7 @@ import { MessageFactory } from 'src/domain/message/models/message';
 import { MessageBody } from 'src/domain/message/models/messageBody';
 import { MessageEntity } from 'src/domain/message/repository/messageEntity';
 import { GetTopics } from 'src/domain/topic/usecases/getTopics';
-import { TopicData } from 'src/domain/topic/models/topicData';
+import { TopicData, TopicDataFactory } from 'src/domain/topic/models/topicData';
 import { UserId } from 'src/domain/user/models/userId';
 import { UserName } from 'src/domain/user/models/userName';
 import { AnonymousUser } from 'src/domain/user/models/anonymousUser';
@@ -157,7 +157,7 @@ describe('上限を設定して取得', () => {
     const topics = [];
     for (let i = 0; i < 10; i += 1) {
       const createdAt = (Math.random() + 1) * 1000000000000;
-      const topic = TopicFactory.create(new TopicTitle('test'), user.id, thumbnailUrl, undefined, createdAt);
+      const topic = TopicFactory.create(new TopicTitle('test'), user.id, thumbnailUrl, undefined, false, createdAt);
       // eslint-disable-next-line no-await-in-loop
       await topicRepository.save(TopicEntity.from(topic));
       topics.push(topic);
@@ -200,5 +200,35 @@ describe('上限を設定して取得', () => {
     // ユーザー情報がない場合は、そのTopicを取得しない
     expect(results.length)
       .toEqual(0);
+  });
+});
+
+describe('公開されているTopicのみを取得', () => {
+  test('公開されているTopicのみを取得', async () => {
+    /*
+     初期データ:
+       TopicRepository: Topic(not private), Topic(private)
+      */
+    await userRepository.save(user);
+
+    const publicTopic = TopicFactory.create(new TopicTitle('test'), user.id, thumbnailUrl, undefined, false);
+    const privateTopic = TopicFactory.create(new TopicTitle('test'), user.id, thumbnailUrl, undefined, true);
+    await topicRepository.save(TopicEntity.from(publicTopic));
+    await topicRepository.save(TopicEntity.from(privateTopic));
+
+    /*
+    Expected:
+      一覧を取得する場合は、公開されているTopicのみを取得する。
+      return: TopicData(not private)
+     */
+    const results = await usecase.execute(50);
+    expect(results)
+      .toStrictEqual([
+        TopicDataFactory.create(
+          publicTopic,
+          0,
+          user,
+        ),
+      ]);
   });
 });

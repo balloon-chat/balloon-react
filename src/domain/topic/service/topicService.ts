@@ -86,12 +86,14 @@ export class TopicService {
     description: string,
     createdBy: string,
     thumbnail: File | Blob,
+    isPrivate: boolean,
   ): Promise<Topic> {
     return this.createTopicUsecase.execute(
       title,
       description,
       new UserId(createdBy),
       thumbnail,
+      isPrivate,
     );
   }
 
@@ -106,8 +108,12 @@ export class TopicService {
     );
   }
 
-  fetchTopicsCreatedBy(userId: string): Promise<TopicData[]> {
-    return this.getTopicsCreatedByUsecase.execute(userId);
+  /**
+   * @param createdBy 作成者のID
+   * @param userId 閲覧者のID
+   */
+  fetchTopicsCreatedBy(createdBy: string, userId?: string): Promise<TopicData[]> {
+    return this.getTopicsCreatedByUsecase.execute(createdBy, userId);
   }
 
   fetchRecommendTopics(): Promise<RecommendTopics | undefined> {

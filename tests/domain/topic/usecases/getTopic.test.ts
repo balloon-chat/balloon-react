@@ -14,6 +14,7 @@ import { UserName } from 'src/domain/user/models/userName';
 import { AnonymousUser } from 'src/domain/user/models/anonymousUser';
 import { LoginUser } from 'src/domain/user/models/loginUser';
 import { IGetTopic } from 'src/domain/topic/types/getTopic';
+import { TopicDataFactory } from 'src/domain/topic/models/topicData';
 
 const topicRepository = new FakeTopicRepository();
 const messageRepository = new FakeMessageRepository();
@@ -89,4 +90,26 @@ test('作成したユーザーが存在しない場合、取得しない', async
   // ユーザー情報がない場合は、そのTopicを取得しない
   expect(result)
     .toBeUndefined();
+});
+
+test('プライベートなTopicを取得', async () => {
+  /*
+   初期データ:
+     TopicRepository: Topic(private)
+    */
+  await userRepository.save(user);
+
+  const privateTopic = TopicFactory.create(new TopicTitle('test'), user.id, thumbnailUrl, undefined, true);
+  await topicRepository.save(TopicEntity.from(privateTopic));
+
+  /*
+  TopicのIDを知っている場合は、作成者でなくても取得する
+  Expected: Topic(private)
+   */
+  const result = await usecase.execute(privateTopic.id);
+  expect(result).toStrictEqual(TopicDataFactory.create(
+    privateTopic,
+    0,
+    user,
+  ));
 });

@@ -1,6 +1,7 @@
 import { IUserDatabase } from 'src/data/core/user/userDatabase';
 import { UserDto } from 'src/data/core/user/userDto';
-import firebase from 'firebase';
+import firebase from 'firebase/app';
+import 'firebase/database';
 
 // TODO: firestoreに移行
 export class FirebaseUserDatabase implements IUserDatabase {

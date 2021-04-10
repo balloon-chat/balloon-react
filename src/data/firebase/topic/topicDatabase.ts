@@ -16,24 +16,15 @@ export class FirebaseTopicDatabase implements ITopicDatabase {
   }
 
   async find(topicId: string): Promise<TopicDto | undefined> {
-    const snapshot = await this.topicRef(topicId).once('value');
+    const snapshot = await this.topicRef(topicId)
+      .once('value');
     return TopicDto.fromJSON(snapshot.toJSON());
   }
 
-  async findAll(): Promise<TopicDto[]> {
-    const snapshots = await this.topicsRef().once('value');
-    const data: TopicDto[] = [];
-    snapshots.forEach((snapshot) => {
-      const dto = TopicDto.fromJSON(snapshot.toJSON());
-      if (dto) data.push(dto);
-    });
-    return data;
-  }
-
-  async findAllCreatedBy(userId: string): Promise<TopicDto[]> {
+  async findAllTopicsCreatedBy(createdBy: string): Promise<TopicDto[]> {
     const snapshots = await this.topicsRef()
       .orderByChild('createdBy')
-      .equalTo(userId)
+      .equalTo(createdBy)
       .once('value');
 
     const data: TopicDto[] = [];
@@ -45,18 +36,36 @@ export class FirebaseTopicDatabase implements ITopicDatabase {
     return data;
   }
 
-  async findAllSortByCreatedAt(
+  async findAllPublicTopicsCreatedBy(createdBy: string): Promise<TopicDto[]> {
+    const snapshots = await this.topicsRef()
+      .orderByChild('createdBy')
+      .equalTo(createdBy)
+      .once('value');
+
+    const data: TopicDto[] = [];
+    snapshots.forEach((snapshot) => {
+      const dto = TopicDto.fromJSON(snapshot.toJSON());
+      if (dto && !dto.isPrivate) data.push(dto); // TODO: クエリを用いて実装する
+    });
+
+    return data;
+  }
+
+  async findAllPublicTopicsSortByCreatedAt(
     limit: number,
     from?: string,
   ): Promise<TopicDto[]> {
-    let query = this.topicsRef().orderByChild('createdAt').limitToLast(limit);
+    let query = this.topicsRef()
+      .orderByChild('createdAt')
+      .limitToLast(limit);
     if (from) query = query.startAfter(from);
 
     const snapshots = await query.once('value');
     const data: TopicDto[] = [];
     snapshots.forEach((snapshot) => {
       const dto = TopicDto.fromJSON(snapshot.toJSON());
-      if (dto) data.push(dto);
+      // TODO: クエリを用いて実装する
+      if (dto && !dto.isPrivate) data.push(dto);
     });
 
     return data.reverse(); // 降順にする

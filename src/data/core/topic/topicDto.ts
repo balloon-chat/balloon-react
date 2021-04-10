@@ -12,6 +12,7 @@ export class TopicDto {
     readonly createdAt: number,
     readonly createdBy: string,
     readonly thumbnailURL: string,
+    readonly isPrivate: boolean,
   ) {}
 
   static from(topic: TopicEntity): TopicDto {
@@ -22,6 +23,7 @@ export class TopicDto {
       topic.createdAt,
       topic.createdBy.value,
       topic.thumbnailURL,
+      topic.isPrivate,
     );
   }
 
@@ -35,6 +37,7 @@ export class TopicDto {
         src.createdAt,
         src.createdBy,
         src.thumbnailURL,
+        src.isPrivate ?? false,
       );
     }
     return undefined;
@@ -51,6 +54,7 @@ export class TopicDto {
       this.createdAt,
       new UserId(this.createdBy),
       this.thumbnailURL,
+      this.isPrivate,
       TopicDescription.create(this.description) ?? null,
     );
   }
@@ -63,17 +67,19 @@ export class TopicDto {
       createdAt: this.createdAt,
       createdBy: this.createdBy,
       thumbnailURL: this.thumbnailURL,
+      isPrivate: this.isPrivate,
     };
   }
 }
 
 type TopicJSON = {
-  id: string;
-  title: string;
-  description: string | null;
-  createdAt: number;
-  createdBy: string;
-  thumbnailURL: string;
+  id: string
+  title: string
+  description: string | null
+  createdAt: number
+  createdBy: string
+  thumbnailURL: string
+  isPrivate?: boolean
 };
 
 const isTopicJSON = (obj: any): obj is TopicJSON => typeof obj.id === 'string'
