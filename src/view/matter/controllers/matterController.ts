@@ -5,9 +5,12 @@ import { Character } from 'src/view/matter/actors/character';
 import { CharacterFactory } from 'src/view/matter/actors/characterFactory';
 import { CanvasParameter } from 'src/view/matter/models/canvasParameter';
 import { MatterListAdapter } from 'src/view/matter/lib/matterListAdapter';
+import P5Types from 'p5';
 
 export class MatterController {
   public readonly adapter: MatterListAdapter;
+
+  public p5: P5Types | null = null;
 
   constructor(
     public readonly engine: Matter.Engine,
@@ -57,7 +60,9 @@ export class MatterController {
             break;
           }
           case 'addButton': {
+            if (!this.p5) break;
             const character = CharacterFactory.create(
+              this.p5,
               this.canvas,
               `${Common.nextId()}`,
               '新しく追加したオブジェクトです',

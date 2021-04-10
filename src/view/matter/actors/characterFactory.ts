@@ -16,8 +16,7 @@ const characterColors: string[] = [
 ];
 
 export class CharacterFactory {
-  static create(canvas: CanvasParameter, id: string, text: string): Character {
-    const p5 = new P5Types(() => {});
+  static create(p5: P5Types, canvas: CanvasParameter, id: string, text: string): Character {
     let lines = this.measureTextLength(text, CharacterSize.small, p5);
     let radius: number = CharacterSize.small;
     if (lines > 3) {
