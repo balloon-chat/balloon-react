@@ -11,12 +11,17 @@ export class GetTopicsCreatedBy implements IGetTopicsCreatedBy {
   ) {
   }
 
-  async execute(userId: string): Promise<TopicData[]> {
-    const entities = await this.topicRepository.findAllCreatedBy(new UserId(userId));
+  async execute(createdBy: string, userId?: string): Promise<TopicData[]> {
+    // 閲覧者と作成者が同じだった場合のみ、非公開のTopicも取得する
+    const entities = createdBy === userId
+      ? await this.topicRepository.findAllTopicsCreatedBy(new UserId(createdBy))
+      : await this.topicRepository.findAllPublicTopicsCreatedBy(new UserId(createdBy));
+
     const topicIds = entities.map((entity) => entity.id);
     const results: (TopicData | undefined)[] = await Promise.all(
       topicIds.map((topicId) => this.getTopicUseCase.execute(topicId)),
     );
+
     const topics = results.filter<TopicData>((result): result is TopicData => result !== undefined);
     const sortedByCreatedAt = topics.sort((a, b) => b.createdAt.valueOf() - a.createdAt.valueOf());
     return sortedByCreatedAt;

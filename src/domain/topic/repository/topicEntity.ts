@@ -11,6 +11,7 @@ export class TopicEntity {
     public readonly createdAt: number,
     public readonly createdBy: UserId,
     public readonly thumbnailURL: string,
+    public readonly isPrivate: boolean,
     public readonly description: TopicDescription | null,
   ) {}
 
@@ -21,6 +22,7 @@ export class TopicEntity {
       topic.createdAt,
       topic.createdBy,
       topic.thumbnailUrl,
+      topic.isPrivate,
       topic.description ?? null,
     );
   }

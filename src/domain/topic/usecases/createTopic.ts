@@ -22,6 +22,7 @@ export class CreateTopic implements ICreateTopic {
     description: string,
     createdBy: UserId,
     thumbnail: File | Blob,
+    isPrivate: boolean,
   ): Promise<Topic> {
     if (!(await this.userRepository.find(createdBy))) {
       throw new UserNotFoundException('Only registered user can create topic.');
@@ -44,6 +45,7 @@ export class CreateTopic implements ICreateTopic {
       createdBy,
       thumbnailURL,
       description,
+      isPrivate,
     );
     const entity = TopicEntity.from(topic);
     await this.topicRepository.save(entity);

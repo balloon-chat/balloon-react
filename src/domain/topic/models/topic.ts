@@ -11,6 +11,7 @@ export class Topic {
     public readonly createdAt: number,
     public readonly createdBy: UserId,
     public readonly thumbnailUrl: string,
+    public readonly isPrivate: boolean,
     public readonly description?: TopicDescription,
   ) {}
 }
@@ -21,15 +22,17 @@ export class TopicFactory {
     createdBy: UserId,
     thumbnailUrl: string,
     description?: string,
-    cratedAt?: number,
-    topicId?: TopicId,
+    isPrivate: boolean = false,
+    cratedAt: number = Date.now(),
+    topicId: TopicId = new TopicId(),
   ): Topic {
     return new Topic(
-      topicId ?? new TopicId(),
+      topicId,
       title,
-      cratedAt ?? Date.now(),
+      cratedAt,
       createdBy,
       thumbnailUrl,
+      isPrivate,
       TopicDescription.create(description),
     );
   }
