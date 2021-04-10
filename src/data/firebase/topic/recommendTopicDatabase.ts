@@ -1,6 +1,6 @@
 import { IRecommendTopicDatabase } from 'src/data/core/topic/recommendTopicDatabase';
 import { RecommendTopicDto } from 'src/data/core/topic/recommendTopicDto';
-import firebase from 'firebase';
+import firebase from 'firebase/app';
 import 'firebase/database';
 
 export class FirebaseRecommendTopicDatabase implements IRecommendTopicDatabase {

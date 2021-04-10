@@ -1,7 +1,8 @@
 import { IMessageDatabase } from 'src/data/core/message/messageDatabase';
 import { MessageDto } from 'src/data/core/message/messageDto';
 import { BehaviorSubject, Observable } from 'rxjs';
-import firebase from 'firebase';
+import firebase from 'firebase/app';
+import 'firebase/database';
 
 export class FirebaseMessageDatabase implements IMessageDatabase {
   private constructor(private readonly database = firebase.database()) {}
