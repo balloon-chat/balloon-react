@@ -5,7 +5,12 @@ import {
   setTopicIdReducer,
   setTopicsReducer,
 } from 'src/data/redux/topic/reducer';
-import { createTopic, fetchTopic, fetchTopicsFrom } from 'src/data/redux/topic/action';
+import {
+  createTopic,
+  fetchTopic,
+  fetchTopicsCreatedBy,
+  fetchTopicsFrom,
+} from 'src/data/redux/topic/action';
 import { TopicEntity } from 'src/view/types/topic';
 
 const initialState: TopicState = {
@@ -37,6 +42,10 @@ const topicSlice = createSlice({
       .addCase(fetchTopicsFrom.fulfilled, (state, { payload }) => ({
         ...state,
         topics: [...state.topics, ...payload],
+      }))
+      .addCase(fetchTopicsCreatedBy.fulfilled, (state, { payload }) => ({
+        ...state,
+        topics: payload.topics,
       }));
   },
 });

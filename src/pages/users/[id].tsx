@@ -27,6 +27,7 @@ const ProfilePage = ({
   const { id } = useRouter().query;
   const { uid } = useUserSelector();
 
+  // 本人のページ
   const [isCurrentUser, setIsCurrentUser] = useState(false);
 
   useEffect(() => {

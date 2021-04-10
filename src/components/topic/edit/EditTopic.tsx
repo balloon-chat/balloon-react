@@ -22,15 +22,24 @@ export const EditTopic = () => {
   const { topicId } = useTopicState();
   const { isTopicCreated } = useTopicState();
 
+  // タイトル
   const [title, setTitle] = useState('');
   const [titleError, setTitleError] = useState<string>();
+  // 簡単な説明
   const [description, setDescription] = useState('');
   const [descriptionError, setDescriptionError] = useState<string>();
+  // プライベートな話題
+  // const [isPrivate, setIsPrivate] = useState(false);
+  // サムネイル画像
   const [file, setFile] = useState<Blob | File>();
+  // 作成中のダイアログを表示するフラグ
   const [isTopicCreating, setIsTopicCreating] = useState(false);
 
   useEffect(() => {
-    if (topicId && isTopicCreated) navigateToTopic(topicId).then();
+    if (topicId && isTopicCreated) {
+      navigateToTopic(topicId)
+        .then();
+    }
   }, [topicId, isTopicCreated]);
 
   const navigateToTopic = async (topicId: string) => {
@@ -48,6 +57,7 @@ export const EditTopic = () => {
           userId,
           description,
           thumbnail: file,
+          isPrivate: false,
         }),
       );
       return;
@@ -89,6 +99,19 @@ export const EditTopic = () => {
             <TopicThumbnail title={title} description={description} />
           </ImageFileContext.Provider>
         </ThumbnailInputRow>
+        {/* <Title>オプション</Title> */}
+        {/* <CheckInputRow htmlFor="isPrivate"> */}
+        {/*  <input */}
+        {/*    id="isPrivate" */}
+        {/*    type="checkbox" */}
+        {/*    checked={isPrivate} */}
+        {/*    onChange={(e) => setIsPrivate(e.target.checked)} */}
+        {/*  /> */}
+        {/*  <CheckInputBody> */}
+        {/*    <CheckInputTitle>秘密の話題</CheckInputTitle> */}
+        {/*    <CheckInputDescription>URLを知っているユーザーのみが話題に参加することができます。</CheckInputDescription> */}
+        {/*  </CheckInputBody> */}
+        {/* </CheckInputRow> */}
         <CreateButton>作成</CreateButton>
       </Form>
     </>
@@ -114,6 +137,34 @@ const ThumbnailInputRow = styled.div`
   flex-direction: column;
   margin-bottom: 24px;
 `;
+
+// const CheckInputRow = styled.label`
+//   align-items: start;
+//   display: flex;
+//   margin: 16px 0;
+//   cursor: pointer;
+//
+//   & input[type='checkbox'] {
+//     width: 16px;
+//     height: 16px;
+//     margin-top: 8px;
+//   }
+// `;
+//
+// const CheckInputBody = styled.div`
+//   display: flex;
+//   flex-direction: column;
+//   margin-left: 8px;
+// `;
+//
+// const CheckInputTitle = styled.div`
+//   color: rgba(1, 1, 1, .8);
+//   font-weight: bold;
+// `;
+//
+// const CheckInputDescription = styled.div`
+//   color: rgba(1, 1, 1, .6);
+// `;
 
 const CreateButton = styled(Button)`
   margin-left: auto;
