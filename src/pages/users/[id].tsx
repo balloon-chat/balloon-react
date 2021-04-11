@@ -112,8 +112,16 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
   const user = await userService.getUser(id);
   if (!user) return emptyResult;
 
+  let loginId: string|undefined;
+  try {
+    const result = await userService.getUserInfo(context.req.headers.cookie);
+    loginId = result.loginId;
+  } catch (e) {
+    console.error(e);
+  }
+
   const topicService = new TopicService();
-  const topics = await topicService.fetchTopicsCreatedBy(id);
+  const topics = await topicService.fetchTopicsCreatedBy(id, loginId);
   return {
     props: {
       user,

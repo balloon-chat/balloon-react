@@ -11,6 +11,7 @@ import { UserImageRepository } from 'src/data/core/user/userImageRepository';
 import { FirebaseUserImageDatabase } from 'src/data/firebase/user/userImageDatabase';
 import { IGetUserByLoginId } from 'src/domain/user/types/getUserByLoginId';
 import { GetUserByLoginId } from 'src/domain/user/usecases/getUserByLoginId';
+import axios from 'axios';
 
 export class UserService {
   private readonly createUserUsecase: ICreateUser;
@@ -22,7 +23,6 @@ export class UserService {
   constructor(
     userRepository: IUserRepository
     = new UserRepository(FirebaseUserDatabase.instance),
-
     userImageRepository: IUserImageRepository
     = new UserImageRepository(FirebaseUserImageDatabase.instance),
   ) {
@@ -42,6 +42,48 @@ export class UserService {
       photo,
     );
     return UserEntityFactory.create(user);
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  async login(token: string): Promise<void> {
+    return axios.post(
+      process.env.SESSION_LOGIN_API_URL!,
+      {
+        idToken: token,
+      },
+      {
+        withCredentials: true,
+      },
+    );
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  async logout(): Promise<void> {
+    return axios.get(
+      process.env.SESSION_LOGOUT_API_URL!,
+      {
+        withCredentials: true,
+      },
+    );
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  async getUserInfo(cookie: string|undefined): Promise<{loginId: string | undefined}> {
+    if (!cookie) return { loginId: undefined };
+
+    const { data } = await axios.get<{loginId: string}>(
+      process.env.GET_USER_INFO_API_URL!,
+      {
+        withCredentials: true,
+        headers: {
+          cookie,
+        },
+      },
+    );
+
+    return {
+      loginId: data.loginId,
+    } as const;
   }
 
   async getUser(userId: string): Promise<UserEntity|null> {

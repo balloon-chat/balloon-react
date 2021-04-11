@@ -3,17 +3,25 @@ import { ITopicRepository } from 'src/domain/topic/repository/topicRepository';
 import { UserId } from 'src/domain/user/models/userId';
 import { TopicData } from 'src/domain/topic/models/topicData';
 import { IGetTopic } from 'src/domain/topic/types/getTopic';
+import { IUserRepository } from 'src/domain/user/repository/userRepository';
 
 export class GetTopicsCreatedBy implements IGetTopicsCreatedBy {
   constructor(
     private readonly topicRepository: ITopicRepository,
+    private readonly userRepository: IUserRepository,
     private readonly getTopicUseCase: IGetTopic,
   ) {
   }
 
-  async execute(createdBy: string, userId?: string): Promise<TopicData[]> {
+  async execute(createdBy: string, loginId?: string): Promise<TopicData[]> {
+    let isSameUser = false;
+    if (loginId) {
+      const currentUser = await this.userRepository.findByLoginId(loginId);
+      isSameUser = createdBy === currentUser?.id.value;
+    }
+
     // 閲覧者と作成者が同じだった場合のみ、非公開のTopicも取得する
-    const entities = createdBy === userId
+    const entities = isSameUser
       ? await this.topicRepository.findAllTopicsCreatedBy(new UserId(createdBy))
       : await this.topicRepository.findAllPublicTopicsCreatedBy(new UserId(createdBy));
 

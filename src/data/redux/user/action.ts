@@ -1,10 +1,14 @@
-import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { Action, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { userStateName } from 'src/data/redux/user/state';
 import { UserService } from 'src/domain/user/service/userService';
 import { UserEntity } from 'src/view/types/user';
+import firebase from 'firebase/app';
+import 'firebase/auth';
 
 export const CREATE_USER = `${userStateName}/create`;
 export const LOGIN = `${userStateName}/login`;
+export const LOGOUT = `${userStateName}/logout`;
+export const RESET_USER_STATE = `${userStateName}/reset`;
 
 export const createUser = createAsyncThunk<
   UserEntity,
@@ -23,14 +27,23 @@ export const createUser = createAsyncThunk<
 });
 
 export const login = createAsyncThunk<
-  {userFound: boolean},
-  {loginId: string}
->(LOGIN, async ({ loginId }) => {
+  {userFound: boolean, user: UserEntity | null},
+  {loginId: string, token: string}
+>(LOGIN, async ({ loginId, token }) => {
   const service = new UserService();
+  await service.login(token);
   const user = await service.getUserByLoginId(loginId);
   return {
     userFound: user !== null,
+    user,
   } as const;
+});
+
+export const logout = createAsyncThunk<{}, void>(LOGOUT, async () => {
+  firebase.auth().signOut().then();
+  const service = new UserService();
+  await service.logout();
+  return {} as const;
 });
 
 export type SetUser = PayloadAction<{
@@ -39,5 +52,4 @@ export type SetUser = PayloadAction<{
   name: string|null
 }>
 
-export type SetIsUserLoggedIn = PayloadAction<boolean>;
-export type Logout = PayloadAction<{}>;
+export type ResetUserState = Action<typeof RESET_USER_STATE>;

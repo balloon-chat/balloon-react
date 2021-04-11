@@ -1,33 +1,21 @@
 import { useDispatch } from 'react-redux';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import firebase from 'firebase/app';
 import 'firebase/auth';
-import { setIsUserLoggedIn, setUser } from 'src/data/redux/user/slice';
-import { UserService } from 'src/domain/user/service/userService';
+import { login as loginAction } from 'src/data/redux/user/action';
 
 export const AuthProvider: React.FC = ({ children }) => {
   const dispatcher = useDispatch();
-  const service = new UserService();
-  const [loginId, setLoginId] = useState<string|null>();
 
-  const findUser = async (uid: string) => {
-    const user = await service.getUserByLoginId(uid);
-    if (user && user.uid !== loginId) {
-      dispatcher(setUser({
-        uid: user.uid,
-        name: user.name,
-        photoUrl: user.photoUrl,
-      }));
-      setLoginId(loginId);
-    }
-    dispatcher(setIsUserLoggedIn(user !== null));
+  const login = async (user: firebase.User) => {
+    const token = await user.getIdToken();
+    dispatcher(loginAction({ loginId: user.uid, token }));
   };
 
   useEffect(() => {
-    const unsubscribe = firebase.auth()
-      .onAuthStateChanged((user) => {
-        if (user) findUser(user.uid).then();
-      });
+    const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
+      if (user) login(user).then();
+    });
 
     return () => {
       unsubscribe();
