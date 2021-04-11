@@ -29,6 +29,7 @@ const FullscreenContainer = styled.div<{backgroundColor: string}>`
   right: 0;
   bottom: 0;
   left: 0;
+  z-index: 200;
 `;
 
 const Container = styled.div`
