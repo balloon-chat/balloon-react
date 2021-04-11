@@ -2,6 +2,7 @@
 import Matter, { Common } from 'matter-js';
 import P5Types from 'p5';
 import { CanvasParameter } from 'src/view/matter/models/canvasParameter';
+import { MatterController } from '../controllers/matterController';
 
 /**
  * キャラクター（オブジェクトとテキストの情報を持っている）
@@ -18,9 +19,9 @@ export class Character {
 
   public readonly maxSpeed = 20;
 
-  static scaleX = 1.25;
+  private static scaleX = 1.25;
 
-  static scaleY = 1;
+  private static scaleY = 1;
 
   constructor(
     readonly id: string,
@@ -115,10 +116,16 @@ export class Character {
     }
   }
 
-  beforeUpdate(canvas: CanvasParameter) {
+  beforeUpdateOnMatter(controller: MatterController) {
     this.controllSpeed();
     this.preventRotate();
-    this.preventInvisible(canvas);
+    this.preventInvisible(controller.canvas);
+  }
+
+  mousePressed(matterController: MatterController, mouseX: number, mouseY: number) {
+    if (this.isClicked(mouseX, mouseY)) {
+      matterController.removeCharacter(this);
+    }
   }
 
   controllSpeed() {
@@ -185,5 +192,18 @@ export class Character {
     }
 
     Matter.Body.setPosition(this.object, position);
+  }
+
+  private getRadian(mouseX: number, mouseY: number):number {
+    const radian = Math.atan2(mouseX - this.object.position.x, mouseY - this.object.position.y);
+    return radian;
+  }
+
+  private isClicked(mouseX: number, mouseY: number):boolean {
+    const dist1 = (mouseX - this.object.position.x) ** 2 + (mouseY - this.object.position.y) ** 2;
+    const radian = this.getRadian(mouseX, mouseY);
+    const dist2 = (this.radius * Character.scaleX * Math.cos(radian)) ** 2 + (this.radius * Character.scaleY * Math.sin(radian)) ** 2;
+    if (dist1 < dist2) return true;
+    return false;
   }
 }

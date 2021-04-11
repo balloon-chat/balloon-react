@@ -1,34 +1,31 @@
 /* eslint-disable no-param-reassign */
-import Matter, { Common, Vector } from 'matter-js';
+import Matter, { Vector } from 'matter-js';
 import { CharacterController } from 'src/view/matter/controllers/characterController';
 import { Character } from 'src/view/matter/actors/character';
-import { CharacterFactory } from 'src/view/matter/actors/characterFactory';
 import { CanvasParameter } from 'src/view/matter/models/canvasParameter';
 import { MatterListAdapter } from 'src/view/matter/lib/matterListAdapter';
+import { Button } from '../actors/button';
 
 export class MatterController {
   public readonly adapter: MatterListAdapter;
 
+  public readonly buttons: Button[];
+
   constructor(
     public readonly engine: Matter.Engine,
-    public readonly walls: Matter.Body[],
-    public readonly addButton: Matter.Body,
-    public readonly removeAllButton: Matter.Body,
-    public readonly shakeAllButton: Matter.Body,
+    buttons: Button[],
     public readonly characterController: CharacterController,
     public readonly canvas: CanvasParameter,
   ) {
     this.adapter = new MatterListAdapter(this);
     // 重力を無効化する
     this.disableGravity();
-    // this.addObjects(this.walls);
 
-    // 適当なオブジェクトをワールドに追加（ほぼデバッグ用）
-    this.addObject(this.addButton);
-    // ワールドのオブジェクトを消す（リロードするとまた現れる）
-    this.addObject(this.removeAllButton);
-    // ワールドのオブジェクトすべてを動かす
-    this.addObject(this.shakeAllButton);
+    // ボタンをワールドに追加
+    this.buttons = buttons;
+    this.buttons.forEach((button) => {
+      this.addObject(button.object);
+    });
 
     // マウス操作を可能にする
     const mouseConstraint = Matter.MouseConstraint.create(this.engine);
@@ -39,63 +36,7 @@ export class MatterController {
       const characters = Array.from(
         this.characterController.characters.values(),
       );
-      characters.forEach((character) => character.beforeUpdate(this.canvas));
-    });
-
-    // もしオブジェクトがクリックされたならば削除する
-    Matter.Events.on(mouseConstraint, 'mousedown', (event) => {
-      const clickObj = event.source.body;
-      if (clickObj) {
-        console.log(`Clicked ${clickObj.label} button.`);
-        switch (clickObj.label) {
-          case 'character': {
-            const clickCharacter = this.characterController.getCharacter(
-              clickObj.id,
-            );
-            if (clickCharacter) this.removeCharacter(clickCharacter);
-            break;
-          }
-          case 'addButton': {
-            const character = CharacterFactory.create(
-              this.canvas,
-              `${Common.nextId()}`,
-              '新しく追加したオブジェクトです',
-            );
-            this.addCharacter(character);
-            break;
-          }
-          case 'removeAllButton': {
-            const characters = Array.from(
-              this.characterController.characters.values(),
-            );
-            characters.forEach((character) => this.removeCharacter(character));
-            break;
-          }
-          case 'shakeAllButton': {
-            const characters = Array.from(
-              this.characterController.characters.values(),
-            );
-            characters.forEach((character) => {
-              const sign = {
-                x: Math.random() < 0.5 ? -1 : 1,
-                y: Math.random() < 0.5 ? -1 : 1,
-              };
-              const velocity: Vector = Vector.mult(
-                Matter.Vector.normalise({
-                  x: sign.x * Math.random(),
-                  y: sign.y * Math.random(),
-                }),
-                character.maxSpeed,
-              );
-              Matter.Body.setVelocity(character.object, velocity);
-            });
-            break;
-          }
-          default: {
-            break;
-          }
-        }
-      }
+      characters.forEach((character) => character.beforeUpdateOnMatter(this));
     });
   }
 

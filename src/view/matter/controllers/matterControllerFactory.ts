@@ -1,8 +1,10 @@
 /* eslint-disable no-bitwise */
-import Matter, { Bodies } from 'matter-js';
+import Matter from 'matter-js';
 import { CanvasParameter } from 'src/view/matter/models/canvasParameter';
 import { MatterController } from 'src/view/matter/controllers/matterController';
 import { CharacterController } from 'src/view/matter/controllers/characterController';
+import { Button } from '../actors/button';
+import { ButtonFactory, buttonType } from '../actors/buttonFactory';
 
 export class MatterControllerFactory {
   static create(windowWidth: number, windowHeight: number): MatterController {
@@ -12,83 +14,16 @@ export class MatterControllerFactory {
     // キャラクターを管理するクラス
     const characterController = new CharacterController();
 
-    // Bodyを生成
-    const walls = createWalls(canvas, 0);
-    const addButton = Matter.Bodies.rectangle(50, 150, 100, 100, {
-      friction: 1,
-      isStatic: true,
-      label: 'addButton',
-      collisionFilter: {
-        group: 0,
-        category: 0x0004,
-        mask: 0x0004 | 0x0001,
-      },
-    });
-    const removeAllButton = Matter.Bodies.rectangle(50, 250, 100, 100, {
-      friction: 1,
-      isStatic: true,
-      label: 'removeAllButton',
-      collisionFilter: {
-        group: 0,
-        category: 0x0004,
-        mask: 0x0004 | 0x0001,
-      },
-    });
-    const shakeAllButton = Matter.Bodies.rectangle(50, 350, 100, 100, {
-      friction: 1,
-      isStatic: true,
-      label: 'shakeAllButton',
-      collisionFilter: {
-        group: 0,
-        category: 0x0004,
-        mask: 0x0004 | 0x0001,
-      },
-    });
+    // ボタンを生成
+    const addButton = ButtonFactory.create(Button.radius, 150, buttonType.add, 'blue');
+    const removeAllButton = ButtonFactory.create(Button.radius, 150 + Button.radius * 2, buttonType.removeAll, 'green');
+    const shakeAllButton = ButtonFactory.create(Button.radius, 150 + Button.radius * 4, buttonType.shakeAll, 'red');
 
     return new MatterController(
       engine,
-      walls,
-      addButton,
-      removeAllButton,
-      shakeAllButton,
+      [addButton, removeAllButton, shakeAllButton],
       characterController,
       canvas,
     );
   }
 }
-
-/**
- * 画面端四方に壁を生成する
- * @param {CanvasParameter} canvas 壁を描画するキャンバスのパラメーター
- * @param {number} restitution 反発係数
- * @returns {Matter.Body[]} 壁オブジェクト４つが入った配列
- */
-const createWalls = (
-  canvas: CanvasParameter,
-  restitution: number = 0,
-): Matter.Body[] => {
-  const options: Matter.IBodyDefinition = {
-    isStatic: true,
-    restitution,
-    friction: 1,
-  };
-
-  return [
-    Bodies.rectangle(
-      canvas.center.x,
-      canvas.height,
-      canvas.width,
-      100,
-      options,
-    ), // wallUnder
-    Bodies.rectangle(canvas.center.x, 0, canvas.width, 100, options), // wallTop
-    Bodies.rectangle(0, canvas.center.y, 100, canvas.height, options), // wallLeft
-    Bodies.rectangle(
-      canvas.width,
-      canvas.center.y,
-      100,
-      canvas.height,
-      options,
-    ), // wallRight
-  ];
-};
