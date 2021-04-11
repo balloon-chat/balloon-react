@@ -55,7 +55,9 @@ export class Button {
     }
 
     add(matterController: MatterController) {
+      if (matterController.p5 === null) return;
       const character = CharacterFactory.create(
+        matterController.p5,
         matterController.canvas,
         `${Common.nextId()}`,
         '新しく追加したオブジェクトです',
