@@ -7,11 +7,14 @@ import { useRouter } from 'next/router';
 import { useUserSelector } from 'src/data/redux/user/selector';
 import { EditProfileDialog } from 'src/components/login/EditProfileDialog';
 import { WelcomeDialog } from 'src/components/login/WelcomeDialog';
-import { createUser, login } from 'src/data/redux/user/action';
+import { createUser, login as loginAction, logout } from 'src/data/redux/user/action';
 import { isInnerPath, pageTitle, rootPath } from 'src/view/route/pagePath';
 import { LoadDialog } from 'src/components/common/LoadDialog';
 import { LoginStates } from 'src/data/redux/user/state';
 import Head from 'next/head';
+import { Dialog } from 'src/components/common/Dialog';
+import { Button } from 'src/components/common/Button';
+import { resetUserState } from 'src/data/redux/user/slice';
 
 const DialogStates = {
   SHOW_WELCOME: 'welcome',
@@ -41,9 +44,7 @@ const LoginPage = () => {
           setName(user.displayName);
           setPhotoUrl(user.photoURL);
 
-          // ログインを試行
-          // すでにユーザーが登録されている場合は、ログインが成功する。
-          dispatcher(login({ loginId: user?.uid }));
+          login(user).catch((e) => console.error(e));
         }
       });
 
@@ -56,6 +57,7 @@ const LoginPage = () => {
     if (loginState === LoginStates.USER_NOF_FOUND) {
       // Googleログインは成功したが、ユーザーが登録されていない
       if (name && photoUrl) {
+        // 名前とアイコンが提供される場合は、ウェルカムダイアログを表示
         setDialogState(DialogStates.SHOW_WELCOME);
       } else {
         setDialogState(DialogStates.SHOW_EDIT);
@@ -69,13 +71,22 @@ const LoginPage = () => {
     if (loginState !== LoginStates.LOGGED_IN) return;
 
     if (return_to && typeof return_to === 'string' && isInnerPath(return_to)) {
-      router.push(return_to)
-        .then();
+      router.push(return_to).then();
     } else {
-      router.push(rootPath.index)
-        .then();
+      router.push(rootPath.index).then();
     }
   }, [return_to, loginState]);
+
+  const login = async (user: firebase.User) => {
+    const token = await user.getIdToken();
+    dispatcher(loginAction({ loginId: user?.uid, token }));
+  };
+
+  const resetLoginPageState = () => {
+    setDialogState(null);
+    dispatcher(logout());
+    dispatcher(resetUserState());
+  };
 
   const handleOnSaveEdit = (name: string, photoUrl: string, imageFile: File | null) => {
     setName(name);
@@ -132,10 +143,18 @@ const LoginPage = () => {
           <LoadDialog message="ユーザー情報を登録しています。" />
         )
       }
+      {
+        loginState === LoginStates.LOGIN_ERROR && (
+          <Dialog onClose={resetLoginPageState}>
+            <ErrorDialogContainer>
+              <div>ログイン中にエラーが発生しました。</div>
+              <Button onClick={resetLoginPageState}>閉じる</Button>
+            </ErrorDialogContainer>
+          </Dialog>
+        )
+      }
       <Container>
-        {loginState === LoginStates.NOT_LOGGED_IN && (
-          <LoginDialog />
-        )}
+        <LoginDialog />
       </Container>
     </>
   );
@@ -147,6 +166,15 @@ const Container = styled.div`
   display: flex;
   height: 100%;
   justify-content: center;
+`;
+
+const ErrorDialogContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  & ${Button} {
+    margin-top: 32px;
+  }
 `;
 
 export default LoginPage;
