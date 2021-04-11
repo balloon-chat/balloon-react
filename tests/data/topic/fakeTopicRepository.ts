@@ -11,19 +11,32 @@ export class FakeTopicRepository implements ITopicRepository {
     return Promise.resolve(this.repository.find(topicId));
   }
 
+  /**
+   * デバッグ用
+   */
   findAll(): Promise<TopicEntity[]> {
     return Promise.resolve(this.repository.findAll());
   }
 
-  findAllCreatedBy(userId: UserId): Promise<TopicEntity[]> {
+  findAllTopicsCreatedBy(createdBy: UserId): Promise<TopicEntity[]> {
     const result = this.repository
       .findAll()
-      .filter((topic) => topic.createdBy.value === userId.value);
+      .filter((topic) => topic.createdBy.value === createdBy.value);
     return Promise.resolve(result);
   }
 
-  findAllOrderByCreatedAt(limit: number, from?: TopicId): Promise<TopicEntity[]> {
-    const result = this.repository.findAll().sort((a, b) => b.createdAt - a.createdAt);
+  findAllPublicTopicsCreatedBy(createdBy: UserId): Promise<TopicEntity[]> {
+    const result = this.repository
+      .findAll()
+      .filter((topic) => topic.createdBy.value === createdBy.value)
+      .filter((topic) => !topic.isPrivate);
+    return Promise.resolve(result);
+  }
+
+  findAllPublicTopicsOrderByCreatedAt(limit: number, from?: TopicId): Promise<TopicEntity[]> {
+    const result = this.repository.findAll()
+      .sort((a, b) => b.createdAt - a.createdAt)
+      .filter((topic) => !topic.isPrivate);
 
     if (from) {
       const fromIndex = result.findIndex((topic) => topic.id.value === from.value);

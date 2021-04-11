@@ -10,7 +10,10 @@ export class MatterListAdapter extends ListAdapter<MessageEntity> {
   }
 
   protected onAddItem(item: MessageEntity): void {
+    const { p5 } = this.controller;
+    if (!p5) return;
     const character = CharacterFactory.create(
+      p5,
       this.controller.canvas,
       item.id,
       item.body,

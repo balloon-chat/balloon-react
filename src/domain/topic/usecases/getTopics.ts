@@ -46,7 +46,7 @@ export class GetTopics implements IGetTopics {
     limit: number,
     from?: TopicId,
   ): Promise<TopicData[]> {
-    const entities = await this.topicRepository.findAllOrderByCreatedAt(
+    const entities = await this.topicRepository.findAllPublicTopicsOrderByCreatedAt(
       limit,
       from,
     );

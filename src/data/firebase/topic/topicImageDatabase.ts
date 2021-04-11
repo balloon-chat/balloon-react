@@ -1,4 +1,4 @@
-import firebase from 'firebase';
+import firebase from 'firebase/app';
 import 'firebase/storage';
 import { ITopicImageDatabase } from 'src/data/core/topic/topicImageDatabase';
 
@@ -26,5 +26,5 @@ export class FirebaseTopicImageDatabase implements ITopicImageDatabase {
     return ref.getDownloadURL();
   }
 
-  private userRef = (userId: string) => this.storage.ref().child(userId);
+  private userRef = (userId: string) => this.storage.ref().child('users').child(userId);
 }

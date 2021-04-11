@@ -7,23 +7,29 @@ import { TopicEntity, TopicEntityFactory } from 'src/view/types/topic';
 export const CREATE_TOPIC = `${topicStateName}/create`;
 export const FETCH_TOPIC = `${topicStateName}/fetch_topic`;
 export const FETCH_TOPICS = `${topicStateName}/fetch_topics`;
+export const FETCH_TOPICS_CREATED_BY = `${topicStateName}/fetch_topics_created_by`;
 
 export const createTopic = createAsyncThunk<
   Topic,
   {
-    title: string;
-    userId: string;
     description: string;
+    isPrivate: boolean,
+    title: string;
     thumbnail: File | Blob;
+    userId: string;
   }
->(CREATE_TOPIC, async ({ title, userId, description, thumbnail }) => {
+>(CREATE_TOPIC, async ({ description, isPrivate, title, thumbnail, userId }) => {
   const service = new TopicService();
-  return service.createTopic(title, description, userId, thumbnail);
+  return service.createTopic(title, description, userId, thumbnail, isPrivate);
 });
 
 export const fetchTopic = createAsyncThunk<
   TopicEntity | undefined,
-  { topicId: string }
+  {
+    topicId: string,
+    // 閲覧ユーザーのID
+    userId: string,
+  }
 >(FETCH_TOPIC, async ({ topicId }) => {
   const service = new TopicService();
   const topic = await service.fetchTopic(topicId);
@@ -38,6 +44,15 @@ export const fetchTopicsFrom = createAsyncThunk<
   const service = new TopicService();
   const topics = await service.fetchTopics(50, from);
   return topics.map((topic) => TopicEntityFactory.create(topic));
+});
+
+export const fetchTopicsCreatedBy = createAsyncThunk<
+  {topics: TopicEntity[]},
+  { createdBy: string, userId: string }
+>(FETCH_TOPICS_CREATED_BY, async ({ createdBy, userId }) => {
+  const service = new TopicService();
+  const topics = await service.fetchTopicsCreatedBy(createdBy, userId);
+  return { topics: topics.map((topic) => TopicEntityFactory.create(topic)) };
 });
 
 export type SetIsTopicCreated = PayloadAction<{ isTopicCreated: boolean }>;

@@ -13,21 +13,21 @@ export class TopicRepository implements ITopicRepository {
     return dto?.toTopicEntity();
   }
 
-  async findAll(): Promise<TopicEntity[]> {
-    const dto = await this.topicDatabase.findAll();
-    return TopicDto.toTopicEntities(dto);
-  }
-
-  async findAllCreatedBy(userId: UserId): Promise<TopicEntity[]> {
-    const dto = await this.topicDatabase.findAllCreatedBy(userId.value);
+  async findAllPublicTopicsCreatedBy(createdBy: UserId): Promise<TopicEntity[]> {
+    const dto = await this.topicDatabase.findAllPublicTopicsCreatedBy(createdBy.value);
     return dto.map((element) => element.toTopicEntity());
   }
 
-  async findAllOrderByCreatedAt(
+  async findAllTopicsCreatedBy(createdBy: UserId): Promise<TopicEntity[]> {
+    const dto = await this.topicDatabase.findAllTopicsCreatedBy(createdBy.value);
+    return dto.map((element) => element.toTopicEntity());
+  }
+
+  async findAllPublicTopicsOrderByCreatedAt(
     limit: number,
     from?: TopicId,
   ): Promise<TopicEntity[]> {
-    const dto = await this.topicDatabase.findAllSortByCreatedAt(
+    const dto = await this.topicDatabase.findAllPublicTopicsSortByCreatedAt(
       limit,
       from?.value,
     );

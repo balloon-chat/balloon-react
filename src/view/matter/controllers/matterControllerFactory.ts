@@ -7,7 +7,11 @@ import { Button } from '../actors/button';
 import { ButtonFactory, buttonType } from '../actors/buttonFactory';
 
 export class MatterControllerFactory {
+  private static _instance: MatterController | null;
+
   static create(windowWidth: number, windowHeight: number): MatterController {
+    if (this._instance) return this._instance;
+
     const engine = Matter.Engine.create();
     const canvas = new CanvasParameter(windowWidth, windowHeight);
 
@@ -19,11 +23,13 @@ export class MatterControllerFactory {
     const removeAllButton = ButtonFactory.create(Button.radius, 150 + Button.radius * 2, buttonType.removeAll, 'green');
     const shakeAllButton = ButtonFactory.create(Button.radius, 150 + Button.radius * 4, buttonType.shakeAll, 'red');
 
-    return new MatterController(
+    this._instance = new MatterController(
       engine,
       [addButton, removeAllButton, shakeAllButton],
       characterController,
       canvas,
     );
+
+    return this._instance;
   }
 }

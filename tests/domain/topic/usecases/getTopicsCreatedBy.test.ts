@@ -17,9 +17,11 @@ const topicRepository = new FakeTopicRepository();
 const userRepository = new FakeUserRepository();
 const usecase: IGetTopicsCreatedBy = new GetTopicsCreatedBy(
   topicRepository,
+  userRepository,
   new GetTopic(messageRepository, topicRepository, userRepository),
 );
 
+const thumbnailUrl = 'test.user';
 const photoUrl = 'test.img';
 
 afterEach(() => {
@@ -65,7 +67,7 @@ test('作成日順に取得', async () => {
 
   for (let i = 0; i < 10; i += 1) {
     const createdAt = (Math.random() + 1) * 1000000000000;
-    const topic = TopicFactory.create(new TopicTitle('test'), user.id, 'test', undefined, createdAt);
+    const topic = TopicFactory.create(new TopicTitle('test'), user.id, 'test', undefined, false, createdAt);
     // eslint-disable-next-line no-await-in-loop
     await topicRepository.save(TopicEntity.from(topic));
   }
@@ -78,4 +80,55 @@ test('作成日順に取得', async () => {
   });
   expect(isSortedByCreatedAt)
     .toBeTruthy();
+});
+
+describe('プライベートな話題を取得', () => {
+  const user = new LoginUser(new UserId(), 'creator', new UserName('Test'), photoUrl);
+  const publicTopic = TopicFactory.create(new TopicTitle('test'), user.id, thumbnailUrl, undefined, false);
+  const privateTopic = TopicFactory.create(new TopicTitle('test'), user.id, thumbnailUrl, undefined, true);
+
+  test('作成したユーザーが取得', async () => {
+    /*
+   初期データ:
+     UserRepository : UserA
+     TopicRepository: [Topic(public, user=UserA), Topic(private, user=UserA)]
+    */
+    await userRepository.save(user);
+    await topicRepository.save(TopicEntity.from(publicTopic));
+    await topicRepository.save(TopicEntity.from(privateTopic));
+
+    /*
+    閲覧者が作成者の場合のみ、プライベートなTopicが取得される
+    Expected:
+      return: [Topic(public, user=UserA), Topic(private, user=UserA)]
+     */
+    const results = await usecase.execute(user.id.value, user.loginId!);
+    expect(results)
+      .toStrictEqual([
+        TopicDataFactory.create(publicTopic, 0, user),
+        TopicDataFactory.create(privateTopic, 0, user),
+      ]);
+  });
+
+  test('作成者でないユーザーが取得', async () => {
+    /*
+      初期データ:
+        UserRepository : UserA
+        TopicRepository: [Topic(public, user=UserA), Topic(private, user=UserA)]
+       */
+    await userRepository.save(user);
+    await topicRepository.save(TopicEntity.from(publicTopic));
+    await topicRepository.save(TopicEntity.from(privateTopic));
+
+    /*
+    閲覧者が作成者の場合のみ、プライベートなTopicが取得される
+    Expected:
+      return: [Topic(public, user=UserA)]
+     */
+    const results = await usecase.execute(user.id.value, 'other user');
+    expect(results)
+      .toStrictEqual([
+        TopicDataFactory.create(publicTopic, 0, user),
+      ]);
+  });
 });

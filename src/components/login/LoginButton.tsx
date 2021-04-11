@@ -7,7 +7,7 @@ import Google from 'src/components/svgs/google.svg';
 export const GoogleLoginButton = () => {
   const signIn = async () => {
     const provider = new firebase.auth.GoogleAuthProvider();
-    await firebase.auth().signInWithPopup(provider);
+    await firebase.auth().signInWithRedirect(provider);
   };
 
   return (

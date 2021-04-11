@@ -4,12 +4,15 @@ import { CharacterController } from 'src/view/matter/controllers/characterContro
 import { Character } from 'src/view/matter/actors/character';
 import { CanvasParameter } from 'src/view/matter/models/canvasParameter';
 import { MatterListAdapter } from 'src/view/matter/lib/matterListAdapter';
+import P5Types from 'p5';
 import { Button } from '../actors/button';
 
 export class MatterController {
   public readonly adapter: MatterListAdapter;
 
   public readonly buttons: Button[];
+
+  public p5: P5Types | null = null;
 
   constructor(
     public readonly engine: Matter.Engine,

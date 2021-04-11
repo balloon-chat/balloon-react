@@ -20,6 +20,10 @@ export const LoginStates = {
 
   // ユーザーを登録中
   CREATING: 'creating',
+
+  LOGIN_ERROR: 'login_error',
+
+  LOGOUT_ERROR: 'logout_error',
 } as const;
 
 type LoginState = typeof LoginStates[keyof typeof LoginStates];

@@ -4,14 +4,14 @@ import { MatterControllerFactory } from 'src/view/matter/controllers/matterContr
 import { useMessageState } from 'src/data/redux/message/selector';
 import styled from 'styled-components';
 
-const controller = MatterControllerFactory.create(
-  document.documentElement.clientWidth,
-  document.documentElement.clientHeight,
-);
-
 export const Canvas: React.FC = () => {
   const { messages } = useMessageState();
   const renderRef = useRef<HTMLDivElement>(null);
+
+  const controller = MatterControllerFactory.create(
+    document.documentElement.clientWidth,
+    document.documentElement.clientHeight,
+  );
 
   useEffect(() => {
     if (!messages) return;
@@ -31,8 +31,11 @@ export const Canvas: React.FC = () => {
       p.mouseClicked = () => mousePressed(p);
     });
 
+    controller.p5 = p5;
+
     return () => {
       p5.remove();
+      controller.p5 = null;
     };
   }, [renderRef]);
 
