@@ -43,16 +43,12 @@ export class TopicService {
   constructor(
     topicRepository: ITopicRepository
     = new TopicRepository(FirebaseTopicDatabase.instance),
-
     recommendTopicRepository: IRecommendTopicRepository
     = new RecommendTopicRepository(FirebaseRecommendTopicDatabase.instance),
-
     topicImageRepository: ITopicImageRepository
     = new TopicImageRepository(FirebaseTopicImageDatabase.instance),
-
     messageRepository: IMessageRepository
     = new MessageRepository(FirebaseMessageDatabase.instance),
-
     userRepository: IUserRepository
     = new UserRepository(FirebaseUserDatabase.instance),
   ) {
@@ -73,6 +69,7 @@ export class TopicService {
     );
     this.getTopicsCreatedByUsecase = new GetTopicsCreatedBy(
       topicRepository,
+      userRepository,
       this.getTopicUsecase,
     );
     this.getRecommendTopicsUsecase = new GetRecommendTopics(
@@ -110,10 +107,10 @@ export class TopicService {
 
   /**
    * @param createdBy 作成者のID
-   * @param userId 閲覧者のID
+   * @param loginId 閲覧者のログインID
    */
-  fetchTopicsCreatedBy(createdBy: string, userId?: string): Promise<TopicData[]> {
-    return this.getTopicsCreatedByUsecase.execute(createdBy, userId);
+  fetchTopicsCreatedBy(createdBy: string, loginId?: string): Promise<TopicData[]> {
+    return this.getTopicsCreatedByUsecase.execute(createdBy, loginId);
   }
 
   fetchRecommendTopics(): Promise<RecommendTopics | undefined> {

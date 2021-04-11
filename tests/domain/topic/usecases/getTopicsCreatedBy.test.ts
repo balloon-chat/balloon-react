@@ -17,6 +17,7 @@ const topicRepository = new FakeTopicRepository();
 const userRepository = new FakeUserRepository();
 const usecase: IGetTopicsCreatedBy = new GetTopicsCreatedBy(
   topicRepository,
+  userRepository,
   new GetTopic(messageRepository, topicRepository, userRepository),
 );
 
@@ -82,7 +83,7 @@ test('作成日順に取得', async () => {
 });
 
 describe('プライベートな話題を取得', () => {
-  const user = new LoginUser(new UserId(), null, new UserName('Test'), photoUrl);
+  const user = new LoginUser(new UserId(), 'creator', new UserName('Test'), photoUrl);
   const publicTopic = TopicFactory.create(new TopicTitle('test'), user.id, thumbnailUrl, undefined, false);
   const privateTopic = TopicFactory.create(new TopicTitle('test'), user.id, thumbnailUrl, undefined, true);
 
@@ -101,11 +102,12 @@ describe('プライベートな話題を取得', () => {
     Expected:
       return: [Topic(public, user=UserA), Topic(private, user=UserA)]
      */
-    const results = await usecase.execute(user.id.value, user.id.value);
-    expect(results).toStrictEqual([
-      TopicDataFactory.create(publicTopic, 0, user),
-      TopicDataFactory.create(privateTopic, 0, user),
-    ]);
+    const results = await usecase.execute(user.id.value, user.loginId!);
+    expect(results)
+      .toStrictEqual([
+        TopicDataFactory.create(publicTopic, 0, user),
+        TopicDataFactory.create(privateTopic, 0, user),
+      ]);
   });
 
   test('作成者でないユーザーが取得', async () => {
@@ -123,9 +125,10 @@ describe('プライベートな話題を取得', () => {
     Expected:
       return: [Topic(public, user=UserA)]
      */
-    const results = await usecase.execute(user.id.value, new UserId().value);
-    expect(results).toStrictEqual([
-      TopicDataFactory.create(publicTopic, 0, user),
-    ]);
+    const results = await usecase.execute(user.id.value, 'other user');
+    expect(results)
+      .toStrictEqual([
+        TopicDataFactory.create(publicTopic, 0, user),
+      ]);
   });
 });
