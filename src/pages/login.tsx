@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { LoginDialog } from 'src/components/login/LoginDialog';
 import styled from 'styled-components';
-import firebase from 'firebase';
+import firebase from 'firebase/app';
+import 'firebase/auth';
 import { useDispatch } from 'react-redux';
 import { useRouter } from 'next/router';
 import { useUserSelector } from 'src/data/redux/user/selector';
@@ -37,16 +38,15 @@ const LoginPage = () => {
   const [dialogState, setDialogState] = useState<DialogState | null>(null);
 
   useEffect(() => {
-    const unsubscribe = firebase.auth()
-      .onAuthStateChanged((user) => {
-        if (user) {
-          setUid(user.uid);
-          setName(user.displayName);
-          setPhotoUrl(user.photoURL);
+    const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        setUid(user.uid);
+        setName(user.displayName);
+        setPhotoUrl(user.photoURL);
 
-          login(user).catch((e) => console.error(e));
-        }
-      });
+        login(user).catch((e) => console.error(e));
+      }
+    });
 
     return () => {
       unsubscribe();
