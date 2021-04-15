@@ -5,18 +5,16 @@ import { Character } from 'src/view/matter/actors/character';
 import { CanvasParameter } from 'src/view/matter/models/canvasParameter';
 import { MatterListAdapter } from 'src/view/matter/lib/matterListAdapter';
 import P5Types from 'p5';
-import { Button } from '../actors/button';
+import { Button } from 'src/view/matter/actors/button';
 
 export class MatterController {
   public readonly adapter: MatterListAdapter;
-
-  public readonly buttons: Button[];
 
   public p5: P5Types | null = null;
 
   constructor(
     public readonly engine: Matter.Engine,
-    buttons: Button[],
+    public readonly buttons: Button[],
     public readonly characterController: CharacterController,
     public readonly canvas: CanvasParameter,
   ) {

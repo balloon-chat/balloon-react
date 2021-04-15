@@ -50,7 +50,7 @@ export class CharacterFactory {
     );
   }
 
-  static measureTextLength(text: string, size: CharacterSize, p5: P5Types): number {
+  private static measureTextLength(text: string, size: CharacterSize, p5: P5Types): number {
     // textの描画
     const textSize = 16;
     const degree = 40; // 度数法で入力 ( 0 < degree < 90 )

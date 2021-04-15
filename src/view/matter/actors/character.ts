@@ -2,7 +2,7 @@
 import Matter, { Common } from 'matter-js';
 import P5Types from 'p5';
 import { CanvasParameter } from 'src/view/matter/models/canvasParameter';
-import { MatterController } from '../controllers/matterController';
+import { MatterController } from 'src/view/matter/controllers/matterController';
 
 /**
  * キャラクター（オブジェクトとテキストの情報を持っている）
@@ -116,18 +116,28 @@ export class Character {
     }
   }
 
-  beforeUpdateOnMatter(controller: MatterController) {
+  /** matterのアップデート前に行われる関数
+   * @param _controller
+   */
+  beforeUpdateOnMatter(_controller: MatterController) {
     this.controllSpeed();
     this.preventRotate();
-    this.preventInvisible(controller.canvas);
+    // this.preventInvisible(controller.canvas);
   }
 
-  mousePressed(matterController: MatterController, mouseX: number, mouseY: number) {
+  /** マウスがクリックされたときに行われる関数
+   * @param _matterController
+   * @param mouseX
+   * @param mouseY
+   */
+  mousePressed(_matterController: MatterController, mouseX: number, mouseY: number) {
     if (this.isClicked(mouseX, mouseY)) {
-      matterController.removeCharacter(this);
+      // do something when this character is touched.
     }
   }
 
+  /** スピードの制御
+   */
   controllSpeed() {
     if (this.object.speed > this.maxSpeed) {
       const velocity = Matter.Vector.mult(
@@ -155,10 +165,15 @@ export class Character {
     Matter.Body.setVelocity(this.object, velocity);
   }
 
+  /** 回転の防止
+   */
   preventRotate() {
     Matter.Body.setAngle(this.object, 0);
   }
 
+  /** 画面内にあるかどうかを判断する
+   * @param canvas
+   */
   isVisible(canvas: CanvasParameter): boolean {
     const radius = this.object.circleRadius ?? 0;
     // x座標の判定
@@ -172,6 +187,9 @@ export class Character {
     return true;
   }
 
+  /** 画面外に出たときに中に戻す
+   * @param canvas
+   */
   preventInvisible(canvas: CanvasParameter) {
     if (this.isVisible(canvas)) return;
     // eslint-disable-next-line prefer-destructuring
@@ -194,11 +212,21 @@ export class Character {
     Matter.Body.setPosition(this.object, position);
   }
 
+  /** マウスとキャラクターの位置との角度を測る
+   * @param mouseX
+   * @param mouseY
+   * @returns radian
+   */
   private getRadian(mouseX: number, mouseY: number):number {
     const radian = Math.atan2(mouseX - this.object.position.x, mouseY - this.object.position.y);
     return radian;
   }
 
+  /** クリックされているかどうかを判断する
+   * @param mouseX
+   * @param mouseY
+   * @returns boolean
+   */
   private isClicked(mouseX: number, mouseY: number):boolean {
     const dist1 = (mouseX - this.object.position.x) ** 2 + (mouseY - this.object.position.y) ** 2;
     const radian = this.getRadian(mouseX, mouseY);

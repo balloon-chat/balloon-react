@@ -3,8 +3,8 @@ import Matter from 'matter-js';
 import { CanvasParameter } from 'src/view/matter/models/canvasParameter';
 import { MatterController } from 'src/view/matter/controllers/matterController';
 import { CharacterController } from 'src/view/matter/controllers/characterController';
-import { Button } from '../actors/button';
-import { ButtonFactory, buttonType } from '../actors/buttonFactory';
+import { Button } from 'src/view/matter/actors/button';
+import { ButtonFactory, buttonType } from 'src/view/matter/actors/buttonFactory';
 
 export class MatterControllerFactory {
   private static _instance: MatterController | null;

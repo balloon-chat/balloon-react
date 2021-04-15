@@ -47,8 +47,6 @@ export const Canvas: React.FC = () => {
     renderer.parent(canvasParentRef);
 
     controller.run();
-
-    p5.noCursor();
   };
 
   const draw = (p5: P5Types) => {
@@ -73,9 +71,6 @@ export const Canvas: React.FC = () => {
     characters.forEach((character) => {
       character.draw(p5);
     });
-
-    p5.fill('white');
-    p5.circle(p5.mouseX, p5.mouseY, 20);
   };
 
   const mousePressed = (p5: P5Types) => {

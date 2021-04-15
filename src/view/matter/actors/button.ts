@@ -3,9 +3,9 @@
 /* eslint-disable max-len */
 import Matter, { Common, Vector } from 'matter-js';
 import P5Types from 'p5';
-import { MatterController } from '../controllers/matterController';
-import { buttonType } from './buttonFactory';
-import { CharacterFactory } from './characterFactory';
+import { MatterController } from 'src/view/matter/controllers/matterController';
+import { buttonType } from 'src/view/matter/actors/buttonFactory';
+import { CharacterFactory } from 'src/view/matter/actors/characterFactory';
 
 export class Button {
     private readonly _object: Matter.Body;
@@ -33,6 +33,12 @@ export class Button {
       return this._object;
     }
 
+    /** マウスがクリックされたときに行われる関数
+     * @param matterController
+     * @param mouseX
+     * @param mouseY
+     * @returns
+     */
     mousePressed(matterController: MatterController, mouseX: number, mouseY: number) {
       if (this.isClicked(mouseX, mouseY) === false) return;
       switch (this.type) {
@@ -54,6 +60,9 @@ export class Button {
       }
     }
 
+    /** 画面上にキャラクターを表示
+     * @param matterController
+     */
     add(matterController: MatterController) {
       if (matterController.p5 === null) return;
       const character = CharacterFactory.create(
@@ -65,6 +74,9 @@ export class Button {
       matterController.addCharacter(character);
     }
 
+    /** 画面上のすべてのキャラクターを消去
+     * @param matterController
+     */
     removeAll(matterController: MatterController) {
       const characters = Array.from(
         matterController.characterController.characters.values(),
@@ -72,6 +84,9 @@ export class Button {
       characters.forEach((character) => matterController.removeCharacter(character));
     }
 
+    /** 画面上のすべてのキャラクターを揺らす
+     * @param matterController
+     */
     shakeAll(matterController: MatterController) {
       const characters = Array.from(
         matterController.characterController.characters.values(),
