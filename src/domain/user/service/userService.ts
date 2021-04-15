@@ -11,6 +11,7 @@ import { UserImageRepository } from 'src/data/core/user/userImageRepository';
 import { FirebaseUserImageDatabase } from 'src/data/firebase/user/userImageDatabase';
 import { IGetUserByLoginId } from 'src/domain/user/types/getUserByLoginId';
 import { GetUserByLoginId } from 'src/domain/user/usecases/getUserByLoginId';
+// eslint-disable-next-line import/no-unresolved
 import axios from 'axios';
 
 export class UserService {

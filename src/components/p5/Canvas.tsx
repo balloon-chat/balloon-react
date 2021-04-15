@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import P5Types from 'p5';
 import { MatterControllerFactory } from 'src/view/matter/controllers/matterControllerFactory';
-import { drawVertices } from 'src/view/matter/util/drawVertices';
 import { useMessageState } from 'src/data/redux/message/selector';
 import styled from 'styled-components';
 
@@ -28,6 +27,8 @@ export const Canvas: React.FC = () => {
       p.setup = () => setup(p, parent);
       // eslint-disable-next-line no-param-reassign
       p.draw = () => draw(p);
+      // eslint-disable-next-line no-param-reassign
+      p.mouseClicked = () => mousePressed(p);
     });
 
     controller.p5 = p5;
@@ -45,12 +46,6 @@ export const Canvas: React.FC = () => {
     );
     renderer.parent(canvasParentRef);
 
-    // 壁の描画
-    controller.walls.forEach((object) => {
-      p5.fill(p5.color('white'));
-      drawVertices(p5, object.vertices);
-    });
-
     controller.run();
   };
 
@@ -66,17 +61,29 @@ export const Canvas: React.FC = () => {
     // 背面を白で塗りつぶす
     p5.background(255);
 
-    p5.fill(p5.color('blue'));
-    drawVertices(p5, controller.addButton.vertices);
-    p5.fill(p5.color('green'));
-    drawVertices(p5, controller.removeAllButton.vertices);
-    p5.fill(p5.color('red'));
-    drawVertices(p5, controller.shakeAllButton.vertices);
+    controller.buttons.forEach((button) => {
+      button.draw(p5);
+    });
     // キャラクターの描画
     const characters = Array.from(
       controller.characterController.characters.values(),
     );
-    characters.forEach((character) => character.draw(p5));
+    characters.forEach((character) => {
+      character.draw(p5);
+    });
+  };
+
+  const mousePressed = (p5: P5Types) => {
+    const characters = Array.from(
+      controller.characterController.characters.values(),
+    );
+    characters.forEach((character) => {
+      character.mousePressed(controller, p5.mouseX, p5.mouseY);
+    });
+
+    controller.buttons.forEach((button) => {
+      button.mousePressed(controller, p5.mouseX, p5.mouseY);
+    });
   };
 
   return <Container ref={renderRef} />;

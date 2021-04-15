@@ -1,3 +1,4 @@
+/* eslint-disable no-bitwise */
 import { Character } from 'src/view/matter/actors/character';
 import { Bodies } from 'matter-js';
 import { CanvasParameter } from 'src/view/matter/models/canvasParameter';
@@ -37,6 +38,11 @@ export class CharacterFactory {
         inertia: Infinity,
         frictionAir: 0,
         restitution: 0.3,
+        collisionFilter: {
+          group: 0,
+          category: 0x0002,
+          mask: 0x0002 | 0x0001,
+        },
       }),
       text,
       radius,
@@ -44,7 +50,7 @@ export class CharacterFactory {
     );
   }
 
-  static measureTextLength(text: string, size: CharacterSize, p5: P5Types): number {
+  private static measureTextLength(text: string, size: CharacterSize, p5: P5Types): number {
     // textの描画
     const textSize = 16;
     const degree = 40; // 度数法で入力 ( 0 < degree < 90 )
