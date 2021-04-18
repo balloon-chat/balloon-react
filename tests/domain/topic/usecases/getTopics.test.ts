@@ -232,3 +232,33 @@ describe('公開されているTopicのみを取得', () => {
       ]);
   });
 });
+
+describe('公開されているTopicのみを取得', () => {
+  test('公開されているTopicのみを取得', async () => {
+    /*
+     初期データ:
+       TopicRepository: Topic(not private), Topic(private)
+      */
+    await userRepository.save(user);
+
+    const publicTopic = TopicFactory.create(new TopicTitle('test'), user.id, thumbnailUrl, undefined, false);
+    const privateTopic = TopicFactory.create(new TopicTitle('test'), user.id, thumbnailUrl, undefined, true);
+    await topicRepository.save(TopicEntity.from(publicTopic));
+    await topicRepository.save(TopicEntity.from(privateTopic));
+
+    /*
+    Expected:
+      一覧を取得する場合は、公開されているTopicのみを取得する。
+      return: TopicData(not private)
+     */
+    const results = await usecase.execute(50);
+    expect(results)
+      .toStrictEqual([
+        TopicDataFactory.create(
+          publicTopic,
+          0,
+          user,
+        ),
+      ]);
+  });
+});
