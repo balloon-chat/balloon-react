@@ -1,10 +1,11 @@
 import { ITopicDatabase } from 'src/data/core/topic/topicDatabase';
 import { TopicDto } from 'src/data/core/topic/topicDto';
 import firebase from 'firebase/app';
-import 'firebase/database';
+import 'firebase/firestore';
 
 export class FirebaseTopicDatabase implements ITopicDatabase {
-  private constructor(private readonly database = firebase.database()) {}
+  private constructor(private readonly database = firebase.firestore()) {
+  }
 
   private static _instance: ITopicDatabase;
 
@@ -16,67 +17,58 @@ export class FirebaseTopicDatabase implements ITopicDatabase {
   }
 
   async find(topicId: string): Promise<TopicDto | undefined> {
-    const snapshot = await this.topicRef(topicId)
-      .once('value');
-    return TopicDto.fromJSON(snapshot.toJSON());
+    const snapshot = await this.document(topicId)
+      .get();
+    return TopicDto.fromJSON(snapshot.data() ?? null);
   }
 
-  async findAllTopicsCreatedBy(createdBy: string): Promise<TopicDto[]> {
-    const snapshots = await this.topicsRef()
-      .orderByChild('createdBy')
-      .equalTo(createdBy)
-      .once('value');
+  async findAllPublicTopicsSortByCreatedAt(limit: number, from?: string): Promise<TopicDto[]> {
+    let query = this.collection()
+      .where('isPrivate', '==', false)
+      .orderBy('createdAt', 'desc');
 
-    const data: TopicDto[] = [];
-    snapshots.forEach((snapshot) => {
-      const dto = TopicDto.fromJSON(snapshot.toJSON());
-      if (dto) data.push(dto);
-    });
+    if (from) {
+      const snapshot = await this.document(from).get();
+      query = query.startAfter(snapshot);
+    }
+    query = query.limit(limit);
 
-    return data;
+    const snapshots = await query.get();
+    return snapshots.docs
+      .map((snapshot) => TopicDto.fromJSON(snapshot.data()))
+      .filter<TopicDto>((e): e is TopicDto => e !== undefined);
   }
 
   async findAllPublicTopicsCreatedBy(createdBy: string): Promise<TopicDto[]> {
-    const snapshots = await this.topicsRef()
-      .orderByChild('createdBy')
-      .equalTo(createdBy)
-      .once('value');
+    const query = this.collection()
+      .where('createdBy', '==', createdBy)
+      .where('isPrivate', '==', false)
+      .orderBy('createdAt', 'desc');
 
-    const data: TopicDto[] = [];
-    snapshots.forEach((snapshot) => {
-      const dto = TopicDto.fromJSON(snapshot.toJSON());
-      if (dto && !dto.isPrivate) data.push(dto); // TODO: クエリを用いて実装する
-    });
-
-    return data;
+    const snapshots = await query.get();
+    return snapshots.docs
+      .map((snapshot) => TopicDto.fromJSON(snapshot.data()))
+      .filter<TopicDto>((e): e is TopicDto => e !== undefined);
   }
 
-  async findAllPublicTopicsSortByCreatedAt(
-    limit: number,
-    from?: string,
-  ): Promise<TopicDto[]> {
-    let query = this.topicsRef()
-      .orderByChild('createdAt')
-      .limitToLast(limit);
-    if (from) query = query.startAfter(from);
+  async findAllTopicsCreatedBy(createdBy: string): Promise<TopicDto[]> {
+    const query = this.collection()
+      .where('createdBy', '==', createdBy)
+      .orderBy('createdAt', 'desc');
 
-    const snapshots = await query.once('value');
-    const data: TopicDto[] = [];
-    snapshots.forEach((snapshot) => {
-      const dto = TopicDto.fromJSON(snapshot.toJSON());
-      // TODO: クエリを用いて実装する
-      if (dto && !dto.isPrivate) data.push(dto);
-    });
-
-    return data.reverse(); // 降順にする
+    const snapshots = await query.get();
+    return snapshots.docs
+      .map((snapshot) => TopicDto.fromJSON(snapshot.data()))
+      .filter<TopicDto>((e): e is TopicDto => e !== undefined);
   }
 
   async save(topic: TopicDto): Promise<void> {
-    const ref = this.topicRef(topic.id);
+    const ref = this.document(topic.id);
     await ref.set(topic.toJSON());
   }
 
-  private topicsRef = () => this.database.ref('/topics');
+  private collection = () => this.database.collection('/topics');
 
-  private topicRef = (topicId: string) => this.topicsRef().child(topicId);
+  private document = (topicId: string) => this.collection()
+    .doc(topicId);
 }

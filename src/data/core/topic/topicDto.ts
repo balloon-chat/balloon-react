@@ -37,7 +37,7 @@ export class TopicDto {
         src.createdAt,
         src.createdBy,
         src.thumbnailURL,
-        src.isPrivate ?? false,
+        src.isPrivate,
       );
     }
     return undefined;
@@ -79,7 +79,7 @@ type TopicJSON = {
   createdAt: number
   createdBy: string
   thumbnailURL: string
-  isPrivate?: boolean
+  isPrivate: boolean
 };
 
 const isTopicJSON = (obj: any): obj is TopicJSON => typeof obj.id === 'string'
@@ -88,4 +88,5 @@ const isTopicJSON = (obj: any): obj is TopicJSON => typeof obj.id === 'string'
     || typeof obj.description === 'object')
   && typeof obj.createdAt === 'number'
   && typeof obj.createdBy === 'string'
-  && typeof obj.thumbnailURL === 'string';
+  && typeof obj.thumbnailURL === 'string'
+  && typeof obj.isPrivate === 'boolean';
