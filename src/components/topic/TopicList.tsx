@@ -53,7 +53,7 @@ export const ScrollableTopicList: React.FC<{ pickup?: TopicEntity | null }> = ({
   const fetchData = () => {
     dispatcher(
       fetchTopicsFrom({
-        from: topics.length > 1 ? topics[topics.length - 1].id : undefined,
+        from: topics.length >= 1 ? topics[topics.length - 1].id : undefined,
       } as const),
     );
   };

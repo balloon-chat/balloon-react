@@ -1,11 +1,10 @@
 import { IUserDatabase } from 'src/data/core/user/userDatabase';
 import { UserDto } from 'src/data/core/user/userDto';
 import firebase from 'firebase/app';
-import 'firebase/database';
+import 'firebase/firestore';
 
-// TODO: firestoreに移行
 export class FirebaseUserDatabase implements IUserDatabase {
-  private constructor(private readonly database = firebase.database()) {
+  private constructor(private readonly database = firebase.firestore()) {
   }
 
   private static _instance: IUserDatabase;
@@ -18,28 +17,28 @@ export class FirebaseUserDatabase implements IUserDatabase {
   }
 
   async find(userId: string): Promise<UserDto | undefined> {
-    const snapshot = await this.userRef(userId).get();
-    return UserDto.fromJSON(snapshot.toJSON());
+    const snapshot = await this.document(userId).get();
+    return UserDto.fromJSON(snapshot.data() ?? null);
   }
 
   async findByLoginId(loginId: string): Promise<UserDto | undefined> {
-    const snapshot = await this.usersRef()
-      .orderByChild('loginId')
-      .equalTo(loginId)
-      .once('value');
+    const query = this.collection().where('loginId', '==', loginId);
+    const snapshots = await query.get();
+
     let user: UserDto | null = null;
-    snapshot.forEach((snapshot) => {
-      const dto = UserDto.fromJSON(snapshot.toJSON());
+    snapshots.forEach((snapshot) => {
+      const dto = UserDto.fromJSON(snapshot.data());
       if (dto) user = dto;
     });
+
     return user ?? undefined;
   }
 
   async save(user: UserDto): Promise<void> {
-    return this.userRef(user.id).set(user);
+    return this.document(user.id).set(user.toJSON());
   }
 
-  private usersRef = () => this.database.ref('/users');
+  private collection = () => this.database.collection('users');
 
-  private userRef = (userId: string) => this.usersRef().child(userId);
+  private document = (userId: string) => this.collection().doc(userId);
 }

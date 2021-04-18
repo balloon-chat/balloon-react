@@ -132,3 +132,54 @@ describe('プライベートな話題を取得', () => {
       ]);
   });
 });
+
+describe('プライベートな話題を取得', () => {
+  const user = new LoginUser(new UserId(), 'creator', new UserName('Test'), photoUrl);
+  const publicTopic = TopicFactory.create(new TopicTitle('test'), user.id, thumbnailUrl, undefined, false);
+  const privateTopic = TopicFactory.create(new TopicTitle('test'), user.id, thumbnailUrl, undefined, true);
+
+  test('作成したユーザーが取得', async () => {
+    /*
+   初期データ:
+     UserRepository : UserA
+     TopicRepository: [Topic(public, user=UserA), Topic(private, user=UserA)]
+    */
+    await userRepository.save(user);
+    await topicRepository.save(TopicEntity.from(publicTopic));
+    await topicRepository.save(TopicEntity.from(privateTopic));
+
+    /*
+    閲覧者が作成者の場合のみ、プライベートなTopicが取得される
+    Expected:
+      return: [Topic(public, user=UserA), Topic(private, user=UserA)]
+     */
+    const results = await usecase.execute(user.id.value, user.loginId!);
+    expect(results)
+      .toStrictEqual([
+        TopicDataFactory.create(publicTopic, 0, user),
+        TopicDataFactory.create(privateTopic, 0, user),
+      ]);
+  });
+
+  test('作成者でないユーザーが取得', async () => {
+    /*
+      初期データ:
+        UserRepository : UserA
+        TopicRepository: [Topic(public, user=UserA), Topic(private, user=UserA)]
+       */
+    await userRepository.save(user);
+    await topicRepository.save(TopicEntity.from(publicTopic));
+    await topicRepository.save(TopicEntity.from(privateTopic));
+
+    /*
+    閲覧者が作成者の場合のみ、プライベートなTopicが取得される
+    Expected:
+      return: [Topic(public, user=UserA)]
+     */
+    const results = await usecase.execute(user.id.value, 'other user');
+    expect(results)
+      .toStrictEqual([
+        TopicDataFactory.create(publicTopic, 0, user),
+      ]);
+  });
+});

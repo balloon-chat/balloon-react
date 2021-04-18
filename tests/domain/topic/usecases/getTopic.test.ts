@@ -113,3 +113,25 @@ test('プライベートなTopicを取得', async () => {
     user,
   ));
 });
+
+test('プライベートなTopicを取得', async () => {
+  /*
+   初期データ:
+     TopicRepository: Topic(private)
+    */
+  await userRepository.save(user);
+
+  const privateTopic = TopicFactory.create(new TopicTitle('test'), user.id, thumbnailUrl, undefined, true);
+  await topicRepository.save(TopicEntity.from(privateTopic));
+
+  /*
+  TopicのIDを知っている場合は、作成者でなくても取得する
+  Expected: Topic(private)
+   */
+  const result = await usecase.execute(privateTopic.id);
+  expect(result).toStrictEqual(TopicDataFactory.create(
+    privateTopic,
+    0,
+    user,
+  ));
+});
