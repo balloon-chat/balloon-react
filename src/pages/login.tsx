@@ -1,111 +1,53 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { LoginDialog } from 'src/components/login/LoginDialog';
 import styled from 'styled-components';
-import firebase from 'firebase/app';
-import 'firebase/auth';
 import { useDispatch } from 'react-redux';
 import { useRouter } from 'next/router';
 import { useUserSelector } from 'src/data/redux/user/selector';
-import { EditProfileDialog } from 'src/components/login/EditProfileDialog';
-import { WelcomeDialog } from 'src/components/login/WelcomeDialog';
-import { createUser, login as loginAction, logout } from 'src/data/redux/user/action';
+import { login, logout } from 'src/data/redux/user/action';
 import { isInnerPath, pageTitle, rootPath } from 'src/view/route/pagePath';
 import { LoadDialog } from 'src/components/common/LoadDialog';
 import { LoginStates } from 'src/data/redux/user/state';
 import Head from 'next/head';
 import { Dialog } from 'src/components/common/Dialog';
 import { Button } from 'src/components/common/Button';
-import { resetUserState } from 'src/data/redux/user/slice';
+import { GetServerSideProps } from 'next';
+import { AuthService } from 'src/domain/auth/service/AuthService';
 
-const DialogStates = {
-  SHOW_WELCOME: 'welcome',
-  SHOW_EDIT: 'edit',
-};
+type Props = {
+  accessToken: string | null,
+  newUser: boolean | null,
+  authorized: boolean,
+}
 
-type DialogState = typeof DialogStates[keyof typeof DialogStates];
-
-const LoginPage = () => {
+const LoginPage = ({ accessToken, authorized, newUser }: Props) => {
   const dispatcher = useDispatch();
   const router = useRouter();
   const { return_to } = router.query;
   const { loginState } = useUserSelector();
 
-  const [uid, setUid] = useState<string>();
-  const [name, setName] = useState<string | null>();
-  const [photoUrl, setPhotoUrl] = useState<string | null>();
-  const [imageFile, setImageFile] = useState<File | null>(null);
-
-  const [dialogState, setDialogState] = useState<DialogState | null>(null);
-
   useEffect(() => {
-    const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        setUid(user.uid);
-        setName(user.displayName);
-        setPhotoUrl(user.photoURL);
-
-        login(user).catch((e) => console.error(e));
-      }
-    });
-
-    return () => {
-      unsubscribe();
-    };
+    if (authorized && accessToken && newUser) {
+      router.push(rootPath.signIn).then();
+    } else if (accessToken) {
+      loginFirebase().then();
+    }
   }, []);
 
-  useEffect(() => {
-    if (loginState === LoginStates.USER_NOF_FOUND) {
-      // Googleログインは成功したが、ユーザーが登録されていない
-      if (name && photoUrl) {
-        // 名前とアイコンが提供される場合は、ウェルカムダイアログを表示
-        setDialogState(DialogStates.SHOW_WELCOME);
-      } else {
-        setDialogState(DialogStates.SHOW_EDIT);
-      }
-    } else {
-      setDialogState(null);
-    }
-  }, [loginState]);
+  const loginFirebase = async () => {
+    if (!accessToken) return;
 
-  useEffect(() => {
-    if (loginState !== LoginStates.LOGGED_IN) return;
+    dispatcher(login({ accessToken }));
 
     if (return_to && typeof return_to === 'string' && isInnerPath(return_to)) {
-      router.push(return_to).then();
+      await router.push(return_to);
     } else {
-      router.push(rootPath.index).then();
+      await router.push(rootPath.index);
     }
-  }, [return_to, loginState]);
-
-  const login = async (user: firebase.User) => {
-    const token = await user.getIdToken();
-    dispatcher(loginAction({ loginId: user?.uid, token }));
   };
 
   const resetLoginPageState = () => {
-    setDialogState(null);
     dispatcher(logout());
-    dispatcher(resetUserState());
-  };
-
-  const handleOnSaveEdit = (name: string, photoUrl: string, imageFile: File | null) => {
-    setName(name);
-    setPhotoUrl(photoUrl);
-    setImageFile(imageFile);
-    setDialogState(DialogStates.SHOW_WELCOME);
-  };
-
-  const createNewUser = () => {
-    if (uid && name && photoUrl) {
-      setDialogState(null); // close dialog
-      dispatcher(
-        createUser({
-          loginId: uid,
-          name,
-          photo: imageFile ?? photoUrl,
-        }),
-      );
-    }
   };
 
   return (
@@ -116,26 +58,6 @@ const LoginPage = () => {
       {
         loginState === LoginStates.FINDING && (
           <LoadDialog message="ユーザー情報を確認しています。" />
-        )
-      }
-      {
-        dialogState === DialogStates.SHOW_WELCOME && (
-          <WelcomeDialog
-            name={name!}
-            imgUrl={photoUrl ?? ''}
-            onEdit={() => setDialogState(DialogStates.SHOW_EDIT)}
-            onCreateUser={createNewUser}
-          />
-        )
-      }
-      {
-        dialogState === DialogStates.SHOW_EDIT && (
-          <EditProfileDialog
-            name={name ?? null}
-            photoUrl={photoUrl ?? null}
-            onCancel={() => setDialogState(DialogStates.SHOW_WELCOME)}
-            onSave={handleOnSaveEdit}
-          />
         )
       }
       {
@@ -176,5 +98,23 @@ const ErrorDialogContainer = styled.div`
     margin-top: 32px;
   }
 `;
+
+export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
+  const service = new AuthService();
+  try {
+    const result = await service.getOauthResult(context.req.headers.cookie);
+    return { props: result };
+  } catch (e) {
+    console.log(e);
+  }
+
+  return {
+    props: {
+      accessToken: null,
+      newUser: null,
+      authorized: false,
+    },
+  };
+};
 
 export default LoginPage;

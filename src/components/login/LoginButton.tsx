@@ -1,13 +1,13 @@
 import styled from 'styled-components';
-import firebase from 'firebase/app';
-import 'firebase/auth';
 import React from 'react';
 import Google from 'src/components/svgs/google.svg';
+import { useRouter } from 'next/router';
 
 export const GoogleLoginButton = () => {
+  const router = useRouter();
+
   const signIn = async () => {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    await firebase.auth().signInWithRedirect(provider);
+    await router.push(`${process.env.OAUTH_GOOGLE_LOGIN_URL}?redirectUrl=http://localhost:3000/login`);
   };
 
   return (

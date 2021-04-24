@@ -1,14 +1,12 @@
-import { Action, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { userStateName } from 'src/data/redux/user/state';
 import { UserService } from 'src/domain/user/service/userService';
 import { UserEntity } from 'src/view/types/user';
-import firebase from 'firebase/app';
-import 'firebase/auth';
+import { AuthService } from 'src/domain/auth/service/AuthService';
 
 export const CREATE_USER = `${userStateName}/create`;
 export const LOGIN = `${userStateName}/login`;
 export const LOGOUT = `${userStateName}/logout`;
-export const RESET_USER_STATE = `${userStateName}/reset`;
 
 export const createUser = createAsyncThunk<
   UserEntity,
@@ -27,21 +25,26 @@ export const createUser = createAsyncThunk<
 });
 
 export const login = createAsyncThunk<
-  {userFound: boolean, user: UserEntity | null},
-  {loginId: string, token: string}
->(LOGIN, async ({ loginId, token }) => {
-  const service = new UserService();
-  await service.login(token);
-  const user = await service.getUserByLoginId(loginId);
-  return {
-    userFound: user !== null,
-    user,
-  } as const;
+  {user: UserEntity | null},
+  {loginId?: string, idToken?: string, accessToken?: string}
+>(LOGIN, async ({ loginId, idToken, accessToken }) => {
+  const service = new AuthService();
+
+  if (accessToken) {
+    const user = await service.login(accessToken);
+    return { user };
+  }
+
+  if (idToken && loginId) {
+    const user = await service.createSession(idToken, loginId);
+    return { user };
+  }
+
+  return { user: null };
 });
 
 export const logout = createAsyncThunk<{}, void>(LOGOUT, async () => {
-  firebase.auth().signOut().then();
-  const service = new UserService();
+  const service = new AuthService();
   await service.logout();
   return {} as const;
 });
@@ -51,5 +54,3 @@ export type SetUser = PayloadAction<{
   photoUrl: string|null,
   name: string|null
 }>
-
-export type ResetUserState = Action<typeof RESET_USER_STATE>;
