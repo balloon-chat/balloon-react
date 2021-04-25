@@ -11,6 +11,7 @@ export const usersPath = {
 export const rootPath = {
   index: '/',
   login: '/login',
+  signIn: '/signin',
   logout: '/logout',
   topicPath,
   usersPath,
@@ -26,6 +27,7 @@ const getPageTitle = (subTitle?: string) => {
 export const pageTitle = {
   index: getPageTitle(),
   login: getPageTitle('ログイン'),
+  signIn: getPageTitle('アカウントを作成'),
   logout: getPageTitle('ログアウト'),
   topics: {
     index: getPageTitle('話題一覧'),

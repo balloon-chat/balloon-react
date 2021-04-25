@@ -11,7 +11,6 @@ import { UserImageRepository } from 'src/data/core/user/userImageRepository';
 import { FirebaseUserImageDatabase } from 'src/data/firebase/user/userImageDatabase';
 import { IGetUserByLoginId } from 'src/domain/user/types/getUserByLoginId';
 import { GetUserByLoginId } from 'src/domain/user/usecases/getUserByLoginId';
-// eslint-disable-next-line import/no-unresolved
 import axios from 'axios';
 
 export class UserService {
@@ -69,31 +68,35 @@ export class UserService {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  async getUserInfo(cookie: string|undefined): Promise<{loginId: string | undefined}> {
+  async getUserInfo(cookie: string | undefined): Promise<{ loginId: string | undefined }> {
     if (!cookie) return { loginId: undefined };
 
-    const { data } = await axios.get<{loginId: string}>(
-      process.env.GET_USER_INFO_API_URL!,
-      {
-        withCredentials: true,
-        headers: {
-          cookie,
+    try {
+      const { data } = await axios.get<{ loginId: string }>(
+        process.env.GET_USER_INFO_API_URL!,
+        {
+          withCredentials: true,
+          headers: {
+            cookie,
+          },
         },
-      },
-    );
+      );
 
-    return {
-      loginId: data.loginId,
-    } as const;
+      return { loginId: data.loginId } as const;
+    } catch (e) {
+      return {
+        loginId: undefined,
+      };
+    }
   }
 
-  async getUser(userId: string): Promise<UserEntity|null> {
+  async getUser(userId: string): Promise<UserEntity | null> {
     const user = await this.getUserUsecase.execute(userId);
     if (!user) return null;
     return UserEntityFactory.create(user);
   }
 
-  async getUserByLoginId(loginId: string): Promise<UserEntity|null> {
+  async getUserByLoginId(loginId: string): Promise<UserEntity | null> {
     const loginUser = await this.getUserByLoginIdUsecase.execute(loginId);
     if (!loginUser) return null;
     return UserEntityFactory.create(loginUser);

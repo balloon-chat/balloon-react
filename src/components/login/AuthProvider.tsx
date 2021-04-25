@@ -8,8 +8,11 @@ export const AuthProvider: React.FC = ({ children }) => {
   const dispatcher = useDispatch();
 
   const login = async (user: firebase.User) => {
-    const token = await user.getIdToken();
-    dispatcher(loginAction({ loginId: user.uid, token }));
+    const idToken = await user.getIdToken();
+    dispatcher(loginAction({
+      loginId: user.uid,
+      idToken,
+    }));
   };
 
   useEffect(() => {

@@ -1,6 +1,6 @@
 import { LoginStates, UserState, userStateName } from 'src/data/redux/user/state';
 import { createSlice } from '@reduxjs/toolkit';
-import { resetUserStateReducer, setUserReducer } from 'src/data/redux/user/reducer';
+import { setUserReducer } from 'src/data/redux/user/reducer';
 import { createUser, login, logout } from 'src/data/redux/user/action';
 
 const initialState: UserState = {
@@ -15,7 +15,6 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     setUser: setUserReducer,
-    resetUserState: resetUserStateReducer,
   },
   extraReducers: (builder) => {
     builder
@@ -30,7 +29,7 @@ const userSlice = createSlice({
       .addCase(login.fulfilled, (state, { payload }) => ({
         ...state,
         ...payload.user,
-        loginState: payload.userFound ? LoginStates.LOGGED_IN : LoginStates.USER_NOF_FOUND,
+        loginState: payload.user != null ? LoginStates.LOGGED_IN : LoginStates.USER_NOF_FOUND,
       }))
       .addCase(logout.rejected, (state) => ({
         ...state,
@@ -59,7 +58,6 @@ const userSlice = createSlice({
 
 export const {
   setUser,
-  resetUserState,
 } = userSlice.actions;
 
 export const userReducer = userSlice.reducer;
