@@ -24,6 +24,7 @@ const usecase: IGetTopic = new GetTopic(messageRepository, topicRepository, user
 
 const thumbnailUrl = 'some.img';
 const user = new LoginUser(new UserId(), null, new UserName('test'), 'test');
+const topicTitle = new TopicTitle('test');
 
 afterEach(() => {
   topicRepository.clean();
@@ -40,26 +41,19 @@ test('Topicに関するデータを取得', async () => {
    */
   await userRepository.save(user);
 
-  const topic = TopicFactory.create(new TopicTitle('test'), user.id, thumbnailUrl, 'description');
+  const topic = TopicFactory.create({ title: topicTitle, createdBy: user.id, thumbnailUrl, description: 'description' });
   await topicRepository.save(TopicEntity.from(topic));
 
   const message = MessageFactory.create(new MessageBody('test'), user);
   await messageRepository.save(topic.id, MessageEntity.from(message));
 
   const result = await usecase.execute(topic.id);
-  expect(result)
-    .not
-    .toBeUndefined();
-  expect(result?.id)
-    .toEqual(topic.id);
-  expect(result?.title)
-    .toEqual(topic.title);
-  expect(result?.description)
-    .toEqual(topic.description);
-  expect(result?.createdBy)
-    .toEqual(user);
-  expect(result?.commentCount)
-    .toEqual(1);
+  expect(result).not.toBeUndefined();
+  expect(result?.id).toEqual(topic.id);
+  expect(result?.title).toEqual(topic.title);
+  expect(result?.description).toEqual(topic.description);
+  expect(result?.createdBy).toEqual(user);
+  expect(result?.commentCount).toEqual(1);
 });
 
 test('保存する前に取得', async () => {
@@ -83,7 +77,7 @@ test('作成したユーザーが存在しない場合、取得しない', async
     */
   const user = new AnonymousUser();
 
-  const topic = TopicFactory.create(new TopicTitle('test'), user.id, thumbnailUrl);
+  const topic = TopicFactory.create({ title: topicTitle, createdBy: user.id, thumbnailUrl });
   await topicRepository.save(TopicEntity.from(topic));
 
   const result = await usecase.execute(topic.id);
@@ -99,29 +93,12 @@ test('プライベートなTopicを取得', async () => {
     */
   await userRepository.save(user);
 
-  const privateTopic = TopicFactory.create(new TopicTitle('test'), user.id, thumbnailUrl, undefined, true);
-  await topicRepository.save(TopicEntity.from(privateTopic));
-
-  /*
-  TopicのIDを知っている場合は、作成者でなくても取得する
-  Expected: Topic(private)
-   */
-  const result = await usecase.execute(privateTopic.id);
-  expect(result).toStrictEqual(TopicDataFactory.create(
-    privateTopic,
-    0,
-    user,
-  ));
-});
-
-test('プライベートなTopicを取得', async () => {
-  /*
-   初期データ:
-     TopicRepository: Topic(private)
-    */
-  await userRepository.save(user);
-
-  const privateTopic = TopicFactory.create(new TopicTitle('test'), user.id, thumbnailUrl, undefined, true);
+  const privateTopic = TopicFactory.create({
+    title: topicTitle,
+    createdBy: user.id,
+    thumbnailUrl,
+    isPrivate: true,
+  });
   await topicRepository.save(TopicEntity.from(privateTopic));
 
   /*

@@ -23,6 +23,7 @@ const usecase: IGetTopicsCreatedBy = new GetTopicsCreatedBy(
 
 const thumbnailUrl = 'test.user';
 const photoUrl = 'test.img';
+const topicTitle = new TopicTitle('test');
 
 afterEach(() => {
   topicRepository.clean();
@@ -41,8 +42,8 @@ test('指定したユーザーが作成したトピックを取得', async () =>
   await userRepository.save(userA);
   await userRepository.save(userB);
 
-  const topicA = TopicFactory.create(new TopicTitle('A'), userA.id, 'A');
-  const topicB = TopicFactory.create(new TopicTitle('B'), userB.id, 'A');
+  const topicA = TopicFactory.create({ title: new TopicTitle('A'), createdBy: userA.id, thumbnailUrl: 'A' });
+  const topicB = TopicFactory.create({ title: new TopicTitle('B'), createdBy: userB.id, thumbnailUrl: 'A' });
   await topicRepository.save(TopicEntity.from(topicA));
   await topicRepository.save(TopicEntity.from(topicB));
 
@@ -67,7 +68,12 @@ test('作成日順に取得', async () => {
 
   for (let i = 0; i < 10; i += 1) {
     const createdAt = (Math.random() + 1) * 1000000000000;
-    const topic = TopicFactory.create(new TopicTitle('test'), user.id, 'test', undefined, false, createdAt);
+    const topic = TopicFactory.create({
+      title: new TopicTitle('test'),
+      createdBy: user.id,
+      thumbnailUrl: 'test',
+      createdAt,
+    });
     // eslint-disable-next-line no-await-in-loop
     await topicRepository.save(TopicEntity.from(topic));
   }
@@ -84,8 +90,18 @@ test('作成日順に取得', async () => {
 
 describe('プライベートな話題を取得', () => {
   const user = new LoginUser(new UserId(), 'creator', new UserName('Test'), photoUrl);
-  const publicTopic = TopicFactory.create(new TopicTitle('test'), user.id, thumbnailUrl, undefined, false);
-  const privateTopic = TopicFactory.create(new TopicTitle('test'), user.id, thumbnailUrl, undefined, true);
+  const publicTopic = TopicFactory.create({
+    title: topicTitle,
+    createdBy: user.id,
+    thumbnailUrl,
+    isPrivate: false,
+  });
+  const privateTopic = TopicFactory.create({
+    title: topicTitle,
+    createdBy: user.id,
+    thumbnailUrl,
+    isPrivate: true,
+  });
 
   test('作成したユーザーが取得', async () => {
     /*
@@ -126,17 +142,26 @@ describe('プライベートな話題を取得', () => {
       return: [Topic(public, user=UserA)]
      */
     const results = await usecase.execute(user.id.value, 'other user');
-    expect(results)
-      .toStrictEqual([
-        TopicDataFactory.create(publicTopic, 0, user),
-      ]);
+    expect(results).toStrictEqual([
+      TopicDataFactory.create(publicTopic, 0, user),
+    ]);
   });
 });
 
 describe('プライベートな話題を取得', () => {
   const user = new LoginUser(new UserId(), 'creator', new UserName('Test'), photoUrl);
-  const publicTopic = TopicFactory.create(new TopicTitle('test'), user.id, thumbnailUrl, undefined, false);
-  const privateTopic = TopicFactory.create(new TopicTitle('test'), user.id, thumbnailUrl, undefined, true);
+  const publicTopic = TopicFactory.create({
+    title: topicTitle,
+    createdBy: user.id,
+    thumbnailUrl,
+    isPrivate: false,
+  });
+  const privateTopic = TopicFactory.create({
+    title: topicTitle,
+    createdBy: user.id,
+    thumbnailUrl,
+    isPrivate: true,
+  });
 
   test('作成したユーザーが取得', async () => {
     /*

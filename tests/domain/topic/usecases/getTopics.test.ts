@@ -23,6 +23,7 @@ const usecase: IGetTopics = new GetTopics(messageRepository, topicRepository, us
 
 const thumbnailUrl = 'some.img';
 const user = new LoginUser(new UserId(), null, new UserName('test'), 'test');
+const topicTitle = new TopicTitle('test');
 
 afterEach(() => {
   topicRepository.clean();
@@ -40,7 +41,7 @@ describe('TopicのIDにより取得', () => {
 
     const topics = [];
     for (let i = 0; i < 50; i += 1) {
-      const topic = TopicFactory.create(new TopicTitle('test'), user.id, thumbnailUrl, '');
+      const topic = TopicFactory.create({ title: topicTitle, createdBy: user.id, thumbnailUrl });
       // eslint-disable-next-line no-await-in-loop
       await topicRepository.save(TopicEntity.from(topic));
       topics.push(topic);
@@ -72,7 +73,7 @@ describe('TopicのIDにより取得', () => {
        UserRepository: null
       */
     const user = new AnonymousUser();
-    const topic = TopicFactory.create(new TopicTitle('test'), user.id, thumbnailUrl);
+    const topic = TopicFactory.create({ title: topicTitle, createdBy: user.id, thumbnailUrl });
 
     const results = await usecase.execute([topic.id]);
     expect(results.length)
@@ -88,7 +89,7 @@ describe('TopicのIDにより取得', () => {
     // ユーザーの情報を保存しない
     const user = new AnonymousUser();
 
-    const topic = TopicFactory.create(new TopicTitle('test'), user.id, thumbnailUrl);
+    const topic = TopicFactory.create({ title: topicTitle, createdBy: user.id, thumbnailUrl });
     await topicRepository.save(TopicEntity.from(topic));
 
     const results = await usecase.execute([topic.id]);
@@ -108,7 +109,7 @@ describe('上限を設定して取得', () => {
      */
     await userRepository.save(user);
 
-    const topic = TopicFactory.create(new TopicTitle('test'), user.id, thumbnailUrl, 'description');
+    const topic = TopicFactory.create({ title: topicTitle, createdBy: user.id, thumbnailUrl, description: 'description' });
     await topicRepository.save(TopicEntity.from(topic));
 
     const message = MessageFactory.create(new MessageBody('test'), user);
@@ -140,7 +141,7 @@ describe('上限を設定して取得', () => {
     await userRepository.save(user);
     const topics = [];
     for (let i = 0; i < 50; i += 1) {
-      const topic = TopicFactory.create(new TopicTitle('test'), user.id, thumbnailUrl, '');
+      const topic = TopicFactory.create({ title: topicTitle, createdBy: user.id, thumbnailUrl });
       // eslint-disable-next-line no-await-in-loop
       await topicRepository.save(TopicEntity.from(topic));
       topics.push(topic);
@@ -157,7 +158,12 @@ describe('上限を設定して取得', () => {
     const topics = [];
     for (let i = 0; i < 10; i += 1) {
       const createdAt = (Math.random() + 1) * 1000000000000;
-      const topic = TopicFactory.create(new TopicTitle('test'), user.id, thumbnailUrl, undefined, false, createdAt);
+      const topic = TopicFactory.create({
+        title: topicTitle,
+        createdBy: user.id,
+        thumbnailUrl,
+        createdAt,
+      });
       // eslint-disable-next-line no-await-in-loop
       await topicRepository.save(TopicEntity.from(topic));
       topics.push(topic);
@@ -193,7 +199,7 @@ describe('上限を設定して取得', () => {
     // ユーザーの情報を保存しない
     const user = new AnonymousUser();
 
-    const topic = TopicFactory.create(new TopicTitle('test'), user.id, thumbnailUrl);
+    const topic = TopicFactory.create({ title: topicTitle, createdBy: user.id, thumbnailUrl });
     await topicRepository.save(TopicEntity.from(topic));
 
     const results = await usecase.execute(50);
@@ -211,38 +217,18 @@ describe('公開されているTopicのみを取得', () => {
       */
     await userRepository.save(user);
 
-    const publicTopic = TopicFactory.create(new TopicTitle('test'), user.id, thumbnailUrl, undefined, false);
-    const privateTopic = TopicFactory.create(new TopicTitle('test'), user.id, thumbnailUrl, undefined, true);
-    await topicRepository.save(TopicEntity.from(publicTopic));
-    await topicRepository.save(TopicEntity.from(privateTopic));
-
-    /*
-    Expected:
-      一覧を取得する場合は、公開されているTopicのみを取得する。
-      return: TopicData(not private)
-     */
-    const results = await usecase.execute(50);
-    expect(results)
-      .toStrictEqual([
-        TopicDataFactory.create(
-          publicTopic,
-          0,
-          user,
-        ),
-      ]);
-  });
-});
-
-describe('公開されているTopicのみを取得', () => {
-  test('公開されているTopicのみを取得', async () => {
-    /*
-     初期データ:
-       TopicRepository: Topic(not private), Topic(private)
-      */
-    await userRepository.save(user);
-
-    const publicTopic = TopicFactory.create(new TopicTitle('test'), user.id, thumbnailUrl, undefined, false);
-    const privateTopic = TopicFactory.create(new TopicTitle('test'), user.id, thumbnailUrl, undefined, true);
+    const publicTopic = TopicFactory.create({
+      title: topicTitle,
+      createdBy: user.id,
+      thumbnailUrl,
+      isPrivate: false,
+    });
+    const privateTopic = TopicFactory.create({
+      title: topicTitle,
+      createdBy: user.id,
+      thumbnailUrl,
+      isPrivate: true,
+    });
     await topicRepository.save(TopicEntity.from(publicTopic));
     await topicRepository.save(TopicEntity.from(privateTopic));
 

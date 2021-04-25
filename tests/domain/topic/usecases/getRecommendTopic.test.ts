@@ -46,7 +46,7 @@ test('おすすめの話題を取得する', async () => {
    */
   await userRepository.save(user);
 
-  const topic = TopicFactory.create(new TopicTitle('title'), user.id, 'url.jpg');
+  const topic = TopicFactory.create({ title: new TopicTitle('title'), createdBy: user.id, thumbnailUrl: 'url.jpg' });
   await topicRepository.save(TopicEntity.from(topic));
 
   const message = MessageFactory.create(new MessageBody('test'), user);
@@ -77,7 +77,7 @@ test('おすすめの話題が作成されていないとき', async () => {
    */
   await userRepository.save(user);
 
-  const topic = TopicFactory.create(new TopicTitle('title'), user.id, 'url.jpg');
+  const topic = TopicFactory.create({ title: new TopicTitle('title'), createdBy: user.id, thumbnailUrl: 'url.jpg' });
   await topicRepository.save(TopicEntity.from(topic));
 
   const message = MessageFactory.create(new MessageBody('test'), user);
@@ -101,8 +101,8 @@ test('話題が存在しないとき', async () => {
    */
   await userRepository.save(user);
 
-  const topic1 = TopicFactory.create(new TopicTitle('title'), user.id, 'url.jpg');
-  const topic2 = TopicFactory.create(new TopicTitle('title'), user.id, 'url.jpg');
+  const topic1 = TopicFactory.create({ title: new TopicTitle('title'), createdBy: user.id, thumbnailUrl: 'url.jpg' });
+  const topic2 = TopicFactory.create({ title: new TopicTitle('title'), createdBy: user.id, thumbnailUrl: 'url.jpg' });
   await topicRepository.save(TopicEntity.from(topic1));
 
   const recommend = new RecommendTopicEntity([topic1.id, topic2.id]);

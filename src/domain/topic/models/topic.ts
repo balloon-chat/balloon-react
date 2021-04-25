@@ -17,23 +17,23 @@ export class Topic {
 }
 
 export class TopicFactory {
-  static create(
+  static create(arg: {
+    topicId?: TopicId,
     title: TopicTitle,
     createdBy: UserId,
     thumbnailUrl: string,
     description?: string,
-    isPrivate: boolean = false,
-    cratedAt: number = Date.now(),
-    topicId: TopicId = new TopicId(),
-  ): Topic {
+    isPrivate?: boolean,
+    createdAt?: number,
+  }): Topic {
     return new Topic(
-      topicId,
-      title,
-      cratedAt,
-      createdBy,
-      thumbnailUrl,
-      isPrivate,
-      TopicDescription.create(description),
+      arg.topicId ?? new TopicId(),
+      arg.title,
+      arg.createdAt ?? Date.now(),
+      arg.createdBy,
+      arg.thumbnailUrl,
+      arg.isPrivate ?? false,
+      TopicDescription.create(arg.description),
     );
   }
 }

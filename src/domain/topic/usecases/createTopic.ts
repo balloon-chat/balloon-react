@@ -10,6 +10,7 @@ import { ITopicImageRepository } from 'src/domain/topic/repository/topicImageRep
 import { TopicId } from 'src/domain/topic/models/topicId';
 import { ICreateTopic } from 'src/domain/topic/types/createTopic';
 import { IInvitationRepository } from 'src/domain/topic/repository/invitationRepository';
+import { v4 as uuidv4 } from 'uuid';
 
 export class CreateTopic implements ICreateTopic {
   constructor(
@@ -39,25 +40,22 @@ export class CreateTopic implements ICreateTopic {
     const topicId = new TopicId();
 
     // サムネイル画像を保存
-    const thumbnailURL = await this.topicImageRepository.save(
-      createdBy,
-      topicId.value,
-      thumbnail,
-    );
+    const thumbnailUrl = await this.topicImageRepository.save(createdBy, uuidv4(), thumbnail);
 
     // 話題を保存
-    const topic = TopicFactory.create(
-      topicTitle,
+    const topic = TopicFactory.create({
+      topicId,
+      title: topicTitle,
       createdBy,
-      thumbnailURL,
+      thumbnailUrl,
       description,
       isPrivate,
-    );
+    });
     const entity = TopicEntity.from(topic);
     await this.topicRepository.save(entity);
 
     // 招待コードを作成
-    await this.invitationRepository.createInvitation(topic.id);
+    await this.invitationRepository.createInvitation(topicId);
 
     return topic;
   }
