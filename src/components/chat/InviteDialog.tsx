@@ -2,32 +2,54 @@ import styled from 'styled-components';
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import ContentCopy from 'src/components/svgs/content_copy.svg';
+import { InviteCode } from 'src/components/chat/InviteCode';
+import DoneIcon from 'src/components/svgs/done.svg';
 
 export const InviteDialog = () => {
   const router = useRouter();
 
   const [isClosed, setIsClosed] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
   const [url, setUrl] = useState('');
 
   useEffect(() => {
     setUrl(`${process.env.BASE_URL}${router.asPath}`);
   }, []);
 
+  const copyInvitation = async () => {
+    setIsCopied(true);
+
+    // 3秒間表示
+    const waitSeconds = 3;
+    await new Promise((resolve) => { setTimeout(() => resolve(), waitSeconds * 1000); });
+    setIsClosed(true);
+  };
+
   return (
     <>
       {!isClosed && (
         <Container>
-          <Title>みんなを招待しましょう!</Title>
-          <ActionContainer>
-            <CloseButton onClick={() => setIsClosed(true)}>閉じる</CloseButton>
-            <CopyToClipboard text={url} onCopy={() => setIsClosed(true)}>
-              <TopicLinkButton>
-                <div>リンクをコピー</div>
-                <ContentCopy fill="rgba(0,0,0,.8)" />
-              </TopicLinkButton>
-            </CopyToClipboard>
-          </ActionContainer>
+          {
+            !isCopied
+              ? (
+                <>
+                  <Title>みんなを招待しましょう!</Title>
+                  <InviteCode code="1234-5678" />
+                  <ActionContainer>
+                    <CloseButton onClick={() => setIsClosed(true)}>閉じる</CloseButton>
+                    <CopyToClipboard text={url} onCopy={copyInvitation}>
+                      <TopicLinkButton>招待をコピー</TopicLinkButton>
+                    </CopyToClipboard>
+                  </ActionContainer>
+                </>
+              )
+              : (
+                <DoneContainer>
+                  <DoneIcon />
+                  <Title>コピーしました</Title>
+                </DoneContainer>
+              )
+          }
         </Container>
       )}
     </>
@@ -35,33 +57,22 @@ export const InviteDialog = () => {
 };
 
 const Container = styled.div`
-  align-items: center;
+  align-items: start;
+  border: #ccc solid 1px;
   background-color: white;
   border-radius: 5px;
-  box-shadow: rgba(0, 0, 0, 0.2) 0 8px 16px 0;
   display: flex;
   flex-direction: column;
-  padding: 16px;
+  padding: 16px 32px;
   transition: all 0.2s ease-out 0s;
   z-index: 2000;
   position: absolute;
-  bottom: 24px;
+  bottom: 16px;
   right: 16px;
-
-  & :before {
-    content: '';
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    margin-left: -15px;
-    border: 15px solid transparent;
-    border-top: 15px solid white;
-  }
 `;
 
 const Title = styled.h2`
   font-size: 16px;
-  margin-bottom: 8px;
 `;
 
 const TopicLinkButton = styled.div`
@@ -87,5 +98,14 @@ const ActionContainer = styled.div`
 
   & > div:first-child {
     margin-right: 16px;
+  }
+`;
+
+const DoneContainer = styled.div`
+  display: flex;
+
+  & > svg {
+    margin-right: 8px;
+    fill: #4CAF50;
   }
 `;

@@ -12,11 +12,11 @@ import { useDispatch } from 'react-redux';
 import { setTopicId } from 'src/data/redux/topic/slice';
 import { useUserSelector } from 'src/data/redux/user/selector';
 import { UserId } from 'src/domain/user/models/userId';
-import { Sketch } from 'src/components/p5/Sketch';
 import { observeStart } from 'src/data/redux/message/slice';
 import { useTopicState } from 'src/data/redux/topic/selector';
 import { setUser } from 'src/data/redux/user/slice';
 import { LoginStates } from 'src/data/redux/user/state';
+import { MessageList } from 'src/components/chat/MessageList';
 
 type Props = {
   topic: TopicEntity | null;
@@ -63,7 +63,7 @@ const TopicPage = ({ topic }: Props) => {
           <Head>
             <title>{pageTitle.topics.topic(topic.title)}</title>
           </Head>
-          <Sketch />
+          <MessageList />
           <MessageField />
         </>
       )}
