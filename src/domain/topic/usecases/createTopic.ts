@@ -9,12 +9,14 @@ import { UserNotFoundException } from 'src/domain/exceptions/UserNotFoundExcepti
 import { ITopicImageRepository } from 'src/domain/topic/repository/topicImageRepository';
 import { TopicId } from 'src/domain/topic/models/topicId';
 import { ICreateTopic } from 'src/domain/topic/types/createTopic';
+import { IInvitationRepository } from 'src/domain/topic/repository/invitationRepository';
 
 export class CreateTopic implements ICreateTopic {
   constructor(
     private readonly topicRepository: ITopicRepository,
     private readonly topicImageRepository: ITopicImageRepository,
     private readonly userRepository: IUserRepository,
+    private readonly invitationRepository: IInvitationRepository,
   ) {}
 
   async execute(
@@ -35,11 +37,15 @@ export class CreateTopic implements ICreateTopic {
 
     const topicTitle = new TopicTitle(title);
     const topicId = new TopicId();
+
+    // サムネイル画像を保存
     const thumbnailURL = await this.topicImageRepository.save(
       createdBy,
       topicId.value,
       thumbnail,
     );
+
+    // 話題を保存
     const topic = TopicFactory.create(
       topicTitle,
       createdBy,
@@ -49,6 +55,10 @@ export class CreateTopic implements ICreateTopic {
     );
     const entity = TopicEntity.from(topic);
     await this.topicRepository.save(entity);
+
+    // 招待コードを作成
+    await this.invitationRepository.createInvitation(topic.id);
+
     return topic;
   }
 }
