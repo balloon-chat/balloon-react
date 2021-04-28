@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { TopicState, topicStateName, topicStates } from 'src/data/redux/topic/state';
 import {
+  setInvitationCodeReducer,
   setIsTopicCreatedReducer,
   setTopicIdReducer,
   setTopicsReducer,
@@ -16,6 +17,7 @@ import { TopicEntity } from 'src/view/types/topic';
 const initialState: TopicState = {
   topics: [] as TopicEntity[],
   topicId: null,
+  code: null,
   isTopicCreated: false,
 } as const;
 
@@ -24,6 +26,7 @@ const topicSlice = createSlice({
   initialState,
   reducers: {
     setIsTopicCreated: setIsTopicCreatedReducer,
+    setInvitationCode: setInvitationCodeReducer,
     setTopicId: setTopicIdReducer,
     setTopics: setTopicsReducer,
   },
@@ -34,9 +37,13 @@ const topicSlice = createSlice({
         topicId: payload.id.value,
         isTopicCreated: true,
       }))
+      .addCase(createTopic.rejected, (state) => ({
+        ...state,
+        state: topicStates.CRETE_TOPIC_ERROR,
+      }))
       .addCase(fetchTopic.fulfilled, (state, { payload }) => ({
         ...state,
-        state: payload === undefined ? topicStates.NotFound : undefined,
+        state: payload === undefined ? topicStates.NOT_FOUND : undefined,
         currentTopic: payload,
       }))
       .addCase(fetchTopicsFrom.fulfilled, (state, { payload }) => ({
@@ -50,5 +57,5 @@ const topicSlice = createSlice({
   },
 });
 
-export const { setIsTopicCreated, setTopicId, setTopics } = topicSlice.actions;
+export const { setIsTopicCreated, setInvitationCode, setTopicId, setTopics } = topicSlice.actions;
 export const topicReducer = topicSlice.reducer;

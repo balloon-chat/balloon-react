@@ -25,8 +25,7 @@ export class FakeInvitationRepository implements IInvitationRepository {
     return topicId;
   }
 
-  // for debug
-  findInvitationCodeByTopicId(topicId: TopicId): InvitationCode|null {
+  async findInvitationCodeByTopicId(topicId: TopicId): Promise<InvitationCode|null> {
     return this.repository.find(topicId.value)?.invitationCode ?? null;
   }
 

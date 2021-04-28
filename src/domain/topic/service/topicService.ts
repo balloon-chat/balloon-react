@@ -28,6 +28,8 @@ import { RecommendTopics } from 'src/domain/topic/models/recommendTopics';
 import { IGetTopic } from 'src/domain/topic/types/getTopic';
 import { IGetTopicsCreatedBy } from 'src/domain/topic/types/getTopicsCreatedBy';
 import { GetTopicsCreatedBy } from 'src/domain/topic/usecases/getTopicsCreatedBy';
+import { IInvitationRepository } from 'src/domain/topic/repository/invitationRepository';
+import { InvitationApi } from 'src/data/api/topic/InvitationApi';
 
 export class TopicService {
   private readonly createTopicUsecase: ICreateTopic;
@@ -51,11 +53,14 @@ export class TopicService {
     = new MessageRepository(FirebaseMessageDatabase.instance),
     userRepository: IUserRepository
     = new UserRepository(FirebaseUserDatabase.instance),
+    private readonly invitationRepository: IInvitationRepository
+    = new InvitationApi(),
   ) {
     this.createTopicUsecase = new CreateTopic(
       topicRepository,
       topicImageRepository,
       userRepository,
+      invitationRepository,
     );
     this.getTopicUsecase = new GetTopic(
       messageRepository,
@@ -115,5 +120,15 @@ export class TopicService {
 
   fetchRecommendTopics(): Promise<RecommendTopics | undefined> {
     return this.getRecommendTopicsUsecase.execute();
+  }
+
+  async fetchInvitationCode(topicId: string): Promise<number[] | null> {
+    try {
+      const code = await this.invitationRepository
+        .findInvitationCodeByTopicId(new TopicId(topicId));
+      return code?.code ?? null;
+    } catch (e) {
+      return null;
+    }
   }
 }

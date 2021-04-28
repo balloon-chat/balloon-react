@@ -9,7 +9,7 @@ import { TopicEntity, TopicEntityFactory } from 'src/view/types/topic';
 import { TopicService } from 'src/domain/topic/service/topicService';
 import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
-import { setTopicId } from 'src/data/redux/topic/slice';
+import { setInvitationCode, setTopicId } from 'src/data/redux/topic/slice';
 import { useUserSelector } from 'src/data/redux/user/selector';
 import { UserId } from 'src/domain/user/models/userId';
 import { observeStart } from 'src/data/redux/message/slice';
@@ -19,17 +19,18 @@ import { LoginStates } from 'src/data/redux/user/state';
 import { MessageList } from 'src/components/chat/MessageList';
 
 type Props = {
-  topic: TopicEntity | null;
+  topic: TopicEntity | null,
+  code: number[] | null,
 };
 
-const TopicPage = ({ topic }: Props) => {
+const TopicPage = ({ topic, code }: Props) => {
   const dispatcher = useDispatch();
   const { loginState } = useUserSelector();
   const { topicId } = useTopicState();
 
   useEffect(() => {
     dispatcher(setTopicId({ topicId: topic?.id ?? null }));
-
+    dispatcher(setInvitationCode({ code }));
     // ユーザーが未ログイン時は、一時的なIDを付与する
     if (loginState === LoginStates.NOT_LOGGED_IN) {
       dispatcher(setUser({
@@ -40,7 +41,10 @@ const TopicPage = ({ topic }: Props) => {
     }
 
     return () => {
+      // reset current state
       dispatcher(setTopicId({ topicId: null }));
+      dispatcher(setInvitationCode({ code: null }));
+
       if (loginState === LoginStates.NOT_LOGGED_IN) {
         dispatcher(setUser({
           uid: null,
@@ -82,17 +86,21 @@ const Container = styled.div`
 export const getServerSideProps: GetServerSideProps<Props> = async (
   context,
 ) => {
+  const emptyResult = { props: { topic: null, code: null } };
   const { id } = context.query;
-  if (typeof id !== 'string') return { props: { topic: null } };
+  if (typeof id !== 'string') return emptyResult;
 
   const service = new TopicService();
-  const data = await service.fetchTopic(id);
-  if (!data) return { props: { topic: null } };
+  const topicData = await service.fetchTopic(id);
+  if (!topicData) return emptyResult;
 
-  const topic = TopicEntityFactory.create(data);
+  const code = await service.fetchInvitationCode(id);
+
+  const topic = TopicEntityFactory.create(topicData);
   return {
     props: {
       topic,
+      code,
     },
   };
 };

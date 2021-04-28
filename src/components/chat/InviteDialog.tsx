@@ -4,9 +4,12 @@ import { useRouter } from 'next/router';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { InviteCode } from 'src/components/chat/InviteCode';
 import DoneIcon from 'src/components/svgs/done.svg';
+import { useTopicState } from 'src/data/redux/topic/selector';
 
 export const InviteDialog = () => {
   const router = useRouter();
+
+  const { code } = useTopicState();
 
   const [isClosed, setIsClosed] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
@@ -18,7 +21,6 @@ export const InviteDialog = () => {
 
   const copyInvitation = async () => {
     setIsCopied(true);
-
     // 3秒間表示
     const waitSeconds = 3;
     await new Promise((resolve) => { setTimeout(() => resolve(), waitSeconds * 1000); });
@@ -34,7 +36,11 @@ export const InviteDialog = () => {
               ? (
                 <>
                   <Title>みんなを招待しましょう!</Title>
-                  <InviteCode code="1234-5678" />
+                  {code && (
+                    <InvitationCodeContainer>
+                      <InviteCode code={code} />
+                    </InvitationCodeContainer>
+                  )}
                   <ActionContainer>
                     <CloseButton onClick={() => setIsClosed(true)}>閉じる</CloseButton>
                     <CopyToClipboard text={url} onCopy={copyInvitation}>
@@ -73,23 +79,39 @@ const Container = styled.div`
 
 const Title = styled.h2`
   font-size: 16px;
+  align-self: center;
 `;
 
 const TopicLinkButton = styled.div`
-  display: flex;
-  cursor: pointer;
-  flex-direction: row;
-  background-color: #aee1e1;
   border-radius: 5px;
+  cursor: pointer;
+  color: #5b87fa;
+  display: flex;
+  flex-direction: row;
   padding: 8px 16px;
 
   & > div:first-child {
     margin-right: 8px;
   }
+  
+  :hover{
+    background-color: rgb(0,0,0,.1);
+  }
 `;
 
 const CloseButton = styled.div`
+  border-radius: 5px;
   cursor: pointer;
+  padding: 8px 16px;
+
+  :hover{
+    background-color: rgb(0,0,0,.1);
+  }
+`;
+
+const InvitationCodeContainer = styled.div`
+  padding: 0 16px;
+  margin: 8px 0;
 `;
 
 const ActionContainer = styled.div`

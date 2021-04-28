@@ -14,6 +14,8 @@ import { TopicDescription } from 'src/domain/topic/models/topicDescription';
 import { LoadDialog } from 'src/components/common/LoadDialog';
 import { TextField } from 'src/components/common/TextField';
 import { rootPath } from 'src/view/route/pagePath';
+import { topicStates } from 'src/data/redux/topic/state';
+import { ErrorDialog } from 'src/components/common/ErrorDialog';
 
 export const EditTopic = () => {
   const dispatcher = useDispatch();
@@ -21,6 +23,7 @@ export const EditTopic = () => {
   const userId = useUserSelector().uid;
   const { topicId } = useTopicState();
   const { isTopicCreated } = useTopicState();
+  const { state } = useTopicState();
 
   // タイトル
   const [title, setTitle] = useState('');
@@ -37,10 +40,15 @@ export const EditTopic = () => {
 
   useEffect(() => {
     if (topicId && isTopicCreated) {
-      navigateToTopic(topicId)
-        .then();
+      navigateToTopic(topicId).then();
     }
   }, [topicId, isTopicCreated]);
+
+  useEffect(() => {
+    if (state === topicStates.CRETE_TOPIC_ERROR) {
+      setIsTopicCreating(false);
+    }
+  }, [state]);
 
   const navigateToTopic = async (topicId: string) => {
     dispatcher(setIsTopicCreated({ isTopicCreated: true }));
@@ -75,7 +83,17 @@ export const EditTopic = () => {
 
   return (
     <>
-      {isTopicCreating && <LoadDialog message="話題を作成しています。" />}
+      {
+        isTopicCreating && <LoadDialog message="話題を作成しています。" />
+      }
+      {
+        state === topicStates.CRETE_TOPIC_ERROR && (
+          <ErrorDialog
+            message="話題の作成中にエラーが発生しました。"
+            onClose={() => { router.reload(); }}
+          />
+        )
+      }
       <Form onSubmit={handleSubmit}>
         <TextField
           title="タイトル"

@@ -15,8 +15,12 @@ const topicRepository = new FakeTopicRepository();
 const topicImageRepository = new FakeTopicImageRepository();
 const userRepository = new FakeUserRepository();
 const invitationRepository = new FakeInvitationRepository();
-// eslint-disable-next-line max-len
-const usecase: ICreateTopic = new CreateTopic(topicRepository, topicImageRepository, userRepository, invitationRepository);
+const usecase: ICreateTopic = new CreateTopic(
+  topicRepository,
+  topicImageRepository,
+  userRepository,
+  invitationRepository,
+);
 
 // Blobの実装がテストで利用できないので、一時的にundefinedを用いる。
 const thumbnail: Blob = undefined!;
@@ -46,15 +50,19 @@ test('新しいTopicを作成', async () => {
     Topic Repository     : [Topic]
     Invitation Repository: Invitation(topicId=Topic.id)
    */
-  const createdTopic = await usecase.execute(title, description, user.id, thumbnail, false);
   // 作成されたTopicを返す
-  expect(createdTopic.createdBy).toBe(user.id);
-  expect(createdTopic.title).toStrictEqual(new TopicTitle(title));
-  expect(createdTopic.description?.value).toBe(description);
+  const result = await usecase.execute(title, description, user.id, thumbnail, false);
+  expect(result.createdBy).toBe(user.id);
+  expect(result.title).toStrictEqual(new TopicTitle(title));
+  expect(result.description?.value).toBe(description);
+
   // Topic Repositoryに保存されている
-  expect(await topicRepository.find(createdTopic.id) !== undefined).not.toBeUndefined();
+  const createdTopic = await topicRepository.find(result.id);
+  expect(createdTopic).not.toBeUndefined();
+
   // 招待コードが生成されている
-  expect(invitationRepository.findInvitationCodeByTopicId(createdTopic.id)).not.toBeNull();
+  const createdCode = await invitationRepository.findInvitationCodeByTopicId(result.id);
+  expect(createdCode).not.toBeNull();
 });
 
 test('登録されたユーザーのみが作成可能', async () => {

@@ -1,21 +1,21 @@
 import React from 'react';
+import { InvitationCode } from 'src/domain/topic/models/invitationCode';
 import styled from 'styled-components';
 
 type Props = {
-  code: string
+  code: number[]
 }
 
 export const InviteCode = ({ code }: Props) => (
   <Container>
     <Title>招待コード</Title>
-    <Code>{code}</Code>
+    <Code>{new InvitationCode(code).formatCode}</Code>
   </Container>
 );
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  margin: 16px 0;
 `;
 
 const Title = styled.div`
@@ -23,5 +23,5 @@ const Title = styled.div`
 `;
 
 const Code = styled.div`
-  font-size: 24px;
+  font-size: 32px;
 `;
