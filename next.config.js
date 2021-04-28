@@ -1,5 +1,4 @@
-require('dotenv')
-  .config();
+require('dotenv').config();
 module.exports = {
   env: {
     API_KEY: process.env.API_KEY,
@@ -18,6 +17,9 @@ module.exports = {
     GET_USER_INFO_API_URL: process.env.GET_USER_INFO_API_URL,
     OAUTH_GOOGLE_LOGIN_URL: process.env.OAUTH_GOOGLE_LOGIN_URL,
     OAUTH_GOOGLE_LOGIN_RESULT_URL: process.env.OAUTH_GOOGLE_LOGIN_RESULT_URL,
+    CREATE_INVITATION_API_URL: process.env.CREATE_INVITATION_API_URL,
+    INVITATION_TOPIC_API_URL: process.env.INVITATION_TOPIC_API_URL,
+
   },
   images: {
     domains: ['firebasestorage.googleapis.com']
