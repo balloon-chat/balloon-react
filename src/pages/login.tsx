@@ -9,10 +9,9 @@ import { isInnerPath, pageTitle, rootPath } from 'src/view/route/pagePath';
 import { LoadDialog } from 'src/components/common/LoadDialog';
 import { LoginStates } from 'src/data/redux/user/state';
 import Head from 'next/head';
-import { Dialog } from 'src/components/common/Dialog';
-import { Button } from 'src/components/common/Button';
 import { GetServerSideProps } from 'next';
 import { AuthService } from 'src/domain/auth/service/AuthService';
+import { ErrorDialog } from 'src/components/common/ErrorDialog';
 
 type Props = {
   accessToken: string | null,
@@ -67,12 +66,10 @@ const LoginPage = ({ accessToken, authorized, newUser }: Props) => {
       }
       {
         loginState === LoginStates.LOGIN_ERROR && (
-          <Dialog onClose={resetLoginPageState}>
-            <ErrorDialogContainer>
-              <div>ログイン中にエラーが発生しました。</div>
-              <Button onClick={resetLoginPageState}>閉じる</Button>
-            </ErrorDialogContainer>
-          </Dialog>
+          <ErrorDialog
+            message="ログイン中にエラーが発生しました。"
+            onClose={resetLoginPageState}
+          />
         )
       }
       <Container>
@@ -88,15 +85,6 @@ const Container = styled.div`
   display: flex;
   height: 100%;
   justify-content: center;
-`;
-
-const ErrorDialogContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-
-  & ${Button} {
-    margin-top: 32px;
-  }
 `;
 
 export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
