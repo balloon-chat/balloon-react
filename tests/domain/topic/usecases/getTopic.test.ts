@@ -106,9 +106,9 @@ test('プライベートなTopicを取得', async () => {
   Expected: Topic(private)
    */
   const result = await usecase.execute(privateTopic.id);
-  expect(result).toStrictEqual(TopicDataFactory.create(
-    privateTopic,
-    0,
-    user,
-  ));
+  expect(result).toStrictEqual(TopicDataFactory.create({
+    topic: privateTopic,
+    commentCount: 0,
+    createdBy: user,
+  }));
 });

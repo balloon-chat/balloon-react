@@ -240,11 +240,11 @@ describe('公開されているTopicのみを取得', () => {
     const results = await usecase.execute(50);
     expect(results)
       .toStrictEqual([
-        TopicDataFactory.create(
-          publicTopic,
-          0,
-          user,
-        ),
+        TopicDataFactory.create({
+          topic: publicTopic,
+          commentCount: 0,
+          createdBy: user,
+        }),
       ]);
   });
 });

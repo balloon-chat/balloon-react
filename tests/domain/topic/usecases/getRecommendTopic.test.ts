@@ -60,11 +60,12 @@ test('おすすめの話題を取得する', async () => {
      return: [Topic]
    */
   const result = await usecase.execute();
-  expect(result)
-    .not
-    .toBeUndefined();
-  expect(result?.pickups[0])
-    .toStrictEqual(TopicDataFactory.create(topic, 1, user));
+  expect(result).not.toBeUndefined();
+  expect(result?.pickups[0]).toStrictEqual(TopicDataFactory.create({
+    topic,
+    commentCount: 1,
+    createdBy: user,
+  }));
 });
 
 test('おすすめの話題が作成されていないとき', async () => {
@@ -114,9 +115,10 @@ test('話題が存在しないとき', async () => {
     return: Topic1
    */
   const result = await usecase.execute();
-  expect(result)
-    .not
-    .toBeUndefined();
-  expect(result?.pickups[0])
-    .toStrictEqual(TopicDataFactory.create(topic1, 0, user));
+  expect(result).not.toBeUndefined();
+  expect(result?.pickups[0]).toStrictEqual(TopicDataFactory.create({
+    topic: topic1,
+    commentCount: 0,
+    createdBy: user,
+  }));
 });

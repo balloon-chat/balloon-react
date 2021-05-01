@@ -48,11 +48,11 @@ test('指定したユーザーが作成したトピックを取得', async () =>
   await topicRepository.save(TopicEntity.from(topicB));
 
   const results = await usecase.execute(userA.id.value);
-  const expected: TopicData = TopicDataFactory.create(
-    topicA,
-    0,
-    userA,
-  );
+  const expected: TopicData = TopicDataFactory.create({
+    topic: topicA,
+    commentCount: 0,
+    createdBy: userA,
+  });
   expect(results)
     .toStrictEqual([expected]);
 });
@@ -121,8 +121,8 @@ describe('プライベートな話題を取得', () => {
     const results = await usecase.execute(user.id.value, user.loginId!);
     expect(results)
       .toStrictEqual([
-        TopicDataFactory.create(publicTopic, 0, user),
-        TopicDataFactory.create(privateTopic, 0, user),
+        TopicDataFactory.create({ topic: publicTopic, commentCount: 0, createdBy: user }),
+        TopicDataFactory.create({ topic: privateTopic, commentCount: 0, createdBy: user }),
       ]);
   });
 
@@ -143,7 +143,7 @@ describe('プライベートな話題を取得', () => {
      */
     const results = await usecase.execute(user.id.value, 'other user');
     expect(results).toStrictEqual([
-      TopicDataFactory.create(publicTopic, 0, user),
+      TopicDataFactory.create({ topic: publicTopic, commentCount: 0, createdBy: user }),
     ]);
   });
 });
@@ -181,8 +181,8 @@ describe('プライベートな話題を取得', () => {
     const results = await usecase.execute(user.id.value, user.loginId!);
     expect(results)
       .toStrictEqual([
-        TopicDataFactory.create(publicTopic, 0, user),
-        TopicDataFactory.create(privateTopic, 0, user),
+        TopicDataFactory.create({ topic: publicTopic, commentCount: 0, createdBy: user }),
+        TopicDataFactory.create({ topic: privateTopic, commentCount: 0, createdBy: user }),
       ]);
   });
 
@@ -204,7 +204,7 @@ describe('プライベートな話題を取得', () => {
     const results = await usecase.execute(user.id.value, 'other user');
     expect(results)
       .toStrictEqual([
-        TopicDataFactory.create(publicTopic, 0, user),
+        TopicDataFactory.create({ topic: publicTopic, commentCount: 0, createdBy: user }),
       ]);
   });
 });
