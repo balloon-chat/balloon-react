@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { TopicState, topicStateName, topicStates } from 'src/data/redux/topic/state';
 import {
+  resetTopicStateReducer,
   setInvitationCodeReducer,
   setIsTopicCreatedReducer,
   setTopicIdReducer,
@@ -9,6 +10,7 @@ import {
 import {
   createTopic,
   fetchTopic,
+  fetchTopicByCode,
   fetchTopicsCreatedBy,
   fetchTopicsFrom,
 } from 'src/data/redux/topic/action';
@@ -29,6 +31,7 @@ const topicSlice = createSlice({
     setInvitationCode: setInvitationCodeReducer,
     setTopicId: setTopicIdReducer,
     setTopics: setTopicsReducer,
+    resetTopicState: resetTopicStateReducer,
   },
   extraReducers: (builder) => {
     builder
@@ -53,9 +56,24 @@ const topicSlice = createSlice({
       .addCase(fetchTopicsCreatedBy.fulfilled, (state, { payload }) => ({
         ...state,
         topics: payload.topics,
+      }))
+      .addCase(fetchTopicByCode.rejected, (state) => ({
+        ...state,
+        state: topicStates.CANNOT_FIND_BY_CODE,
+      }))
+      .addCase(fetchTopicByCode.fulfilled, (state, { payload }) => ({
+        ...state,
+        topicId: payload.topicId,
+        state: payload.topicId ? topicStates.TOPIC_FOUND : topicStates.CANNOT_FIND_BY_CODE,
       }));
   },
 });
 
-export const { setIsTopicCreated, setInvitationCode, setTopicId, setTopics } = topicSlice.actions;
+export const {
+  setIsTopicCreated,
+  setInvitationCode,
+  setTopicId,
+  setTopics,
+  resetTopicState,
+} = topicSlice.actions;
 export const topicReducer = topicSlice.reducer;
