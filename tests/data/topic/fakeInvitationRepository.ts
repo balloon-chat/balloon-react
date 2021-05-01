@@ -9,7 +9,9 @@ export class FakeInvitationRepository implements IInvitationRepository {
   private readonly repository = new FakeBaseRepository<string, Entity>();
 
   async createInvitation(topicId: TopicId):Promise< InvitationCode | null> {
-    const code = new Array(8).map(() => Math.round(Math.random() * 10));
+    const code = new Array(InvitationCode.codeLength)
+      .fill(0)
+      .map(() => Math.round(Math.random() * 9));
     const invitationCode = new InvitationCode(code);
     this.repository.save(topicId.value, { topicId, invitationCode });
     return invitationCode;
@@ -18,7 +20,7 @@ export class FakeInvitationRepository implements IInvitationRepository {
   async findTopicIdByInvitationCode(code: InvitationCode): Promise<TopicId | null> {
     let topicId: TopicId|null = null;
     await this.repository.findAll().forEach((e) => {
-      if (e.invitationCode.code === code.code) {
+      if (e.invitationCode.isEqual(code)) {
         topicId = e.topicId;
       }
     });

@@ -1,6 +1,8 @@
 import assert from 'assert';
 
 export class InvitationCode {
+  static codeLength = 8;
+
   constructor(readonly code: number[]) {
     assert(code.length >= 2);
   }
@@ -21,5 +23,10 @@ export class InvitationCode {
       .join('');
 
     return `${codeLeft}-${codeRight}`;
+  }
+
+  isEqual(other: InvitationCode): boolean {
+    if (this.code.length !== other.code.length) return false;
+    return this.code.every((c, i) => c === other.code[i]);
   }
 }

@@ -30,11 +30,15 @@ import { IGetTopicsCreatedBy } from 'src/domain/topic/types/getTopicsCreatedBy';
 import { GetTopicsCreatedBy } from 'src/domain/topic/usecases/getTopicsCreatedBy';
 import { IInvitationRepository } from 'src/domain/topic/repository/invitationRepository';
 import { InvitationApi } from 'src/data/api/topic/InvitationApi';
+import { IGetTopicByInvitationCode } from 'src/domain/topic/types/getTopicByInvitationCode';
+import { GetTopicByInvitationCode } from 'src/domain/topic/usecases/getTopicByInvitationCode';
 
 export class TopicService {
   private readonly createTopicUsecase: ICreateTopic;
 
   private readonly getTopicUsecase: IGetTopic;
+
+  private readonly getTopicByInvitationCodeUsecase: IGetTopicByInvitationCode;
 
   private readonly getTopicsUsecase: IGetTopics;
 
@@ -66,6 +70,10 @@ export class TopicService {
       messageRepository,
       topicRepository,
       userRepository,
+    );
+    this.getTopicByInvitationCodeUsecase = new GetTopicByInvitationCode(
+      invitationRepository,
+      this.getTopicUsecase,
     );
     this.getTopicsUsecase = new GetTopics(
       messageRepository,
@@ -101,6 +109,10 @@ export class TopicService {
 
   fetchTopic(topicId: string): Promise<TopicData | undefined> {
     return this.getTopicUsecase.execute(new TopicId(topicId));
+  }
+
+  async fetchTopicFromCode(code: number[] | string): Promise<TopicData | undefined> {
+    return this.getTopicByInvitationCodeUsecase.execute(code);
   }
 
   fetchTopics(limit: number, from?: string): Promise<TopicData[]> {
