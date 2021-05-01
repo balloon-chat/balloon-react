@@ -27,6 +27,10 @@ export const InviteDialog = () => {
     setIsClosed(true);
   };
 
+  if (!code) {
+    return <></>;
+  }
+
   return (
     <>
       {!isClosed && (
