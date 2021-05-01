@@ -22,7 +22,7 @@ export class InvitationApi implements IInvitationRepository {
   async findTopicIdByInvitationCode(code: InvitationCode): Promise<TopicId | null> {
     try {
       const res = await axios.post<any, AxiosResponse<{ topicId: string }>>(
-        process.env.CREATE_INVITATION_API_URL!,
+        process.env.INVITATION_TOPIC_API_URL!,
         { code: code.code },
       );
 
