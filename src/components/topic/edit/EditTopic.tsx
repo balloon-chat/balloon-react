@@ -127,7 +127,7 @@ export const EditTopic = () => {
           />
           <CheckInputBody>
             <CheckInputTitle>秘密の話題</CheckInputTitle>
-            <CheckInputDescription>URLを知っているユーザーのみが話題に参加することができます。</CheckInputDescription>
+            <CheckInputDescription>URLまたは招待コードを知っているユーザーのみが話題に参加することができます。</CheckInputDescription>
           </CheckInputBody>
         </CheckInputRow>
         <CreateButton>作成</CreateButton>
