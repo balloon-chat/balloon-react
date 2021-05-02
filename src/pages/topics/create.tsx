@@ -4,17 +4,25 @@ import React from 'react';
 import { ContainerCard } from 'src/components/common/ContainerCard';
 import styled from 'styled-components';
 import 'firebase/auth';
-import { useUser } from 'src/view/lib/useUser';
-import { LoadDialog } from 'src/components/common/LoadDialog';
 import { pageTitle, rootPath } from 'src/view/route/pagePath';
 import { BottomNavigation } from 'src/components/navbar/bottomNavigation/BottomNavigation';
 import Head from 'next/head';
+import { GetServerSideProps } from 'next';
+import { UserService } from 'src/domain/user/service/userService';
+import { useRouter } from 'next/router';
 
-const CreateTopicPage = () => {
-  const { user } = useUser({ returnTo: rootPath.topicPath.create });
+type Props = {
+  isLoggedIn: boolean,
+}
 
-  if (!user) {
-    return <LoadDialog message="ログイン状況を確認しています。" />;
+const CreateTopicPage = ({ isLoggedIn }: Props) => {
+  const router = useRouter();
+  if (!isLoggedIn) {
+    router.push({
+      pathname: rootPath.login,
+      query: { return_to: rootPath.topicPath.create },
+    }).then();
+    return (<></>);
   }
 
   return (
@@ -39,5 +47,23 @@ const Body = styled.div`
   width: 100%;
   padding-top: 16px;
 `;
+
+export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
+  const service = new UserService();
+  try {
+    const userInfo = await service.getUserInfo(context.req.headers.cookie);
+    return {
+      props: {
+        isLoggedIn: userInfo.loginId !== undefined,
+      },
+    };
+  } catch (e) {
+    return {
+      props: {
+        isLoggedIn: false,
+      },
+    };
+  }
+};
 
 export default CreateTopicPage;
