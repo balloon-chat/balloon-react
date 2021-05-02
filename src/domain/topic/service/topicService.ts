@@ -28,11 +28,17 @@ import { RecommendTopics } from 'src/domain/topic/models/recommendTopics';
 import { IGetTopic } from 'src/domain/topic/types/getTopic';
 import { IGetTopicsCreatedBy } from 'src/domain/topic/types/getTopicsCreatedBy';
 import { GetTopicsCreatedBy } from 'src/domain/topic/usecases/getTopicsCreatedBy';
+import { IInvitationRepository } from 'src/domain/topic/repository/invitationRepository';
+import { InvitationApi } from 'src/data/api/topic/InvitationApi';
+import { IGetTopicByInvitationCode } from 'src/domain/topic/types/getTopicByInvitationCode';
+import { GetTopicByInvitationCode } from 'src/domain/topic/usecases/getTopicByInvitationCode';
 
 export class TopicService {
   private readonly createTopicUsecase: ICreateTopic;
 
   private readonly getTopicUsecase: IGetTopic;
+
+  private readonly getTopicByInvitationCodeUsecase: IGetTopicByInvitationCode;
 
   private readonly getTopicsUsecase: IGetTopics;
 
@@ -51,16 +57,23 @@ export class TopicService {
     = new MessageRepository(FirebaseMessageDatabase.instance),
     userRepository: IUserRepository
     = new UserRepository(FirebaseUserDatabase.instance),
+    private readonly invitationRepository: IInvitationRepository
+    = new InvitationApi(),
   ) {
     this.createTopicUsecase = new CreateTopic(
       topicRepository,
       topicImageRepository,
       userRepository,
+      invitationRepository,
     );
     this.getTopicUsecase = new GetTopic(
       messageRepository,
       topicRepository,
       userRepository,
+    );
+    this.getTopicByInvitationCodeUsecase = new GetTopicByInvitationCode(
+      invitationRepository,
+      this.getTopicUsecase,
     );
     this.getTopicsUsecase = new GetTopics(
       messageRepository,
@@ -98,6 +111,10 @@ export class TopicService {
     return this.getTopicUsecase.execute(new TopicId(topicId));
   }
 
+  async fetchTopicFromCode(code: number[] | string): Promise<TopicData | undefined> {
+    return this.getTopicByInvitationCodeUsecase.execute(code);
+  }
+
   fetchTopics(limit: number, from?: string): Promise<TopicData[]> {
     return this.getTopicsUsecase.execute(
       limit,
@@ -115,5 +132,15 @@ export class TopicService {
 
   fetchRecommendTopics(): Promise<RecommendTopics | undefined> {
     return this.getRecommendTopicsUsecase.execute();
+  }
+
+  async fetchInvitationCode(topicId: string): Promise<number[] | null> {
+    try {
+      const code = await this.invitationRepository
+        .findInvitationCodeByTopicId(new TopicId(topicId));
+      return code?.code ?? null;
+    } catch (e) {
+      return null;
+    }
   }
 }

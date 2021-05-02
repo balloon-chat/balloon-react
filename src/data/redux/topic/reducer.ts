@@ -1,5 +1,11 @@
 import { CaseReducer } from '@reduxjs/toolkit';
-import { SetIsTopicCreated, SetTopicId, SetTopics } from 'src/data/redux/topic/action';
+import {
+  ResetTopicState,
+  SetInvitationCode,
+  SetIsTopicCreated,
+  SetTopicId,
+  SetTopics,
+} from 'src/data/redux/topic/action';
 import { TopicState } from 'src/data/redux/topic/state';
 
 export const setIsTopicCreatedReducer: CaseReducer<
@@ -9,6 +15,13 @@ export const setIsTopicCreatedReducer: CaseReducer<
   ...state,
   isTopicCreated: payload.isTopicCreated,
 } as const);
+
+export const resetTopicStateReducer: CaseReducer<TopicState, ResetTopicState> = (
+  state,
+) => ({
+  ...state,
+  state: undefined,
+});
 
 export const setTopicIdReducer: CaseReducer<TopicState, SetTopicId> = (
   state,
@@ -24,4 +37,12 @@ export const setTopicsReducer: CaseReducer<TopicState, SetTopics> = (
 ) => ({
   ...state,
   topics: payload.topics,
+});
+
+export const setInvitationCodeReducer: CaseReducer<TopicState, SetInvitationCode> = (
+  state,
+  { payload },
+) => ({
+  ...state,
+  code: payload.code,
 });

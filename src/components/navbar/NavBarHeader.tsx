@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { rootPath } from 'src/view/route/pagePath';
 import { mediaQuery } from 'src/components/constants/mediaQuery';
 import SpeechBalloon from 'src/components/svgs/speech_balloon.svg';
+import EditIcon from 'src/components/svgs/edit_fill.svg';
 
 export const NavBarHeader = () => (
   <Container>
@@ -20,16 +21,24 @@ export const NavBarHeader = () => (
       </RollingTitleWrapper>
       <Title>をもっと面白く。</Title>
     </TitleRow>
-    <Link href={rootPath.topicPath.create}>
-      <CreateTopicButton>
-        <SpeechBalloon width={32} height={32} fill="white" />
-        <span>話題を作る</span>
-      </CreateTopicButton>
-    </Link>
+    <ActionsRow>
+      <Link href={rootPath.topicPath.create}>
+        <CreateTopicButton>
+          <EditIcon width={32} height={32} fill="white" />
+          <span>話題を作る</span>
+        </CreateTopicButton>
+      </Link>
+      <Link href={rootPath.topicPath.index}>
+        <JoinTopicButton>
+          <SpeechBalloon width={32} height={32} fill="white" />
+          <span>話題に参加する</span>
+        </JoinTopicButton>
+      </Link>
+    </ActionsRow>
   </Container>
 );
 
-export const Container = styled.div`
+const Container = styled.div`
   align-items: center;
   box-sizing: border-box;
   background-color: white;
@@ -53,6 +62,7 @@ export const TitleRow = styled.div`
 
 export const Title = styled.h1`
   font-weight: normal;
+  margin-left: 4px;
 `;
 
 const RollingTitleSpacer = styled.h1`
@@ -110,14 +120,6 @@ const RollingTitle = styled(RollingTitleSpacer)`
 export const RollingTitleWrapper = styled.div`
   position: relative;
   white-space: nowrap;
-
-  & ${RollingTitleSpacer}:before {
-    content: '「 ';
-  }
-
-  & ${RollingTitleSpacer}:after {
-    content: ' 」';
-  }
 `;
 
 export const RollingTitleContainer = styled.div`
@@ -141,10 +143,9 @@ export const RollingTitleContainer = styled.div`
   }
 `;
 
-export const CreateTopicButton = styled.button`
+export const ActionButton = styled.button`
   align-items: center;
   box-sizing: border-box;
-  background-color: #78c4d4;
   border: none;
   border-radius: 50px;
   display: flex;
@@ -152,11 +153,11 @@ export const CreateTopicButton = styled.button`
   cursor: pointer;
   font-size: 20px;
   font-weight: bold;
-  max-width: 500px;
+  flex: 1;
   justify-content: center;
   outline: none;
   padding: 4px;
-  width: 100%;
+  white-space: nowrap;
 
   & > span {
     margin-left: 16px;
@@ -169,5 +170,37 @@ export const CreateTopicButton = styled.button`
   @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
     font-size: 24px;
     padding: 8px 32px;
+  }
+`;
+
+const CreateTopicButton = styled(ActionButton)`
+  background-color: #78c4d4;
+`;
+
+const JoinTopicButton = styled(ActionButton)`
+  background-color: #fa9905;  
+`;
+
+const ActionsRow = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  width: 100%;
+  max-width: 700px;
+  
+  & ${ActionButton} {
+    margin-top: 16px;
+  }
+
+  @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
+    flex-direction: row;
+    
+    & ${CreateTopicButton} {
+      margin-right: 8px;
+    }
+    
+    & ${JoinTopicButton} {
+      margin-left: 8px;
+    }
   }
 `;
