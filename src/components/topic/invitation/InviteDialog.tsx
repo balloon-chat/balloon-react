@@ -14,10 +14,20 @@ export const InviteDialog = () => {
   const [isClosed, setIsClosed] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   const [url, setUrl] = useState('');
+  const [invitationMessage, setInvitationMessage] = useState('');
 
   useEffect(() => {
     setUrl(`${process.env.BASE_URL}${router.asPath}`);
   }, []);
+
+  useEffect(() => {
+    setInvitationMessage(`
+    あなたを『おもちゃっと』に招待します！
+    
+    招待リンク: ${url}
+    招待コード: 0063 - 4954
+    `);
+  }, [url]);
 
   const copyInvitation = async () => {
     setIsCopied(true);
@@ -47,7 +57,7 @@ export const InviteDialog = () => {
                   )}
                   <ActionContainer>
                     <CloseButton onClick={() => setIsClosed(true)}>閉じる</CloseButton>
-                    <CopyToClipboard text={url} onCopy={copyInvitation}>
+                    <CopyToClipboard text={invitationMessage} onCopy={copyInvitation}>
                       <TopicLinkButton>招待をコピー</TopicLinkButton>
                     </CopyToClipboard>
                   </ActionContainer>
