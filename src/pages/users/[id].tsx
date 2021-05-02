@@ -14,6 +14,7 @@ import { UserService } from 'src/domain/user/service/userService';
 import { UserEntity } from 'src/view/types/user';
 import { pageTitle } from 'src/view/route/pagePath';
 import Head from 'next/head';
+import { AuthService } from 'src/domain/auth/service/AuthService';
 
 type Props = {
   user: UserEntity | null
@@ -114,7 +115,8 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
 
   let loginId: string|undefined;
   try {
-    const result = await userService.getUserInfo(context.req.headers.cookie);
+    const authService = new AuthService();
+    const result = await authService.getUserInfo(context.req.headers.cookie);
     loginId = result.loginId;
   } catch (e) {
     console.error(e);

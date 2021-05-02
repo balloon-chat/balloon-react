@@ -105,4 +105,27 @@ export class AuthService {
       { withCredentials: true },
     );
   }
+
+  // eslint-disable-next-line class-methods-use-this
+  async getUserInfo(cookie: string | undefined): Promise<{ loginId: string | undefined }> {
+    if (!cookie) return { loginId: undefined };
+
+    try {
+      const { data } = await axios.get<{ loginId: string }>(
+        process.env.GET_USER_INFO_API_URL!,
+        {
+          withCredentials: true,
+          headers: {
+            cookie,
+          },
+        },
+      );
+
+      return { loginId: data.loginId } as const;
+    } catch (e) {
+      return {
+        loginId: undefined,
+      };
+    }
+  }
 }
