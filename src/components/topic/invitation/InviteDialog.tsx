@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import { InviteCode } from 'src/components/chat/InviteCode';
+import { InviteCode } from 'src/components/topic/invitation/InviteCode';
 import DoneIcon from 'src/components/svgs/done.svg';
 import { useTopicState } from 'src/data/redux/topic/selector';
 
