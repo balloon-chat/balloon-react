@@ -27,38 +27,38 @@ export class AuthService {
 
   // eslint-disable-next-line class-methods-use-this
   async getOauthResult(cookie?: string): Promise<OauthResult> {
-    const result = await axios.get<{
-      accessToken?: string,
-      name?: string,
-      photoUrl?: string,
-      newUser?: boolean
-    }>(
-      process.env.OAUTH_GOOGLE_LOGIN_RESULT_URL!,
-      {
-        withCredentials: true,
-        headers: {
-          cookie: cookie ?? '',
+    try {
+      const result = await axios.get<{
+        accessToken?: string,
+        name?: string,
+        photoUrl?: string,
+        newUser?: boolean
+      }>(
+        process.env.OAUTH_GOOGLE_LOGIN_RESULT_URL!,
+        {
+          withCredentials: true,
+          headers: {
+            cookie: cookie ?? '',
+          },
         },
-      },
-    );
+      );
 
-    if (result.status === 401) {
+      return {
+        accessToken: result.data.accessToken ?? null,
+        name: result.data.name ?? null,
+        photoUrl: result.data.photoUrl ?? null,
+        newUser: result.data.newUser ?? null,
+        authorized: result.status === 200,
+      };
+    } catch (e) {
       return {
         accessToken: null,
         name: null,
         photoUrl: null,
         newUser: null,
         authorized: false,
-      };
+      } as const;
     }
-
-    return {
-      accessToken: result.data.accessToken ?? null,
-      name: result.data.name ?? null,
-      photoUrl: result.data.photoUrl ?? null,
-      newUser: result.data.newUser ?? null,
-      authorized: result.status === 200,
-    };
   }
 
   /**
@@ -78,32 +78,36 @@ export class AuthService {
   }
 
   async createSession(idToken: string, uid: string): Promise<UserEntity | null> {
-    const response = await axios.post(
-      process.env.SESSION_LOGIN_API_URL!,
-      { idToken },
-      { withCredentials: true },
-    );
+    try {
+      await axios.post(
+        process.env.SESSION_LOGIN_API_URL!,
+        { idToken },
+        { withCredentials: true },
+      );
 
-    if (response.status !== 200) {
+      const loginUser = await this.getUserByLoginIdUsecase.execute(uid);
+      if (!loginUser) return null;
+
+      return UserEntityFactory.create(loginUser);
+    } catch (e) {
       return null;
     }
-
-    const loginUser = await this.getUserByLoginIdUsecase.execute(uid);
-    if (!loginUser) return null;
-
-    return UserEntityFactory.create(loginUser);
   }
 
   // eslint-disable-next-line class-methods-use-this
   async logout(): Promise<void> {
     // Firebaseからログアウト
     await firebase.auth().signOut();
-    // セッションを削除
-    await axios.post(
-      process.env.SESSION_LOGOUT_API_URL!,
-      {},
-      { withCredentials: true },
-    );
+    try {
+      // セッションを削除
+      await axios.post(
+        process.env.SESSION_LOGOUT_API_URL!,
+        {},
+        { withCredentials: true },
+      );
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   // eslint-disable-next-line class-methods-use-this
