@@ -13,7 +13,6 @@ export class InvitationApi implements IInvitationRepository {
       );
       return new InvitationCode(res.data.code);
     } catch (e) {
-      console.error(e);
       return null;
     }
   }
@@ -28,7 +27,6 @@ export class InvitationApi implements IInvitationRepository {
 
       return new TopicId(res.data.topicId);
     } catch (e) {
-      console.error(e);
       return null;
     }
   }
@@ -43,7 +41,6 @@ export class InvitationApi implements IInvitationRepository {
 
       return new InvitationCode(res.data.code);
     } catch (e) {
-      console.error(e);
       return null;
     }
   }
