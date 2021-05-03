@@ -45,7 +45,7 @@ export const Canvas: React.FC = () => {
       canvasParentRef.clientHeight,
     );
     renderer.parent(canvasParentRef);
-
+    controller.setMouseEventHandler(canvasParentRef);
     controller.run();
   };
 
