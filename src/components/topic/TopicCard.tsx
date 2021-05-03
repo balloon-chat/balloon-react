@@ -4,6 +4,7 @@ import { TopicEntity } from 'src/view/types/topic';
 import Image from 'next/image';
 import { dateFormat } from 'src/view/util/format';
 import React from 'react';
+import Link from 'next/link';
 
 export const TopicCard: React.FC<TopicEntity> = ({
   id,
@@ -15,22 +16,24 @@ export const TopicCard: React.FC<TopicEntity> = ({
   commentCount,
 }) => (
   <Card>
-    <Container href={topicPath.topic(id)}>
-      <Thumbnail>
-        <ThumbnailImageContainer>
-          <Image src={thumbnailUrl} layout="fill" objectFit="cover" />
-        </ThumbnailImageContainer>
-        {label && <Label labelColor={label.color}>{label.title}</Label>}
-      </Thumbnail>
-      <TopicInformation>
-        <TopicTitle>{title}</TopicTitle>
-        {description && <TopicDescription>{description}</TopicDescription>}
-        <TopicFooter>
-          <div>{`${commentCount}件のコメント`}</div>
-          <TimeStamp>{dateFormat(new Date(createdAt), '.')}</TimeStamp>
-        </TopicFooter>
-      </TopicInformation>
-    </Container>
+    <Link href={topicPath.topic(id)}>
+      <Container>
+        <Thumbnail>
+          <ThumbnailImageContainer>
+            <Image src={thumbnailUrl} layout="fill" objectFit="cover" />
+          </ThumbnailImageContainer>
+          {label && <Label labelColor={label.color}>{label.title}</Label>}
+        </Thumbnail>
+        <TopicInformation>
+          <TopicTitle>{title}</TopicTitle>
+          {description && <TopicDescription>{description}</TopicDescription>}
+          <TopicFooter>
+            <div>{`${commentCount}件のコメント`}</div>
+            <TimeStamp>{dateFormat(new Date(createdAt), '.')}</TimeStamp>
+          </TopicFooter>
+        </TopicInformation>
+      </Container>
+    </Link>
   </Card>
 );
 

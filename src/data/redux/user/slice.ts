@@ -29,7 +29,7 @@ const userSlice = createSlice({
       .addCase(login.fulfilled, (state, { payload }) => ({
         ...state,
         ...payload.user,
-        loginState: payload.user != null ? LoginStates.LOGGED_IN : LoginStates.USER_NOF_FOUND,
+        loginState: payload.user != null ? LoginStates.LOGGED_IN : LoginStates.USER_NOT_FOUND,
       }))
       .addCase(logout.rejected, (state) => ({
         ...state,

@@ -8,22 +8,22 @@ export type UserState = {
 };
 
 export const LoginStates = {
-  LOGGED_IN: 'logged in',
+  LOGGED_IN: 'LOGGED_IN',
 
-  NOT_LOGGED_IN: 'not logged in',
+  NOT_LOGGED_IN: 'NOT_LOGGED_IN',
 
   // ユーザーが登録しているかどうかを確認中
-  FINDING: 'checking',
+  FINDING: 'FINDING',
 
   // Googleログインには成功したが、ユーザーが登録されていない
-  USER_NOF_FOUND: 'not found',
+  USER_NOT_FOUND: 'USER_NOT_FOUND',
 
   // ユーザーを登録中
-  CREATING: 'creating',
+  CREATING: 'CREATING',
 
-  LOGIN_ERROR: 'login_error',
+  LOGIN_ERROR: 'LOGIN_ERROR',
 
-  LOGOUT_ERROR: 'logout_error',
+  LOGOUT_ERROR: 'LOGOUT_ERROR',
 } as const;
 
 type LoginState = typeof LoginStates[keyof typeof LoginStates];
