@@ -5,6 +5,7 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 import { InviteCode } from 'src/components/topic/invitation/InviteCode';
 import DoneIcon from 'src/components/svgs/done.svg';
 import { useTopicState } from 'src/data/redux/topic/selector';
+import { mediaQuery } from 'src/components/constants/mediaQuery';
 
 export const InviteDialog = () => {
   const router = useRouter();
@@ -77,23 +78,30 @@ export const InviteDialog = () => {
 };
 
 const Container = styled.div`
+  box-sizing: border-box;
   align-items: start;
   border: #ccc solid 1px;
   background-color: white;
   border-radius: 5px;
   display: flex;
   flex-direction: column;
-  padding: 16px 32px;
+  padding: 16px;
   transition: all 0.2s ease-out 0s;
   z-index: 2000;
   position: absolute;
   bottom: 16px;
   right: 16px;
+  left: 16px;
+
+  @media screen and (min-width: ${mediaQuery.mobile.landscape}px) {
+    padding: 16px 32px;
+    left: auto;
+  }
 `;
 
 const Title = styled.h2`
   font-size: 16px;
-  align-self: center;
+  align-self: start;
 `;
 
 const TopicLinkButton = styled.div`
@@ -104,7 +112,7 @@ const TopicLinkButton = styled.div`
   flex-direction: row;
   padding: 8px 16px;
 
-  & > div:first-child {
+  & > button:first-child {
     margin-right: 8px;
   }
   
@@ -113,7 +121,17 @@ const TopicLinkButton = styled.div`
   }
 `;
 
-const CloseButton = styled.div`
+const ActionContainer = styled.div`
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+
+  & > div:first-child {
+    margin-right: 16px;
+  }
+`;
+
+const CloseButton = styled.button`
   border-radius: 5px;
   cursor: pointer;
   padding: 8px 16px;
@@ -124,17 +142,7 @@ const CloseButton = styled.div`
 `;
 
 const InvitationCodeContainer = styled.div`
-  padding: 0 16px;
   margin: 8px 0;
-`;
-
-const ActionContainer = styled.div`
-  display: flex;
-  align-items: center;
-
-  & > div:first-child {
-    margin-right: 16px;
-  }
 `;
 
 const DoneContainer = styled.div`

@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { sendMessage as sendMessageAction } from 'src/data/redux/message/action';
 import { useTopicState } from 'src/data/redux/topic/selector';
 import { useUserSelector } from 'src/data/redux/user/selector';
+import { mediaQuery } from 'src/components/constants/mediaQuery';
 
 export const MessageField = () => {
   const dispatcher = useDispatch();
@@ -54,20 +55,21 @@ const TextFieldContainer = styled.div`
   border: rgba(0, 0, 0, 0.2) solid 1px;
   border-radius: 8px;
   box-shadow: black;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
   position: relative;
   width: 100%;
+
+  @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
+    margin-bottom: 24px;
+  }
 `;
 
-const TextFieldCommon = styled.div`
-  padding: 8px;
-`;
-
-const TextField = styled(TextFieldCommon)`
+const TextField = styled.div`
   outline: none;
   white-space: pre-wrap;
   overflow-wrap: break-word;
   -webkit-user-modify: read-write-plaintext-only;
+  padding: 8px;
   
   :empty:before {
     color: #72767d;
