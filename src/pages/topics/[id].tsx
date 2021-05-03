@@ -25,14 +25,23 @@ type Props = {
 
 const TopicPage = ({ topic, code }: Props) => {
   const dispatcher = useDispatch();
-  const { loginState } = useUserSelector();
+  const { uid, loginState } = useUserSelector();
   const { topicId } = useTopicState();
 
   useEffect(() => {
     dispatcher(setTopicId({ topicId: topic?.id ?? null }));
     dispatcher(setInvitationCode({ code }));
+
+    return () => {
+      // reset current state
+      dispatcher(setTopicId({ topicId: null }));
+      dispatcher(setInvitationCode({ code: null }));
+    };
+  }, [loginState]);
+
+  useEffect(() => {
     // ユーザーが未ログイン時は、一時的なIDを付与する
-    if (loginState === LoginStates.NOT_LOGGED_IN) {
+    if (!uid && loginState === LoginStates.NOT_LOGGED_IN) {
       dispatcher(setUser({
         uid: new UserId().value,
         photoUrl: null,
@@ -41,10 +50,8 @@ const TopicPage = ({ topic, code }: Props) => {
     }
 
     return () => {
-      // reset current state
-      dispatcher(setTopicId({ topicId: null }));
-      dispatcher(setInvitationCode({ code: null }));
-
+      // useEffectのデストラクタは、最後にuseEffectが呼ばれたときの変数の状態を参照するので、
+      // loginStateを依存関係に指定した状態で呼び出さないと、適切に処理がされない。
       if (loginState === LoginStates.NOT_LOGGED_IN) {
         dispatcher(setUser({
           uid: null,
@@ -53,7 +60,7 @@ const TopicPage = ({ topic, code }: Props) => {
         }));
       }
     };
-  }, []);
+  }, [loginState]);
 
   useEffect(() => {
     if (topicId) dispatcher(observeStart({ topicId }));
