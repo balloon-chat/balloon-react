@@ -7,38 +7,34 @@ import { useUserSelector } from 'src/data/redux/user/selector';
 
 export const MessageField = () => {
   const dispatcher = useDispatch();
-
-  const [text, setText] = useState('');
-  const [isVisible, setIsVisible] = useState(true);
-
   const { topicId } = useTopicState();
-  const userId = useUserSelector().uid;
+  const { uid } = useUserSelector();
+  const [text, setText] = useState('');
 
   const handleInput = (value: string | null) => {
     if (value) setText(value);
-    setIsVisible(value === '' || value === null);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key === 'Enter') {
       e.preventDefault(); // 改行をさせない
-      e.currentTarget.textContent = ''; // 入力内容をクリア
+      e.currentTarget.textContent = null; // 入力内容をクリア
       sendMessage(text);
     }
   };
 
   const sendMessage = (message: string) => {
-    if (topicId && userId) dispatcher(sendMessageAction({ message, userId, topicId }));
+    if (topicId && uid) dispatcher(sendMessageAction({ message, userId: uid, topicId }));
   };
 
   return (
     <MessageForm>
       <TextFieldContainer>
-        {isVisible && <Placeholder aria-hidden>メッセージを送信</Placeholder>}
         <TextField
           contentEditable
           onInput={(e) => handleInput(e.currentTarget.textContent)}
           onKeyPress={handleKeyPress}
+          placeholder="メッセージを送信"
           role="textbox"
         />
       </TextFieldContainer>
@@ -72,16 +68,11 @@ const TextField = styled(TextFieldCommon)`
   white-space: pre-wrap;
   overflow-wrap: break-word;
   -webkit-user-modify: read-write-plaintext-only;
-`;
-
-const Placeholder = styled(TextFieldCommon)`
-  color: #72767d;
-  left: 0;
-  overflow: hidden;
-  right: 0;
-  text-overflow: ellipsis;
-  position: absolute;
-  white-space: nowrap;
-  user-select: none;
-  pointer-events: none;
+  
+  :empty:before {
+    color: #72767d;
+    content: attr(placeholder);
+    pointer-events: none;
+    display: block;
+  }
 `;
