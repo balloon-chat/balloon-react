@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { UserEntity, UserEntityFactory } from 'src/view/types/user';
 import firebase from 'firebase';
 import { UserRepository } from 'src/data/core/user/userRepository';
@@ -14,6 +14,24 @@ type OauthResult = {
   newUser: boolean | null,
   authorized: boolean,
 };
+
+export const AuthStates = {
+  AUTHORIZED: 'AUTHORIZED',
+  UNAUTHORIZED: 'UNAUTHORIZED',
+  TIMEOUT: 'TIMEOUT',
+  ERROR: 'ERROR',
+};
+
+export type AuthState = typeof AuthStates[keyof typeof AuthStates];
+
+const HttpCodes = {
+  unauthorized: 401,
+  loginTimeout: 440,
+} as const;
+
+function isAxiosError(error: any): error is AxiosError {
+  return (error as AxiosError).isAxiosError !== undefined;
+}
 
 export class AuthService {
   private readonly getUserByLoginIdUsecase: IGetUserByLoginId;
@@ -111,8 +129,10 @@ export class AuthService {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  async getUserInfo(cookie: string | undefined): Promise<{ loginId: string | undefined }> {
-    if (!cookie) return { loginId: undefined };
+  async getUserInfo(cookie: string | undefined): Promise<
+    { loginId: string | undefined, state: AuthState }
+  > {
+    if (!cookie) return { loginId: undefined, state: AuthStates.UNAUTHORIZED };
 
     try {
       const { data } = await axios.get<{ loginId: string }>(
@@ -125,10 +145,24 @@ export class AuthService {
         },
       );
 
-      return { loginId: data.loginId } as const;
+      return {
+        loginId: data.loginId,
+        state: AuthStates.AUTHORIZED,
+      } as const;
     } catch (e) {
+      if (isAxiosError(e)) {
+        let state: AuthState = AuthStates.ERROR;
+        if (e.code === `${HttpCodes.unauthorized}`) state = AuthStates.UNAUTHORIZED;
+        else if (e.code === `${HttpCodes.loginTimeout}`) state = AuthStates.TIMEOUT;
+        return {
+          loginId: undefined,
+          state,
+        };
+      }
+
       return {
         loginId: undefined,
+        state: AuthStates.ERROR,
       };
     }
   }
