@@ -9,6 +9,13 @@ module.exports = {
         root: ['./'],
       },
     ],
+    [
+      "babel-plugin-styled-components",
+      {
+        "ssr": true,
+        "displayName": false,
+      }
+    ],
     'inline-react-svg'
   ],
   env: {
