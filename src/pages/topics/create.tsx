@@ -8,8 +8,8 @@ import { pageTitle, rootPath } from 'src/view/route/pagePath';
 import { BottomNavigation } from 'src/components/navbar/bottomNavigation/BottomNavigation';
 import Head from 'next/head';
 import { GetServerSideProps } from 'next';
-import { UserService } from 'src/domain/user/service/userService';
 import { useRouter } from 'next/router';
+import { AuthService } from 'src/domain/auth/service/AuthService';
 
 type Props = {
   isLoggedIn: boolean,
@@ -49,7 +49,7 @@ const Body = styled.div`
 `;
 
 export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
-  const service = new UserService();
+  const service = new AuthService();
   try {
     const userInfo = await service.getUserInfo(context.req.headers.cookie);
     return {

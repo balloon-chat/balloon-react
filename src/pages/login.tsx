@@ -89,20 +89,8 @@ const Container = styled.div`
 
 export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
   const service = new AuthService();
-  try {
-    const result = await service.getOauthResult(context.req.headers.cookie);
-    return { props: result };
-  } catch (e) {
-    console.log(e);
-  }
-
-  return {
-    props: {
-      accessToken: null,
-      newUser: null,
-      authorized: false,
-    },
-  };
+  const result = await service.getOauthResult(context.req.headers.cookie);
+  return { props: result };
 };
 
 export default LoginPage;
