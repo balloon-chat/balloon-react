@@ -28,10 +28,6 @@ export class MatterController {
       this.addObject(button.object);
     });
 
-    // マウス操作を可能にする
-    const mouseConstraint = Matter.MouseConstraint.create(this.engine);
-    Matter.World.add(this.engine.world, mouseConstraint);
-
     // characterのアップデート前に行う動作（スピード調整等）
     Matter.Events.on(this.engine, 'beforeUpdate', () => {
       const characters = Array.from(
@@ -90,18 +86,21 @@ export class MatterController {
   }
 
   /**
-   * ワールドにオブジェクトを追加（複数）
-   * @param objects {Matter.Body[]} 追加したいオブジェクトの配列
-   */
-  // private addObjects(objects: Matter.Body[]): void {
-  //   Matter.World.add(this.engine.world, objects);
-  // }
-
-  /**
    * ワールドのオブジェクトを削除（単体）
    * @param object {Matter.Body} 削除したいオブジェクト
    */
   private removeObject(object: Matter.Body): void {
     Matter.World.remove(this.engine.world, object);
+  }
+
+  /**
+   * マウスイベントをハンドラを付与
+   * @param element 指定されたHTMLエレメント内のみ、マウスイベントを処理する
+   */
+  setMouseEventHandler(element: HTMLElement) {
+    const mouse = Matter.Mouse.create(element);
+    const options = { mouse };
+    const mouseConstraint = Matter.MouseConstraint.create(this.engine, options);
+    Matter.World.add(this.engine.world, mouseConstraint);
   }
 }

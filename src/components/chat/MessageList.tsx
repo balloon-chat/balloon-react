@@ -31,8 +31,4 @@ const ChatContainer = styled.div`
   background-color: #fdfdfd;
   height: 100%;
   overflow-y: hidden;
-
-  & > div {
-    margin-bottom: 16px;
-  }
 `;

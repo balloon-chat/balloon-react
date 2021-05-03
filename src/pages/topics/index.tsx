@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { NavBar } from 'src/components/navbar/NavBar';
 import { ScrollableTopicList } from 'src/components/topic/TopicList';
-import styled from 'styled-components';
 import { GetServerSideProps } from 'next';
 import { TopicService } from 'src/domain/topic/service/topicService';
 import { TopicEntity, TopicEntityFactory } from 'src/view/types/topic';
@@ -44,22 +43,12 @@ const TopicIndexPage: React.FC<Props> = ({ topics, pickup, topicId }) => {
       <NavBar />
       <InvitationCodeForm />
       <TopicContainer>
-        <Container>
-          <ScrollableTopicList pickup={pickup} />
-        </Container>
+        <ScrollableTopicList pickup={pickup} />
       </TopicContainer>
       <BottomNavigation currentLocation="join" />
     </>
   );
 };
-
-const Container = styled.main`
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  padding: 16px;
-  width: 100%;
-`;
 
 export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
   const service = new TopicService();

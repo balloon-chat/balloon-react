@@ -9,6 +9,19 @@ const App = ({ Component, pageProps }: AppProps) => (
   <>
     <style jsx global>
       {`
+        html {
+          font-family: Helvetica,Hiragino Kaku Gothic Pro,Segoe UI,Yu Gothic,Meiryo,MS PGothic,sans-serif;
+        }
+        
+        button {
+          border-style: none;
+          background-color: transparent;
+          font-size: inherit;
+        }
+        
+        button:focus {
+          outline: none;
+        }
         html,
         body,
         #__next {

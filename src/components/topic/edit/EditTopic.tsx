@@ -16,6 +16,7 @@ import { TextField } from 'src/components/common/TextField';
 import { rootPath } from 'src/view/route/pagePath';
 import { topicStates } from 'src/data/redux/topic/state';
 import { ErrorDialog } from 'src/components/common/ErrorDialog';
+import { mediaQuery } from 'src/components/constants/mediaQuery';
 
 export const EditTopic = () => {
   const dispatcher = useDispatch();
@@ -163,9 +164,14 @@ const CheckInputRow = styled.label`
   cursor: pointer;
 
   & input[type='checkbox'] {
-    width: 16px;
-    height: 16px;
     margin-top: 8px;
+  }
+  
+  @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
+    & input[type='checkbox'] {
+      width: 16px;
+      height: 16px;
+    }
   }
 `;
 
