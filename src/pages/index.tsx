@@ -7,10 +7,7 @@ import { TopicService } from 'src/domain/topic/service/topicService';
 import { TopicEntity, TopicEntityFactory } from 'src/view/types/topic';
 import { useDispatch } from 'react-redux';
 import { setTopics } from 'src/data/redux/topic/slice';
-import {
-  BottomNavigation,
-  NavLocations,
-} from 'src/components/navbar/bottomNavigation/BottomNavigation';
+import { BottomNavigation } from 'src/components/navbar/bottomNavigation/BottomNavigation';
 import { TopicContainer } from 'src/components/topic/TopicContainer';
 import { useRouter } from 'next/router';
 import { pageTitle, rootPath } from 'src/view/route/pagePath';
@@ -18,6 +15,7 @@ import { Button } from 'src/components/common/Button';
 import Head from 'next/head';
 import Image from 'next/image';
 import { imagePath } from 'src/components/constants/imagePath';
+import { NavLocations } from 'src/view/types/navigation';
 
 type Props = {
   pickup: {

@@ -5,14 +5,12 @@ import { ContainerCard } from 'src/components/common/ContainerCard';
 import styled from 'styled-components';
 import 'firebase/auth';
 import { pageTitle, rootPath } from 'src/view/route/pagePath';
-import {
-  BottomNavigation,
-  NavLocations,
-} from 'src/components/navbar/bottomNavigation/BottomNavigation';
+import { BottomNavigation } from 'src/components/navbar/bottomNavigation/BottomNavigation';
 import Head from 'next/head';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import { AuthService } from 'src/domain/auth/service/AuthService';
+import { NavLocations } from 'src/view/types/navigation';
 
 type Props = {
   isLoggedIn: boolean,

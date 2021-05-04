@@ -9,19 +9,10 @@ import Search from 'src/components/svgs/search.svg';
 import Login from 'src/components/svgs/login.svg';
 import { useUserSelector } from 'src/data/redux/user/selector';
 import { LoginStates } from 'src/data/redux/user/state';
-
-export const NavLocations = {
-  HOME: 'HOME',
-  CREATE_TOPIC: 'CREATE_TOPIC',
-  FIND_TOPIC: 'FIND_TOPIC',
-  PROFILE: 'PROFILE',
-  LOGIN: 'LOGIN',
-};
-
-export type NavLocation = typeof NavLocations[keyof typeof NavLocations];
+import { NavLocation, NavLocations } from 'src/view/types/navigation';
 
 type Props = {
-  currentLocation?: NavLocation;
+  currentLocation?: NavLocation,
 };
 
 export const BottomNavigation = ({ currentLocation }: Props) => {

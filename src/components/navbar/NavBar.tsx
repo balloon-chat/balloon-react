@@ -14,7 +14,7 @@ import Image from 'next/image';
 import { imagePath } from 'src/components/constants/imagePath';
 import Edit from 'src/components/svgs/edit.svg';
 import Login from 'src/components/svgs/login.svg';
-import { NavLocation, NavLocations } from 'src/components/navbar/bottomNavigation/BottomNavigation';
+import { NavLocation, NavLocations } from 'src/view/types/navigation';
 
 export const NavBarHome = () => (
   <NavBar>
@@ -23,7 +23,7 @@ export const NavBarHome = () => (
 );
 
 type Props = {
-  currentLocation?: NavLocation;
+  currentLocation?: NavLocation,
 };
 
 export const NavBar: React.FC<Props> = ({ currentLocation, children }) => {

@@ -2,10 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { NavBar } from 'src/components/navbar/NavBar';
 import styled from 'styled-components';
 import { UserProfile } from 'src/components/profile/UserProfile';
-import {
-  BottomNavigation,
-  NavLocations,
-} from 'src/components/navbar/bottomNavigation/BottomNavigation';
+import { BottomNavigation } from 'src/components/navbar/bottomNavigation/BottomNavigation';
 import { GetServerSideProps } from 'next';
 import { TopicEntity, TopicEntityFactory } from 'src/view/types/topic';
 import { TopicService } from 'src/domain/topic/service/topicService';
@@ -20,6 +17,7 @@ import Head from 'next/head';
 import { AuthService, AuthStates } from 'src/domain/auth/service/AuthService';
 import { mediaQuery } from 'src/components/constants/mediaQuery';
 import Link from 'next/link';
+import { NavLocations } from 'src/view/types/navigation';
 
 type Props = {
   user: UserEntity | null
