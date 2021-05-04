@@ -100,7 +100,7 @@ const ShowMoreButton = styled(Button)`
   box-shadow: 0 10px 40px -2px rgb(0 64 128 / 20%);
   width: 100%;
   padding: 16px;
-  margin: 16px auto 32px auto;
+  margin: 16px auto 128px auto;
   max-width: 500px;
 `;
 
