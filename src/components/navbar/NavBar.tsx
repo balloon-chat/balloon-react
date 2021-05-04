@@ -12,6 +12,9 @@ import { NavBarUserButton } from 'src/components/navbar/NavBarUserButton';
 import { LoginStates } from 'src/data/redux/user/state';
 import Image from 'next/image';
 import { imagePath } from 'src/components/constants/imagePath';
+import Edit from 'src/components/svgs/edit.svg';
+import Login from 'src/components/svgs/login.svg';
+import { NavLocation, NavLocations } from 'src/components/navbar/bottomNavigation/BottomNavigation';
 
 export const NavBarHome = () => (
   <NavBar>
@@ -19,7 +22,11 @@ export const NavBarHome = () => (
   </NavBar>
 );
 
-export const NavBar: React.FC = ({ children }) => {
+type Props = {
+  currentLocation?: NavLocation;
+};
+
+export const NavBar: React.FC<Props> = ({ currentLocation, children }) => {
   const router = useRouter();
   const { loginState } = useUserSelector();
 
@@ -34,7 +41,13 @@ export const NavBar: React.FC = ({ children }) => {
         </Link>
         <ActionContainer>
           <li>
-            <NavButton link={topicPath.create} title="話題を作る" />
+            <NavButton
+              link={topicPath.create}
+              isActive={currentLocation === NavLocations.CREATE_TOPIC}
+              title="話題を作る"
+            >
+              <Edit />
+            </NavButton>
           </li>
           <li>
             {loginState === LoginStates.LOGGED_IN
@@ -44,7 +57,9 @@ export const NavBar: React.FC = ({ children }) => {
                   link={rootPath.login}
                   linkQuery={{ return_to: router.asPath }}
                   title="ログイン"
-                />
+                >
+                  <Login />
+                </NavButton>
               )}
           </li>
         </ActionContainer>
@@ -99,16 +114,13 @@ const ActionContainer = styled.ul`
   justify-content: flex-end;
   
   & > li {
+    display: flex;
+    align-items: center;
     box-sizing: border-box;
-    height: 100%;
+    height: 64px;
   }
   
   @media screen and (min-width: ${mediaQuery.mobile.landscape}px) {
     display: flex;
-    
-    & > li {
-      display: inline-block;
-      visibility: visible;
-    }
   }
 `;

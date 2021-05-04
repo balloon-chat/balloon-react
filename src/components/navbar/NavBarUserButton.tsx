@@ -5,15 +5,18 @@ import Link from 'next/link';
 import { rootPath } from 'src/view/route/pagePath';
 
 export const NavBarUserButton = () => {
-  const { uid, photoUrl } = useUserSelector();
+  const {
+    uid,
+    photoUrl,
+  } = useUserSelector();
   return (
     <>
       {
         uid && photoUrl
         && (
-        <Link href={rootPath.usersPath.user(uid)}>
-          <UserImage src={photoUrl} />
-        </Link>
+          <Link href={rootPath.usersPath.user(uid)}>
+            <UserImage height={40} src={photoUrl} />
+          </Link>
         )
       }
     </>
@@ -22,7 +25,7 @@ export const NavBarUserButton = () => {
 
 const UserImage = styled.img`
   border-radius: 50%;
+  align-self: center;
   cursor: pointer;
-  height: 40px;
   padding: 4px;
 `;

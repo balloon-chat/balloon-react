@@ -18,7 +18,7 @@ export const NavLocations = {
   LOGIN: 'LOGIN',
 };
 
-type NavLocation = typeof NavLocations[keyof typeof NavLocations];
+export type NavLocation = typeof NavLocations[keyof typeof NavLocations];
 
 type Props = {
   currentLocation?: NavLocation;

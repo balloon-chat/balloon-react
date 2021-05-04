@@ -33,7 +33,7 @@ const CreateTopicPage = ({ isLoggedIn }: Props) => {
       <Head>
         <title>{pageTitle.topics.create}</title>
       </Head>
-      <NavBar />
+      <NavBar currentLocation={NavLocations.CREATE_TOPIC} />
       <Body>
         <ContainerCard>
           <EditTopic />
