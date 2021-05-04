@@ -12,6 +12,9 @@ import { NavBarUserButton } from 'src/components/navbar/NavBarUserButton';
 import { LoginStates } from 'src/data/redux/user/state';
 import Image from 'next/image';
 import { imagePath } from 'src/components/constants/imagePath';
+import Edit from 'src/components/svgs/edit.svg';
+import Login from 'src/components/svgs/login.svg';
+import { NavLocation, NavLocations } from 'src/view/types/navigation';
 
 export const NavBarHome = () => (
   <NavBar>
@@ -19,7 +22,11 @@ export const NavBarHome = () => (
   </NavBar>
 );
 
-export const NavBar: React.FC = ({ children }) => {
+type Props = {
+  currentLocation?: NavLocation,
+};
+
+export const NavBar: React.FC<Props> = ({ currentLocation, children }) => {
   const router = useRouter();
   const { loginState } = useUserSelector();
 
@@ -34,7 +41,13 @@ export const NavBar: React.FC = ({ children }) => {
         </Link>
         <ActionContainer>
           <li>
-            <NavButton link={topicPath.create} title="話題を作る" />
+            <NavButton
+              link={topicPath.create}
+              isActive={currentLocation === NavLocations.CREATE_TOPIC}
+              title="話題を作る"
+            >
+              <Edit />
+            </NavButton>
           </li>
           <li>
             {loginState === LoginStates.LOGGED_IN
@@ -44,7 +57,9 @@ export const NavBar: React.FC = ({ children }) => {
                   link={rootPath.login}
                   linkQuery={{ return_to: router.asPath }}
                   title="ログイン"
-                />
+                >
+                  <Login />
+                </NavButton>
               )}
           </li>
         </ActionContainer>
@@ -78,8 +93,9 @@ const NavTitleContainer = styled.div`
   text-align: center;
   padding: 16px 0;
   justify-content: center;
+  flex-grow: 1;
 
-  @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
+  @media screen and (min-width: ${mediaQuery.mobile.landscape}px) {
     flex-grow: 0;
     padding: 0;
   }
@@ -91,26 +107,20 @@ const NavTitle = styled.div`
 `;
 
 const ActionContainer = styled.ul`
-  display: flex;
+  display: none;
   margin: 0;
   align-items: center;
   padding: 0;
   justify-content: flex-end;
-
+  
   & > li {
+    display: flex;
+    align-items: center;
     box-sizing: border-box;
-    visibility: hidden;
-    height: 100%;
+    height: 64px;
   }
   
-  & > li:last-child {
-    visibility: visible;
-  }
-
-  @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
-    & > li {
-      display: inline-block;
-      visibility: visible;
-    }
+  @media screen and (min-width: ${mediaQuery.mobile.landscape}px) {
+    display: flex;
   }
 `;

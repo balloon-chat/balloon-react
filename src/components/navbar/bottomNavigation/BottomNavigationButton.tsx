@@ -24,7 +24,8 @@ export const BottomNavigationButton: React.FC<Props> = ({
 
 const LinkContainer = styled.a<{ isActive: boolean }>`
   align-items: center;
-  color: ${(props) => (props.isActive ? 'rgba(0,0,0,1)' : 'rgba(0,0,0,.6)')};
+  color: rgba(0,0,0,.8);
+  background-color: ${(props) => (props.isActive ? 'rgba(0,0,0,.05)' : 'white')};
   cursor: pointer;
   display: flex;
   flex-direction: column;
@@ -33,7 +34,7 @@ const LinkContainer = styled.a<{ isActive: boolean }>`
   padding: 8px;
 
   & > svg {
-    fill: ${(props) => (props.isActive ? 'rgba(0,0,0,1)' : 'rgba(0,0,0,.6)')};
+    fill: rgba(0,0,0,.6);
   }
 `;
 

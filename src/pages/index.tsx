@@ -15,6 +15,7 @@ import { Button } from 'src/components/common/Button';
 import Head from 'next/head';
 import Image from 'next/image';
 import { imagePath } from 'src/components/constants/imagePath';
+import { NavLocations } from 'src/view/types/navigation';
 
 type Props = {
   pickup: {
@@ -64,7 +65,7 @@ const IndexPage: React.FC<Props> = ({
           <ShowMoreButton onClick={showMore}>もっと見る</ShowMoreButton>
         </Container>
       </TopicContainer>
-      <BottomNavigation currentLocation="home" />
+      <BottomNavigation currentLocation={NavLocations.HOME} />
     </>
   );
 };
@@ -97,7 +98,7 @@ const ShowMoreButton = styled(Button)`
   box-shadow: 0 10px 40px -2px rgb(0 64 128 / 20%);
   width: 100%;
   padding: 16px;
-  margin: 16px auto 32px auto;
+  margin: 16px auto 128px auto;
   max-width: 500px;
 `;
 

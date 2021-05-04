@@ -12,6 +12,7 @@ import { pageTitle, rootPath } from 'src/view/route/pagePath';
 import Head from 'next/head';
 import { InvitationCodeForm } from 'src/components/topic/invitation/InvitationCodeForm';
 import { useRouter } from 'next/router';
+import { NavLocations } from 'src/view/types/navigation';
 
 type Props = {
   pickup: TopicEntity | null,
@@ -45,7 +46,7 @@ const TopicIndexPage: React.FC<Props> = ({ topics, pickup, topicId }) => {
       <TopicContainer>
         <ScrollableTopicList pickup={pickup} />
       </TopicContainer>
-      <BottomNavigation currentLocation="join" />
+      <BottomNavigation currentLocation={NavLocations.FIND_TOPIC} />
     </>
   );
 };

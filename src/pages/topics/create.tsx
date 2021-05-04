@@ -10,6 +10,7 @@ import Head from 'next/head';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import { AuthService } from 'src/domain/auth/service/AuthService';
+import { NavLocations } from 'src/view/types/navigation';
 
 type Props = {
   isLoggedIn: boolean,
@@ -30,13 +31,13 @@ const CreateTopicPage = ({ isLoggedIn }: Props) => {
       <Head>
         <title>{pageTitle.topics.create}</title>
       </Head>
-      <NavBar />
+      <NavBar currentLocation={NavLocations.CREATE_TOPIC} />
       <Body>
         <ContainerCard>
           <EditTopic />
         </ContainerCard>
       </Body>
-      <BottomNavigation currentLocation="create" />
+      <BottomNavigation currentLocation={NavLocations.CREATE_TOPIC} />
     </>
   );
 };

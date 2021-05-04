@@ -15,6 +15,9 @@ import { UserEntity } from 'src/view/types/user';
 import { pageTitle, rootPath } from 'src/view/route/pagePath';
 import Head from 'next/head';
 import { AuthService, AuthStates } from 'src/domain/auth/service/AuthService';
+import { mediaQuery } from 'src/components/constants/mediaQuery';
+import Link from 'next/link';
+import { NavLocations } from 'src/view/types/navigation';
 
 type Props = {
   user: UserEntity | null
@@ -41,7 +44,8 @@ const ProfilePage = ({
   if (loginRequired) {
     router.push(rootPath.login, {
       query: { return_to: router.asPath },
-    }).then();
+    })
+      .then();
     return <></>;
   }
 
@@ -54,6 +58,14 @@ const ProfilePage = ({
       {user && (
         <UserProfileContainer>
           <UserProfile {...user} />
+          {
+            isCurrentUser && (
+              <UserActionContainer>
+                <li><Link href={rootPath.logout}>ログアウト</Link></li>
+                <li>プロフィール編集</li>
+              </UserActionContainer>
+            )
+          }
         </UserProfileContainer>
       )}
       <Container>
@@ -70,7 +82,7 @@ const ProfilePage = ({
           </TopicListContainer>
         </InnerBody>
       </Container>
-      <BottomNavigation currentLocation="my-profile" />
+      <BottomNavigation currentLocation={NavLocations.PROFILE} />
     </>
   );
 };
@@ -108,6 +120,30 @@ const TopicListContainer = styled.div`
   width: 100%;
 `;
 
+const UserActionContainer = styled.ul`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0;
+
+  & > li {
+    cursor: pointer;
+    margin-top: 8px;
+  }
+
+  & > li:first-child {
+    margin-top: 0;
+  }
+
+  @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
+    flex-direction: row;
+    justify-content: center;
+    & > li {
+      margin: 0 8px;
+    }
+  }
+`;
+
 export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
   const emptyResult = {
     props: {
@@ -126,7 +162,10 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
 
   const authService = new AuthService();
   const result = await authService.getUserInfo(context.req.headers.cookie);
-  const { loginId, state } = result;
+  const {
+    loginId,
+    state,
+  } = result;
   if (state === AuthStates.TIMEOUT) {
     return {
       props: {

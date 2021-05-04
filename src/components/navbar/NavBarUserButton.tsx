@@ -1,26 +1,31 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useUserSelector } from 'src/data/redux/user/selector';
 import styled from 'styled-components';
-import { NavBarActionDialog } from 'src/components/navbar/NavBarActionDialog';
+import Link from 'next/link';
+import { rootPath } from 'src/view/route/pagePath';
 
 export const NavBarUserButton = () => {
-  const { photoUrl } = useUserSelector();
-  const [isOpen, setIsOpen] = useState(false);
+  const {
+    uid,
+    photoUrl,
+  } = useUserSelector();
   return (
-    <Container>
-      {photoUrl && <UserImage src={photoUrl} onClick={() => setIsOpen(!isOpen)} />}
-      {isOpen && <NavBarActionDialog onClose={() => setIsOpen(false)} />}
-    </Container>
+    <>
+      {
+        uid && photoUrl
+        && (
+          <Link href={rootPath.usersPath.user(uid)}>
+            <UserImage height={40} src={photoUrl} />
+          </Link>
+        )
+      }
+    </>
   );
 };
 
-const Container = styled.div`
-  position: relative;
-`;
-
 const UserImage = styled.img`
   border-radius: 50%;
+  align-self: center;
   cursor: pointer;
-  height: 40px;
   padding: 4px;
 `;

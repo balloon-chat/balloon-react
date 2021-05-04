@@ -6,36 +6,73 @@ import React from 'react';
 import Home from 'src/components/svgs/home.svg';
 import Edit from 'src/components/svgs/edit.svg';
 import Search from 'src/components/svgs/search.svg';
+import Login from 'src/components/svgs/login.svg';
+import { useUserSelector } from 'src/data/redux/user/selector';
+import { LoginStates } from 'src/data/redux/user/state';
+import { NavLocation, NavLocations } from 'src/view/types/navigation';
 
 type Props = {
-  currentLocation?: 'home' | 'create' | 'join' | 'my-profile';
+  currentLocation?: NavLocation,
 };
 
-export const BottomNavigation = ({ currentLocation }: Props) => (
-  <Container>
-    <BottomNavigationButton
-      isActive={currentLocation === 'home'}
-      label="ホーム"
-      linkTo={rootPath.index}
-    >
-      <Home />
-    </BottomNavigationButton>
-    <BottomNavigationButton
-      label="話題を作る"
-      linkTo={rootPath.topicPath.create}
-      isActive={currentLocation === 'create'}
-    >
-      <Edit />
-    </BottomNavigationButton>
-    <BottomNavigationButton
-      label="話題を探す"
-      linkTo={rootPath.topicPath.index}
-      isActive={currentLocation === 'join'}
-    >
-      <Search />
-    </BottomNavigationButton>
-  </Container>
-);
+export const BottomNavigation = ({ currentLocation }: Props) => {
+  const { uid, photoUrl, loginState } = useUserSelector();
+  return (
+    <Container>
+      <BottomNavigationButton
+        isActive={currentLocation === NavLocations.HOME}
+        label="ホーム"
+        linkTo={rootPath.index}
+      >
+        <Home />
+      </BottomNavigationButton>
+      <BottomNavigationButton
+        label="話題を作る"
+        linkTo={rootPath.topicPath.create}
+        isActive={currentLocation === NavLocations.CREATE_TOPIC}
+      >
+        <Edit />
+      </BottomNavigationButton>
+      <BottomNavigationButton
+        label="話題を探す"
+        linkTo={rootPath.topicPath.index}
+        isActive={currentLocation === NavLocations.FIND_TOPIC}
+      >
+        <Search />
+      </BottomNavigationButton>
+      {
+        loginState !== LoginStates.LOGGED_IN
+        && (
+        <BottomNavigationButton
+          label="ログイン"
+          linkTo={rootPath.login}
+          isActive={currentLocation === NavLocations.LOGIN}
+        >
+          <Login />
+        </BottomNavigationButton>
+        )
+      }
+      {
+        loginState === LoginStates.LOGGED_IN && uid && photoUrl
+        && (
+          <BottomNavigationButton
+            label="プロフィール"
+            linkTo={rootPath.usersPath.user(uid)}
+            isActive={currentLocation === NavLocations.LOGIN}
+          >
+            <UserIcon
+              isActive={currentLocation === NavLocations.PROFILE}
+              loading="lazy"
+              src={photoUrl}
+              height={32}
+              width={32}
+            />
+          </BottomNavigationButton>
+        )
+      }
+    </Container>
+  );
+};
 
 const Container = styled.nav`
   background-color: white;
@@ -46,9 +83,17 @@ const Container = styled.nav`
   height: 3.5rem;
   max-height: 16vh;
 
-  @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
+  @media screen and (min-width: ${mediaQuery.mobile.landscape}px) {
     pointer-events: none;
     visibility: hidden;
     z-index: -1;
   }
+`;
+
+const UserIcon = styled.img<{isActive: boolean}>`
+  box-sizing: border-box;
+  border: ${(props) => (props.isActive ? '2px solid #5b87fa' : 'none')};
+  border-radius: 50%;
+  height: 100%;
+  max-height: 100%;
 `;
