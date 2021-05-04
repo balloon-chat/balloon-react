@@ -1,7 +1,7 @@
 import { GetServerSideProps } from 'next';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Head from 'next/head';
-import { pageTitle, rootPath } from 'src/view/route/pagePath';
+import { isInnerPath, pageTitle, rootPath } from 'src/view/route/pagePath';
 import { WelcomeDialog } from 'src/components/login/WelcomeDialog';
 import { EditProfileDialog } from 'src/components/login/EditProfileDialog';
 import { createUser } from 'src/data/redux/user/action';
@@ -32,13 +32,8 @@ const SignInPage = ({ accessToken, name, photoUrl }: Props) => {
   const [dialogState, setDialogState] = useState<DialogState>(DialogStates.SHOW_WELCOME);
 
   const router = useRouter();
+  const { return_to } = router.query;
   const dispatcher = useDispatch();
-
-  useEffect(() => {
-    if (accessToken == null) {
-      router.push(rootPath.login).then();
-    }
-  }, []);
 
   const handleOnSaveEdit = (name: string, photoUrl: string, imageFile: File | null) => {
     setName(name);
@@ -62,8 +57,17 @@ const SignInPage = ({ accessToken, name, photoUrl }: Props) => {
       );
     }
 
-    await router.push(rootPath.index).then();
+    if (typeof return_to === 'string' && return_to && isInnerPath(return_to, process.env.HOST_NAME)) {
+      await router.push(return_to).then();
+    } else {
+      await router.push(rootPath.index).then();
+    }
   };
+
+  if (accessToken == null) {
+    router.push(rootPath.login).then();
+    return <></>;
+  }
 
   return (
     <>
@@ -72,7 +76,7 @@ const SignInPage = ({ accessToken, name, photoUrl }: Props) => {
       </Head>
       <Container>
         {
-        accessToken !== null && dialogState === DialogStates.SHOW_WELCOME && (
+        dialogState === DialogStates.SHOW_WELCOME && (
           <WelcomeDialog
             name={name!}
             imgUrl={photoUrl ?? ''}

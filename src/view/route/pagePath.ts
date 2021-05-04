@@ -9,6 +9,7 @@ export const usersPath = {
 };
 
 export const rootPath = {
+  fullPath: (path: string) => `${process.env.BASE_URL}${path[0] === '/' ? path : `/${path}`}`,
   index: '/',
   login: '/login',
   signIn: '/signin',
