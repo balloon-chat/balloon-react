@@ -78,8 +78,9 @@ const NavTitleContainer = styled.div`
   text-align: center;
   padding: 16px 0;
   justify-content: center;
+  flex-grow: 1;
 
-  @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
+  @media screen and (min-width: ${mediaQuery.mobile.landscape}px) {
     flex-grow: 0;
     padding: 0;
   }
@@ -91,23 +92,20 @@ const NavTitle = styled.div`
 `;
 
 const ActionContainer = styled.ul`
-  display: flex;
+  display: none;
   margin: 0;
   align-items: center;
   padding: 0;
   justify-content: flex-end;
-
+  
   & > li {
     box-sizing: border-box;
-    visibility: hidden;
     height: 100%;
   }
   
-  & > li:last-child {
-    visibility: visible;
-  }
-
-  @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
+  @media screen and (min-width: ${mediaQuery.mobile.landscape}px) {
+    display: flex;
+    
     & > li {
       display: inline-block;
       visibility: visible;

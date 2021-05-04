@@ -6,7 +6,10 @@ import { TopicService } from 'src/domain/topic/service/topicService';
 import { TopicEntity, TopicEntityFactory } from 'src/view/types/topic';
 import { useDispatch } from 'react-redux';
 import { setTopics } from 'src/data/redux/topic/slice';
-import { BottomNavigation } from 'src/components/navbar/bottomNavigation/BottomNavigation';
+import {
+  BottomNavigation,
+  NavLocations,
+} from 'src/components/navbar/bottomNavigation/BottomNavigation';
 import { TopicContainer } from 'src/components/topic/TopicContainer';
 import { pageTitle, rootPath } from 'src/view/route/pagePath';
 import Head from 'next/head';
@@ -45,7 +48,7 @@ const TopicIndexPage: React.FC<Props> = ({ topics, pickup, topicId }) => {
       <TopicContainer>
         <ScrollableTopicList pickup={pickup} />
       </TopicContainer>
-      <BottomNavigation currentLocation="join" />
+      <BottomNavigation currentLocation={NavLocations.FIND_TOPIC} />
     </>
   );
 };

@@ -2,7 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { NavBar } from 'src/components/navbar/NavBar';
 import styled from 'styled-components';
 import { UserProfile } from 'src/components/profile/UserProfile';
-import { BottomNavigation } from 'src/components/navbar/bottomNavigation/BottomNavigation';
+import {
+  BottomNavigation,
+  NavLocations,
+} from 'src/components/navbar/bottomNavigation/BottomNavigation';
 import { GetServerSideProps } from 'next';
 import { TopicEntity, TopicEntityFactory } from 'src/view/types/topic';
 import { TopicService } from 'src/domain/topic/service/topicService';
@@ -70,7 +73,7 @@ const ProfilePage = ({
           </TopicListContainer>
         </InnerBody>
       </Container>
-      <BottomNavigation currentLocation="my-profile" />
+      <BottomNavigation currentLocation={NavLocations.PROFILE} />
     </>
   );
 };

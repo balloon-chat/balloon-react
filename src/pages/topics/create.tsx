@@ -5,7 +5,10 @@ import { ContainerCard } from 'src/components/common/ContainerCard';
 import styled from 'styled-components';
 import 'firebase/auth';
 import { pageTitle, rootPath } from 'src/view/route/pagePath';
-import { BottomNavigation } from 'src/components/navbar/bottomNavigation/BottomNavigation';
+import {
+  BottomNavigation,
+  NavLocations,
+} from 'src/components/navbar/bottomNavigation/BottomNavigation';
 import Head from 'next/head';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
@@ -36,7 +39,7 @@ const CreateTopicPage = ({ isLoggedIn }: Props) => {
           <EditTopic />
         </ContainerCard>
       </Body>
-      <BottomNavigation currentLocation="create" />
+      <BottomNavigation currentLocation={NavLocations.CREATE_TOPIC} />
     </>
   );
 };

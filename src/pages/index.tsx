@@ -7,7 +7,10 @@ import { TopicService } from 'src/domain/topic/service/topicService';
 import { TopicEntity, TopicEntityFactory } from 'src/view/types/topic';
 import { useDispatch } from 'react-redux';
 import { setTopics } from 'src/data/redux/topic/slice';
-import { BottomNavigation } from 'src/components/navbar/bottomNavigation/BottomNavigation';
+import {
+  BottomNavigation,
+  NavLocations,
+} from 'src/components/navbar/bottomNavigation/BottomNavigation';
 import { TopicContainer } from 'src/components/topic/TopicContainer';
 import { useRouter } from 'next/router';
 import { pageTitle, rootPath } from 'src/view/route/pagePath';
@@ -64,7 +67,7 @@ const IndexPage: React.FC<Props> = ({
           <ShowMoreButton onClick={showMore}>もっと見る</ShowMoreButton>
         </Container>
       </TopicContainer>
-      <BottomNavigation currentLocation="home" />
+      <BottomNavigation currentLocation={NavLocations.HOME} />
     </>
   );
 };
