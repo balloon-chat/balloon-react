@@ -46,7 +46,7 @@ export const pageTitle = {
  * @param hostName ベースとなるURL(example.com, example.com:3000)
  * @return {boolean} 内部リンクの場合trueを返す
  */
-export const isInnerPath = (path: string, hostName?: string): boolean => {
+export const isInnerPath = (path: string, hostName: string|null): boolean => {
   const pathRegex = new RegExp(/^\//);
   if (!hostName) return pathRegex.test(path);
 

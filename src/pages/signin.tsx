@@ -57,7 +57,12 @@ const SignInPage = ({ accessToken, name, photoUrl }: Props) => {
       );
     }
 
-    if (typeof return_to === 'string' && return_to && isInnerPath(return_to, process.env.HOST_NAME)) {
+    if (
+      return_to
+      && process.env.HOST_NAME
+      && typeof return_to === 'string'
+      && isInnerPath(return_to, process.env.HOST_NAME)
+    ) {
       await router.push(return_to).then();
     } else {
       await router.push(rootPath.index).then();
