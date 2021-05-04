@@ -5,6 +5,7 @@ import { sendMessage as sendMessageAction } from 'src/data/redux/message/action'
 import { useTopicState } from 'src/data/redux/topic/selector';
 import { useUserSelector } from 'src/data/redux/user/selector';
 import { mediaQuery } from 'src/components/constants/mediaQuery';
+import { ReactComponent as Send } from 'src/components/svgs/send.svg';
 
 export const MessageField = () => {
   const dispatcher = useDispatch();
@@ -16,28 +17,32 @@ export const MessageField = () => {
     if (value) setText(value);
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === 'Enter') {
-      e.preventDefault(); // 改行をさせない
-      e.currentTarget.textContent = null; // 入力内容をクリア
-      sendMessage(text);
-    }
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (text) sendMessage(text);
+  };
+
+  const handleSend = () => {
+    if (text) sendMessage(text);
   };
 
   const sendMessage = (message: string) => {
-    if (topicId && uid) dispatcher(sendMessageAction({ message, userId: uid, topicId }));
+    if (topicId && uid && message) dispatcher(sendMessageAction({ message, userId: uid, topicId }));
+    setText('');
   };
 
   return (
-    <MessageForm>
+    <MessageForm onSubmit={(e) => handleSubmit(e)}>
       <TextFieldContainer>
         <TextField
           contentEditable
+          value={text}
+          onChange={(e) => setText(e.target.value)}
           onInput={(e) => handleInput(e.currentTarget.textContent)}
-          onKeyPress={handleKeyPress}
           placeholder="メッセージを送信"
           role="textbox"
         />
+        <Send onClick={() => handleSend()} />
       </TextFieldContainer>
     </MessageForm>
   );
@@ -46,30 +51,46 @@ export const MessageField = () => {
 const MessageForm = styled.form`
   box-sizing: border-box;
   display: flex;
+  justify-content: center;
   padding: 0 16px;
   width: 100%;
 `;
 
 const TextFieldContainer = styled.div`
+  align-items: center;
   background-color: white;
+  box-sizing: border-box;
   border: rgba(0, 0, 0, 0.2) solid 1px;
-  border-radius: 8px;
+  border-radius: 50px;
   box-shadow: black;
+  display: flex;
   margin-bottom: 16px;
   position: relative;
+  flex-wrap: wrap;
+  max-width: 500px;
   width: 100%;
+  padding: 0 8px;
 
   @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
     margin-bottom: 24px;
   }
+  
+  & > svg {
+    color: #5b87fa;
+    cursor: pointer;
+    fill: currentColor;
+    width: 32px;
+    padding: 8px;
+  }
 `;
 
-const TextField = styled.div`
+const TextField = styled.input`
+  border: none;
   outline: none;
   white-space: pre-wrap;
   overflow-wrap: break-word;
   -webkit-user-modify: read-write-plaintext-only;
-  padding: 8px;
+  flex: 1;
   
   :empty:before {
     color: #72767d;
