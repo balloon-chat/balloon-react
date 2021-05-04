@@ -5,9 +5,16 @@ import { useRouter } from 'next/router';
 
 export const GoogleLoginButton = () => {
   const router = useRouter();
-
+  const { return_to } = router.query;
   const signIn = async () => {
-    await router.push(`${process.env.OAUTH_GOOGLE_LOGIN_URL}?redirectUrl=http://localhost:3000/login`);
+    let query: {return_to: string} | null = null;
+    if (typeof return_to === 'string' && return_to) {
+      query = { return_to };
+    }
+    await router.push({
+      pathname: `${process.env.OAUTH_GOOGLE_LOGIN_URL}`,
+      query,
+    });
   };
 
   return (

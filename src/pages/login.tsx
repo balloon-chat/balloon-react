@@ -38,7 +38,12 @@ const LoginPage = ({ accessToken, authorized, newUser }: Props) => {
 
     dispatcher(login({ accessToken }));
 
-    if (return_to && typeof return_to === 'string' && isInnerPath(return_to)) {
+    if (
+      typeof return_to === 'string'
+      && return_to
+      && process.env.HOST_NAME
+      && isInnerPath(return_to, process.env.HOST_NAME)
+    ) {
       await router.push(return_to);
     } else {
       await router.push(rootPath.index);

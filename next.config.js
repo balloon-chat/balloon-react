@@ -9,6 +9,7 @@ module.exports = {
     MESSAGING_SENDER_ID: process.env.MESSAGING_SENDER_ID,
     APP_ID: process.env.APP_ID,
     MEASUREMENT_ID: process.env.MEASUREMENT_ID,
+    HOST_NAME: process.env.HOST_NAME,
     BASE_URL: process.env.BASE_URL,
     TEMPLATE_USER_ICON_URL: process.env.TEMPLATE_USER_ICON_URL,
     // API Endpoints
@@ -19,7 +20,6 @@ module.exports = {
     OAUTH_GOOGLE_LOGIN_RESULT_URL: process.env.OAUTH_GOOGLE_LOGIN_RESULT_URL,
     CREATE_INVITATION_API_URL: process.env.CREATE_INVITATION_API_URL,
     INVITATION_TOPIC_API_URL: process.env.INVITATION_TOPIC_API_URL,
-
   },
   images: {
     domains: ['firebasestorage.googleapis.com']

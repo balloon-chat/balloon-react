@@ -86,7 +86,7 @@ describe('内部のパスかを確認する', () => {
     ];
 
     tests.forEach((data) => {
-      expect(isInnerPath(data.input)).toBe(data.expected);
+      expect(isInnerPath(data.input, null)).toBe(data.expected);
     });
   });
 });

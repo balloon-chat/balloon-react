@@ -20,7 +20,7 @@ const CreateTopicPage = ({ isLoggedIn }: Props) => {
   if (!isLoggedIn) {
     router.push({
       pathname: rootPath.login,
-      query: { return_to: rootPath.topicPath.create },
+      query: { return_to: `${rootPath.fullPath(rootPath.topicPath.create)}` },
     }).then();
     return (<></>);
   }
