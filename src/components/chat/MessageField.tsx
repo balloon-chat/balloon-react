@@ -6,6 +6,7 @@ import { useTopicState } from 'src/data/redux/topic/selector';
 import { useUserSelector } from 'src/data/redux/user/selector';
 import { mediaQuery } from 'src/components/constants/mediaQuery';
 import { ReactComponent as Send } from 'src/components/svgs/send.svg';
+import { ChatMenu } from 'src/components/chat/ChatMenu';
 
 export const MessageField = () => {
   const dispatcher = useDispatch();
@@ -27,33 +28,55 @@ export const MessageField = () => {
   };
 
   const sendMessage = (message: string) => {
-    if (topicId && uid && message) dispatcher(sendMessageAction({ message, userId: uid, topicId }));
+    if (topicId && uid && message) {
+      dispatcher(sendMessageAction({
+        message,
+        userId: uid,
+        topicId,
+      }));
+    }
     setText('');
   };
 
   return (
-    <MessageForm onSubmit={(e) => handleSubmit(e)}>
-      <TextFieldContainer>
-        <TextField
-          contentEditable
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          onInput={(e) => handleInput(e.currentTarget.textContent)}
-          placeholder="メッセージを送信"
-          role="textbox"
-        />
-        <Send onClick={() => handleSend()} />
-      </TextFieldContainer>
-    </MessageForm>
+    <Container>
+      <MessageForm onSubmit={(e) => handleSubmit(e)}>
+        <TextFieldContainer>
+          <TextField
+            contentEditable
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            onInput={(e) => handleInput(e.currentTarget.textContent)}
+            placeholder="メッセージを送信"
+            role="textbox"
+            spellCheck={false}
+            type="text"
+          />
+          <Send onClick={() => handleSend()} />
+        </TextFieldContainer>
+      </MessageForm>
+      <ChatMenu />
+    </Container>
   );
 };
 
-const MessageForm = styled.form`
+const Container = styled.div`
+  align-items: center;
   box-sizing: border-box;
   display: flex;
   justify-content: center;
-  padding: 0 16px;
+  padding: 0 8px 16px 8px;
   width: 100%;
+
+  @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
+    padding-bottom: 24px;
+  }
+`;
+
+const MessageForm = styled.form`
+  max-width: 500px;
+  width: 100%;
+  margin-right: 16px;
 `;
 
 const TextFieldContainer = styled.div`
@@ -62,19 +85,13 @@ const TextFieldContainer = styled.div`
   box-sizing: border-box;
   border: rgba(0, 0, 0, 0.2) solid 1px;
   border-radius: 50px;
-  box-shadow: black;
+  box-shadow: 0 10px 40px -10px rgb(0 64 128 / 20%);
   display: flex;
-  margin-bottom: 16px;
   position: relative;
   flex-wrap: wrap;
-  max-width: 500px;
   width: 100%;
   padding: 0 8px;
 
-  @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
-    margin-bottom: 24px;
-  }
-  
   & > svg {
     color: #5b87fa;
     cursor: pointer;
@@ -91,7 +108,7 @@ const TextField = styled.input`
   overflow-wrap: break-word;
   -webkit-user-modify: read-write-plaintext-only;
   flex: 1;
-  
+
   :empty:before {
     color: #72767d;
     content: attr(placeholder);
