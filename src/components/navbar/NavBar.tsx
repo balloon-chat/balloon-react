@@ -71,6 +71,8 @@ export const NavBar: React.FC<Props> = ({ currentLocation, children }) => {
 
 const NavContainer = styled.div`
   background-color: white;
+  box-shadow: 0 5px 10px 0 rgb(0 64 128 / 5%);
+  z-index: 2;
 `;
 
 const NavMainContainer = styled.div`
@@ -117,7 +119,6 @@ const ActionContainer = styled.ul`
     display: flex;
     align-items: center;
     box-sizing: border-box;
-    padding: 12px 0;
   }
   
   @media screen and (min-width: ${mediaQuery.mobile.landscape}px) {
