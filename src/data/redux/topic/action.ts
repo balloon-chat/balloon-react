@@ -73,6 +73,7 @@ export const fetchTopicByCode = createAsyncThunk<
 
 export type SetIsTopicCreated = PayloadAction<{ isTopicCreated: boolean }>;
 export type SetTopicId = PayloadAction<{ topicId: string | null }>;
+export type SetCurrentTopic = PayloadAction<{topic: TopicEntity | null}>
 export type SetInvitationCode = PayloadAction<{ code: number[] | null}>
 export type SetTopics = PayloadAction<{ topics: TopicEntity[] }>;
 export type ResetTopicState = Action;
