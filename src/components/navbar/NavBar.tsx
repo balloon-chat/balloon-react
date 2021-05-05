@@ -117,7 +117,7 @@ const ActionContainer = styled.ul`
     display: flex;
     align-items: center;
     box-sizing: border-box;
-    height: 64px;
+    padding: 12px 0;
   }
   
   @media screen and (min-width: ${mediaQuery.mobile.landscape}px) {

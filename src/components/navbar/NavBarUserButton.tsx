@@ -15,7 +15,7 @@ export const NavBarUserButton = () => {
         uid && photoUrl
         && (
           <Link href={rootPath.usersPath.user(uid)}>
-            <UserImage height={40} src={photoUrl} />
+            <UserImage height={32} src={photoUrl} />
           </Link>
         )
       }
@@ -27,5 +27,4 @@ const UserImage = styled.img`
   border-radius: 50%;
   align-self: center;
   cursor: pointer;
-  padding: 4px;
 `;
