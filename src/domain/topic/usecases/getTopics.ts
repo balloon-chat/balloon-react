@@ -1,7 +1,7 @@
 import { ITopicRepository } from 'src/domain/topic/repository/topicRepository';
 import { IMessageRepository } from 'src/domain/message/repository/messageRepository';
 import { IUserRepository } from 'src/domain/user/repository/userRepository';
-import { TopicData } from 'src/domain/topic/models/topicData';
+import { TopicData, TopicDataFactory } from 'src/domain/topic/models/topicData';
 import { TopicId } from 'src/domain/topic/models/topicId';
 import { GetTopic } from 'src/domain/topic/usecases/getTopic';
 import { IGetTopics } from 'src/domain/topic/types/getTopics';
@@ -58,15 +58,11 @@ export class GetTopics implements IGetTopics {
         const commentCount = await this.messageRepository.messageCount(
           topic.id,
         );
-        return {
-          id: topic.id,
-          title: topic.title,
-          description: topic.description ?? undefined,
-          thumbnailUrl: topic.thumbnailURL,
-          createdAt: new Date(topic.createdAt),
-          createdBy,
+        return TopicDataFactory.create({
+          topic: topic.toTopic(),
           commentCount,
-        } as const;
+          createdBy,
+        });
       }),
     );
 

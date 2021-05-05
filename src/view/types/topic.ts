@@ -1,12 +1,13 @@
 import { TopicData } from 'src/domain/topic/models/topicData';
 
 export type TopicEntity = {
-  id: string;
-  title: string;
-  description?: string | null;
-  createdAt: number;
-  thumbnailUrl: string;
-  commentCount: number;
+  id: string,
+  title: string,
+  description?: string | null,
+  createdAt: number,
+  thumbnailUrl: string,
+  commentCount: number,
+  isPrivate: boolean,
   label?: {
     title: string;
     color: string;
@@ -23,6 +24,7 @@ export class TopicEntityFactory {
       thumbnailUrl: topic.thumbnailUrl,
       commentCount: topic.commentCount,
       label: null,
+      isPrivate: topic.isPrivate,
     };
   }
 }

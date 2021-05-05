@@ -1,6 +1,6 @@
 import { TopicId } from 'src/domain/topic/models/topicId';
 import { TopicTitle } from 'src/domain/topic/models/topicTitle';
-import { Topic } from 'src/domain/topic/models/topic';
+import { Topic, TopicFactory } from 'src/domain/topic/models/topic';
 import { UserId } from 'src/domain/user/models/userId';
 import { TopicDescription } from 'src/domain/topic/models/topicDescription';
 
@@ -14,6 +14,18 @@ export class TopicEntity {
     public readonly isPrivate: boolean,
     public readonly description: TopicDescription | null,
   ) {}
+
+  toTopic(): Topic {
+    return TopicFactory.create({
+      topicId: this.id,
+      title: this.title,
+      createdAt: this.createdAt,
+      createdBy: this.createdBy,
+      thumbnailUrl: this.thumbnailURL,
+      isPrivate: this.isPrivate,
+      description: this.description?.value,
+    });
+  }
 
   static from(topic: Topic): TopicEntity {
     return new TopicEntity(
