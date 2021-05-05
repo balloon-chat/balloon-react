@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { TopicState, topicStateName, topicStates } from 'src/data/redux/topic/state';
 import {
   resetTopicStateReducer,
+  setCurrentTopicReducer,
   setInvitationCodeReducer,
   setIsTopicCreatedReducer,
   setTopicIdReducer,
@@ -30,6 +31,7 @@ const topicSlice = createSlice({
     setIsTopicCreated: setIsTopicCreatedReducer,
     setInvitationCode: setInvitationCodeReducer,
     setTopicId: setTopicIdReducer,
+    setCurrentTopic: setCurrentTopicReducer,
     setTopics: setTopicsReducer,
     resetTopicState: resetTopicStateReducer,
   },
@@ -73,6 +75,7 @@ export const {
   setIsTopicCreated,
   setInvitationCode,
   setTopicId,
+  setCurrentTopic,
   setTopics,
   resetTopicState,
 } = topicSlice.actions;

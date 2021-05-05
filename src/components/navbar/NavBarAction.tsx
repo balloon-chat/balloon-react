@@ -35,7 +35,7 @@ const NavButtonContainer = styled.a<{ isActive: boolean }>`
   font-size: 16px;
   justify-content: center;
   height: 100%;
-  padding: 0 16px;
+  padding: 12px 16px;
   letter-spacing: 0.25px;
   text-align: center;
   text-decoration: none;
