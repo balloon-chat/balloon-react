@@ -17,8 +17,13 @@ import { rootPath } from 'src/view/route/pagePath';
 import { topicStates } from 'src/data/redux/topic/state';
 import { ErrorDialog } from 'src/components/common/ErrorDialog';
 import { mediaQuery } from 'src/components/constants/mediaQuery';
+import { TopicEntity } from 'src/view/types/topic';
 
-export const EditTopic = () => {
+type Props = {
+  topic?: TopicEntity|null
+}
+
+export const EditTopic = ({ topic }: Props) => {
   const dispatcher = useDispatch();
   const router = useRouter();
   const userId = useUserSelector().uid;
@@ -27,13 +32,13 @@ export const EditTopic = () => {
   const { state } = useTopicState();
 
   // タイトル
-  const [title, setTitle] = useState('');
+  const [title, setTitle] = useState(topic?.title ?? '');
   const [titleError, setTitleError] = useState<string>();
   // 簡単な説明
-  const [description, setDescription] = useState('');
+  const [description, setDescription] = useState(topic?.description ?? '');
   const [descriptionError, setDescriptionError] = useState<string>();
   // プライベートな話題
-  const [isPrivate, setIsPrivate] = useState(false);
+  const [isPrivate, setIsPrivate] = useState(topic?.isPrivate ?? false);
   // サムネイル画像
   const [file, setFile] = useState<Blob | File>();
   // 作成中のダイアログを表示するフラグ
@@ -102,6 +107,7 @@ export const EditTopic = () => {
           onChange={(v) => setTitle(v)}
           maxLength={TopicTitle.MAX_TITLE_LENGTH}
           error={titleError}
+          initialValue={title}
         />
         <TextField
           title="簡単な説明"
@@ -109,13 +115,18 @@ export const EditTopic = () => {
           onChange={(v) => setDescription(v)}
           maxLength={TopicDescription.MAX_DESCRIPTION_LENGTH}
           error={descriptionError}
+          initialValue={description}
         />
         <ThumbnailInputRow>
           <Title>サムネイル</Title>
           <ImageFileContext.Provider
             value={{ setImageFile: (blob) => setFile(blob) }}
           >
-            <TopicThumbnail title={title} description={description} />
+            <TopicThumbnail
+              imgUrl={topic?.thumbnailUrl ?? null}
+              title={title}
+              description={description}
+            />
           </ImageFileContext.Provider>
         </ThumbnailInputRow>
         <Title>オプション</Title>
@@ -131,7 +142,7 @@ export const EditTopic = () => {
             <CheckInputDescription>URLまたは招待コードを知っているユーザーのみが話題に参加することができます。</CheckInputDescription>
           </CheckInputBody>
         </CheckInputRow>
-        <CreateButton>作成</CreateButton>
+        <CreateButton>{topic ? '保存' : '作成'}</CreateButton>
       </Form>
     </>
   );
@@ -166,7 +177,7 @@ const CheckInputRow = styled.label`
   & input[type='checkbox'] {
     margin-top: 8px;
   }
-  
+
   @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
     & input[type='checkbox'] {
       width: 16px;

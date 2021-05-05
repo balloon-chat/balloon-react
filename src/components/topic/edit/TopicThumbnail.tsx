@@ -9,29 +9,30 @@ import Delete from 'src/components/svgs/delete.svg';
 import UploadFile from 'src/components/svgs/upload_file.svg';
 
 type Props = {
-  title: string;
-  description: string;
+  title: string,
+  imgUrl: string| null,
+  description: string,
 };
 
 export const TopicThumbnail = ({
   title,
+  imgUrl,
   description,
 }: Props) => {
-  const dataURLKey = 'data_url';
-  const [image, setImage] = useState<ImageType>();
+  const [imageUrl, setImageUrl] = useState<string|undefined>(imgUrl ?? undefined);
   const { setImageFile } = useContext(ImageFileContext);
 
   const updateImage = (image?: ImageType) => {
-    setImage(image);
+    setImageUrl(image?.dataURL);
+
     if (image?.file) setImageFile(image.file);
   };
 
   return (
     <ReactImageUploading
-      dataURLKey={dataURLKey}
       maxNumber={2}
       onChange={(imageList) => updateImage(imageList[imageList.length - 1])}
-      value={image ? [image] : []}
+      value={imageUrl ? [{ dataUrl: imageUrl }] : []}
     >
       {({
         onImageUpload,
@@ -41,12 +42,12 @@ export const TopicThumbnail = ({
       }) => (
         <div {...dragProps}>
           <UploadDialog isDragging={isDragging as boolean} />
-          {image ? (
-            <ThumbnailImage src={image[dataURLKey]} alt="" />
+          {imageUrl ? (
+            <ThumbnailImage src={imageUrl} alt="" />
           ) : (
             <ThumbnailTemplate title={title} description={description} />
           )}
-          {image ? (
+          {imageUrl ? (
             <DeleteImageButton onClick={onImageRemoveAll}>
               <Delete />
               アップロードした画像を削除
