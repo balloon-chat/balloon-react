@@ -38,7 +38,7 @@ const ProfilePage = ({
 
   useEffect(() => {
     setIsCurrentUser(uid === id);
-  }, [id]);
+  }, [uid, id]);
 
   if (loginRequired) {
     router.push(rootPath.login, {
@@ -58,22 +58,23 @@ const ProfilePage = ({
       <Head>
         <title>{pageTitle.users.profile(user?.name ?? '')}</title>
       </Head>
-      <NavBar />
-      {user && (
-        <UserProfileContainer>
-          <UserProfile {...user} />
-          {
-            isCurrentUser && (
-              <UserActionContainer>
-                <li>
-                  <button type="button" onClick={() => logout()}>ログアウト</button>
-                </li>
-                <li>プロフィール編集</li>
-              </UserActionContainer>
-            )
-          }
-        </UserProfileContainer>
-      )}
+      <NavBar>
+        {user && (
+          <UserProfileContainer>
+            <UserProfile {...user} />
+            {
+              isCurrentUser && (
+                <UserActionContainer>
+                  <li>
+                    <button type="button" onClick={() => logout()}>ログアウト</button>
+                  </li>
+                  <li>プロフィール編集</li>
+                </UserActionContainer>
+              )
+            }
+          </UserProfileContainer>
+        )}
+      </NavBar>
       <Container>
         <InnerBody>
           <TopicListContainer>
@@ -94,9 +95,11 @@ const ProfilePage = ({
 };
 
 const UserProfileContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   background-color: white;
-  margin: 32px auto;
-  max-width: 1050px;
+  padding: 32px 16px;
 `;
 
 const Container = styled.div`
