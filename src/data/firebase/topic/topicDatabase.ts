@@ -1,4 +1,4 @@
-import { ITopicDatabase } from 'src/data/core/topic/topicDatabase';
+import { ITopicDatabase, UpdateTopicParams } from 'src/data/core/topic/topicDatabase';
 import { TopicDto } from 'src/data/core/topic/topicDto';
 import firebase from 'firebase/app';
 import 'firebase/firestore';
@@ -17,8 +17,7 @@ export class FirebaseTopicDatabase implements ITopicDatabase {
   }
 
   async find(topicId: string): Promise<TopicDto | undefined> {
-    const snapshot = await this.document(topicId)
-      .get();
+    const snapshot = await this.document(topicId).get();
     return TopicDto.fromJSON(snapshot.data() ?? null);
   }
 
@@ -60,6 +59,27 @@ export class FirebaseTopicDatabase implements ITopicDatabase {
     return snapshots.docs
       .map((snapshot) => TopicDto.fromJSON(snapshot.data()))
       .filter<TopicDto>((e): e is TopicDto => e !== undefined);
+  }
+
+  async updateTopic(topicId: string, {
+    title,
+    description,
+    thumbnailUrl,
+    isPrivate,
+  }: UpdateTopicParams): Promise<void> {
+    await this.database.runTransaction(async (transaction) => {
+      const topicRef = this.document(topicId);
+      const doc = await transaction.get(topicRef);
+      const data = TopicDto.fromJSON(doc.data() ?? null);
+      if (data) {
+        transaction.update(topicRef, {
+          title: title ?? data.title,
+          description: description ?? data.description,
+          thumbnailURL: thumbnailUrl ?? data.thumbnailURL,
+          isPrivate: isPrivate ?? data.isPrivate,
+        });
+      }
+    });
   }
 
   async save(topic: TopicDto): Promise<void> {

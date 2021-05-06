@@ -1,6 +1,8 @@
 import { TopicEntity } from 'src/domain/topic/repository/topicEntity';
 import { TopicId } from 'src/domain/topic/models/topicId';
 import { UserId } from 'src/domain/user/models/userId';
+import { TopicTitle } from 'src/domain/topic/models/topicTitle';
+import { TopicDescription } from 'src/domain/topic/models/topicDescription';
 
 export interface ITopicRepository {
   find(topicId: TopicId): Promise<TopicEntity | undefined>;
@@ -29,5 +31,18 @@ export interface ITopicRepository {
    */
   findAllTopicsCreatedBy(createdBy: UserId): Promise<TopicEntity[]>
 
+  /**
+   * {@param topicId}で指定された話題のプロパティを更新
+   * @param params undefinedでないプロパティは更新される
+   */
+  updateTopic(topicId: TopicId, params: UpdateTopicParams): Promise<void>
+
   save(topic: TopicEntity): Promise<void>;
 }
+
+export type UpdateTopicParams = {
+  title: TopicTitle | null,
+  description: TopicDescription | null,
+  thumbnailUrl: string | null,
+  isPrivate: boolean | null
+};
