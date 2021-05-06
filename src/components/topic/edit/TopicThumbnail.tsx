@@ -24,7 +24,6 @@ export const TopicThumbnail = ({
 
   const updateImage = (image?: ImageType) => {
     setImageUrl(image?.dataURL);
-
     if (image?.file) setImageFile(image.file);
   };
 

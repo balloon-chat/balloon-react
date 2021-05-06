@@ -2,6 +2,7 @@ export const topicPath = {
   index: '/topics',
   create: '/topics/create',
   topic: (id: string) => `/topics/${id}`,
+  edit: (id: string) => `/topics/edit/${id}`,
 };
 
 export const usersPath = {
