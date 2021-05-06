@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import { MessageField } from 'src/components/chat/MessageField';
 import { NavBar } from 'src/components/navbar/NavBar';
-import { TopicNotFound } from 'src/components/topic/TopicNotFound';
+import { ErrorPage } from 'src/components/common/ErrorPage';
 import Head from 'next/head';
 import { pageTitle } from 'src/view/route/pagePath';
-import { GetServerSideProps } from 'next';
+import { GetServerSideProps, GetServerSidePropsResult } from 'next';
 import { TopicEntity, TopicEntityFactory } from 'src/view/types/topic';
 import { TopicService } from 'src/domain/topic/service/topicService';
 import styled from 'styled-components';
@@ -80,7 +80,7 @@ const TopicPage = ({ topic, code }: Props) => {
           <MessageField />
         </>
       )}
-      {!topic && <TopicNotFound />}
+      {!topic && <ErrorPage message="話題が見つかりませんでした" />}
     </Container>
   );
 };
@@ -95,7 +95,12 @@ const Container = styled.div`
 export const getServerSideProps: GetServerSideProps<Props> = async (
   context,
 ) => {
-  const emptyResult = { props: { topic: null, code: null } };
+  const emptyResult: GetServerSidePropsResult<Props> = {
+    props: {
+      topic: null,
+      code: null,
+    },
+  };
   const { id } = context.query;
   if (typeof id !== 'string') return emptyResult;
 

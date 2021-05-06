@@ -3,10 +3,9 @@ import styled from 'styled-components';
 import { Button } from 'src/components/common/Button';
 import { useDispatch } from 'react-redux';
 import { useUserSelector } from 'src/data/redux/user/selector';
-import { createTopic } from 'src/data/redux/topic/action';
+import { createTopic, updateTopic as updateTopicAction } from 'src/data/redux/topic/action';
 import { useTopicState } from 'src/data/redux/topic/selector';
 import { useRouter } from 'next/router';
-import { setIsTopicCreated } from 'src/data/redux/topic/slice';
 import { ImageFileContext } from 'src/components/topic/edit/context';
 import { TopicThumbnail } from 'src/components/topic/edit/TopicThumbnail';
 import { TopicTitle } from 'src/domain/topic/models/topicTitle';
@@ -17,75 +16,114 @@ import { rootPath } from 'src/view/route/pagePath';
 import { topicStates } from 'src/data/redux/topic/state';
 import { ErrorDialog } from 'src/components/common/ErrorDialog';
 import { mediaQuery } from 'src/components/constants/mediaQuery';
+import { TopicEntity } from 'src/view/types/topic';
+import { resetTopicState } from 'src/data/redux/topic/slice';
 
-export const EditTopic = () => {
+type Props = {
+  topic?: TopicEntity|null
+}
+
+export const EditTopic = ({ topic }: Props) => {
   const dispatcher = useDispatch();
   const router = useRouter();
-  const userId = useUserSelector().uid;
-  const { topicId } = useTopicState();
-  const { isTopicCreated } = useTopicState();
-  const { state } = useTopicState();
+  const { uid } = useUserSelector();
+  const { state, topicId } = useTopicState();
 
   // タイトル
-  const [title, setTitle] = useState('');
+  const [title, setTitle] = useState(topic?.title ?? '');
   const [titleError, setTitleError] = useState<string>();
   // 簡単な説明
-  const [description, setDescription] = useState('');
+  const [description, setDescription] = useState(topic?.description ?? '');
   const [descriptionError, setDescriptionError] = useState<string>();
   // プライベートな話題
-  const [isPrivate, setIsPrivate] = useState(false);
+  const [isPrivate, setIsPrivate] = useState(topic?.isPrivate ?? false);
   // サムネイル画像
   const [file, setFile] = useState<Blob | File>();
-  // 作成中のダイアログを表示するフラグ
-  const [isTopicCreating, setIsTopicCreating] = useState(false);
+
+  const [dialogMessage, setDialogMessage] = useState<string|null>(null);
+  const [errorDialogMessage, setErrorDialogMessage] = useState<string|null>(null);
+
+  useEffect(() => () => {
+    dispatcher(resetTopicState());
+  }, []);
 
   useEffect(() => {
-    if (topicId && isTopicCreated) {
-      navigateToTopic(topicId).then();
-    }
-  }, [topicId, isTopicCreated]);
+    if (!topicId) return;
 
-  useEffect(() => {
-    if (state === topicStates.CRETE_TOPIC_ERROR) {
-      setIsTopicCreating(false);
+    if (
+      state === topicStates.TOPIC_UPDATED
+      || state === topicStates.TOPIC_CREATED
+    ) {
+      router.push(rootPath.topicPath.topic(topicId)).then();
+    } else if (
+      state === topicStates.CRETE_TOPIC_ERROR
+      || state === topicStates.UPDATE_TOPIC_ERROR
+    ) {
+      setDialogMessage(null);
+      setErrorDialogMessage('予期せぬエラーが発生しました。');
     }
   }, [state]);
 
-  const navigateToTopic = async (topicId: string) => {
-    dispatcher(setIsTopicCreated({ isTopicCreated: true }));
-    await router.push(rootPath.topicPath.topic(topicId));
-  };
-
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (title && userId && file) {
-      setIsTopicCreating(true);
+
+    // 入力値の検証
+    let valid = true;
+    if (!TopicTitle.require(title)) {
+      setTitleError('この項目は必須です。');
+      valid = false;
+    }
+    if (description && !TopicDescription.require(description)) {
+      setDescriptionError(`文字数は${TopicDescription.MAX_DESCRIPTION_LENGTH}以下です。`);
+      valid = false;
+    }
+
+    if (!valid) return;
+
+    if (topic) updateTopic();
+    else saveTopic();
+  };
+
+  const saveTopic = () => {
+    if (title && uid && file) {
+      setDialogMessage('話題を作成しています。');
       dispatcher(
         createTopic({
           title,
-          userId,
+          userId: uid,
           description,
           thumbnail: file,
           isPrivate,
         }),
       );
-      return;
     }
+  };
 
-    if (!TopicTitle.require(title)) {
-      setTitleError('この項目は必須です。');
-    }
-    if (description && !TopicDescription.require(description)) {
-      setDescriptionError(
-        `文字数は${TopicDescription.MAX_DESCRIPTION_LENGTH}以下です。`,
-      );
+  const updateTopic = () => {
+    if (topic && title && uid) {
+      setDialogMessage('修正内容を反映しています。');
+      dispatcher(updateTopicAction({
+        topicId: topic.id,
+        title,
+        description,
+        thumbnail: file,
+        isPrivate,
+      }));
     }
   };
 
   return (
     <>
       {
-        isTopicCreating && <LoadDialog message="話題を作成しています。" />
+        dialogMessage && <LoadDialog message={dialogMessage} />
+      }
+      {
+        errorDialogMessage && (
+        <ErrorDialog
+          message={errorDialogMessage}
+          onClose={() => router.reload()}
+        />
+        )
       }
       {
         state === topicStates.CRETE_TOPIC_ERROR && (
@@ -102,6 +140,7 @@ export const EditTopic = () => {
           onChange={(v) => setTitle(v)}
           maxLength={TopicTitle.MAX_TITLE_LENGTH}
           error={titleError}
+          initialValue={title}
         />
         <TextField
           title="簡単な説明"
@@ -109,13 +148,18 @@ export const EditTopic = () => {
           onChange={(v) => setDescription(v)}
           maxLength={TopicDescription.MAX_DESCRIPTION_LENGTH}
           error={descriptionError}
+          initialValue={description}
         />
         <ThumbnailInputRow>
           <Title>サムネイル</Title>
           <ImageFileContext.Provider
             value={{ setImageFile: (blob) => setFile(blob) }}
           >
-            <TopicThumbnail title={title} description={description} />
+            <TopicThumbnail
+              imgUrl={topic?.thumbnailUrl ?? null}
+              title={title}
+              description={description}
+            />
           </ImageFileContext.Provider>
         </ThumbnailInputRow>
         <Title>オプション</Title>
@@ -131,7 +175,7 @@ export const EditTopic = () => {
             <CheckInputDescription>URLまたは招待コードを知っているユーザーのみが話題に参加することができます。</CheckInputDescription>
           </CheckInputBody>
         </CheckInputRow>
-        <CreateButton>作成</CreateButton>
+        <CreateButton>{topic ? '保存' : '作成'}</CreateButton>
       </Form>
     </>
   );
@@ -166,7 +210,7 @@ const CheckInputRow = styled.label`
   & input[type='checkbox'] {
     margin-top: 8px;
   }
-  
+
   @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
     & input[type='checkbox'] {
       width: 16px;

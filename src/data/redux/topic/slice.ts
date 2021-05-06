@@ -14,6 +14,7 @@ import {
   fetchTopicByCode,
   fetchTopicsCreatedBy,
   fetchTopicsFrom,
+  updateTopic,
 } from 'src/data/redux/topic/action';
 import { TopicEntity } from 'src/view/types/topic';
 
@@ -40,7 +41,7 @@ const topicSlice = createSlice({
       .addCase(createTopic.fulfilled, (state, { payload }) => ({
         ...state,
         topicId: payload.id.value,
-        isTopicCreated: true,
+        state: topicStates.TOPIC_CREATED,
       }))
       .addCase(createTopic.rejected, (state) => ({
         ...state,
@@ -67,6 +68,15 @@ const topicSlice = createSlice({
         ...state,
         topicId: payload.topicId,
         state: payload.topicId ? topicStates.TOPIC_FOUND : topicStates.CANNOT_FIND_BY_CODE,
+      }))
+      .addCase(updateTopic.rejected, (state) => ({
+        ...state,
+        state: topicStates.UPDATE_TOPIC_ERROR,
+      }))
+      .addCase(updateTopic.fulfilled, (state, { payload }) => ({
+        ...state,
+        topicId: payload.topicId,
+        state: topicStates.TOPIC_UPDATED,
       }));
   },
 });

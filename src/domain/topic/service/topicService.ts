@@ -32,6 +32,8 @@ import { IInvitationRepository } from 'src/domain/topic/repository/invitationRep
 import { InvitationApi } from 'src/data/api/topic/InvitationApi';
 import { IGetTopicByInvitationCode } from 'src/domain/topic/types/getTopicByInvitationCode';
 import { GetTopicByInvitationCode } from 'src/domain/topic/usecases/getTopicByInvitationCode';
+import { IUpdateTopic } from 'src/domain/topic/types/updateTopic';
+import { UpdateTopic } from 'src/domain/topic/usecases/updateTopic';
 
 export class TopicService {
   private readonly createTopicUsecase: ICreateTopic;
@@ -45,6 +47,8 @@ export class TopicService {
   private readonly getTopicsCreatedByUsecase: IGetTopicsCreatedBy;
 
   private readonly getRecommendTopicsUsecase: IGetRecommendTopics;
+
+  private readonly updateTopicUsecase: IUpdateTopic;
 
   constructor(
     topicRepository: ITopicRepository
@@ -89,6 +93,10 @@ export class TopicService {
       this.getTopicsUsecase,
       recommendTopicRepository,
     );
+    this.updateTopicUsecase = new UpdateTopic(
+      topicRepository,
+      topicImageRepository,
+    );
   }
 
   createTopic(
@@ -105,6 +113,15 @@ export class TopicService {
       thumbnail,
       isPrivate,
     );
+  }
+
+  async updateTopic(topicId: string, params: {
+      title?: string,
+    description?: string,
+    thumbnail?: File|Blob,
+    isPrivate?: boolean,
+  }): Promise<void> {
+    await this.updateTopicUsecase.execute(topicId, params);
   }
 
   fetchTopic(topicId: string): Promise<TopicData | undefined> {

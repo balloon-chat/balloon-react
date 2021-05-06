@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
-import { rootPath } from 'src/view/route/pagePath';
+import { rootPath, topicPath } from 'src/view/route/pagePath';
 import { useTopicState } from 'src/data/redux/topic/selector';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { useRouter } from 'next/router';
 import { createInvitation } from 'src/view/lib/invitation';
+import { useUserSelector } from 'src/data/redux/user/selector';
 
 export const ChatMenu = () => {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const { code, currentTopic } = useTopicState();
+  const { uid } = useUserSelector();
   const [invitation, setInvitation] = useState<string|null>();
 
   useEffect(() => {
@@ -41,6 +43,13 @@ export const ChatMenu = () => {
                     >
                       <li>招待をコピー</li>
                     </CopyToClipboard>
+                  )
+                }
+                {
+                  currentTopic && currentTopic.createdBy === uid && (
+                    <Link href={topicPath.edit(currentTopic.id)}>
+                      <li>話題を編集</li>
+                    </Link>
                   )
                 }
                 <Link href={rootPath.index}><li>退出</li></Link>

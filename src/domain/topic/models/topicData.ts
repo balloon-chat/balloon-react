@@ -12,22 +12,28 @@ export type TopicData = {
   createdAt: Date,
   createdBy: User,
   commentCount: number,
+  isPrivate: boolean,
 };
 
 export class TopicDataFactory {
-  static create(arg: {
+  static create({
+    topic,
+    commentCount,
+    createdBy,
+  }:{
     topic: Topic,
     commentCount: number,
     createdBy: User,
   }): TopicData {
     return {
-      id: arg.topic.id,
-      title: arg.topic.title,
-      description: arg.topic.description,
-      thumbnailUrl: arg.topic.thumbnailUrl,
-      createdAt: new Date(arg.topic.createdAt),
-      createdBy: arg.createdBy,
-      commentCount: arg.commentCount,
+      id: topic.id,
+      title: topic.title,
+      description: topic.description,
+      thumbnailUrl: topic.thumbnailUrl,
+      createdAt: new Date(topic.createdAt),
+      isPrivate: topic.isPrivate,
+      createdBy,
+      commentCount,
     };
   }
 }

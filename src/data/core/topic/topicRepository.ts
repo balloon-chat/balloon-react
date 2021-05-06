@@ -1,4 +1,4 @@
-import { ITopicRepository } from 'src/domain/topic/repository/topicRepository';
+import { ITopicRepository, UpdateTopicParams } from 'src/domain/topic/repository/topicRepository';
 import { TopicId } from 'src/domain/topic/models/topicId';
 import { TopicEntity } from 'src/domain/topic/repository/topicEntity';
 import { ITopicDatabase } from 'src/data/core/topic/topicDatabase';
@@ -32,6 +32,15 @@ export class TopicRepository implements ITopicRepository {
       from?.value,
     );
     return TopicDto.toTopicEntities(dto);
+  }
+
+  async updateTopic(topicId: TopicId, params: UpdateTopicParams): Promise<void> {
+    await this.topicDatabase.updateTopic(topicId.value, {
+      title: params.title?.value ?? null,
+      description: params.description?.value ?? null,
+      thumbnailUrl: params.thumbnailUrl,
+      isPrivate: params.isPrivate,
+    });
   }
 
   async save(topic: TopicEntity): Promise<void> {
