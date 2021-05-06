@@ -17,7 +17,6 @@ import Head from 'next/head';
 import { AuthService, AuthStates } from 'src/domain/auth/service/AuthService';
 import { mediaQuery } from 'src/components/constants/mediaQuery';
 import Link from 'next/link';
-import { NavLocations } from 'src/view/types/navigation';
 
 type Props = {
   user: UserEntity | null
@@ -82,7 +81,7 @@ const ProfilePage = ({
           </TopicListContainer>
         </InnerBody>
       </Container>
-      <BottomNavigation currentLocation={NavLocations.PROFILE} />
+      <BottomNavigation />
     </>
   );
 };

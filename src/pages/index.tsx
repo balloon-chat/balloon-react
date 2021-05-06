@@ -15,7 +15,6 @@ import { Button } from 'src/components/common/Button';
 import Head from 'next/head';
 import Image from 'next/image';
 import { imagePath } from 'src/components/constants/imagePath';
-import { NavLocations } from 'src/view/types/navigation';
 
 type Props = {
   pickup: {
@@ -65,7 +64,7 @@ const IndexPage: React.FC<Props> = ({
           <ShowMoreButton onClick={showMore}>もっと見る</ShowMoreButton>
         </Container>
       </TopicContainer>
-      <BottomNavigation currentLocation={NavLocations.HOME} />
+      <BottomNavigation />
     </>
   );
 };
