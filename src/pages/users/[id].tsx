@@ -16,7 +16,7 @@ import { pageTitle, rootPath } from 'src/view/route/pagePath';
 import Head from 'next/head';
 import { AuthService, AuthStates } from 'src/domain/auth/service/AuthService';
 import { mediaQuery } from 'src/components/constants/mediaQuery';
-import Link from 'next/link';
+import firebase from 'firebase/app';
 
 type Props = {
   user: UserEntity | null
@@ -48,6 +48,11 @@ const ProfilePage = ({
     return <></>;
   }
 
+  const logout = async () => {
+    await firebase.auth().signOut();
+    await router.push(rootPath.logout);
+  };
+
   return (
     <>
       <Head>
@@ -60,7 +65,9 @@ const ProfilePage = ({
           {
             isCurrentUser && (
               <UserActionContainer>
-                <li><Link href={rootPath.logout}>ログアウト</Link></li>
+                <li>
+                  <button type="button" onClick={() => logout()}>ログアウト</button>
+                </li>
                 <li>プロフィール編集</li>
               </UserActionContainer>
             )

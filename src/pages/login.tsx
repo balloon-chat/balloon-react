@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
 import { useRouter } from 'next/router';
 import { useUserSelector } from 'src/data/redux/user/selector';
-import { login, logout } from 'src/data/redux/user/action';
+import { login } from 'src/data/redux/user/action';
 import { isInnerPath, pageTitle, rootPath } from 'src/view/route/pagePath';
 import { LoadDialog } from 'src/components/common/LoadDialog';
 import { LoginStates } from 'src/data/redux/user/state';
@@ -52,10 +52,6 @@ const LoginPage = ({ accessToken, authorized, newUser }: Props) => {
     }
   };
 
-  const resetLoginPageState = () => {
-    dispatcher(logout());
-  };
-
   return (
     <>
       <Head>
@@ -75,7 +71,7 @@ const LoginPage = ({ accessToken, authorized, newUser }: Props) => {
         loginState === LoginStates.LOGIN_ERROR && (
           <ErrorDialog
             message="ログイン中にエラーが発生しました。"
-            onClose={resetLoginPageState}
+            onClose={() => router.reload()}
           />
         )
       }

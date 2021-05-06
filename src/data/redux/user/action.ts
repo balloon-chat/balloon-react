@@ -4,9 +4,8 @@ import { UserService } from 'src/domain/user/service/userService';
 import { UserEntity } from 'src/view/types/user';
 import { AuthService } from 'src/domain/auth/service/AuthService';
 
-export const CREATE_USER = `${userStateName}/create`;
-export const LOGIN = `${userStateName}/login`;
-export const LOGOUT = `${userStateName}/logout`;
+const CREATE_USER = `${userStateName}/create`;
+const LOGIN = `${userStateName}/login`;
 
 export const createUser = createAsyncThunk<
   UserEntity,
@@ -41,12 +40,6 @@ export const login = createAsyncThunk<
   }
 
   return { user: null };
-});
-
-export const logout = createAsyncThunk<{}, void>(LOGOUT, async () => {
-  const service = new AuthService();
-  await service.logout();
-  return {} as const;
 });
 
 export type SetUser = PayloadAction<{
