@@ -2,7 +2,7 @@ import { NavButton } from 'src/components/navbar/NavBarAction';
 import { rootPath, topicPath } from 'src/view/route/pagePath';
 import styled from 'styled-components';
 import { useUserSelector } from 'src/data/redux/user/selector';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import 'firebase/auth';
 import Link from 'next/link';
 import { NavBarHeader } from 'src/components/navbar/NavBarHeader';
@@ -13,7 +13,7 @@ import Image from 'next/image';
 import { imagePath } from 'src/components/constants/imagePath';
 import Edit from 'src/components/svgs/edit.svg';
 import Login from 'src/components/svgs/login.svg';
-import { NavLocation, NavLocations } from 'src/view/types/navigation';
+import { getCurrentLocation, NavLocations } from 'src/view/types/navigation';
 import { useRouter } from 'next/router';
 
 export const NavBarHome = () => (
@@ -22,18 +22,19 @@ export const NavBarHome = () => (
   </NavBar>
 );
 
-type Props = {
-  currentLocation?: NavLocation,
-};
-
-export const NavBar: React.FC<Props> = ({ currentLocation, children }) => {
+export const NavBar: React.FC = ({ children }) => {
   const router = useRouter();
-  const { loginState } = useUserSelector();
+  const { uid, loginState } = useUserSelector();
+  const [currentLocation, setCurrentLocation] = useState<string>();
 
   const return_to = () => {
     if (currentLocation === NavLocations.LOGIN) return null;
     return { return_to: router.asPath };
   };
+
+  useEffect(() => {
+    setCurrentLocation(getCurrentLocation(router.asPath, uid) ?? undefined);
+  }, [router.pathname]);
 
   return (
     <NavContainer>

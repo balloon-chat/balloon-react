@@ -14,7 +14,6 @@ import { AuthService } from 'src/domain/auth/service/AuthService';
 import { ErrorDialog } from 'src/components/common/ErrorDialog';
 import { NavBar } from 'src/components/navbar/NavBar';
 import { BottomNavigation } from 'src/components/navbar/bottomNavigation/BottomNavigation';
-import { NavLocations } from 'src/view/types/navigation';
 
 type Props = {
   accessToken: string | null,
@@ -81,11 +80,11 @@ const LoginPage = ({ accessToken, authorized, newUser }: Props) => {
         )
       }
       <Wrapper>
-        <NavBar currentLocation={NavLocations.LOGIN} />
+        <NavBar />
         <Container>
           <LoginDialog />
         </Container>
-        <BottomNavigation currentLocation={NavLocations.LOGIN} />
+        <BottomNavigation />
       </Wrapper>
     </>
   );

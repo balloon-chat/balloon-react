@@ -1,29 +1,30 @@
 import styled from 'styled-components';
 import { rootPath } from 'src/view/route/pagePath';
 import { mediaQuery } from 'src/components/constants/mediaQuery';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Home from 'src/components/svgs/home.svg';
 import Edit from 'src/components/svgs/edit.svg';
 import Search from 'src/components/svgs/search.svg';
 import Login from 'src/components/svgs/login.svg';
 import { useUserSelector } from 'src/data/redux/user/selector';
 import { LoginStates } from 'src/data/redux/user/state';
-import { NavLocation, NavLocations } from 'src/view/types/navigation';
+import { getCurrentLocation, NavLocations } from 'src/view/types/navigation';
 import { useRouter } from 'next/router';
 import { NavButton } from 'src/components/navbar/NavBarAction';
 
-type Props = {
-  currentLocation?: NavLocation,
-};
-
-export const BottomNavigation = ({ currentLocation }: Props) => {
+export const BottomNavigation = () => {
   const router = useRouter();
   const { uid, photoUrl, loginState } = useUserSelector();
+  const [currentLocation, setCurrentLocation] = useState<string>();
 
   const return_to = () => {
     if (currentLocation === NavLocations.LOGIN) return null;
     return { return_to: router.asPath };
   };
+
+  useEffect(() => {
+    setCurrentLocation(getCurrentLocation(router.asPath, uid) ?? undefined);
+  }, [router.asPath]);
 
   return (
     <Container>
@@ -67,7 +68,7 @@ export const BottomNavigation = ({ currentLocation }: Props) => {
           <NavButton
             label="プロフィール"
             link={rootPath.usersPath.user(uid)}
-            isActive={currentLocation === NavLocations.LOGIN}
+            isActive={currentLocation === NavLocations.PROFILE}
           >
             <UserIcon
               isActive={currentLocation === NavLocations.PROFILE}

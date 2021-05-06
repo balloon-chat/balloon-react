@@ -47,6 +47,7 @@ const NavButtonContainer = styled.a<{ isActive: boolean }>`
   }
 
   @media screen and (min-width: ${mediaQuery.mobile.landscape}px) {
+    background-color: white;
     flex-direction: row;
     font-size: 16px;
     height: 100%;

@@ -6,7 +6,6 @@ import { UserService } from 'src/domain/user/service/userService';
 import Head from 'next/head';
 import { pageTitle } from 'src/view/route/pagePath';
 import { NavBar } from 'src/components/navbar/NavBar';
-import { NavLocations } from 'src/view/types/navigation';
 import { ContainerCard } from 'src/components/common/ContainerCard';
 import { EditTopic } from 'src/components/topic/edit/EditTopic';
 import { BottomNavigation } from 'src/components/navbar/bottomNavigation/BottomNavigation';
@@ -38,7 +37,7 @@ export const EditTopicPage = ({ topic, isEditable }: Props) => (
             <ErrorPage message="この話題は編集できません" detail="作成者のみが編集できます" />
           )
       }
-    <BottomNavigation currentLocation={NavLocations.CREATE_TOPIC} />
+    <BottomNavigation />
   </>
 );
 
