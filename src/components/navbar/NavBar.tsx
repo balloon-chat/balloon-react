@@ -49,7 +49,7 @@ export const NavBar: React.FC<Props> = ({ currentLocation, children }) => {
             <NavButton
               link={topicPath.create}
               isActive={currentLocation === NavLocations.CREATE_TOPIC}
-              title="話題を作る"
+              label="話題を作る"
             >
               <Edit />
             </NavButton>
@@ -61,7 +61,7 @@ export const NavBar: React.FC<Props> = ({ currentLocation, children }) => {
                 <NavButton
                   link={rootPath.login}
                   linkQuery={return_to() ?? undefined}
-                  title="ログイン"
+                  label="ログイン"
                 >
                   <Login />
                 </NavButton>

@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { BottomNavigationButton } from 'src/components/navbar/bottomNavigation/BottomNavigationButton';
 import { rootPath } from 'src/view/route/pagePath';
 import { mediaQuery } from 'src/components/constants/mediaQuery';
 import React from 'react';
@@ -11,6 +10,7 @@ import { useUserSelector } from 'src/data/redux/user/selector';
 import { LoginStates } from 'src/data/redux/user/state';
 import { NavLocation, NavLocations } from 'src/view/types/navigation';
 import { useRouter } from 'next/router';
+import { NavButton } from 'src/components/navbar/NavBarAction';
 
 type Props = {
   currentLocation?: NavLocation,
@@ -27,46 +27,46 @@ export const BottomNavigation = ({ currentLocation }: Props) => {
 
   return (
     <Container>
-      <BottomNavigationButton
+      <NavButton
         isActive={currentLocation === NavLocations.HOME}
         label="ホーム"
-        linkTo={rootPath.index}
+        link={rootPath.index}
       >
         <Home />
-      </BottomNavigationButton>
-      <BottomNavigationButton
+      </NavButton>
+      <NavButton
         label="話題を作る"
-        linkTo={rootPath.topicPath.create}
+        link={rootPath.topicPath.create}
         isActive={currentLocation === NavLocations.CREATE_TOPIC}
       >
         <Edit />
-      </BottomNavigationButton>
-      <BottomNavigationButton
+      </NavButton>
+      <NavButton
         label="話題を探す"
-        linkTo={rootPath.topicPath.index}
+        link={rootPath.topicPath.index}
         isActive={currentLocation === NavLocations.FIND_TOPIC}
       >
         <Search />
-      </BottomNavigationButton>
+      </NavButton>
       {
         loginState !== LoginStates.LOGGED_IN
         && (
-        <BottomNavigationButton
+        <NavButton
           label="ログイン"
-          linkTo={rootPath.login}
+          link={rootPath.login}
           linkQuery={return_to() ?? undefined}
           isActive={currentLocation === NavLocations.LOGIN}
         >
           <Login />
-        </BottomNavigationButton>
+        </NavButton>
         )
       }
       {
         loginState === LoginStates.LOGGED_IN && uid && photoUrl
         && (
-          <BottomNavigationButton
+          <NavButton
             label="プロフィール"
-            linkTo={rootPath.usersPath.user(uid)}
+            link={rootPath.usersPath.user(uid)}
             isActive={currentLocation === NavLocations.LOGIN}
           >
             <UserIcon
@@ -76,7 +76,7 @@ export const BottomNavigation = ({ currentLocation }: Props) => {
               height={32}
               width={32}
             />
-          </BottomNavigationButton>
+          </NavButton>
         )
       }
     </Container>
