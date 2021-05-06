@@ -6,7 +6,6 @@ import React from 'react';
 import 'firebase/auth';
 import Link from 'next/link';
 import { NavBarHeader } from 'src/components/navbar/NavBarHeader';
-import { useRouter } from 'next/router';
 import { mediaQuery } from 'src/components/constants/mediaQuery';
 import { NavBarUserButton } from 'src/components/navbar/NavBarUserButton';
 import { LoginStates } from 'src/data/redux/user/state';
@@ -15,6 +14,7 @@ import { imagePath } from 'src/components/constants/imagePath';
 import Edit from 'src/components/svgs/edit.svg';
 import Login from 'src/components/svgs/login.svg';
 import { NavLocation, NavLocations } from 'src/view/types/navigation';
+import { useRouter } from 'next/router';
 
 export const NavBarHome = () => (
   <NavBar>
@@ -29,6 +29,11 @@ type Props = {
 export const NavBar: React.FC<Props> = ({ currentLocation, children }) => {
   const router = useRouter();
   const { loginState } = useUserSelector();
+
+  const return_to = () => {
+    if (currentLocation === NavLocations.LOGIN) return null;
+    return { return_to: router.asPath };
+  };
 
   return (
     <NavContainer>
@@ -55,7 +60,7 @@ export const NavBar: React.FC<Props> = ({ currentLocation, children }) => {
               : (
                 <NavButton
                   link={rootPath.login}
-                  linkQuery={{ return_to: router.asPath }}
+                  linkQuery={return_to() ?? undefined}
                   title="ログイン"
                 >
                   <Login />

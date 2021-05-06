@@ -12,6 +12,9 @@ import Head from 'next/head';
 import { GetServerSideProps } from 'next';
 import { AuthService } from 'src/domain/auth/service/AuthService';
 import { ErrorDialog } from 'src/components/common/ErrorDialog';
+import { NavBar } from 'src/components/navbar/NavBar';
+import { BottomNavigation } from 'src/components/navbar/bottomNavigation/BottomNavigation';
+import { NavLocations } from 'src/view/types/navigation';
 
 type Props = {
   accessToken: string | null,
@@ -77,17 +80,29 @@ const LoginPage = ({ accessToken, authorized, newUser }: Props) => {
           />
         )
       }
-      <Container>
-        <LoginDialog />
-      </Container>
+      <Wrapper>
+        <NavBar currentLocation={NavLocations.LOGIN} />
+        <Container>
+          <LoginDialog />
+        </Container>
+        <BottomNavigation currentLocation={NavLocations.LOGIN} />
+      </Wrapper>
     </>
   );
 };
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-items: stretch;
+  height: 100%;
+`;
 
 const Container = styled.div`
   align-items: center;
   background-color: #aee1e1;
   display: flex;
+  flex-direction: column;
   height: 100%;
   justify-content: center;
 `;

@@ -10,13 +10,21 @@ import Login from 'src/components/svgs/login.svg';
 import { useUserSelector } from 'src/data/redux/user/selector';
 import { LoginStates } from 'src/data/redux/user/state';
 import { NavLocation, NavLocations } from 'src/view/types/navigation';
+import { useRouter } from 'next/router';
 
 type Props = {
   currentLocation?: NavLocation,
 };
 
 export const BottomNavigation = ({ currentLocation }: Props) => {
+  const router = useRouter();
   const { uid, photoUrl, loginState } = useUserSelector();
+
+  const return_to = () => {
+    if (currentLocation === NavLocations.LOGIN) return null;
+    return { return_to: router.asPath };
+  };
+
   return (
     <Container>
       <BottomNavigationButton
@@ -46,6 +54,7 @@ export const BottomNavigation = ({ currentLocation }: Props) => {
         <BottomNavigationButton
           label="ログイン"
           linkTo={rootPath.login}
+          linkQuery={return_to() ?? undefined}
           isActive={currentLocation === NavLocations.LOGIN}
         >
           <Login />

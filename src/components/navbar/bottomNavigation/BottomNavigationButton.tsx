@@ -1,10 +1,12 @@
 import Link from 'next/link';
 import styled from 'styled-components';
 import React from 'react';
+import { ParsedUrlQueryInput } from 'querystring';
 
 type Props = {
   linkTo: string;
   label: string;
+  linkQuery?: string | ParsedUrlQueryInput,
   isActive?: boolean,
 };
 
@@ -12,9 +14,14 @@ export const BottomNavigationButton: React.FC<Props> = ({
   linkTo,
   label,
   children,
+  linkQuery,
   isActive = false,
 }) => (
-  <Link href={linkTo}>
+  <Link href={{
+    pathname: linkTo,
+    query: linkQuery,
+  }}
+  >
     <LinkContainer isActive={isActive}>
       {children}
       <Label>{label}</Label>
