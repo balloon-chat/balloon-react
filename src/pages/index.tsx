@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { ScrollableTopicList, TopicList } from 'src/components/topic/TopicList';
 import { NavBarHome } from 'src/components/navbar/NavBar';
 import styled from 'styled-components';
-import { GetServerSideProps } from 'next';
+import { GetStaticProps } from 'next';
 import { TopicService } from 'src/domain/topic/service/topicService';
 import { TopicEntity, TopicEntityFactory } from 'src/view/types/topic';
 import { useDispatch } from 'react-redux';
@@ -101,7 +101,7 @@ const ShowMoreButton = styled(Button)`
   max-width: 500px;
 `;
 
-export const getServerSideProps: GetServerSideProps<Props> = async () => {
+export const getStaticProps: GetStaticProps<Props> = async () => {
   const service = new TopicService();
   const recommends = await service.fetchRecommendTopics();
 
@@ -143,6 +143,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async () => {
       },
       newest,
     },
+    revalidate: 1,
   } as const;
 };
 
