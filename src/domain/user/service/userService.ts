@@ -11,6 +11,8 @@ import { UserImageRepository } from 'src/data/core/user/userImageRepository';
 import { FirebaseUserImageDatabase } from 'src/data/firebase/user/userImageDatabase';
 import { IGetUserByLoginId } from 'src/domain/user/types/getUserByLoginId';
 import { GetUserByLoginId } from 'src/domain/user/usecases/getUserByLoginId';
+import { IUpdateProfile, UpdateProfileParams } from 'src/domain/user/types/updateProfile';
+import { UpdateProfile } from 'src/domain/user/usecases/updateProfile';
 
 export class UserService {
   private readonly createUserUsecase: ICreateUser;
@@ -18,6 +20,8 @@ export class UserService {
   private readonly getUserUsecase: IGetUser;
 
   private readonly getUserByLoginIdUsecase: IGetUserByLoginId;
+
+  private readonly updateProfileUsecase: IUpdateProfile;
 
   constructor(
     userRepository: IUserRepository
@@ -28,6 +32,7 @@ export class UserService {
     this.createUserUsecase = new CreateUser(userRepository, userImageRepository);
     this.getUserUsecase = new GetUser(userRepository);
     this.getUserByLoginIdUsecase = new GetUserByLoginId(userRepository);
+    this.updateProfileUsecase = new UpdateProfile(userRepository, userImageRepository);
   }
 
   async createUser(
@@ -53,5 +58,14 @@ export class UserService {
     const loginUser = await this.getUserByLoginIdUsecase.execute(loginId);
     if (!loginUser) return null;
     return UserEntityFactory.create(loginUser);
+  }
+
+  async updateProfile(
+    userId: string,
+    loginId: string,
+    param: UpdateProfileParams,
+  ): Promise<UserEntity> {
+    const user = await this.updateProfileUsecase.execute(userId, loginId, param);
+    return UserEntityFactory.create(user);
   }
 }
