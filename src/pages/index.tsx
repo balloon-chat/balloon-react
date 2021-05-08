@@ -47,8 +47,10 @@ const IndexPage: React.FC<Props> = ({
       <NavBarHome />
       <TopicContainer>
         <SectionTitle>
-          <SectionImage src={imagePath.character.yellow} height={50} width={80} objectFit="contain" objectPosition="center left" />
-          <div>注目の話題</div>
+          <SectionImageContainer>
+            <Image src={imagePath.character.yellow} height={64} width={64} objectFit="contain" objectPosition="center left" />
+          </SectionImageContainer>
+          <div>ワダイな話題</div>
         </SectionTitle>
         <Container>
           <TopicList topics={pickup.topics} pickup={pickup.main} />
@@ -56,7 +58,9 @@ const IndexPage: React.FC<Props> = ({
       </TopicContainer>
       <TopicContainer color="#E5F6FB">
         <SectionTitle>
-          <SectionImage src={imagePath.character.green} height={50} width={80} objectFit="contain" objectPosition="center left" />
+          <SectionImageContainer>
+            <Image src={imagePath.character.pink} height={64} width={64} objectFit="contain" objectPosition="center left" />
+          </SectionImageContainer>
           <div>最新の話題</div>
         </SectionTitle>
         <Container>
@@ -82,15 +86,24 @@ const SectionTitle = styled.div`
   display: flex;
   font-weight: bold;
   font-size: 24px;
+  flex-direction: column;
   margin: 32px 0;
   text-align: center;
-  justify-content: start;
+  justify-content: center;
   width: 100%;
+  
+  & > div:last-child {
+    margin-top: 16px;
+  }
 `;
 
-const SectionImage = styled(Image)`
-  height: 48px;
-  margin-right: 16px;
+const SectionImageContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  padding: 16px;
+  border-radius: 50%;
 `;
 
 const ShowMoreButton = styled(Button)`

@@ -41,7 +41,7 @@ export const NavBar: React.FC = ({ children }) => {
       <NavMainContainer>
         <Link href={rootPath.index}>
           <NavTitleContainer>
-            <Image src={imagePath.character.blue} height={24} width={40} objectFit="contain" />
+            <Image src={imagePath.character.blue} height={32} width={32} objectFit="contain" />
             <NavTitle>おもちゃっと</NavTitle>
           </NavTitleContainer>
         </Link>
