@@ -1,6 +1,6 @@
 import { CaseReducer } from '@reduxjs/toolkit';
 import { UserState } from 'src/data/redux/user/state';
-import { SetUser } from 'src/data/redux/user/action';
+import { SetUser, SetUserActionState } from 'src/data/redux/user/action';
 
 export const setUserReducer: CaseReducer<UserState, SetUser> = (
   state,
@@ -11,3 +11,11 @@ export const setUserReducer: CaseReducer<UserState, SetUser> = (
   name: payload.name,
   photoUrl: payload.photoUrl,
 } as const);
+
+export const setUserActionStateReducer: CaseReducer<UserState, SetUserActionState> = (
+  state,
+  { payload },
+) => ({
+  ...state,
+  state: payload,
+});

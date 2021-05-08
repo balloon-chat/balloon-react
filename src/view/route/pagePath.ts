@@ -1,3 +1,7 @@
+export const settingsPath = {
+  profile: '/settings/profile',
+};
+
 export const topicPath = {
   index: '/topics',
   create: '/topics/create',
@@ -15,6 +19,7 @@ export const rootPath = {
   login: '/login',
   signIn: '/signin',
   logout: '/api/logout',
+  settings: settingsPath,
   topicPath,
   usersPath,
 };
@@ -31,6 +36,9 @@ export const pageTitle = {
   login: getPageTitle('ログイン'),
   signIn: getPageTitle('アカウントを作成'),
   logout: getPageTitle('ログアウト'),
+  settings: {
+    profile: getPageTitle('プロフィールの設定'),
+  },
   topics: {
     index: getPageTitle('話題一覧'),
     create: getPageTitle('話題を作成'),
