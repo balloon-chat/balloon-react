@@ -14,7 +14,7 @@ export const rootPath = {
   index: '/',
   login: '/login',
   signIn: '/signin',
-  logout: '/logout',
+  logout: '/api/logout',
   topicPath,
   usersPath,
 };

@@ -22,8 +22,6 @@ export const LoginStates = {
   CREATING: 'CREATING',
 
   LOGIN_ERROR: 'LOGIN_ERROR',
-
-  LOGOUT_ERROR: 'LOGOUT_ERROR',
 } as const;
 
 type LoginState = typeof LoginStates[keyof typeof LoginStates];

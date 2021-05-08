@@ -114,8 +114,6 @@ export class AuthService {
 
   // eslint-disable-next-line class-methods-use-this
   async logout(): Promise<void> {
-    // Firebaseからログアウト
-    await firebase.auth().signOut();
     try {
       // セッションを削除
       await axios.post(

@@ -16,7 +16,7 @@ import { pageTitle, rootPath } from 'src/view/route/pagePath';
 import Head from 'next/head';
 import { AuthService, AuthStates } from 'src/domain/auth/service/AuthService';
 import { mediaQuery } from 'src/components/constants/mediaQuery';
-import Link from 'next/link';
+import firebase from 'firebase/app';
 
 type Props = {
   user: UserEntity | null
@@ -38,7 +38,7 @@ const ProfilePage = ({
 
   useEffect(() => {
     setIsCurrentUser(uid === id);
-  }, [id]);
+  }, [uid, id]);
 
   if (loginRequired) {
     router.push(rootPath.login, {
@@ -48,25 +48,33 @@ const ProfilePage = ({
     return <></>;
   }
 
+  const logout = async () => {
+    await firebase.auth().signOut();
+    await router.push(rootPath.logout);
+  };
+
   return (
     <>
       <Head>
         <title>{pageTitle.users.profile(user?.name ?? '')}</title>
       </Head>
-      <NavBar />
-      {user && (
-        <UserProfileContainer>
-          <UserProfile {...user} />
-          {
-            isCurrentUser && (
-              <UserActionContainer>
-                <li><Link href={rootPath.logout}>ログアウト</Link></li>
-                <li>プロフィール編集</li>
-              </UserActionContainer>
-            )
-          }
-        </UserProfileContainer>
-      )}
+      <NavBar>
+        {user && (
+          <UserProfileContainer>
+            <UserProfile {...user} />
+            {
+              isCurrentUser && (
+                <UserActionContainer>
+                  <li>
+                    <button type="button" onClick={() => logout()}>ログアウト</button>
+                  </li>
+                  <li>プロフィール編集</li>
+                </UserActionContainer>
+              )
+            }
+          </UserProfileContainer>
+        )}
+      </NavBar>
       <Container>
         <InnerBody>
           <TopicListContainer>
@@ -87,9 +95,11 @@ const ProfilePage = ({
 };
 
 const UserProfileContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   background-color: white;
-  margin: 32px auto;
-  max-width: 1050px;
+  padding: 32px 16px;
 `;
 
 const Container = styled.div`

@@ -1,7 +1,7 @@
 import { LoginStates, UserState, userStateName } from 'src/data/redux/user/state';
 import { createSlice } from '@reduxjs/toolkit';
 import { setUserReducer } from 'src/data/redux/user/reducer';
-import { createUser, login, logout } from 'src/data/redux/user/action';
+import { createUser, login } from 'src/data/redux/user/action';
 
 const initialState: UserState = {
   uid: null,
@@ -30,17 +30,6 @@ const userSlice = createSlice({
         ...state,
         ...payload.user,
         loginState: payload.user != null ? LoginStates.LOGGED_IN : LoginStates.USER_NOT_FOUND,
-      }))
-      .addCase(logout.rejected, (state) => ({
-        ...state,
-        loginState: LoginStates.LOGOUT_ERROR,
-      }))
-      .addCase(logout.fulfilled, (state) => ({
-        ...state,
-        uid: null,
-        name: null,
-        photoUrl: null,
-        loginState: LoginStates.NOT_LOGGED_IN,
       }))
       .addCase(createUser.pending, (state) => ({
         ...state,
