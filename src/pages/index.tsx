@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { ScrollableTopicList, TopicList } from 'src/components/topic/TopicList';
+import { TopicList } from 'src/components/topic/TopicList';
 import { NavBarHome } from 'src/components/navbar/NavBar';
 import styled from 'styled-components';
 import { GetStaticProps } from 'next';
@@ -64,7 +64,7 @@ const IndexPage: React.FC<Props> = ({
           <div>最新の話題</div>
         </SectionTitle>
         <Container>
-          <ScrollableTopicList />
+          <TopicList topics={newest} />
           <ShowMoreButton onClick={showMore}>もっと見る</ShowMoreButton>
         </Container>
       </TopicContainer>
@@ -107,10 +107,9 @@ const SectionImageContainer = styled.div`
 `;
 
 const ShowMoreButton = styled(Button)`
-  box-shadow: 0 10px 40px -2px rgb(0 64 128 / 20%);
   width: 100%;
   padding: 16px;
-  margin: 16px auto 128px auto;
+  margin: 0 auto 64px auto;
   max-width: 500px;
 `;
 
@@ -146,13 +145,13 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
       } as const;
     });
 
-  const newest = (await service.fetchTopics(50)).map((topic) => TopicEntityFactory.create(topic));
+  const newest = await service.fetchTopics(6);
 
   return {
     props: {
       pickup: {
         main: pickup.length > 1 ? pickup[0] : null,
-        topics: pickup.length > 1 ? pickup.slice(1, pickup.length) : [],
+        topics: pickup.length > 1 ? pickup.slice(1, 5) : [],
       },
       newest,
     },
