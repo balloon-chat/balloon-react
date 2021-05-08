@@ -61,8 +61,7 @@ export const fetchTopicsFrom = createAsyncThunk<
   { from?: string }
 >(FETCH_TOPICS, async ({ from }) => {
   const service = new TopicService();
-  const topics = await service.fetchTopics(50, from);
-  return topics.map((topic) => TopicEntityFactory.create(topic));
+  return service.fetchTopics(50, from);
 });
 
 export const fetchTopicsCreatedBy = createAsyncThunk<
