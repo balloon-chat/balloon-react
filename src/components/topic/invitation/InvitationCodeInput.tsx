@@ -168,6 +168,7 @@ const InputCell = React.forwardRef<HTMLInputElement, InputCellProps>((
 
 const Input = styled.input<{hasFocs: boolean}>`
   appearance: none;
+  -moz-appearance:textfield;
   border: none;
   border-image: none;
   border-bottom-style: solid;
