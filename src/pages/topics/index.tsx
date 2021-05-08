@@ -3,7 +3,7 @@ import { NavBar } from 'src/components/navbar/NavBar';
 import { ScrollableTopicList } from 'src/components/topic/TopicList';
 import { GetServerSideProps } from 'next';
 import { TopicService } from 'src/domain/topic/service/topicService';
-import { TopicEntity, TopicEntityFactory } from 'src/view/types/topic';
+import { TopicEntity } from 'src/view/types/topic';
 import { useDispatch } from 'react-redux';
 import { setTopics } from 'src/data/redux/topic/slice';
 import { BottomNavigation } from 'src/components/navbar/bottomNavigation/BottomNavigation';
@@ -80,7 +80,6 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
   const topics = await service.fetchTopics(50);
 
   const entities = topics
-    .map((topic) => TopicEntityFactory.create(topic))
     .map((entity, index) => {
       if (index !== 0) return entity;
       // 最初の話題にのみ、ラベルを付ける

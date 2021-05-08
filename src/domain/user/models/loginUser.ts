@@ -17,4 +17,19 @@ export class LoginUser extends User {
   ) {
     super(id, name);
   }
+
+  copyWith({
+    name,
+    photoUrl,
+  }: {
+    name?: UserName,
+    photoUrl?: string,
+  }): LoginUser {
+    return new LoginUser(
+      this.id,
+      this.loginId,
+      name ?? this.name,
+      photoUrl ?? this.photoUrl,
+    );
+  }
 }

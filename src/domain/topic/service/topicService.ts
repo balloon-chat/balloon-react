@@ -34,6 +34,7 @@ import { IGetTopicByInvitationCode } from 'src/domain/topic/types/getTopicByInvi
 import { GetTopicByInvitationCode } from 'src/domain/topic/usecases/getTopicByInvitationCode';
 import { IUpdateTopic } from 'src/domain/topic/types/updateTopic';
 import { UpdateTopic } from 'src/domain/topic/usecases/updateTopic';
+import { TopicEntity, TopicEntityFactory } from 'src/view/types/topic';
 
 export class TopicService {
   private readonly createTopicUsecase: ICreateTopic;
@@ -132,11 +133,12 @@ export class TopicService {
     return this.getTopicByInvitationCodeUsecase.execute(code);
   }
 
-  fetchTopics(limit: number, from?: string): Promise<TopicData[]> {
-    return this.getTopicsUsecase.execute(
+  async fetchTopics(limit: number, from?: string): Promise<TopicEntity[]> {
+    const data = await this.getTopicsUsecase.execute(
       limit,
       from ? new TopicId(from) : undefined,
     );
+    return data.map((d) => TopicEntityFactory.create(d));
   }
 
   /**

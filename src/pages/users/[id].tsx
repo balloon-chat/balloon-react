@@ -43,8 +43,7 @@ const ProfilePage = ({
   if (loginRequired) {
     router.push(rootPath.login, {
       query: { return_to: router.asPath },
-    })
-      .then();
+    }).then();
     return <></>;
   }
 
@@ -68,7 +67,11 @@ const ProfilePage = ({
                   <li>
                     <button type="button" onClick={() => logout()}>ログアウト</button>
                   </li>
-                  <li>プロフィール編集</li>
+                  <li>
+                    <button type="button" onClick={() => router.push(rootPath.settings.profile)}>
+                      プロフィール編集
+                    </button>
+                  </li>
                 </UserActionContainer>
               )
             }

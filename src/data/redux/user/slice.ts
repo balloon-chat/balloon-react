@@ -1,11 +1,12 @@
-import { LoginStates, UserState, userStateName } from 'src/data/redux/user/state';
+import { LoginStates, UserActionStates, UserState, userStateName } from 'src/data/redux/user/state';
 import { createSlice } from '@reduxjs/toolkit';
-import { setUserReducer } from 'src/data/redux/user/reducer';
-import { createUser, login } from 'src/data/redux/user/action';
+import { setUserActionStateReducer, setUserReducer } from 'src/data/redux/user/reducer';
+import { createUser, login, updateProfile } from 'src/data/redux/user/action';
 
 const initialState: UserState = {
   uid: null,
   loginState: LoginStates.NOT_LOGGED_IN,
+  state: null,
   photoUrl: null,
   name: null,
 } as const;
@@ -15,6 +16,7 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     setUser: setUserReducer,
+    setUserActionState: setUserActionStateReducer,
   },
   extraReducers: (builder) => {
     builder
@@ -41,12 +43,23 @@ const userSlice = createSlice({
         name: payload.name,
         photoUrl: payload.photoUrl,
         loginState: LoginStates.LOGGED_IN,
+      }))
+      .addCase(updateProfile.rejected, (state) => ({
+        ...state,
+        state: UserActionStates.PROFILE_UPDATE_ERROR,
+      }))
+      .addCase(updateProfile.fulfilled, (state, { payload }) => ({
+        ...state,
+        name: payload.user.name,
+        photoUrl: payload.user.photoUrl,
+        state: UserActionStates.PROFILE_UPDATED,
       }));
   },
 });
 
 export const {
   setUser,
+  setUserActionState,
 } = userSlice.actions;
 
 export const userReducer = userSlice.reducer;

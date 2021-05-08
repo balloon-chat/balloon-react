@@ -6,4 +6,6 @@ export interface IUserDatabase {
   findByLoginId(loginId: string): Promise<UserDto | undefined>
 
   save(user: UserDto): Promise<void>;
+
+  update(userId: string, param: {name?: string, photoUrl?: string}): Promise<void>
 }
