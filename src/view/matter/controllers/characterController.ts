@@ -3,21 +3,19 @@ import { Character } from 'src/view/matter/actors/character';
 export class CharacterController {
   private readonly _characters: Map<string, Character>;
 
+  public latestCharacterId: string = 'init';
+
+  public latestCharacterPosition = {
+    x: 0,
+    y: 0,
+  };
+
   constructor() {
     this._characters = new Map();
   }
 
   get characters() {
     return this._characters;
-  }
-
-  inspect() {
-    let str: string = 'charactersに入っている要素\n';
-    const characters = Array.from(this.characters.values());
-    characters.forEach((character) => {
-      str += `Body: ${character.object.id}\nText: ${character.text}\n`;
-    });
-    console.log(str);
   }
 
   /** マップにキャラクターを追加する

@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable no-bitwise */
 /* eslint-disable max-len */
-import Matter, { Common, Vector } from 'matter-js';
+import Matter, { Common } from 'matter-js';
 import P5Types from 'p5';
 import { MatterController } from 'src/view/matter/controllers/matterController';
 import { buttonType } from 'src/view/matter/actors/buttonFactory';
@@ -65,11 +65,13 @@ export class Button {
      */
     add(matterController: MatterController) {
       if (matterController.p5 === null) return;
+      const now = new Date();
+      const msg = `新しく追加されました。${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
       const character = CharacterFactory.create(
         matterController.p5,
         matterController.canvas,
         `${Common.nextId()}`,
-        '新しく追加したオブジェクトです',
+        msg,
       );
       matterController.addCharacter(character);
     }
@@ -92,18 +94,7 @@ export class Button {
         matterController.characterController.characters.values(),
       );
       characters.forEach((character) => {
-        const sign = {
-          x: Math.random() < 0.5 ? -1 : 1,
-          y: Math.random() < 0.5 ? -1 : 1,
-        };
-        const velocity: Vector = Vector.mult(
-          Matter.Vector.normalise({
-            x: sign.x * Math.random(),
-            y: sign.y * Math.random(),
-          }),
-          character.maxSpeed,
-        );
-        Matter.Body.setVelocity(character.object, velocity);
+        character.moveSomeWhere();
       });
     }
 

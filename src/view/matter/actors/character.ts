@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import Matter, { Common } from 'matter-js';
+import Matter, { Common, Vector } from 'matter-js';
 import P5Types from 'p5';
 import { CanvasParameter } from 'src/view/matter/models/canvasParameter';
 import { MatterController } from 'src/view/matter/controllers/matterController';
@@ -11,13 +11,14 @@ import { MatterController } from 'src/view/matter/controllers/matterController';
  *  @param {string} id 識別用文字列
  *  @param {number} radius 半径
  *  @param {string} color 色
+ *  @param {boolean} isLatest 最新のキャラクターかどうか
  */
 export class Character {
   protected readonly _text: string;
 
   private readonly _object: Matter.Body;
 
-  public readonly maxSpeed = 20;
+  public readonly maxSpeed = 1.5;
 
   private static scaleX = 1.25;
 
@@ -36,6 +37,7 @@ export class Character {
     // ラベルの設定
     this._object.label = 'character';
     Matter.Body.scale(this.object, Character.scaleX, Character.scaleY);
+    console.log('キャラクターが生成されました');
   }
 
   get object(): Matter.Body {
@@ -55,80 +57,89 @@ export class Character {
       .ellipse(this.object.position.x, this.object.position.y, this.radius * 2 * Character.scaleX, this.radius * 2 * Character.scaleY);
     p5.pop();
 
+    const eyePosition = {
+      left: {
+        x: this.object.position.x - this.radius * 0.35,
+        y: this.object.position.y - this.radius * 0.45,
+      },
+      right: {
+        x: this.object.position.x + this.radius * 0.35,
+        y: this.object.position.y - this.radius * 0.45,
+      },
+    };
     p5.push();
     p5.fill('#585858')
       .noStroke()
-      // eslint-disable-next-line max-len
-      .circle(this.object.position.x - this.radius * 0.35, this.object.position.y - this.radius * 0.45, this.radius * 0.15)
-      // eslint-disable-next-line max-len
-      .circle(this.object.position.x + this.radius * 0.35, this.object.position.y - this.radius * 0.45, this.radius * 0.15);
+      .circle(eyePosition.left.x, eyePosition.left.y, this.radius * 0.15)
+      .circle(eyePosition.right.x, eyePosition.right.y, this.radius * 0.15);
     p5.pop();
 
     // textの描画
+    const textLines = Character.getTextLines(this.text, this.radius, p5);
+    const textBoxWidth = Character.getTextBoxWidth(this.radius);
     const textSize = 16;
-    const degree = 40; // 度数法で入力 ( 0 < degree < 90 )
-    const radian = (degree * Math.PI) / 180; // 弧度法
-    const rCosine = this.radius * Math.cos(radian);
-    const textBoxWidth = 2 * rCosine * Character.scaleX;
-    let sliceStr = this.text;
     let startPosition;
-    let printText = '';
-    const list = [];
-
+    // 目とキャラクター下端との中点。これを基準としてテキストを配置していく。
+    const basePosition = {
+      x: this.object.position.x,
+      y: (eyePosition.left.y + (this.object.position.y + this.radius * Character.scaleY)) * 0.5,
+    };
     p5.textSize(textSize);
-    // listにtextを区切って格納
-    for (let i = 0, textWidth = 0; i < this.text.length; i += 1) {
-      if (textWidth + p5.textWidth(sliceStr.charAt(0)) > textBoxWidth) {
-        list.push(printText);
-        textWidth = 0;
-        printText = '';
-      }
-      printText += sliceStr.charAt(0);
-      textWidth += p5.textWidth(sliceStr.charAt(0));
-      sliceStr = sliceStr.slice(1, sliceStr.length);
-    }
-    list.push(printText);
     // startPositionの決定
-    if (list.length === 1) {
+    // 行数が偶数か奇数で場合分け
+    if (textLines.length === 1) {
+      // 1のとき
       startPosition = {
-        x: this.object.position.x,
-        y: this.object.position.y,
+        x: basePosition.x,
+        y: basePosition.y - textSize * Math.floor(textLines.length * 0.5),
+      };
+    } else if (textLines.length % 2 === 0) {
+      // 偶数のとき
+      startPosition = {
+        x: basePosition.x - textBoxWidth * 0.5,
+        y: basePosition.y - textSize * 0.5 - textSize * (textLines.length * 0.5 - 1),
       };
     } else {
+      // 奇数のとき
       startPosition = {
-        x: this.object.position.x - (rCosine * Character.scaleX),
-        y: this.object.position.y - textSize * 0.5,
+        x: basePosition.x - textBoxWidth * 0.5,
+        y: basePosition.y - textSize * Math.floor(textLines.length * 0.5),
       };
     }
     // 格納したtextの描画
-    if (list.length === 1) {
+    if (textLines.length === 1) {
       p5.fill(0)
         .textAlign('center', 'center')
         .textSize(textSize)
-        .text(list[0], startPosition.x, startPosition.y);
+        .text(textLines[0], startPosition.x, startPosition.y);
     } else {
-      for (let i = 0; i < list.length; i += 1) {
+      for (let i = 0; i < textLines.length; i += 1) {
         p5.fill(0)
           .textAlign('left', 'center')
           .textSize(textSize)
-          .text(list[i], startPosition.x, startPosition.y + textSize * i);
+          .text(textLines[i], startPosition.x, startPosition.y + textSize * i);
       }
     }
   }
 
-  /** matterのアップデート前に行われる関数
-   * @param _controller
+  /**
+   * matterのアップデート前に行われる関数
    */
   beforeUpdateOnMatter(_controller: MatterController) {
-    this.controllSpeed();
-    this.preventRotate();
-    // this.preventInvisible(controller.canvas);
+    // 回転の防止
+    Matter.Body.setAngle(this.object, 0);
+    // this.preventInvisible(_controller.canvas);
   }
 
-  /** マウスがクリックされたときに行われる関数
-   * @param _matterController
-   * @param mouseX
-   * @param mouseY
+  /**
+   * matterのアップデート前に行われる関数
+   */
+  afterUpdateOnMatter(_controller: MatterController) {
+    this.controllSpeed();
+  }
+
+  /**
+   * マウスがクリックされたときに行われる関数
    */
   mousePressed(_matterController: MatterController, mouseX: number, mouseY: number) {
     if (this.isClicked(mouseX, mouseY)) {
@@ -136,7 +147,8 @@ export class Character {
     }
   }
 
-  /** スピードの制御
+  /**
+   * スピードの制御
    */
   controllSpeed() {
     if (this.object.speed > this.maxSpeed) {
@@ -148,7 +160,7 @@ export class Character {
       return;
     }
     let deceleration;
-    if (this.object.speed < 0.5) {
+    if (this.object.speed < 0.1) {
       // オブジェクトの速さがほぼ0であれば完全に停止
       deceleration = 0.0;
     } else if (this.object.speed < this.maxSpeed * 0.2) {
@@ -165,31 +177,27 @@ export class Character {
     Matter.Body.setVelocity(this.object, velocity);
   }
 
-  /** 回転の防止
-   */
-  preventRotate() {
-    Matter.Body.setAngle(this.object, 0);
-  }
-
-  /** 画面内にあるかどうかを判断する
-   * @param canvas
+  /**
+   * 画面内にあるかどうかを判断する
    */
   isVisible(canvas: CanvasParameter): boolean {
     const radius = this.object.circleRadius ?? 0;
-    // x座標の判定
-    if (this.object.position.x + radius * Character.scaleX < 0 || this.object.position.x - radius * Character.scaleX > canvas.width) {
-      return false;
-    }
-    // y座標の判定
-    if (this.object.position.y + radius * Character.scaleY < 0 || this.object.position.y - radius * Character.scaleY > canvas.height) {
-      return false;
-    }
-    return true;
+    const [positionLeft, positionRight, positionTop, positionBottom] = [
+      this.object.position.x - radius * Character.scaleX,
+      this.object.position.x + radius * Character.scaleX,
+      this.object.position.y - radius * Character.scaleY,
+      this.object.position.y + radius * Character.scaleY,
+    ];
+    const isInnerLeft = positionLeft < 0;
+    const isInnerRight = positionRight > canvas.width;
+    const isInnerTop = positionTop < 0;
+    const isInnerBottom = positionBottom > canvas.height;
+    return isInnerLeft && isInnerRight && isInnerTop && isInnerBottom;
   }
 
-  /** 画面外に出たときに中に戻す
-   * @param canvas
-   */
+  /**
+   * 画面外に出たときに中に戻す
+  */
   preventInvisible(canvas: CanvasParameter) {
     if (this.isVisible(canvas)) return;
     // eslint-disable-next-line prefer-destructuring
@@ -212,9 +220,23 @@ export class Character {
     Matter.Body.setPosition(this.object, position);
   }
 
-  /** マウスとキャラクターの位置との角度を測る
-   * @param mouseX
-   * @param mouseY
+  moveSomeWhere() {
+    const sign = {
+      x: Math.random() < 0.5 ? -1 : 1,
+      y: Math.random() < 0.5 ? -1 : 1,
+    };
+    const velocity: Vector = Vector.mult(
+      Matter.Vector.normalise({
+        x: sign.x * Math.random(),
+        y: sign.y * Math.random(),
+      }),
+      this.maxSpeed,
+    );
+    Matter.Body.setVelocity(this.object, velocity);
+  }
+
+  /**
+   * マウスとキャラクターの位置との角度を測る
    * @returns radian
    */
   private getRadian(mouseX: number, mouseY: number):number {
@@ -222,16 +244,49 @@ export class Character {
     return radian;
   }
 
-  /** クリックされているかどうかを判断する
-   * @param mouseX
-   * @param mouseY
-   * @returns boolean
-   */
+  /**
+   * クリックされているかどうかを判断する
+  */
   private isClicked(mouseX: number, mouseY: number):boolean {
     const dist1 = (mouseX - this.object.position.x) ** 2 + (mouseY - this.object.position.y) ** 2;
     const radian = this.getRadian(mouseX, mouseY);
     const dist2 = (this.radius * Character.scaleX * Math.cos(radian)) ** 2 + (this.radius * Character.scaleY * Math.sin(radian)) ** 2;
     if (dist1 < dist2) return true;
     return false;
+  }
+
+  /**
+   * テキストがテキストボックスの内部に入るように分割して配列に格納する
+   * @returns 分割されたテキストの配列
+   */
+  static getTextLines(text: string, size: number, p5: P5Types): string[] {
+    const textSize = 16;
+    const textBoxWidth = Character.getTextBoxWidth(size);
+    let sliceStr = text;
+    let printText = '';
+    const list = [];
+
+    p5.textSize(textSize);
+    // listにtextを区切って格納
+    for (let i = 0, textWidth = 0; i < text.length; i += 1) {
+      if (textWidth + p5.textWidth(sliceStr.charAt(0)) > textBoxWidth) {
+        list.push(printText);
+        textWidth = 0;
+        printText = '';
+      }
+      printText += sliceStr.charAt(0);
+      textWidth += p5.textWidth(sliceStr.charAt(0));
+      sliceStr = sliceStr.slice(1, sliceStr.length);
+    }
+    list.push(printText);
+
+    return list;
+  }
+
+  static getTextBoxWidth(radius: number) {
+    const degree = 40; // 度数法で入力 ( 0 < degree < 90 )
+    const radian = (degree * Math.PI) / 180; // 弧度法
+    const rCosine = radius * Math.cos(radian);
+    return 2 * rCosine * Character.scaleX;
   }
 }
