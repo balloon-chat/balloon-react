@@ -64,8 +64,11 @@ export class Button {
       const character = CharacterFactory.create(
         matterController.p5,
         matterController.canvas,
-        `${Common.nextId()}`,
-        '新しく追加したオブジェクトです',
+        {
+          id: `${Common.nextId()}`,
+          message: '新しく追加したオブジェクトです',
+          senderId: 'test',
+        },
       );
       matterController.addCharacter(character);
     }
