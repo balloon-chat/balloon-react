@@ -1,7 +1,12 @@
+export const settingsPath = {
+  profile: '/settings/profile',
+};
+
 export const topicPath = {
   index: '/topics',
   create: '/topics/create',
   topic: (id: string) => `/topics/${id}`,
+  edit: (id: string) => `/topics/edit/${id}`,
 };
 
 export const usersPath = {
@@ -9,10 +14,12 @@ export const usersPath = {
 };
 
 export const rootPath = {
+  fullPath: (path: string) => `${process.env.BASE_URL}${path[0] === '/' ? path : `/${path}`}`,
   index: '/',
   login: '/login',
   signIn: '/signin',
-  logout: '/logout',
+  logout: '/api/logout',
+  settings: settingsPath,
   topicPath,
   usersPath,
 };
@@ -29,9 +36,13 @@ export const pageTitle = {
   login: getPageTitle('ログイン'),
   signIn: getPageTitle('アカウントを作成'),
   logout: getPageTitle('ログアウト'),
+  settings: {
+    profile: getPageTitle('プロフィールの設定'),
+  },
   topics: {
     index: getPageTitle('話題一覧'),
     create: getPageTitle('話題を作成'),
+    edit: (topicTitle: string) => getPageTitle(`${topicTitle}|編集`),
     topic: (topicTitle: string) => getPageTitle(topicTitle),
   },
   users: {
@@ -45,7 +56,7 @@ export const pageTitle = {
  * @param hostName ベースとなるURL(example.com, example.com:3000)
  * @return {boolean} 内部リンクの場合trueを返す
  */
-export const isInnerPath = (path: string, hostName?: string): boolean => {
+export const isInnerPath = (path: string, hostName: string|null): boolean => {
   const pathRegex = new RegExp(/^\//);
   if (!hostName) return pathRegex.test(path);
 

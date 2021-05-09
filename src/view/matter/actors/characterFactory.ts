@@ -1,9 +1,9 @@
 import { Character } from 'src/view/matter/actors/character';
-import { Bodies } from 'matter-js';
+import { Bodies, Vector } from 'matter-js';
 import { CanvasParameter } from 'src/view/matter/models/canvasParameter';
 import P5Types from 'p5';
 
-export enum CharacterSize {
+enum CharacterSize {
   small = 80,
   medium = 120,
   large = 160,
@@ -15,18 +15,35 @@ const characterColors: string[] = [
   '#FAD1D1',
 ];
 
-export class CharacterFactory {
-  static create(p5: P5Types, canvas: CanvasParameter, id: string, text: string): Character {
-    const radius = this.getCharacterSize(p5, text);
-    const sign = {
-      x: Math.random() < 0.5 ? -1 : 1,
-      y: Math.random() < 0.5 ? -1 : 1,
-    };
+type CharacterFactoryParams = {
+  id: string,
+  message: string,
+  senderId: string
+}
 
-    const generatePosition = {
-      x: canvas.center.x + sign.x * Math.random(),
-      y: canvas.center.y + sign.y * Math.random(),
+export class CharacterFactory {
+  /**
+   * @param p5 描画用のp5インスタンス
+   * @param canvas キャンバスサイズ キャラクターの配置位置を決めるために利用
+   * @param id メッセージのID
+   * @param message メッセージ
+   * @param senderId 送信者のID 同じIDなら、キャラクターの色が同じになる
+   */
+  static create(
+    p5: P5Types,
+    canvas: CanvasParameter,
+    { id, message, senderId }: CharacterFactoryParams,
+  ): Character {
+    const radius = this.getCharacterSize(p5, message);
+    const sign = {
+      x: Math.random() > 0.5 ? 1 : -1,
+      y: Math.random() > 0.5 ? 1 : -1,
     };
+    const generatePosition = Vector.create(
+      canvas.center.x + sign.x * 50 * Math.random(),
+      canvas.center.y + sign.y * 50 * Math.random(),
+    );
+    const color = characterColors[senderId.charCodeAt(0) % characterColors.length];
     return new Character(
       id,
       Bodies.circle(generatePosition.x, generatePosition.y, radius, {
@@ -40,17 +57,17 @@ export class CharacterFactory {
           mask: 0x0002 | 0x0001,
         },
       }),
-      text,
+      message,
       radius,
-      characterColors[Math.floor(Math.random() * characterColors.length)],
+      color,
     );
   }
 
   static getCharacterSize(p5: P5Types, text: string): CharacterSize {
-    let lines = Character.getTextLines(text, CharacterSize.small, p5).length;
+    let lines = Character.getTextLines(p5, text, CharacterSize.small).length;
     if (lines <= 3) return CharacterSize.small;
 
-    lines = Character.getTextLines(text, CharacterSize.medium, p5).length;
+    lines = Character.getTextLines(p5, text, CharacterSize.medium).length;
     if (lines <= 3) return CharacterSize.medium;
 
     return CharacterSize.large;

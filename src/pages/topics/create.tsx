@@ -17,10 +17,11 @@ type Props = {
 
 const CreateTopicPage = ({ isLoggedIn }: Props) => {
   const router = useRouter();
+
   if (!isLoggedIn) {
-    router.push({
+    router.replace({
       pathname: rootPath.login,
-      query: { return_to: rootPath.topicPath.create },
+      query: { return_to: `${rootPath.fullPath(rootPath.topicPath.create)}` },
     }).then();
     return (<></>);
   }
@@ -36,7 +37,7 @@ const CreateTopicPage = ({ isLoggedIn }: Props) => {
           <EditTopic />
         </ContainerCard>
       </Body>
-      <BottomNavigation currentLocation="create" />
+      <BottomNavigation />
     </>
   );
 };

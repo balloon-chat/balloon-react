@@ -1,6 +1,3 @@
-/* eslint-disable class-methods-use-this */
-/* eslint-disable no-bitwise */
-/* eslint-disable max-len */
 import Matter, { Common } from 'matter-js';
 import P5Types from 'p5';
 import { MatterController } from 'src/view/matter/controllers/matterController';
@@ -25,6 +22,7 @@ export class Button {
         collisionFilter: {
           group: 0,
           category: 0x0004,
+          // eslint-disable-next-line no-bitwise
           mask: 0x0004 | 0x0001,
         } });
     }
@@ -33,14 +31,11 @@ export class Button {
       return this._object;
     }
 
-    /** マウスがクリックされたときに行われる関数
-     * @param matterController
-     * @param mouseX
-     * @param mouseY
-     * @returns
+    /**
+     * マウスがクリックされたときに行われる関数
      */
-    mousePressed(matterController: MatterController, mouseX: number, mouseY: number) {
-      if (this.isClicked(mouseX, mouseY) === false) return;
+    onPressed(matterController: MatterController, mouseX: number, mouseY: number) {
+      if (!this.isClicked(mouseX, mouseY)) return;
       switch (this.type) {
         case buttonType.add: {
           this.add(matterController);
@@ -60,50 +55,47 @@ export class Button {
       }
     }
 
-    /** 画面上にキャラクターを表示
-     * @param matterController
+    /**
+     * 画面上にキャラクターを表示
      */
+    // eslint-disable-next-line class-methods-use-this
     add(matterController: MatterController) {
       if (matterController.p5 === null) return;
       const now = new Date();
-      const msg = `新しく追加されました。${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
+      const msg = `${now}`;
       const character = CharacterFactory.create(
         matterController.p5,
         matterController.canvas,
-        `${Common.nextId()}`,
-        msg,
+        {
+          id: `${Common.nextId()}`,
+          message: msg,
+          senderId: 'test',
+        },
       );
       matterController.addCharacter(character);
     }
 
-    /** 画面上のすべてのキャラクターを消去
-     * @param matterController
+    /**
+     * 画面上のすべてのキャラクターを消去
      */
+    // eslint-disable-next-line class-methods-use-this
     removeAll(matterController: MatterController) {
-      const characters = Array.from(
-        matterController.characterController.characters.values(),
-      );
+      const { characters } = matterController.characterController;
       characters.forEach((character) => matterController.removeCharacter(character));
     }
 
-    /** 画面上のすべてのキャラクターを揺らす
-     * @param matterController
+    /**
+     * 画面上のすべてのキャラクターを揺らす
      */
+    // eslint-disable-next-line class-methods-use-this
     shakeAll(matterController: MatterController) {
-      const characters = Array.from(
-        matterController.characterController.characters.values(),
-      );
-      characters.forEach((character) => {
-        character.moveSomeWhere();
-      });
+      const { characters } = matterController.characterController;
+      characters.forEach((character) => character.moveSomeWhere());
     }
 
     isClicked(mouseX: number, mouseY: number) {
       const dist = (mouseX - this.object.position.x) ** 2 + (mouseY - this.object.position.y) ** 2;
-      if (dist < Button.radius ** 2) {
-        return true;
-      }
-      return false;
+      return dist < Button.radius ** 2;
     }
 
     draw(p5: P5Types) {

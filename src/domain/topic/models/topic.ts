@@ -14,26 +14,62 @@ export class Topic {
     public readonly isPrivate: boolean,
     public readonly description?: TopicDescription,
   ) {}
+
+  copyWith({
+    topicId,
+    title,
+    description,
+    createdBy,
+    createdAt,
+    thumbnailUrl,
+    isPrivate,
+  }: {
+    topicId?: TopicId,
+    title?: TopicTitle,
+    description?: string,
+    createdBy?: UserId,
+    createdAt?: number,
+    thumbnailUrl?: string,
+    isPrivate?: boolean,
+  }): Topic {
+    return new Topic(
+      topicId ?? this.id,
+      title ?? this.title,
+      createdAt ?? this.createdAt,
+      createdBy ?? this.createdBy,
+      thumbnailUrl ?? this.thumbnailUrl,
+      isPrivate ?? this.isPrivate,
+      TopicDescription.create(description) ?? this.description,
+    );
+  }
 }
 
 export class TopicFactory {
-  static create(arg: {
+  static create({
+    topicId,
+    title,
+    description,
+    createdBy,
+    createdAt,
+    thumbnailUrl,
+    isPrivate,
+  }: {
     topicId?: TopicId,
     title: TopicTitle,
-    createdBy: UserId,
-    thumbnailUrl: string,
     description?: string,
-    isPrivate?: boolean,
+    createdBy: UserId,
     createdAt?: number,
+    thumbnailUrl: string,
+    isPrivate?: boolean,
   }): Topic {
     return new Topic(
-      arg.topicId ?? new TopicId(),
-      arg.title,
-      arg.createdAt ?? Date.now(),
-      arg.createdBy,
-      arg.thumbnailUrl,
-      arg.isPrivate ?? false,
-      TopicDescription.create(arg.description),
+      topicId ?? new TopicId(),
+      title,
+      createdAt ?? Date.now(),
+      createdBy,
+      thumbnailUrl,
+      isPrivate ?? false,
+      TopicDescription.create(description),
     );
   }
 }

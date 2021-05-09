@@ -16,7 +16,7 @@ const Container = styled.div<{ color?: string }>`
   box-sizing: border-box;
   background-color: ${(props) => props.color ?? '#caeaeb'};
   width: 100%;
-  padding: 56px 16px;
+  padding: 16px;
 
   @media (max-width: ${mediaQuery.tablet.portrait}) {
     padding: 16px 0;

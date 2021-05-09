@@ -9,5 +9,14 @@ export interface ITopicDatabase {
 
   findAllPublicTopicsSortByCreatedAt(limit: number, from?: string): Promise<TopicDto[]>;
 
+  updateTopic(topicId: string, params: UpdateTopicParams): Promise<void>;
+
   save(topic: TopicDto): Promise<void>;
 }
+
+export type UpdateTopicParams = {
+  title: string | null,
+  description: string | null,
+  thumbnailUrl: string | null,
+  isPrivate: boolean | null
+};

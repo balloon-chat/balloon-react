@@ -38,6 +38,23 @@ export class FirebaseUserDatabase implements IUserDatabase {
     return this.document(user.id).set(user.toJSON());
   }
 
+  async update(
+    userId: string,
+    { name, photoUrl }: { name?: string; photoUrl?: string },
+  ): Promise<void> {
+    await this.database.runTransaction(async (transaction) => {
+      const userRef = this.document(userId);
+      const doc = await transaction.get(userRef);
+      const user = UserDto.fromJSON(doc.data() ?? null);
+      if (user) {
+        transaction.update(userRef, {
+          name,
+          photoUrl,
+        });
+      }
+    });
+  }
+
   private collection = () => this.database.collection('users');
 
   private document = (userId: string) => this.collection().doc(userId);

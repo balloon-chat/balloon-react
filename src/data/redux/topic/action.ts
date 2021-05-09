@@ -4,11 +4,12 @@ import { Topic } from 'src/domain/topic/models/topic';
 import { TopicService } from 'src/domain/topic/service/topicService';
 import { TopicEntity, TopicEntityFactory } from 'src/view/types/topic';
 
-export const CREATE_TOPIC = `${topicStateName}/create`;
-export const FETCH_TOPIC = `${topicStateName}/fetch_topic`;
-export const FETCH_TOPICS = `${topicStateName}/fetch_topics`;
-export const FETCH_TOPICS_CREATED_BY = `${topicStateName}/fetch_topics_created_by`;
+const CREATE_TOPIC = `${topicStateName}/create`;
+const FETCH_TOPIC = `${topicStateName}/fetch_topic`;
+const FETCH_TOPICS = `${topicStateName}/fetch_topics`;
+const FETCH_TOPICS_CREATED_BY = `${topicStateName}/fetch_topics_created_by`;
 const FETCH_TOPIC_BY_CODE = `${topicStateName}/fetch_by_code`;
+const UPDATE_TOPIC = `${topicStateName}/update`;
 
 export const createTopic = createAsyncThunk<
   Topic,
@@ -22,6 +23,23 @@ export const createTopic = createAsyncThunk<
 >(CREATE_TOPIC, async ({ description, isPrivate, title, thumbnail, userId }) => {
   const service = new TopicService();
   return service.createTopic(title, description, userId, thumbnail, isPrivate);
+});
+
+export const updateTopic = createAsyncThunk<
+  {
+    topicId: string,
+  },
+  {
+    topicId: string,
+    title?: string,
+    description?: string,
+    thumbnail?: File|Blob,
+    isPrivate?: boolean,
+  }
+>(UPDATE_TOPIC, async ({ topicId, title, description, thumbnail, isPrivate }) => {
+  const service = new TopicService();
+  await service.updateTopic(topicId, { title, description, thumbnail, isPrivate });
+  return { topicId };
 });
 
 export const fetchTopic = createAsyncThunk<
@@ -43,8 +61,7 @@ export const fetchTopicsFrom = createAsyncThunk<
   { from?: string }
 >(FETCH_TOPICS, async ({ from }) => {
   const service = new TopicService();
-  const topics = await service.fetchTopics(50, from);
-  return topics.map((topic) => TopicEntityFactory.create(topic));
+  return service.fetchTopics(50, from);
 });
 
 export const fetchTopicsCreatedBy = createAsyncThunk<
@@ -73,6 +90,7 @@ export const fetchTopicByCode = createAsyncThunk<
 
 export type SetIsTopicCreated = PayloadAction<{ isTopicCreated: boolean }>;
 export type SetTopicId = PayloadAction<{ topicId: string | null }>;
+export type SetCurrentTopic = PayloadAction<{topic: TopicEntity | null}>
 export type SetInvitationCode = PayloadAction<{ code: number[] | null}>
 export type SetTopics = PayloadAction<{ topics: TopicEntity[] }>;
 export type ResetTopicState = Action;

@@ -7,7 +7,7 @@ import { imagePath } from 'src/components/constants/imagePath';
 export const LoginDialog = () => (
   <DialogContainer>
     <TitleContainer>
-      <Image alt="" src={imagePath.character.blue} height={60} width={100} objectFit="contain" />
+      <Image alt="" src={imagePath.character.blue} height={100} width={100} objectFit="contain" />
       <h3>おもちゃっとへようこそ！</h3>
     </TitleContainer>
     <GoogleLoginButton />

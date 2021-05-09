@@ -3,6 +3,7 @@ export const userStateName = 'userState';
 export type UserState = {
   uid: string | null
   loginState: LoginState,
+  state: UserActionState|null,
   photoUrl: string | null
   name: string | null
 };
@@ -22,8 +23,13 @@ export const LoginStates = {
   CREATING: 'CREATING',
 
   LOGIN_ERROR: 'LOGIN_ERROR',
-
-  LOGOUT_ERROR: 'LOGOUT_ERROR',
 } as const;
 
+export const UserActionStates = {
+  PROFILE_UPDATED: 'PROFILE_UPDATED',
+
+  PROFILE_UPDATE_ERROR: 'PROFILE_UPDATE_ERROR',
+};
+
 type LoginState = typeof LoginStates[keyof typeof LoginStates];
+export type UserActionState = typeof UserActionStates[keyof typeof UserActionStates];

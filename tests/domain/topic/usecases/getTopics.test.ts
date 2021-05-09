@@ -59,6 +59,7 @@ describe('TopicのIDにより取得', () => {
         createdBy: user,
         commentCount: 0,
         thumbnailUrl: topic.thumbnailUrl,
+        isPrivate: topic.isPrivate,
       };
       expect(result)
         .toStrictEqual(expected);
@@ -128,6 +129,7 @@ describe('上限を設定して取得', () => {
       createdBy: user,
       thumbnailUrl: topic.thumbnailUrl,
       commentCount: 1,
+      isPrivate: topic.isPrivate,
     };
     expect(result)
       .toStrictEqual(expected);

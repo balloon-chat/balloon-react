@@ -15,8 +15,11 @@ export class MatterListAdapter extends ListAdapter<MessageEntity> {
     const character = CharacterFactory.create(
       p5,
       this.controller.canvas,
-      item.id,
-      item.body,
+      {
+        id: item.id,
+        message: item.body,
+        senderId: item.senderId,
+      },
     );
     this.controller.addCharacter(character);
   }

@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
-import { ScrollableTopicList, TopicList } from 'src/components/topic/TopicList';
+import { TopicList } from 'src/components/topic/TopicList';
 import { NavBarHome } from 'src/components/navbar/NavBar';
 import styled from 'styled-components';
-import { GetServerSideProps } from 'next';
+import { GetStaticProps } from 'next';
 import { TopicService } from 'src/domain/topic/service/topicService';
 import { TopicEntity, TopicEntityFactory } from 'src/view/types/topic';
 import { useDispatch } from 'react-redux';
@@ -47,8 +47,10 @@ const IndexPage: React.FC<Props> = ({
       <NavBarHome />
       <TopicContainer>
         <SectionTitle>
-          <SectionImage src={imagePath.character.yellow} height={50} width={80} objectFit="contain" objectPosition="center left" />
-          <div>注目の話題</div>
+          <SectionImageContainer>
+            <Image src={imagePath.character.yellow} height={64} width={64} objectFit="contain" objectPosition="center left" />
+          </SectionImageContainer>
+          <div>ワダイな話題</div>
         </SectionTitle>
         <Container>
           <TopicList topics={pickup.topics} pickup={pickup.main} />
@@ -56,15 +58,17 @@ const IndexPage: React.FC<Props> = ({
       </TopicContainer>
       <TopicContainer color="#E5F6FB">
         <SectionTitle>
-          <SectionImage src={imagePath.character.green} height={50} width={80} objectFit="contain" objectPosition="center left" />
+          <SectionImageContainer>
+            <Image src={imagePath.character.pink} height={64} width={64} objectFit="contain" objectPosition="center left" />
+          </SectionImageContainer>
           <div>最新の話題</div>
         </SectionTitle>
         <Container>
-          <ScrollableTopicList />
+          <TopicList topics={newest} />
           <ShowMoreButton onClick={showMore}>もっと見る</ShowMoreButton>
         </Container>
       </TopicContainer>
-      <BottomNavigation currentLocation="home" />
+      <BottomNavigation />
     </>
   );
 };
@@ -82,26 +86,34 @@ const SectionTitle = styled.div`
   display: flex;
   font-weight: bold;
   font-size: 24px;
+  flex-direction: column;
   margin: 32px 0;
   text-align: center;
-  justify-content: start;
+  justify-content: center;
   width: 100%;
+  
+  & > div:last-child {
+    margin-top: 16px;
+  }
 `;
 
-const SectionImage = styled(Image)`
-  height: 48px;
-  margin-right: 16px;
+const SectionImageContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  padding: 16px;
+  border-radius: 50%;
 `;
 
 const ShowMoreButton = styled(Button)`
-  box-shadow: 0 10px 40px -2px rgb(0 64 128 / 20%);
   width: 100%;
   padding: 16px;
-  margin: 16px auto 32px auto;
+  margin: 0 auto 64px auto;
   max-width: 500px;
 `;
 
-export const getServerSideProps: GetServerSideProps<Props> = async () => {
+export const getStaticProps: GetStaticProps<Props> = async () => {
   const service = new TopicService();
   const recommends = await service.fetchRecommendTopics();
 
@@ -133,16 +145,17 @@ export const getServerSideProps: GetServerSideProps<Props> = async () => {
       } as const;
     });
 
-  const newest = (await service.fetchTopics(50)).map((topic) => TopicEntityFactory.create(topic));
+  const newest = await service.fetchTopics(6);
 
   return {
     props: {
       pickup: {
         main: pickup.length > 1 ? pickup[0] : null,
-        topics: pickup.length > 1 ? pickup.slice(1, pickup.length) : [],
+        topics: pickup.length > 1 ? pickup.slice(1, 5) : [],
       },
       newest,
     },
+    revalidate: 1,
   } as const;
 };
 

@@ -5,14 +5,15 @@ import styled from 'styled-components';
 
 type Props = {
   message: string,
+  closeMessage?: string,
   onClose: () => void
 }
 
-export const ErrorDialog = ({ message, onClose }: Props) => (
+export const ErrorDialog = ({ message, closeMessage, onClose }: Props) => (
   <Dialog onClose={onClose}>
     <ErrorDialogContainer>
       <div>{message}</div>
-      <Button onClick={onClose}>閉じる</Button>
+      <Button onClick={onClose}>{closeMessage ?? '閉じる'}</Button>
     </ErrorDialogContainer>
   </Dialog>
 );

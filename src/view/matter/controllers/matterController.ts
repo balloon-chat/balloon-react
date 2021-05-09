@@ -19,40 +19,24 @@ export class MatterController {
     public readonly canvas: CanvasParameter,
   ) {
     this.adapter = new MatterListAdapter(this);
+
     // 重力を無効化する
     this.disableGravity();
-    engine.timing.timeScale = 0.1;
-
+    this.engine.timing.timeScale = 0.01;
     // ボタンをワールドに追加
     this.buttons = buttons;
-    this.buttons.forEach((button) => {
-      this.addObject(button.object);
-    });
-
-    // マウス操作を可能にする
-    const mouseConstraint = Matter.MouseConstraint.create(this.engine);
-    Matter.World.add(this.engine.world, mouseConstraint);
+    this.buttons.forEach((button) => this.addObject(button.object));
 
     // characterのアップデート前に行う動作
     Matter.Events.on(this.engine, 'beforeUpdate', () => {
-      const characters = Array.from(
-        this.characterController.characters.values(),
-      );
-      characters.forEach((character) => character.beforeUpdateOnMatter(this));
-      // 最新のキャラクターを画面中央に固定する
       // eslint-disable-next-line max-len
       const latestCharacter = this.characterController.getCharacter(this.characterController.latestCharacterId);
       if (typeof latestCharacter !== 'undefined') {
         // eslint-disable-next-line max-len
         Matter.Body.setPosition(latestCharacter.object, this.characterController.latestCharacterPosition);
       }
-    });
-    // characterのアップデート後に行う動作
-    Matter.Events.on(this.engine, 'afterUpdate', () => {
-      const characters = Array.from(
-        this.characterController.characters.values(),
-      );
-      characters.forEach((character) => character.afterUpdateOnMatter(this));
+      const { characters } = this.characterController;
+      characters.forEach((character) => character.onBeforeUpdate());
     });
   }
 
@@ -111,5 +95,16 @@ export class MatterController {
    */
   private removeObject(object: Matter.Body): void {
     Matter.World.remove(this.engine.world, object);
+  }
+
+  /**
+   * マウスイベントをハンドラを付与
+   * @param element 指定されたHTMLエレメント内のみ、マウスイベントを処理する
+   */
+  setMouseEventHandler(element: HTMLElement) {
+    const mouse = Matter.Mouse.create(element);
+    const options = { mouse };
+    const mouseConstraint = Matter.MouseConstraint.create(this.engine, options);
+    Matter.World.add(this.engine.world, mouseConstraint);
   }
 }

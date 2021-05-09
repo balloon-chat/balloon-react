@@ -15,6 +15,8 @@ import { UserEntity } from 'src/view/types/user';
 import { pageTitle, rootPath } from 'src/view/route/pagePath';
 import Head from 'next/head';
 import { AuthService, AuthStates } from 'src/domain/auth/service/AuthService';
+import { mediaQuery } from 'src/components/constants/mediaQuery';
+import firebase from 'firebase/app';
 
 type Props = {
   user: UserEntity | null
@@ -36,7 +38,7 @@ const ProfilePage = ({
 
   useEffect(() => {
     setIsCurrentUser(uid === id);
-  }, [id]);
+  }, [uid, id]);
 
   if (loginRequired) {
     router.push(rootPath.login, {
@@ -45,17 +47,37 @@ const ProfilePage = ({
     return <></>;
   }
 
+  const logout = async () => {
+    await firebase.auth().signOut();
+    await router.push(rootPath.logout);
+  };
+
   return (
     <>
       <Head>
         <title>{pageTitle.users.profile(user?.name ?? '')}</title>
       </Head>
-      <NavBar />
-      {user && (
-        <UserProfileContainer>
-          <UserProfile {...user} />
-        </UserProfileContainer>
-      )}
+      <NavBar>
+        {user && (
+          <UserProfileContainer>
+            <UserProfile {...user} />
+            {
+              isCurrentUser && (
+                <UserActionContainer>
+                  <li>
+                    <button type="button" onClick={() => logout()}>ログアウト</button>
+                  </li>
+                  <li>
+                    <button type="button" onClick={() => router.push(rootPath.settings.profile)}>
+                      プロフィール編集
+                    </button>
+                  </li>
+                </UserActionContainer>
+              )
+            }
+          </UserProfileContainer>
+        )}
+      </NavBar>
       <Container>
         <InnerBody>
           <TopicListContainer>
@@ -70,15 +92,17 @@ const ProfilePage = ({
           </TopicListContainer>
         </InnerBody>
       </Container>
-      <BottomNavigation currentLocation="my-profile" />
+      <BottomNavigation />
     </>
   );
 };
 
 const UserProfileContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   background-color: white;
-  margin: 32px auto;
-  max-width: 1050px;
+  padding: 32px 16px;
 `;
 
 const Container = styled.div`
@@ -108,6 +132,30 @@ const TopicListContainer = styled.div`
   width: 100%;
 `;
 
+const UserActionContainer = styled.ul`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0;
+
+  & > li {
+    cursor: pointer;
+    margin-top: 8px;
+  }
+
+  & > li:first-child {
+    margin-top: 0;
+  }
+
+  @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
+    flex-direction: row;
+    justify-content: center;
+    & > li {
+      margin: 0 8px;
+    }
+  }
+`;
+
 export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
   const emptyResult = {
     props: {
@@ -126,7 +174,10 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
 
   const authService = new AuthService();
   const result = await authService.getUserInfo(context.req.headers.cookie);
-  const { loginId, state } = result;
+  const {
+    loginId,
+    state,
+  } = result;
   if (state === AuthStates.TIMEOUT) {
     return {
       props: {

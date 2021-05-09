@@ -1,15 +1,15 @@
 import React, { useEffect } from 'react';
 import { MessageField } from 'src/components/chat/MessageField';
 import { NavBar } from 'src/components/navbar/NavBar';
-import { TopicNotFound } from 'src/components/topic/TopicNotFound';
+import { ErrorPage } from 'src/components/common/ErrorPage';
 import Head from 'next/head';
 import { pageTitle } from 'src/view/route/pagePath';
-import { GetServerSideProps } from 'next';
+import { GetServerSideProps, GetServerSidePropsResult } from 'next';
 import { TopicEntity, TopicEntityFactory } from 'src/view/types/topic';
 import { TopicService } from 'src/domain/topic/service/topicService';
 import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
-import { setInvitationCode, setTopicId } from 'src/data/redux/topic/slice';
+import { setCurrentTopic, setInvitationCode, setTopicId } from 'src/data/redux/topic/slice';
 import { useUserSelector } from 'src/data/redux/user/selector';
 import { UserId } from 'src/domain/user/models/userId';
 import { observeStart } from 'src/data/redux/message/slice';
@@ -31,17 +31,19 @@ const TopicPage = ({ topic, code }: Props) => {
   useEffect(() => {
     dispatcher(setTopicId({ topicId: topic?.id ?? null }));
     dispatcher(setInvitationCode({ code }));
+    dispatcher(setCurrentTopic({ topic }));
 
     return () => {
       // reset current state
       dispatcher(setTopicId({ topicId: null }));
       dispatcher(setInvitationCode({ code: null }));
+      dispatcher(setCurrentTopic({ topic: null }));
     };
   }, [loginState]);
 
   useEffect(() => {
     // ユーザーが未ログイン時は、一時的なIDを付与する
-    if (!uid && loginState === LoginStates.NOT_LOGGED_IN) {
+    if (!uid && loginState !== LoginStates.LOGGED_IN) {
       dispatcher(setUser({
         uid: new UserId().value,
         photoUrl: null,
@@ -78,7 +80,7 @@ const TopicPage = ({ topic, code }: Props) => {
           <MessageField />
         </>
       )}
-      {!topic && <TopicNotFound />}
+      {!topic && <ErrorPage message="話題が見つかりませんでした" />}
     </Container>
   );
 };
@@ -93,7 +95,12 @@ const Container = styled.div`
 export const getServerSideProps: GetServerSideProps<Props> = async (
   context,
 ) => {
-  const emptyResult = { props: { topic: null, code: null } };
+  const emptyResult: GetServerSidePropsResult<Props> = {
+    props: {
+      topic: null,
+      code: null,
+    },
+  };
   const { id } = context.query;
   if (typeof id !== 'string') return emptyResult;
 

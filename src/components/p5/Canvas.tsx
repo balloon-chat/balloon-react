@@ -39,13 +39,13 @@ export const Canvas: React.FC = () => {
     };
   }, [renderRef]);
 
-  const setup = (p5: P5Types, canvasParentRef: Element) => {
+  const setup = (p5: P5Types, canvasParentRef: HTMLElement) => {
     const renderer = p5.createCanvas(
       canvasParentRef.clientWidth,
       canvasParentRef.clientHeight,
     );
     renderer.parent(canvasParentRef);
-
+    controller.setMouseEventHandler(canvasParentRef);
     controller.run();
   };
 
@@ -53,7 +53,7 @@ export const Canvas: React.FC = () => {
     // キャンバスサイズの更新
     if (renderRef.current) {
       controller.canvas.checkResize(renderRef.current, (width, height) => {
-        p5.resizeCanvas(width, height);
+        p5.resizeCanvas(width, height, true);
         controller.canvas.setSize(width, height);
       });
     }
@@ -64,25 +64,22 @@ export const Canvas: React.FC = () => {
     controller.buttons.forEach((button) => {
       button.draw(p5);
     });
+
     // キャラクターの描画
-    const characters = Array.from(
-      controller.characterController.characters.values(),
-    );
+    const { characters } = controller.characterController;
     characters.forEach((character) => {
       character.draw(p5);
     });
   };
 
   const mousePressed = (p5: P5Types) => {
-    const characters = Array.from(
-      controller.characterController.characters.values(),
-    );
+    const { characters } = controller.characterController;
     characters.forEach((character) => {
-      character.mousePressed(controller, p5.mouseX, p5.mouseY);
+      character.onMousePressed(controller, p5.mouseX, p5.mouseY);
     });
 
     controller.buttons.forEach((button) => {
-      button.mousePressed(controller, p5.mouseX, p5.mouseY);
+      button.onPressed(controller, p5.mouseX, p5.mouseY);
     });
   };
 
@@ -91,7 +88,10 @@ export const Canvas: React.FC = () => {
 
 const Container = styled.div`
   box-sizing: border-box;
-  flex: 1 1 auto;
-  position: relative;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
   overflow: hidden;
 `;

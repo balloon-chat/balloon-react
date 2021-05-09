@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
 import { useRouter } from 'next/router';
 import { useUserSelector } from 'src/data/redux/user/selector';
-import { login, logout } from 'src/data/redux/user/action';
+import { login } from 'src/data/redux/user/action';
 import { isInnerPath, pageTitle, rootPath } from 'src/view/route/pagePath';
 import { LoadDialog } from 'src/components/common/LoadDialog';
 import { LoginStates } from 'src/data/redux/user/state';
@@ -12,6 +12,8 @@ import Head from 'next/head';
 import { GetServerSideProps } from 'next';
 import { AuthService } from 'src/domain/auth/service/AuthService';
 import { ErrorDialog } from 'src/components/common/ErrorDialog';
+import { NavBar } from 'src/components/navbar/NavBar';
+import { BottomNavigation } from 'src/components/navbar/bottomNavigation/BottomNavigation';
 
 type Props = {
   accessToken: string | null,
@@ -38,15 +40,16 @@ const LoginPage = ({ accessToken, authorized, newUser }: Props) => {
 
     dispatcher(login({ accessToken }));
 
-    if (return_to && typeof return_to === 'string' && isInnerPath(return_to)) {
+    if (
+      typeof return_to === 'string'
+      && return_to
+      && process.env.HOST_NAME
+      && isInnerPath(return_to, process.env.HOST_NAME)
+    ) {
       await router.push(return_to);
     } else {
       await router.push(rootPath.index);
     }
-  };
-
-  const resetLoginPageState = () => {
-    dispatcher(logout());
   };
 
   return (
@@ -68,21 +71,33 @@ const LoginPage = ({ accessToken, authorized, newUser }: Props) => {
         loginState === LoginStates.LOGIN_ERROR && (
           <ErrorDialog
             message="ログイン中にエラーが発生しました。"
-            onClose={resetLoginPageState}
+            onClose={() => router.reload()}
           />
         )
       }
-      <Container>
-        <LoginDialog />
-      </Container>
+      <Wrapper>
+        <NavBar />
+        <Container>
+          <LoginDialog />
+        </Container>
+        <BottomNavigation />
+      </Wrapper>
     </>
   );
 };
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-items: stretch;
+  height: 100%;
+`;
 
 const Container = styled.div`
   align-items: center;
   background-color: #aee1e1;
   display: flex;
+  flex-direction: column;
   height: 100%;
   justify-content: center;
 `;

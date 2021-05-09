@@ -1,12 +1,12 @@
 import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { userStateName } from 'src/data/redux/user/state';
+import { UserActionState, userStateName } from 'src/data/redux/user/state';
 import { UserService } from 'src/domain/user/service/userService';
 import { UserEntity } from 'src/view/types/user';
 import { AuthService } from 'src/domain/auth/service/AuthService';
 
-export const CREATE_USER = `${userStateName}/create`;
-export const LOGIN = `${userStateName}/login`;
-export const LOGOUT = `${userStateName}/logout`;
+const CREATE_USER = `${userStateName}/create`;
+const LOGIN = `${userStateName}/login`;
+const UPDATE_PROFILE = `${userStateName}/update_profile`;
 
 export const createUser = createAsyncThunk<
   UserEntity,
@@ -43,10 +43,13 @@ export const login = createAsyncThunk<
   return { user: null };
 });
 
-export const logout = createAsyncThunk<{}, void>(LOGOUT, async () => {
-  const service = new AuthService();
-  await service.logout();
-  return {} as const;
+export const updateProfile = createAsyncThunk<
+  {user: UserEntity},
+  {userId: string, loginId: string, name?: string, photo?: File}
+>(UPDATE_PROFILE, async ({ userId, loginId, name, photo }) => {
+  const service = new UserService();
+  const user = await service.updateProfile(userId, loginId, { name, photo });
+  return { user };
 });
 
 export type SetUser = PayloadAction<{
@@ -54,3 +57,4 @@ export type SetUser = PayloadAction<{
   photoUrl: string|null,
   name: string|null
 }>
+export type SetUserActionState = PayloadAction<UserActionState|null>;

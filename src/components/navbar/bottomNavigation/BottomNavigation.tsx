@@ -1,41 +1,88 @@
 import styled from 'styled-components';
-import { BottomNavigationButton } from 'src/components/navbar/bottomNavigation/BottomNavigationButton';
 import { rootPath } from 'src/view/route/pagePath';
 import { mediaQuery } from 'src/components/constants/mediaQuery';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Home from 'src/components/svgs/home.svg';
 import Edit from 'src/components/svgs/edit.svg';
 import Search from 'src/components/svgs/search.svg';
+import Login from 'src/components/svgs/login.svg';
+import { useUserSelector } from 'src/data/redux/user/selector';
+import { LoginStates } from 'src/data/redux/user/state';
+import { getCurrentLocation, NavLocations } from 'src/view/types/navigation';
+import { useRouter } from 'next/router';
+import { NavButton } from 'src/components/navbar/NavBarAction';
 
-type Props = {
-  currentLocation?: 'home' | 'create' | 'join' | 'my-profile';
+export const BottomNavigation = () => {
+  const router = useRouter();
+  const { uid, photoUrl, loginState } = useUserSelector();
+  const [currentLocation, setCurrentLocation] = useState<string>();
+
+  const return_to = () => {
+    if (currentLocation === NavLocations.LOGIN) return null;
+    return { return_to: router.asPath };
+  };
+
+  useEffect(() => {
+    setCurrentLocation(getCurrentLocation(router.asPath, uid) ?? undefined);
+  }, [router.asPath]);
+
+  return (
+    <Container>
+      <NavButton
+        isActive={currentLocation === NavLocations.HOME}
+        label="ホーム"
+        link={rootPath.index}
+      >
+        <Home />
+      </NavButton>
+      <NavButton
+        label="話題を作る"
+        link={rootPath.topicPath.create}
+        isActive={currentLocation === NavLocations.CREATE_TOPIC}
+      >
+        <Edit />
+      </NavButton>
+      <NavButton
+        label="話題を探す"
+        link={rootPath.topicPath.index}
+        isActive={currentLocation === NavLocations.FIND_TOPIC}
+      >
+        <Search />
+      </NavButton>
+      {
+        loginState !== LoginStates.LOGGED_IN
+        && (
+        <NavButton
+          label="ログイン"
+          link={rootPath.login}
+          linkQuery={return_to() ?? undefined}
+          isActive={currentLocation === NavLocations.LOGIN}
+        >
+          <Login />
+        </NavButton>
+        )
+      }
+      {
+        loginState === LoginStates.LOGGED_IN && uid && photoUrl
+        && (
+          <NavButton
+            label="プロフィール"
+            link={rootPath.usersPath.user(uid)}
+            isActive={currentLocation === NavLocations.PROFILE}
+          >
+            <UserIcon
+              isActive={currentLocation === NavLocations.PROFILE}
+              loading="lazy"
+              src={photoUrl}
+              height={32}
+              width={32}
+            />
+          </NavButton>
+        )
+      }
+    </Container>
+  );
 };
-
-export const BottomNavigation = ({ currentLocation }: Props) => (
-  <Container>
-    <BottomNavigationButton
-      isActive={currentLocation === 'home'}
-      label="ホーム"
-      linkTo={rootPath.index}
-    >
-      <Home />
-    </BottomNavigationButton>
-    <BottomNavigationButton
-      label="話題を作る"
-      linkTo={rootPath.topicPath.create}
-      isActive={currentLocation === 'create'}
-    >
-      <Edit />
-    </BottomNavigationButton>
-    <BottomNavigationButton
-      label="話題を探す"
-      linkTo={rootPath.topicPath.index}
-      isActive={currentLocation === 'join'}
-    >
-      <Search />
-    </BottomNavigationButton>
-  </Container>
-);
 
 const Container = styled.nav`
   background-color: white;
@@ -46,9 +93,17 @@ const Container = styled.nav`
   height: 3.5rem;
   max-height: 16vh;
 
-  @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
+  @media screen and (min-width: ${mediaQuery.mobile.landscape}px) {
     pointer-events: none;
     visibility: hidden;
     z-index: -1;
   }
+`;
+
+const UserIcon = styled.img<{isActive: boolean}>`
+  box-sizing: border-box;
+  border: ${(props) => (props.isActive ? '2px solid #5b87fa' : 'none')};
+  border-radius: 50%;
+  height: 100%;
+  max-height: 100%;
 `;

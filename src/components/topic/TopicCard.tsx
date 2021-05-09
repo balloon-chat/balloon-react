@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { TopicEntity } from 'src/view/types/topic';
 import Image from 'next/image';
 import { dateFormat } from 'src/view/util/format';
+import LockIcon from 'src/components/svgs/lock.svg';
 import React from 'react';
 import Link from 'next/link';
 
@@ -14,6 +15,7 @@ export const TopicCard: React.FC<TopicEntity> = ({
   description,
   createdAt,
   commentCount,
+  isPrivate,
 }) => (
   <Card>
     <Link href={topicPath.topic(id)}>
@@ -23,6 +25,7 @@ export const TopicCard: React.FC<TopicEntity> = ({
             <Image src={thumbnailUrl} layout="fill" objectFit="cover" />
           </ThumbnailImageContainer>
           {label && <Label labelColor={label.color}>{label.title}</Label>}
+          {isPrivate && <PrivateContainer><LockIcon /></PrivateContainer>}
         </Thumbnail>
         <TopicInformation>
           <TopicTitle>{title}</TopicTitle>
@@ -43,7 +46,22 @@ const Card = styled.article`
   border: 2px solid white;
   overflow: hidden;
   background-color: white;
-  box-shadow: 0 10px 40px -2px rgb(0 64 128 / 20%);
+`;
+
+const PrivateContainer = styled.div`
+  background-color: white;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  padding: 8px;
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  
+  & > svg {
+    color: #ffbe0f;
+    fill: currentColor;
+  }
 `;
 
 const Container = styled.a`

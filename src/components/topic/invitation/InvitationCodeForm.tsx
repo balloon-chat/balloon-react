@@ -7,7 +7,6 @@ import { useRouter } from 'next/router';
 import { useTopicState } from 'src/data/redux/topic/selector';
 import { topicStates } from 'src/data/redux/topic/state';
 import { useDispatch } from 'react-redux';
-import { fetchTopicByCode } from 'src/data/redux/topic/action';
 import { resetTopicState } from 'src/data/redux/topic/slice';
 import { rootPath } from 'src/view/route/pagePath';
 
@@ -47,7 +46,16 @@ export const InvitationCodeForm = () => {
     if (!codes) return;
     const c = codes.filter<number>((c): c is number => c !== null);
     if (c.length !== codes.length) return;
-    dispatcher(fetchTopicByCode({ code: c }));
+    await router.push(
+      {
+        path: rootPath.topicPath.index,
+        query: { code: c.join('') },
+      },
+      undefined,
+      {
+        shallow: false,
+      },
+    );
   };
 
   return (
@@ -82,7 +90,7 @@ const Container = styled.div`
   padding: 32px 16px;
 
   @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
-    padding: 64px 0;
+    padding: 64px 16px;
   }
 `;
 
@@ -95,7 +103,7 @@ const InvitationError = styled.div`
 `;
 
 const Form = styled.form`
-  align-items: flex-end;
+  align-items: center;
   margin-top: 16px;
   display: flex;
   flex-direction: column;
