@@ -50,31 +50,13 @@ export class CharacterFactory {
     );
   }
 
-  private static measureTextLength(text: string, size: CharacterSize, p5: P5Types): number {
-    // textの描画
-    const textSize = 16;
-    const degree = 40; // 度数法で入力 ( 0 < degree < 90 )
-    const radian = (degree * Math.PI) / 180; // 弧度法
-    const rCosine = size * Math.cos(radian);
-    const textBoxWidth = 2 * rCosine * 1.25;
-    let sliceStr = text;
-    let printText = '';
-    const list = [];
+  static getCharacterSize(p5: P5Types, text: string): CharacterSize {
+    let lines = Character.getTextLines(p5, text, CharacterSize.small).length;
+    if (lines < 3) return CharacterSize.small;
 
-    p5.textSize(textSize);
-    // listにtextを区切って格納
-    for (let i = 0, textWidth = 0; i < text.length; i += 1) {
-      if (textWidth + p5.textWidth(sliceStr.charAt(0)) > textBoxWidth) {
-        list.push(printText);
-        textWidth = 0;
-        printText = '';
-      }
-      printText += sliceStr.charAt(0);
-      textWidth += p5.textWidth(sliceStr.charAt(0));
-      sliceStr = sliceStr.slice(1, sliceStr.length);
-    }
-    list.push(printText);
+    lines = Character.getTextLines(p5, text, CharacterSize.medium).length;
+    if (lines < 3) return CharacterSize.medium;
 
-    return list.length;
+    return CharacterSize.large;
   }
 }

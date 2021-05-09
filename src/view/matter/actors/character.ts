@@ -11,11 +11,13 @@ interface CharacterAction {
 }
 
 export class Character implements CharacterAction {
-  public static readonly maxSpeed = 20;
+  private static readonly maxSpeed = 20;
 
-  private static scaleX = 1.25;
+  private static readonly scaleX = 1.25;
 
-  private static scaleY = 1;
+  private static readonly scaleY = 1;
+
+  private static readonly textSize = 16;
 
   constructor(
     readonly id: string,
@@ -33,6 +35,41 @@ export class Character implements CharacterAction {
 
   get position() {
     return this.object.position;
+  }
+
+  static getTextLines(p5: P5Types, text: string, radius: number): string[] {
+    let texts = text;
+    let textLine = '';
+    const textLines = [];
+    const textBoxWidth = Character.getTextBoxWidth(radius);
+
+    // テキストボックスに収まるように、テキストを行に分割
+    p5.textSize(Character.textSize);
+    for (let i = 0, prevTextWidth = 0; i < text.length; i += 1) {
+      const currentChar = texts[0];
+      const textWidth = prevTextWidth + p5.textWidth(currentChar);
+      if (textWidth > textBoxWidth) {
+        // テキストボックスより文字幅が大きくなったら、改行
+        textLines.push(textLine);
+        prevTextWidth = 0;
+        textLine = '';
+      } else {
+        // テキストボックスより文字幅が小さければ、行に文字を追加
+        textLine += currentChar;
+        prevTextWidth += p5.textWidth(currentChar);
+        texts = texts.slice(1);
+      }
+    }
+    textLines.push(textLine);
+
+    return textLines;
+  }
+
+  static getTextBoxWidth(radius: number) {
+    const degree = 40; // 度数法で入力 ( 0 < degree < 90 )
+    const radian = (degree * Math.PI) / 180; // 弧度法
+    const rCosine = radius * Math.cos(radian);
+    return 2 * rCosine * Character.scaleX;
   }
 
   /**
@@ -152,34 +189,7 @@ export class Character implements CharacterAction {
 
   private drawText(p5: P5Types) {
     // textの描画
-    const textSize = 16;
-    const degree = 40; // 度数法で入力 ( 0 < degree < 90 )
-    const radian = (degree * Math.PI) / 180; // 弧度法
-    const rCosine = this.radius * Math.cos(radian);
-    const textBoxWidth = 2 * rCosine * Character.scaleX;
-
-    let texts = this.text;
-    let textLine = '';
-    const textLines = [];
-
-    // テキストボックスに収まるように、テキストを行に分割
-    p5.textSize(textSize);
-    for (let i = 0, prevTextWidth = 0; i < this.text.length; i += 1) {
-      const currentChar = texts[0];
-      const textWidth = prevTextWidth + p5.textWidth(currentChar);
-      if (textWidth > textBoxWidth) {
-        // テキストボックスより文字幅が大きくなったら、改行
-        textLines.push(textLine);
-        prevTextWidth = 0;
-        textLine = '';
-      } else {
-        // テキストボックスより文字幅が小さければ、行に文字を追加
-        textLine += currentChar;
-        prevTextWidth += p5.textWidth(currentChar);
-        texts = texts.slice(1);
-      }
-    }
-    textLines.push(textLine);
+    const textLines = Character.getTextLines(p5, this.text, this.radius);
 
     // テキストの開始位置を取得
     let startPosition;
@@ -192,8 +202,8 @@ export class Character implements CharacterAction {
     } else {
       // 複数行のときは、左詰め
       startPosition = {
-        x: this.position.x - (rCosine * Character.scaleX),
-        y: this.position.y - textSize * 0.5,
+        x: this.position.x - Character.getTextBoxWidth(this.radius) / 2,
+        y: this.position.y - Character.textSize / 2,
       };
     }
 
@@ -202,15 +212,15 @@ export class Character implements CharacterAction {
       // 一行のみのときは、中央寄せ
       p5.fill(0)
         .textAlign('center', 'center')
-        .textSize(textSize)
+        .textSize(Character.textSize)
         .text(textLines[0], startPosition.x, startPosition.y);
     } else {
       // 複数行のときは、左詰め
       for (let i = 0; i < textLines.length; i += 1) {
         p5.fill(0)
           .textAlign('left', 'center')
-          .textSize(textSize)
-          .text(textLines[i], startPosition.x, startPosition.y + textSize * i);
+          .textSize(Character.textSize)
+          .text(textLines[i], startPosition.x, startPosition.y + Character.textSize * i);
       }
     }
   }
