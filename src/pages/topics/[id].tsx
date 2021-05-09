@@ -43,7 +43,7 @@ const TopicPage = ({ topic, code }: Props) => {
 
   useEffect(() => {
     // ユーザーが未ログイン時は、一時的なIDを付与する
-    if (!uid && loginState === LoginStates.NOT_LOGGED_IN) {
+    if (!uid && loginState !== LoginStates.LOGGED_IN) {
       dispatcher(setUser({
         uid: new UserId().value,
         photoUrl: null,

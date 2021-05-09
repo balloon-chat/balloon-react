@@ -6,6 +6,7 @@ import P5Types from 'p5';
 import { MatterController } from 'src/view/matter/controllers/matterController';
 import { buttonType } from 'src/view/matter/actors/buttonFactory';
 import { CharacterFactory } from 'src/view/matter/actors/characterFactory';
+import { Character } from 'src/view/matter/actors/character';
 
 export class Button {
     private readonly _object: Matter.Body;
@@ -101,7 +102,7 @@ export class Button {
             x: sign.x * Math.random(),
             y: sign.y * Math.random(),
           }),
-          character.maxSpeed,
+          Character.maxSpeed,
         );
         Matter.Body.setVelocity(character.object, velocity);
       });
@@ -109,10 +110,7 @@ export class Button {
 
     isClicked(mouseX: number, mouseY: number) {
       const dist = (mouseX - this.object.position.x) ** 2 + (mouseY - this.object.position.y) ** 2;
-      if (dist < Button.radius ** 2) {
-        return true;
-      }
-      return false;
+      return dist < Button.radius ** 2;
     }
 
     draw(p5: P5Types) {

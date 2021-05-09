@@ -33,7 +33,7 @@ export class MatterController {
       const characters = Array.from(
         this.characterController.characters.values(),
       );
-      characters.forEach((character) => character.beforeUpdateOnMatter(this));
+      characters.forEach((character) => character.onBeforeUpdate());
     });
   }
 
@@ -57,7 +57,7 @@ export class MatterController {
         x: sign.x * Math.random(),
         y: sign.y * Math.random(),
       }),
-      character.maxSpeed * Math.random(),
+      Character.maxSpeed * Math.random(),
     );
     Matter.Body.setVelocity(character.object, velocity);
   }

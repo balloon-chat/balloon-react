@@ -79,7 +79,7 @@ export const Canvas: React.FC = () => {
       controller.characterController.characters.values(),
     );
     characters.forEach((character) => {
-      character.mousePressed(controller, p5.mouseX, p5.mouseY);
+      character.onMousePressed(controller, p5.mouseX, p5.mouseY);
     });
 
     controller.buttons.forEach((button) => {
