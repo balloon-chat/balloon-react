@@ -1,12 +1,8 @@
-/* eslint-disable class-methods-use-this */
-/* eslint-disable no-bitwise */
-/* eslint-disable max-len */
-import Matter, { Common, Vector } from 'matter-js';
+import Matter, { Common } from 'matter-js';
 import P5Types from 'p5';
 import { MatterController } from 'src/view/matter/controllers/matterController';
 import { buttonType } from 'src/view/matter/actors/buttonFactory';
 import { CharacterFactory } from 'src/view/matter/actors/characterFactory';
-import { Character } from 'src/view/matter/actors/character';
 
 export class Button {
     private readonly _object: Matter.Body;
@@ -79,9 +75,7 @@ export class Button {
      * @param matterController
      */
     removeAll(matterController: MatterController) {
-      const characters = Array.from(
-        matterController.characterController.characters.values(),
-      );
+      const { characters } = matterController.characterController;
       characters.forEach((character) => matterController.removeCharacter(character));
     }
 
@@ -89,23 +83,8 @@ export class Button {
      * @param matterController
      */
     shakeAll(matterController: MatterController) {
-      const characters = Array.from(
-        matterController.characterController.characters.values(),
-      );
-      characters.forEach((character) => {
-        const sign = {
-          x: Math.random() < 0.5 ? -1 : 1,
-          y: Math.random() < 0.5 ? -1 : 1,
-        };
-        const velocity: Vector = Vector.mult(
-          Matter.Vector.normalise({
-            x: sign.x * Math.random(),
-            y: sign.y * Math.random(),
-          }),
-          Character.maxSpeed,
-        );
-        Matter.Body.setVelocity(character.object, velocity);
-      });
+      const { characters } = matterController.characterController;
+      characters.forEach((character) => character.moveSomeWhere());
     }
 
     isClicked(mouseX: number, mouseY: number) {

@@ -1,9 +1,16 @@
-import Matter, { Common } from 'matter-js';
+import Matter, { Common, Vector } from 'matter-js';
 import P5Types from 'p5';
 import { CanvasParameter } from 'src/view/matter/models/canvasParameter';
 import { MatterController } from 'src/view/matter/controllers/matterController';
 
-export class Character {
+interface CharacterAction {
+  /**
+   * キャラクターをランダムな方向、速度で移動
+   */
+  moveSomeWhere(): void;
+}
+
+export class Character implements CharacterAction {
   public static readonly maxSpeed = 20;
 
   private static scaleX = 1.25;
@@ -26,11 +33,6 @@ export class Character {
 
   get position() {
     return this.object.position;
-  }
-
-  draw(p5: P5Types) {
-    this.drawCharacter(p5);
-    this.drawText(p5);
   }
 
   /**
@@ -81,22 +83,9 @@ export class Character {
     Matter.Body.setVelocity(this.object, velocity);
   }
 
-  /**
-   * 画面内にあるかどうかを判断する
-   */
-  isVisible(canvas: CanvasParameter): boolean {
-    const radius = this.object.circleRadius ?? 0;
-    const [positionLeft, positionRight, positionTop, positionBottom] = [
-      this.position.x - radius * Character.scaleX,
-      this.position.x + radius * Character.scaleX,
-      this.position.y + radius * Character.scaleY,
-      this.position.y - radius * Character.scaleY,
-    ];
-    const isInnerLeft = positionLeft < 0;
-    const isInnerRight = positionRight > canvas.width;
-    const isInnerTop = positionTop < 0;
-    const isInnerBottom = positionBottom > canvas.height;
-    return isInnerLeft && isInnerRight && isInnerTop && isInnerBottom;
+  draw(p5: P5Types) {
+    this.drawCharacter(p5);
+    this.drawText(p5);
   }
 
   /**
@@ -117,6 +106,22 @@ export class Character {
     }
 
     Matter.Body.setPosition(this.object, this.position);
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  moveSomeWhere(): void {
+    const sign = {
+      x: Math.random() < 0.5 ? -1 : 1,
+      y: Math.random() < 0.5 ? -1 : 1,
+    };
+    const velocity: Vector = Vector.mult(
+      Matter.Vector.normalise({
+        x: sign.x * Math.random(),
+        y: sign.y * Math.random(),
+      }),
+      Character.maxSpeed * Math.random(),
+    );
+    Matter.Body.setVelocity(this.object, velocity);
   }
 
   private drawCharacter(p5: P5Types) {
@@ -225,5 +230,27 @@ export class Character {
     const distOuter = outerX ** 2 + outerY ** 2;
 
     return distFromCenter < distOuter;
+  }
+
+  // ============================
+  // Character Actions
+  // ============================
+
+  /**
+   * 画面内にあるかどうかを判断する
+   */
+  private isVisible(canvas: CanvasParameter): boolean {
+    const radius = this.object.circleRadius ?? 0;
+    const [positionLeft, positionRight, positionTop, positionBottom] = [
+      this.position.x - radius * Character.scaleX,
+      this.position.x + radius * Character.scaleX,
+      this.position.y + radius * Character.scaleY,
+      this.position.y - radius * Character.scaleY,
+    ];
+    const isInnerLeft = positionLeft < 0;
+    const isInnerRight = positionRight > canvas.width;
+    const isInnerTop = positionTop < 0;
+    const isInnerBottom = positionBottom > canvas.height;
+    return isInnerLeft && isInnerRight && isInnerTop && isInnerBottom;
   }
 }
