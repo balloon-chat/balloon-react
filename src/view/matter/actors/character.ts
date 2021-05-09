@@ -60,6 +60,9 @@ export class Character implements CharacterAction {
     return this.object.position;
   }
 
+  /**
+   * テキストがボックスに入るように分割する
+   */
   static getTextLines(p5: P5Types, text: string, radius: number): string[] {
     let texts = text;
     let textLine = '';
@@ -87,6 +90,9 @@ export class Character implements CharacterAction {
     return textLines;
   }
 
+  /**
+   * テキストボックスの横幅を返す
+   */
   static getTextBoxWidth(radius: number) {
     const degree = 40; // 度数法で入力 ( 0 < degree < 90 )
     const radian = (degree * Math.PI) / 180; // 弧度法
@@ -203,47 +209,47 @@ export class Character implements CharacterAction {
     // textの描画
     const textLines = Character.getTextLines(p5, this.text, this.radius);
     const textBoxWidth = Character.getTextBoxWidth(this.radius);
-    const textSize = 16;
     let startPosition: Vector;
     // 目とキャラクター下端との中点。これを基準としてテキストを配置していく。
     const basePosition = Vector.create(
       this.position.x,
       (this.eyePosition.left.y + this.position.y + this.radius * Character.scaleY) * 0.5,
     );
-    p5.textSize(textSize);
+    p5.textSize(Character.textSize);
     // startPositionの決定
     // 行数が偶数か奇数で場合分け
     if (textLines.length === 1) {
       // 1のとき
       startPosition = Vector.create(
         basePosition.x,
-        basePosition.y - textSize * Math.floor(textLines.length * 0.5),
+        basePosition.y - Character.textSize * Math.floor(textLines.length * 0.5),
       );
     } else if (textLines.length % 2 === 0) {
       // 偶数のとき
       startPosition = Vector.create(
         basePosition.x - textBoxWidth * 0.5,
-        basePosition.y - textSize * 0.5 - textSize * (textLines.length * 0.5 - 1),
+        // eslint-disable-next-line max-len
+        basePosition.y - Character.textSize * 0.5 - Character.textSize * (textLines.length * 0.5 - 1),
       );
     } else {
       // 奇数のとき
       startPosition = Vector.create(
         basePosition.x - textBoxWidth * 0.5,
-        basePosition.y - textSize * Math.floor(textLines.length * 0.5),
+        basePosition.y - Character.textSize * Math.floor(textLines.length * 0.5),
       );
     }
     // 格納したtextの描画
     if (textLines.length === 1) {
       p5.fill(0)
         .textAlign('center', 'center')
-        .textSize(textSize)
+        .textSize(Character.textSize)
         .text(textLines[0], startPosition.x, startPosition.y);
     } else {
       for (let i = 0; i < textLines.length; i += 1) {
         p5.fill(0)
           .textAlign('left', 'center')
-          .textSize(textSize)
-          .text(textLines[i], startPosition.x, startPosition.y + textSize * i);
+          .textSize(Character.textSize)
+          .text(textLines[i], startPosition.x, startPosition.y + Character.textSize * i);
       }
     }
   }
