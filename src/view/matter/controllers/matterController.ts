@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import Matter, { Vector } from 'matter-js';
+import Matter from 'matter-js';
 import { CharacterController } from 'src/view/matter/controllers/characterController';
 import { Character } from 'src/view/matter/actors/character';
 import { CanvasParameter } from 'src/view/matter/models/canvasParameter';
@@ -19,20 +19,17 @@ export class MatterController {
     public readonly canvas: CanvasParameter,
   ) {
     this.adapter = new MatterListAdapter(this);
+
     // 重力を無効化する
     this.disableGravity();
 
     // ボタンをワールドに追加
     this.buttons = buttons;
-    this.buttons.forEach((button) => {
-      this.addObject(button.object);
-    });
+    this.buttons.forEach((button) => this.addObject(button.object));
 
     // characterのアップデート前に行う動作（スピード調整等）
     Matter.Events.on(this.engine, 'beforeUpdate', () => {
-      const characters = Array.from(
-        this.characterController.characters.values(),
-      );
+      const { characters } = this.characterController;
       characters.forEach((character) => character.onBeforeUpdate());
     });
   }
@@ -48,18 +45,6 @@ export class MatterController {
   addCharacter(character: Character): void {
     this.addObject(character.object);
     this.characterController.add(character);
-    const sign = {
-      x: Math.random() < 0.5 ? -1 : 1,
-      y: Math.random() < 0.5 ? -1 : 1,
-    };
-    const velocity: Vector = Vector.mult(
-      Matter.Vector.normalise({
-        x: sign.x * Math.random(),
-        y: sign.y * Math.random(),
-      }),
-      Character.maxSpeed * Math.random(),
-    );
-    Matter.Body.setVelocity(character.object, velocity);
   }
 
   /**

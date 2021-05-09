@@ -1,12 +1,8 @@
-/* eslint-disable class-methods-use-this */
-/* eslint-disable no-bitwise */
-/* eslint-disable max-len */
-import Matter, { Common, Vector } from 'matter-js';
+import Matter, { Common } from 'matter-js';
 import P5Types from 'p5';
 import { MatterController } from 'src/view/matter/controllers/matterController';
 import { buttonType } from 'src/view/matter/actors/buttonFactory';
 import { CharacterFactory } from 'src/view/matter/actors/characterFactory';
-import { Character } from 'src/view/matter/actors/character';
 
 export class Button {
     private readonly _object: Matter.Body;
@@ -26,6 +22,7 @@ export class Button {
         collisionFilter: {
           group: 0,
           category: 0x0004,
+          // eslint-disable-next-line no-bitwise
           mask: 0x0004 | 0x0001,
         } });
     }
@@ -34,14 +31,11 @@ export class Button {
       return this._object;
     }
 
-    /** マウスがクリックされたときに行われる関数
-     * @param matterController
-     * @param mouseX
-     * @param mouseY
-     * @returns
+    /**
+     * マウスがクリックされたときに行われる関数
      */
-    mousePressed(matterController: MatterController, mouseX: number, mouseY: number) {
-      if (this.isClicked(mouseX, mouseY) === false) return;
+    onPressed(matterController: MatterController, mouseX: number, mouseY: number) {
+      if (!this.isClicked(mouseX, mouseY)) return;
       switch (this.type) {
         case buttonType.add: {
           this.add(matterController);
@@ -61,51 +55,40 @@ export class Button {
       }
     }
 
-    /** 画面上にキャラクターを表示
-     * @param matterController
+    /**
+     * 画面上にキャラクターを表示
      */
+    // eslint-disable-next-line class-methods-use-this
     add(matterController: MatterController) {
       if (matterController.p5 === null) return;
       const character = CharacterFactory.create(
         matterController.p5,
         matterController.canvas,
-        `${Common.nextId()}`,
-        '新しく追加したオブジェクトです',
+        {
+          id: `${Common.nextId()}`,
+          message: '新しく追加したオブジェクトです',
+          senderId: 'test',
+        },
       );
       matterController.addCharacter(character);
     }
 
-    /** 画面上のすべてのキャラクターを消去
-     * @param matterController
+    /**
+     * 画面上のすべてのキャラクターを消去
      */
+    // eslint-disable-next-line class-methods-use-this
     removeAll(matterController: MatterController) {
-      const characters = Array.from(
-        matterController.characterController.characters.values(),
-      );
+      const { characters } = matterController.characterController;
       characters.forEach((character) => matterController.removeCharacter(character));
     }
 
-    /** 画面上のすべてのキャラクターを揺らす
-     * @param matterController
+    /**
+     * 画面上のすべてのキャラクターを揺らす
      */
+    // eslint-disable-next-line class-methods-use-this
     shakeAll(matterController: MatterController) {
-      const characters = Array.from(
-        matterController.characterController.characters.values(),
-      );
-      characters.forEach((character) => {
-        const sign = {
-          x: Math.random() < 0.5 ? -1 : 1,
-          y: Math.random() < 0.5 ? -1 : 1,
-        };
-        const velocity: Vector = Vector.mult(
-          Matter.Vector.normalise({
-            x: sign.x * Math.random(),
-            y: sign.y * Math.random(),
-          }),
-          Character.maxSpeed,
-        );
-        Matter.Body.setVelocity(character.object, velocity);
-      });
+      const { characters } = matterController.characterController;
+      characters.forEach((character) => character.moveSomeWhere());
     }
 
     isClicked(mouseX: number, mouseY: number) {

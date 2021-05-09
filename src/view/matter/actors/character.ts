@@ -1,14 +1,23 @@
-import Matter, { Common } from 'matter-js';
+import Matter, { Common, Vector } from 'matter-js';
 import P5Types from 'p5';
 import { CanvasParameter } from 'src/view/matter/models/canvasParameter';
 import { MatterController } from 'src/view/matter/controllers/matterController';
 
-export class Character {
-  public static readonly maxSpeed = 20;
+interface CharacterAction {
+  /**
+   * キャラクターをランダムな方向、速度で移動
+   */
+  moveSomeWhere(): void;
+}
 
-  private static scaleX = 1.25;
+export class Character implements CharacterAction {
+  private static readonly maxSpeed = 20;
 
-  private static scaleY = 1;
+  private static readonly scaleX = 1.25;
+
+  private static readonly scaleY = 1;
+
+  private static readonly textSize = 16;
 
   constructor(
     readonly id: string,
@@ -28,9 +37,39 @@ export class Character {
     return this.object.position;
   }
 
-  draw(p5: P5Types) {
-    this.drawCharacter(p5);
-    this.drawText(p5);
+  static getTextLines(p5: P5Types, text: string, radius: number): string[] {
+    let texts = text;
+    let textLine = '';
+    const textLines = [];
+    const textBoxWidth = Character.getTextBoxWidth(radius);
+
+    // テキストボックスに収まるように、テキストを行に分割
+    p5.textSize(Character.textSize);
+    for (let i = 0, prevTextWidth = 0; i < text.length; i += 1) {
+      const currentChar = texts[0];
+      const textWidth = prevTextWidth + p5.textWidth(currentChar);
+      if (textWidth > textBoxWidth) {
+        // テキストボックスより文字幅が大きくなったら、改行
+        textLines.push(textLine);
+        prevTextWidth = 0;
+        textLine = '';
+      } else {
+        // テキストボックスより文字幅が小さければ、行に文字を追加
+        textLine += currentChar;
+        prevTextWidth += p5.textWidth(currentChar);
+        texts = texts.slice(1);
+      }
+    }
+    textLines.push(textLine);
+
+    return textLines;
+  }
+
+  static getTextBoxWidth(radius: number) {
+    const degree = 40; // 度数法で入力 ( 0 < degree < 90 )
+    const radian = (degree * Math.PI) / 180; // 弧度法
+    const rCosine = radius * Math.cos(radian);
+    return 2 * rCosine * Character.scaleX;
   }
 
   /**
@@ -81,22 +120,9 @@ export class Character {
     Matter.Body.setVelocity(this.object, velocity);
   }
 
-  /**
-   * 画面内にあるかどうかを判断する
-   */
-  isVisible(canvas: CanvasParameter): boolean {
-    const radius = this.object.circleRadius ?? 0;
-    const [positionLeft, positionRight, positionTop, positionBottom] = [
-      this.position.x - radius * Character.scaleX,
-      this.position.x + radius * Character.scaleX,
-      this.position.y + radius * Character.scaleY,
-      this.position.y - radius * Character.scaleY,
-    ];
-    const isInnerLeft = positionLeft < 0;
-    const isInnerRight = positionRight > canvas.width;
-    const isInnerTop = positionTop < 0;
-    const isInnerBottom = positionBottom > canvas.height;
-    return isInnerLeft && isInnerRight && isInnerTop && isInnerBottom;
+  draw(p5: P5Types) {
+    this.drawCharacter(p5);
+    this.drawText(p5);
   }
 
   /**
@@ -117,6 +143,22 @@ export class Character {
     }
 
     Matter.Body.setPosition(this.object, this.position);
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  moveSomeWhere(): void {
+    const sign = {
+      x: Math.random() < 0.5 ? -1 : 1,
+      y: Math.random() < 0.5 ? -1 : 1,
+    };
+    const velocity: Vector = Vector.mult(
+      Matter.Vector.normalise({
+        x: sign.x * Math.random(),
+        y: sign.y * Math.random(),
+      }),
+      Character.maxSpeed * Math.random(),
+    );
+    Matter.Body.setVelocity(this.object, velocity);
   }
 
   private drawCharacter(p5: P5Types) {
@@ -147,34 +189,7 @@ export class Character {
 
   private drawText(p5: P5Types) {
     // textの描画
-    const textSize = 16;
-    const degree = 40; // 度数法で入力 ( 0 < degree < 90 )
-    const radian = (degree * Math.PI) / 180; // 弧度法
-    const rCosine = this.radius * Math.cos(radian);
-    const textBoxWidth = 2 * rCosine * Character.scaleX;
-
-    let texts = this.text;
-    let textLine = '';
-    const textLines = [];
-
-    // テキストボックスに収まるように、テキストを行に分割
-    p5.textSize(textSize);
-    for (let i = 0, prevTextWidth = 0; i < this.text.length; i += 1) {
-      const currentChar = texts[0];
-      const textWidth = prevTextWidth + p5.textWidth(currentChar);
-      if (textWidth > textBoxWidth) {
-        // テキストボックスより文字幅が大きくなったら、改行
-        textLines.push(textLine);
-        prevTextWidth = 0;
-        textLine = '';
-      } else {
-        // テキストボックスより文字幅が小さければ、行に文字を追加
-        textLine += currentChar;
-        prevTextWidth += p5.textWidth(currentChar);
-        texts = texts.slice(1);
-      }
-    }
-    textLines.push(textLine);
+    const textLines = Character.getTextLines(p5, this.text, this.radius);
 
     // テキストの開始位置を取得
     let startPosition;
@@ -187,8 +202,8 @@ export class Character {
     } else {
       // 複数行のときは、左詰め
       startPosition = {
-        x: this.position.x - (rCosine * Character.scaleX),
-        y: this.position.y - textSize * 0.5,
+        x: this.position.x - Character.getTextBoxWidth(this.radius) / 2,
+        y: this.position.y - Character.textSize / 2,
       };
     }
 
@@ -197,15 +212,15 @@ export class Character {
       // 一行のみのときは、中央寄せ
       p5.fill(0)
         .textAlign('center', 'center')
-        .textSize(textSize)
+        .textSize(Character.textSize)
         .text(textLines[0], startPosition.x, startPosition.y);
     } else {
       // 複数行のときは、左詰め
       for (let i = 0; i < textLines.length; i += 1) {
         p5.fill(0)
           .textAlign('left', 'center')
-          .textSize(textSize)
-          .text(textLines[i], startPosition.x, startPosition.y + textSize * i);
+          .textSize(Character.textSize)
+          .text(textLines[i], startPosition.x, startPosition.y + Character.textSize * i);
       }
     }
   }
@@ -225,5 +240,27 @@ export class Character {
     const distOuter = outerX ** 2 + outerY ** 2;
 
     return distFromCenter < distOuter;
+  }
+
+  // ============================
+  // Character Actions
+  // ============================
+
+  /**
+   * 画面内にあるかどうかを判断する
+   */
+  private isVisible(canvas: CanvasParameter): boolean {
+    const radius = this.object.circleRadius ?? 0;
+    const [positionLeft, positionRight, positionTop, positionBottom] = [
+      this.position.x - radius * Character.scaleX,
+      this.position.x + radius * Character.scaleX,
+      this.position.y + radius * Character.scaleY,
+      this.position.y - radius * Character.scaleY,
+    ];
+    const isInnerLeft = positionLeft < 0;
+    const isInnerRight = positionRight > canvas.width;
+    const isInnerTop = positionTop < 0;
+    const isInnerBottom = positionBottom > canvas.height;
+    return isInnerLeft && isInnerRight && isInnerTop && isInnerBottom;
   }
 }

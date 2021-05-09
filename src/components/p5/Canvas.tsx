@@ -66,24 +66,20 @@ export const Canvas: React.FC = () => {
     });
 
     // キャラクターの描画
-    const characters = Array.from(
-      controller.characterController.characters.values(),
-    );
+    const { characters } = controller.characterController;
     characters.forEach((character) => {
       character.draw(p5);
     });
   };
 
   const mousePressed = (p5: P5Types) => {
-    const characters = Array.from(
-      controller.characterController.characters.values(),
-    );
+    const { characters } = controller.characterController;
     characters.forEach((character) => {
       character.onMousePressed(controller, p5.mouseX, p5.mouseY);
     });
 
     controller.buttons.forEach((button) => {
-      button.mousePressed(controller, p5.mouseX, p5.mouseY);
+      button.onPressed(controller, p5.mouseX, p5.mouseY);
     });
   };
 
