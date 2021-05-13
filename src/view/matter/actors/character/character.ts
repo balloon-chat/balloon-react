@@ -181,34 +181,28 @@ export class Character implements CharacterAction {
   private drawText(p5: P5Types) {
     // textの描画
     const textLines = Character.getTextLines(p5, this.text, this.radius);
-    const textBoxWidth = Character.getTextBoxWidth(this.radius);
-    let startPosition: Vector;
+
     // 目とキャラクター下端との中点。これを基準としてテキストを配置していく。
     const basePosition = Vector.create(
       this.position.x,
-      (this.eyePosition.left.y + this.position.y + this.radius * Character.scaleY) * 0.5,
+      this.eyePosition.left.y + (this.radius * Character.scaleX) * Math.tan(75 / 180),
     );
     p5.textSize(Character.textSize);
-    // startPositionの決定
-    // 行数が偶数か奇数で場合分け
+
+    const textBoxWidth = Character.getTextBoxWidth(this.radius);
+    const textBoxHeight = textLines.length * Character.textSize;
+    let startPosition: Vector;
     if (textLines.length === 1) {
-      // 1のとき
+      // 一行だけのときは、中央寄せ
       startPosition = Vector.create(
         basePosition.x,
-        basePosition.y - Character.textSize * Math.floor(textLines.length * 0.5),
-      );
-    } else if (textLines.length % 2 === 0) {
-      // 偶数のとき
-      startPosition = Vector.create(
-        basePosition.x - textBoxWidth * 0.5,
-        // eslint-disable-next-line max-len
-        basePosition.y - Character.textSize * 0.5 - Character.textSize * (textLines.length * 0.5 - 1),
+        basePosition.y - textBoxHeight / 3,
       );
     } else {
-      // 奇数のとき
+      // 複数行のときは、左詰め
       startPosition = Vector.create(
-        basePosition.x - textBoxWidth * 0.5,
-        basePosition.y - Character.textSize * Math.floor(textLines.length * 0.5),
+        basePosition.x - textBoxWidth / 2,
+        basePosition.y - textBoxHeight / 3,
       );
     }
     // 格納したtextの描画
