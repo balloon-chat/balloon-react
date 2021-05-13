@@ -1,11 +1,11 @@
-import Matter, { Common } from 'matter-js';
+import { Bodies, Body, Common } from 'matter-js';
 import P5Types from 'p5';
 import { MatterController } from 'src/view/matter/controllers/matterController';
-import { buttonType } from 'src/view/matter/actors/buttonFactory';
-import { CharacterFactory } from 'src/view/matter/actors/characterFactory';
+import { buttonType } from 'src/view/matter/actors/button/buttonFactory';
+import { CharacterFactory } from 'src/view/matter/actors/character/characterFactory';
 
 export class Button {
-    private readonly _object: Matter.Body;
+    public readonly object: Body;
 
     public static radius = 50;
 
@@ -15,7 +15,7 @@ export class Button {
       readonly type: buttonType,
       readonly color: string,
     ) {
-      this._object = Matter.Bodies.circle(x, y, Button.radius, {
+      this.object = Bodies.circle(x, y, Button.radius, {
         friction: 1,
         isStatic: true,
         label: type,
@@ -25,10 +25,6 @@ export class Button {
           // eslint-disable-next-line no-bitwise
           mask: 0x0004 | 0x0001,
         } });
-    }
-
-    get object() {
-      return this._object;
     }
 
     /**
@@ -61,12 +57,14 @@ export class Button {
     // eslint-disable-next-line class-methods-use-this
     add(matterController: MatterController) {
       if (matterController.p5 === null) return;
+      const now = new Date();
+      const msg = `${now}`;
       const character = CharacterFactory.create(
         matterController.p5,
         matterController.canvas,
         {
           id: `${Common.nextId()}`,
-          message: '新しく追加したオブジェクトです',
+          message: msg,
           senderId: 'test',
         },
       );

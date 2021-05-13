@@ -1,7 +1,11 @@
-import { Character } from 'src/view/matter/actors/character';
+import { Character } from 'src/view/matter/actors/character/character';
+import { Body } from 'matter-js';
+import { CanvasParameter } from 'src/view/matter/models/canvasParameter';
 
 export class CharacterController {
   private readonly _characters: Map<string, Character>;
+
+  private latestCharacterId: string|null = null;
 
   constructor() {
     this._characters = new Map();
@@ -11,20 +15,14 @@ export class CharacterController {
     return Array.from(this._characters.values());
   }
 
-  inspect() {
-    let str: string = 'charactersに入っている要素\n';
-    this.characters.forEach((character) => {
-      str += `Body: ${character.object.id}\nText: ${character.text}\n`;
-    });
-    console.log(str);
+  get latestCharacter(): Character|null {
+    if (!this.latestCharacterId) return null;
+    return this.findCharacterById(this.latestCharacterId);
   }
 
-  /**
-   * マップにキャラクターを追加する
-   *  @param {Character} character
-   */
   add(character: Character) {
     this._characters.set(character.id, character);
+    this.latestCharacterId = character.id;
     character.moveSomeWhere();
   }
 
@@ -32,10 +30,21 @@ export class CharacterController {
     this._characters.delete(character.id);
   }
 
-  getCharacter(id: string | number): Character | undefined {
-    if (typeof id === 'string') {
-      return this._characters.get(id);
+  onBeforeUpdate(canvas: CanvasParameter) {
+    // 最新のキャラクターは常に中央に配置
+    if (this.latestCharacter) {
+      Body.setPosition(this.latestCharacter.object, {
+        x: canvas.center.x,
+        y: canvas.center.y,
+      });
     }
-    return this.characters.find((c) => c.object.id === id);
+    this.characters.forEach((character) => character.onBeforeUpdate());
+  }
+
+  findCharacterById(id: string | number): Character | null {
+    if (typeof id === 'string') {
+      return this._characters.get(id) ?? null;
+    }
+    return this.characters.find((c) => c.object.id === id) ?? null;
   }
 }

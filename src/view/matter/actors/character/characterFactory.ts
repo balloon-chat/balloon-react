@@ -1,5 +1,5 @@
-import { Character } from 'src/view/matter/actors/character';
-import { Bodies } from 'matter-js';
+import { Character } from 'src/view/matter/actors/character/character';
+import { Bodies, Vector } from 'matter-js';
 import { CanvasParameter } from 'src/view/matter/models/canvasParameter';
 import P5Types from 'p5';
 
@@ -35,11 +35,18 @@ export class CharacterFactory {
     { id, message, senderId }: CharacterFactoryParams,
   ): Character {
     const radius = this.getCharacterSize(p5, message);
-    const { x, y } = canvas.center;
+    const sign = {
+      x: Math.random() > 0.5 ? 1 : -1,
+      y: Math.random() > 0.5 ? 1 : -1,
+    };
+    const generatePosition = Vector.create(
+      canvas.center.x + sign.x * 50 * Math.random(),
+      canvas.center.y + sign.y * 50 * Math.random(),
+    );
     const color = characterColors[senderId.charCodeAt(0) % characterColors.length];
     return new Character(
       id,
-      Bodies.circle(x, y, radius, {
+      Bodies.circle(generatePosition.x, generatePosition.y, radius, {
         inertia: Infinity,
         frictionAir: 0,
         restitution: 0.3,
@@ -58,10 +65,10 @@ export class CharacterFactory {
 
   static getCharacterSize(p5: P5Types, text: string): CharacterSize {
     let lines = Character.getTextLines(p5, text, CharacterSize.small).length;
-    if (lines < 3) return CharacterSize.small;
+    if (lines <= 3) return CharacterSize.small;
 
     lines = Character.getTextLines(p5, text, CharacterSize.medium).length;
-    if (lines < 3) return CharacterSize.medium;
+    if (lines <= 3) return CharacterSize.medium;
 
     return CharacterSize.large;
   }
