@@ -12,9 +12,8 @@ import { CharacterAction, EyePosition } from 'src/view/matter/actors/character/t
  *  @param {number} radius 半径
  *  @param {string} color 色
  */
-
 export class Character implements CharacterAction {
-  public static readonly maxSpeed = 1.5;
+  public static readonly maxSpeed = 20;
 
   private static readonly scaleX = 1.25;
 
@@ -32,8 +31,6 @@ export class Character implements CharacterAction {
     this.object.id = Common.nextId();
     this.object.label = 'character';
     Body.scale(this.object, Character.scaleX, Character.scaleY);
-
-    this.text = text;
   }
 
   get position() {
@@ -107,28 +104,24 @@ export class Character implements CharacterAction {
    * 速度に応じて減衰をかけ、キャラクターの速度が一定以上に達しないように制御する。
    */
   controlSpeed() {
-    if (this.object.speed > Character.maxSpeed) {
-      const velocity = Vector.mult(
-        Vector.normalise(this.object.velocity),
-        Character.maxSpeed,
-      );
-      Body.setVelocity(this.object, velocity);
+    const { speed, velocity } = this.object;
+    const { maxSpeed } = Character;
+
+    // 最大速度以下に抑える
+    if (speed > maxSpeed) {
+      const newVelocity = Vector.mult(Vector.normalise(velocity), maxSpeed);
+      Body.setVelocity(this.object, newVelocity);
       return;
     }
 
-    let deceleration;
-    if (this.object.speed < 0.1) {
-      // オブジェクトの速さがほぼ0であれば完全に停止
-      deceleration = 0.0;
-    } else if (this.object.speed < Character.maxSpeed * 0.2) {
-      // オブジェクトの速さがmaxSpeedの20%を下回ると急激に減速する。
-      deceleration = 0.9;
-    } else {
-      // 速度がmaxSpeedの10%以上、100%以下ならば減速率0.98とする
-      deceleration = 0.98;
-    }
-    const velocity = Vector.mult(this.object.velocity, deceleration);
-    Body.setVelocity(this.object, velocity);
+    // 減衰させる
+    // 最大速度の20％になった時点で、減衰率を上げ画面外に出ていかないようにする。
+    let decelerationRate;
+    if (speed < maxSpeed * 0.2) decelerationRate = 0.15;
+    else decelerationRate = 0.03;
+
+    const newVelocity = Vector.mult(this.object.velocity, 1.0 - decelerationRate);
+    Body.setVelocity(this.object, newVelocity);
   }
 
   /**
