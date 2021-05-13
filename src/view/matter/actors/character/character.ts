@@ -1,6 +1,5 @@
 import { Body, Common, Vector } from 'matter-js';
 import P5Types from 'p5';
-import { CanvasParameter } from 'src/view/matter/models/canvasParameter';
 import { CharacterAction, EyePosition } from 'src/view/matter/actors/character/types';
 
 /**
@@ -117,26 +116,6 @@ export class Character implements CharacterAction {
     Body.setVelocity(this.object, newVelocity);
   }
 
-  /**
-   * 画面外に出たときに中に戻す
-   */
-  preventInvisible(canvas: CanvasParameter) {
-    if (this.isVisible(canvas)) return;
-    if (this.position.x + this.radius * Character.scaleX * 2 < 0) {
-      this.position.x = canvas.width + this.radius * 1.25 * 2;
-    } else if (this.position.x - this.radius * Character.scaleX * 2 > canvas.width) {
-      this.position.x = 0 - this.radius * 1.25 * 2;
-    }
-
-    if (this.position.y + this.radius * Character.scaleY * 2 < 0) {
-      this.position.y = canvas.height + this.radius * Character.scaleY * 2;
-    } else if (this.position.y - this.radius * Character.scaleY * 2 > canvas.height) {
-      this.position.y = 0 - this.radius * Character.scaleY * 2;
-    }
-
-    Body.setPosition(this.object, this.position);
-  }
-
   draw(p5: P5Types) {
     this.drawCharacter(p5);
     this.drawText(p5);
@@ -205,24 +184,6 @@ export class Character implements CharacterAction {
           .text(textLines[i], startPosition.x, startPosition.y + Character.textSize * i);
       }
     }
-  }
-
-  /**
-   * 画面内にあるかどうかを判断する
-   */
-  private isVisible(canvas: CanvasParameter): boolean {
-    const radius = this.object.circleRadius ?? 0;
-    const [positionLeft, positionRight, positionTop, positionBottom] = [
-      this.position.x - radius * Character.scaleX,
-      this.position.x + radius * Character.scaleX,
-      this.position.y + radius * Character.scaleY,
-      this.position.y - radius * Character.scaleY,
-    ];
-    const isInnerLeft = positionLeft < 0;
-    const isInnerRight = positionRight > canvas.width;
-    const isInnerTop = positionTop < 0;
-    const isInnerBottom = positionBottom > canvas.height;
-    return isInnerLeft && isInnerRight && isInnerTop && isInnerBottom;
   }
 
   // ============================
