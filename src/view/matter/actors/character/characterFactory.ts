@@ -1,4 +1,4 @@
-import { Character } from 'src/view/matter/actors/character';
+import { Character } from 'src/view/matter/actors/character/character';
 import { Bodies, Vector } from 'matter-js';
 import { CanvasParameter } from 'src/view/matter/models/canvasParameter';
 import P5Types from 'p5';

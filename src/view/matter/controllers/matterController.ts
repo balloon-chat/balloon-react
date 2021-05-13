@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import Matter from 'matter-js';
 import { CharacterController } from 'src/view/matter/controllers/characterController';
-import { Character } from 'src/view/matter/actors/character';
+import { Character } from 'src/view/matter/actors/character/character';
 import { CanvasParameter } from 'src/view/matter/models/canvasParameter';
 import { MatterListAdapter } from 'src/view/matter/lib/matterListAdapter';
 import P5Types from 'p5';

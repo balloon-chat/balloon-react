@@ -1,6 +1,6 @@
 import { ListAdapter } from 'src/view/lib/listAdapter';
 import { MessageEntity } from 'src/view/types/message';
-import { CharacterFactory } from 'src/view/matter/actors/characterFactory';
+import { CharacterFactory } from 'src/view/matter/actors/character/characterFactory';
 import { MatterController } from 'src/view/matter/controllers/matterController';
 import { MessageEntityDiffUtil } from 'src/view/matter/lib/messageEntityDiffUtil';
 

@@ -2,7 +2,7 @@ import Matter, { Common } from 'matter-js';
 import P5Types from 'p5';
 import { MatterController } from 'src/view/matter/controllers/matterController';
 import { buttonType } from 'src/view/matter/actors/buttonFactory';
-import { CharacterFactory } from 'src/view/matter/actors/characterFactory';
+import { CharacterFactory } from 'src/view/matter/actors/character/characterFactory';
 
 export class Button {
     private readonly _object: Matter.Body;

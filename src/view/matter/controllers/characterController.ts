@@ -1,4 +1,4 @@
-import { Character } from 'src/view/matter/actors/character';
+import { Character } from 'src/view/matter/actors/character/character';
 
 export class CharacterController {
   private readonly _characters: Map<string, Character>;

@@ -1,7 +1,8 @@
-import Matter, { Common, Vector } from 'matter-js';
+import Matter, { Body, Common, Vector } from 'matter-js';
 import P5Types from 'p5';
 import { CanvasParameter } from 'src/view/matter/models/canvasParameter';
 import { MatterController } from 'src/view/matter/controllers/matterController';
+import { CharacterAction, EyePosition } from 'src/view/matter/actors/character/types';
 
 /**
  * キャラクター（オブジェクトとテキストの情報を持っている）
@@ -12,13 +13,6 @@ import { MatterController } from 'src/view/matter/controllers/matterController';
  *  @param {string} color 色
  */
 
-interface CharacterAction {
-  /**
-   * キャラクターをランダムな方向、速度で移動
-   */
-  moveSomeWhere(): void;
-}
-
 export class Character implements CharacterAction {
   public static readonly maxSpeed = 1.5;
 
@@ -28,10 +22,7 @@ export class Character implements CharacterAction {
 
   private static readonly textSize = 16;
 
-  private eyePosition: {
-    left: Vector,
-    right: Vector,
-  };
+  private readonly eyePosition: EyePosition
 
   constructor(
     readonly id: string,
@@ -43,7 +34,9 @@ export class Character implements CharacterAction {
     this.object.id = Common.nextId();
     this.object.label = 'character';
     Matter.Body.scale(this.object, Character.scaleX, Character.scaleY);
+
     this.text = text;
+
     this.eyePosition = {
       left: Vector.create(
         this.position.x - this.radius * 0.35,
@@ -68,6 +61,7 @@ export class Character implements CharacterAction {
     let textLine = '';
     const textLines = [];
     const textBoxWidth = Character.getTextBoxWidth(radius);
+
     // テキストボックスに収まるように、テキストを行に分割
     p5.textSize(Character.textSize);
     for (let i = 0, prevTextWidth = 0; i < text.length; i += 1) {
@@ -90,9 +84,6 @@ export class Character implements CharacterAction {
     return textLines;
   }
 
-  /**
-   * テキストボックスの横幅を返す
-   */
   static getTextBoxWidth(radius: number) {
     const degree = 40; // 度数法で入力 ( 0 < degree < 90 )
     const radian = (degree * Math.PI) / 180; // 弧度法
@@ -100,18 +91,12 @@ export class Character implements CharacterAction {
     return 2 * rCosine * Character.scaleX;
   }
 
-  /**
-   * matterのアップデート前に行われる関数
-   */
   onBeforeUpdate() {
     this.controlSpeed();
     // 回転の防止
     Matter.Body.setAngle(this.object, 0);
   }
 
-  /**
-   * マウスがクリックされたときに行われる関数
-   */
   onMousePressed(_matterController: MatterController, mouseX: number, mouseY: number) {
     if (this.isClicked(mouseX, mouseY)) {
       // do something when this character is touched.
@@ -148,21 +133,6 @@ export class Character implements CharacterAction {
     Matter.Body.setVelocity(this.object, velocity);
   }
 
-  draw(p5: P5Types) {
-    this.eyePosition = {
-      left: Vector.create(
-        this.position.x - this.radius * 0.35,
-        this.position.y - this.radius * 0.45,
-      ),
-      right: Vector.create(
-        this.position.x + this.radius * 0.35,
-        this.position.y - this.radius * 0.45,
-      ),
-    };
-    this.drawCharacter(p5);
-    this.drawText(p5);
-  }
-
   /**
    * 画面外に出たときに中に戻す
    */
@@ -181,6 +151,11 @@ export class Character implements CharacterAction {
     }
 
     Matter.Body.setPosition(this.object, this.position);
+  }
+
+  draw(p5: P5Types) {
+    this.drawCharacter(p5);
+    this.drawText(p5);
   }
 
   private drawCharacter(p5: P5Types) {
@@ -254,29 +229,13 @@ export class Character implements CharacterAction {
     }
   }
 
-  moveSomeWhere() {
-    const sign = {
-      x: Math.random() < 0.5 ? -1 : 1,
-      y: Math.random() < 0.5 ? -1 : 1,
-    };
-    const velocity: Vector = Vector.mult(
-      Vector.normalise(Vector.create(
-        sign.x * Math.random(),
-        sign.y * Math.random(),
-      )),
-      Character.maxSpeed,
-    );
-    Matter.Body.setVelocity(this.object, velocity);
-  }
-
   /**
    * クリックされているかどうかを判断する
    */
   private isClicked(mouseX: number, mouseY: number):boolean {
     // キャラクター中央からの、マウスとの距離
     const distFromCenter = (mouseX - this.position.x) ** 2 + (mouseY - this.position.y) ** 2;
-
-    // キャラクター中央からみた、マウスの角度
+    // キャラクター中央からの、マウスの角度
     const radian = Math.atan2(mouseX - this.position.x, mouseY - this.position.y);
     // キャラクターの中央から、マウスのある角度におけるキャラクターの縁との距離
     const outerX = this.radius * Character.scaleX * Math.cos(radian);
@@ -287,7 +246,6 @@ export class Character implements CharacterAction {
 
   // ============================
   // Character Actions
-  // ============================
 
   /**
    * 画面内にあるかどうかを判断する
