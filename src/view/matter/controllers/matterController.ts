@@ -28,53 +28,34 @@ export class MatterController {
 
     // characterのアップデート前に行う動作
     Events.on(this.engine, 'beforeUpdate', () => {
-      // eslint-disable-next-line max-len
-      const latestCharacter = this.characterController.getCharacter(this.characterController.latestCharacterId);
-      if (typeof latestCharacter !== 'undefined') {
-        // eslint-disable-next-line max-len
-        Body.setPosition(latestCharacter.object, this.characterController.latestCharacterPosition);
+      // 最新のキャラクターは常に中央に配置
+      const { latestCharacter } = this.characterController;
+      if (latestCharacter) {
+        Body.setPosition(latestCharacter.object, {
+          x: this.canvas.center.x,
+          y: this.canvas.center.y,
+        });
       }
+
       const { characters } = this.characterController;
       characters.forEach((character) => character.onBeforeUpdate());
     });
   }
 
-  /** エンジンを動かす */
   run() {
     Engine.run(this.engine);
   }
 
-  /**
-   * キャラクターをワールドに追加
-   */
   addCharacter(character: Character): void {
-    const sign = {
-      x: Math.random() < 0.5 ? -1 : 1,
-      y: Math.random() < 0.5 ? -1 : 1,
-    };
-
-    this.characterController.latestCharacterPosition = {
-      x: this.canvas.center.x + sign.x * 50 * Math.random(),
-      y: this.canvas.center.y + sign.y * 50 * Math.random(),
-    };
-
-    console.log(this.characterController.latestCharacterPosition);
-    this.characterController.latestCharacterId = character.id;
     this.addObject(character.object);
     this.characterController.add(character);
   }
 
-  /**
-   * ワールドからキャラクターを削除
-   */
   removeCharacter(character: Character): void {
     this.removeObject(character.object);
     this.characterController.remove(character);
   }
 
-  /**
-   * 重力を無効にする
-    */
   private disableGravity() {
     this.engine.world.gravity.x = 0;
     this.engine.world.gravity.y = 0;
@@ -96,10 +77,6 @@ export class MatterController {
     World.add(this.engine.world, object);
   }
 
-  /**
-   * ワールドのオブジェクトを削除（単体）
-   * @param object {Matter.Body} 削除したいオブジェクト
-   */
   private removeObject(object: Body): void {
     World.remove(this.engine.world, object);
   }
