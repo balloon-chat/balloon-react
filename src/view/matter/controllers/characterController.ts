@@ -1,4 +1,6 @@
 import { Character } from 'src/view/matter/actors/character/character';
+import { Body } from 'matter-js';
+import { CanvasParameter } from 'src/view/matter/models/canvasParameter';
 
 export class CharacterController {
   private readonly _characters: Map<string, Character>;
@@ -26,6 +28,17 @@ export class CharacterController {
 
   remove(character: Character) {
     this._characters.delete(character.id);
+  }
+
+  onBeforeUpdate(canvas: CanvasParameter) {
+    // 最新のキャラクターは常に中央に配置
+    if (this.latestCharacter) {
+      Body.setPosition(this.latestCharacter.object, {
+        x: canvas.center.x,
+        y: canvas.center.y,
+      });
+    }
+    this.characters.forEach((character) => character.onBeforeUpdate());
   }
 
   findCharacterById(id: string | number): Character | null {

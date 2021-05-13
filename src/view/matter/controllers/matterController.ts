@@ -28,17 +28,7 @@ export class MatterController {
 
     // characterのアップデート前に行う動作
     Events.on(this.engine, 'beforeUpdate', () => {
-      // 最新のキャラクターは常に中央に配置
-      const { latestCharacter } = this.characterController;
-      if (latestCharacter) {
-        Body.setPosition(latestCharacter.object, {
-          x: this.canvas.center.x,
-          y: this.canvas.center.y,
-        });
-      }
-
-      const { characters } = this.characterController;
-      characters.forEach((character) => character.onBeforeUpdate());
+      this.characterController.onBeforeUpdate(this.canvas);
     });
   }
 
