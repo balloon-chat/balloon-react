@@ -22,8 +22,6 @@ export class Character implements CharacterAction {
 
   private static readonly textSize = 16;
 
-  private readonly eyePosition: EyePosition
-
   constructor(
     readonly id: string,
     readonly object: Matter.Body,
@@ -34,10 +32,15 @@ export class Character implements CharacterAction {
     this.object.id = Common.nextId();
     this.object.label = 'character';
     Matter.Body.scale(this.object, Character.scaleX, Character.scaleY);
-
     this.text = text;
+  }
 
-    this.eyePosition = {
+  get position() {
+    return this.object.position;
+  }
+
+  private get eyePosition(): EyePosition {
+    return {
       left: Vector.create(
         this.position.x - this.radius * 0.35,
         this.position.y - this.radius * 0.45,
@@ -47,10 +50,6 @@ export class Character implements CharacterAction {
         this.position.y - this.radius * 0.45,
       ),
     };
-  }
-
-  get position() {
-    return this.object.position;
   }
 
   /**
@@ -244,9 +243,6 @@ export class Character implements CharacterAction {
     return distFromCenter < distOuter;
   }
 
-  // ============================
-  // Character Actions
-
   /**
    * 画面内にあるかどうかを判断する
    */
@@ -263,5 +259,23 @@ export class Character implements CharacterAction {
     const isInnerTop = positionTop < 0;
     const isInnerBottom = positionBottom > canvas.height;
     return isInnerLeft && isInnerRight && isInnerTop && isInnerBottom;
+  }
+
+  // ============================
+  // Character Actions
+  // ============================
+  moveSomeWhere() {
+    const sign = {
+      x: Math.random() < 0.5 ? -1 : 1,
+      y: Math.random() < 0.5 ? -1 : 1,
+    };
+    const velocity: Vector = Vector.mult(
+      Vector.normalise(Vector.create(
+        sign.x * Math.random(),
+        sign.y * Math.random(),
+      )),
+      Character.maxSpeed,
+    );
+    Body.setVelocity(this.object, velocity);
   }
 }
