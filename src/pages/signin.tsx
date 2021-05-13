@@ -115,7 +115,7 @@ const Container = styled.div`
 
 export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
   const service = new AuthService();
-  const result = await service.getOauthResult(context.req.headers.cookie!);
+  const result = await service.getOauthResult(context.req.headers.cookie);
   return { props: result } as const;
 };
 
