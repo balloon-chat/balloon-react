@@ -1,4 +1,4 @@
-import { Button } from './button';
+import { Button } from 'src/view/matter/actors/button/button';
 
 export enum buttonType {
     add = 'addButton',

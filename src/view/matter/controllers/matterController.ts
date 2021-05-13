@@ -5,7 +5,7 @@ import { Character } from 'src/view/matter/actors/character/character';
 import { CanvasParameter } from 'src/view/matter/models/canvasParameter';
 import { MatterListAdapter } from 'src/view/matter/lib/matterListAdapter';
 import P5Types from 'p5';
-import { Button } from 'src/view/matter/actors/button';
+import { Button } from 'src/view/matter/actors/button/button';
 
 export class MatterController {
   public readonly adapter: MatterListAdapter;
