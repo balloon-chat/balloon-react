@@ -25,7 +25,7 @@ export class MatterListAdapter extends ListAdapter<MessageEntity> {
   }
 
   protected onDeleteItem(item: MessageEntity): void {
-    const character = this.controller.characterController.getCharacter(item.id);
+    const character = this.controller.characterController.findCharacterById(item.id);
     if (!character) return;
     this.controller.removeCharacter(character);
   }
