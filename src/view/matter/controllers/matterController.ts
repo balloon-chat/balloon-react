@@ -88,6 +88,7 @@ export class MatterController {
     const mouse = Mouse.create(element);
     const options = { mouse };
     const mouseConstraint = MouseConstraint.create(this.engine, options);
+    mouseConstraint.constraint.stiffness = 1.0; // ドラッグ時にバネの挙動をさせない
     World.add(this.engine.world, mouseConstraint);
   }
 

@@ -1,7 +1,6 @@
 import { Body, Common, Vector } from 'matter-js';
 import P5Types from 'p5';
 import { CanvasParameter } from 'src/view/matter/models/canvasParameter';
-import { MatterController } from 'src/view/matter/controllers/matterController';
 import { CharacterAction, EyePosition } from 'src/view/matter/actors/character/types';
 
 /**
@@ -92,12 +91,6 @@ export class Character implements CharacterAction {
     this.controlSpeed();
     // 回転の防止
     Body.setAngle(this.object, 0);
-  }
-
-  onMousePressed(_matterController: MatterController, mouseX: number, mouseY: number) {
-    if (this.isClicked(mouseX, mouseY)) {
-      // do something when this character is touched.
-    }
   }
 
   /**
@@ -212,21 +205,6 @@ export class Character implements CharacterAction {
           .text(textLines[i], startPosition.x, startPosition.y + Character.textSize * i);
       }
     }
-  }
-
-  /**
-   * クリックされているかどうかを判断する
-   */
-  private isClicked(mouseX: number, mouseY: number):boolean {
-    // キャラクター中央からの、マウスとの距離
-    const distFromCenter = (mouseX - this.position.x) ** 2 + (mouseY - this.position.y) ** 2;
-    // キャラクター中央からの、マウスの角度
-    const radian = Math.atan2(mouseX - this.position.x, mouseY - this.position.y);
-    // キャラクターの中央から、マウスのある角度におけるキャラクターの縁との距離
-    const outerX = this.radius * Character.scaleX * Math.cos(radian);
-    const outerY = this.radius * Character.scaleY * Math.sin(radian);
-    const distOuter = outerX ** 2 + outerY ** 2;
-    return distFromCenter < distOuter;
   }
 
   /**
