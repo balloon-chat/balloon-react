@@ -1,4 +1,4 @@
-import Matter, { Body, Common, Vector } from 'matter-js';
+import { Body, Common, Vector } from 'matter-js';
 import P5Types from 'p5';
 import { CanvasParameter } from 'src/view/matter/models/canvasParameter';
 import { MatterController } from 'src/view/matter/controllers/matterController';
@@ -6,7 +6,7 @@ import { CharacterAction, EyePosition } from 'src/view/matter/actors/character/t
 
 /**
  * キャラクター（オブジェクトとテキストの情報を持っている）
- *  @param {Matter.Body} object オブジェクトデータ
+ *  @param {Body} object オブジェクトデータ
  *  @param {string} text テキストデータ
  *  @param {string} id 識別用文字列
  *  @param {number} radius 半径
@@ -24,14 +24,15 @@ export class Character implements CharacterAction {
 
   constructor(
     readonly id: string,
-    readonly object: Matter.Body,
+    readonly object: Body,
     readonly text: string,
     readonly radius: number,
     readonly color: string,
   ) {
     this.object.id = Common.nextId();
     this.object.label = 'character';
-    Matter.Body.scale(this.object, Character.scaleX, Character.scaleY);
+    Body.scale(this.object, Character.scaleX, Character.scaleY);
+
     this.text = text;
   }
 
@@ -93,7 +94,7 @@ export class Character implements CharacterAction {
   onBeforeUpdate() {
     this.controlSpeed();
     // 回転の防止
-    Matter.Body.setAngle(this.object, 0);
+    Body.setAngle(this.object, 0);
   }
 
   onMousePressed(_matterController: MatterController, mouseX: number, mouseY: number) {
@@ -107,13 +108,14 @@ export class Character implements CharacterAction {
    */
   controlSpeed() {
     if (this.object.speed > Character.maxSpeed) {
-      const velocity = Matter.Vector.mult(
-        Matter.Vector.normalise(this.object.velocity),
+      const velocity = Vector.mult(
+        Vector.normalise(this.object.velocity),
         Character.maxSpeed,
       );
-      Matter.Body.setVelocity(this.object, velocity);
+      Body.setVelocity(this.object, velocity);
       return;
     }
+
     let deceleration;
     if (this.object.speed < 0.1) {
       // オブジェクトの速さがほぼ0であれば完全に停止
@@ -125,11 +127,8 @@ export class Character implements CharacterAction {
       // 速度がmaxSpeedの10%以上、100%以下ならば減速率0.98とする
       deceleration = 0.98;
     }
-    const velocity = Matter.Vector.mult(
-      this.object.velocity,
-      deceleration,
-    );
-    Matter.Body.setVelocity(this.object, velocity);
+    const velocity = Vector.mult(this.object.velocity, deceleration);
+    Body.setVelocity(this.object, velocity);
   }
 
   /**
@@ -149,7 +148,7 @@ export class Character implements CharacterAction {
       this.position.y = 0 - this.radius * Character.scaleY * 2;
     }
 
-    Matter.Body.setPosition(this.object, this.position);
+    Body.setPosition(this.object, this.position);
   }
 
   draw(p5: P5Types) {

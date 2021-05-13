@@ -1,5 +1,4 @@
-/* eslint-disable no-bitwise */
-import Matter from 'matter-js';
+import { Engine } from 'matter-js';
 import { CanvasParameter } from 'src/view/matter/models/canvasParameter';
 import { MatterController } from 'src/view/matter/controllers/matterController';
 import { CharacterController } from 'src/view/matter/controllers/characterController';
@@ -12,7 +11,7 @@ export class MatterControllerFactory {
   static create(windowWidth: number, windowHeight: number): MatterController {
     if (this._instance) return this._instance;
 
-    const engine = Matter.Engine.create();
+    const engine = Engine.create();
     const canvas = new CanvasParameter(windowWidth, windowHeight);
 
     // キャラクターを管理するクラス

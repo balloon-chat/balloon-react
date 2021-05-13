@@ -1,11 +1,11 @@
-import Matter, { Common } from 'matter-js';
+import { Bodies, Body, Common } from 'matter-js';
 import P5Types from 'p5';
 import { MatterController } from 'src/view/matter/controllers/matterController';
 import { buttonType } from 'src/view/matter/actors/button/buttonFactory';
 import { CharacterFactory } from 'src/view/matter/actors/character/characterFactory';
 
 export class Button {
-    public readonly object: Matter.Body;
+    public readonly object: Body;
 
     public static radius = 50;
 
@@ -15,7 +15,7 @@ export class Button {
       readonly type: buttonType,
       readonly color: string,
     ) {
-      this.object = Matter.Bodies.circle(x, y, Button.radius, {
+      this.object = Bodies.circle(x, y, Button.radius, {
         friction: 1,
         isStatic: true,
         label: type,

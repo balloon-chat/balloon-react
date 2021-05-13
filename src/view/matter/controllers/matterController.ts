@@ -1,5 +1,4 @@
-/* eslint-disable no-param-reassign */
-import Matter from 'matter-js';
+import { Body, Engine, Events, Mouse, MouseConstraint, World } from 'matter-js';
 import { CharacterController } from 'src/view/matter/controllers/characterController';
 import { Character } from 'src/view/matter/actors/character/character';
 import { CanvasParameter } from 'src/view/matter/models/canvasParameter';
@@ -13,7 +12,7 @@ export class MatterController {
   public p5: P5Types | null = null;
 
   constructor(
-    public readonly engine: Matter.Engine,
+    public readonly engine: Engine,
     public readonly buttons: Button[],
     public readonly characterController: CharacterController,
     public readonly canvas: CanvasParameter,
@@ -28,12 +27,12 @@ export class MatterController {
     this.buttons.forEach((button) => this.addObject(button.object));
 
     // characterのアップデート前に行う動作
-    Matter.Events.on(this.engine, 'beforeUpdate', () => {
+    Events.on(this.engine, 'beforeUpdate', () => {
       // eslint-disable-next-line max-len
       const latestCharacter = this.characterController.getCharacter(this.characterController.latestCharacterId);
       if (typeof latestCharacter !== 'undefined') {
         // eslint-disable-next-line max-len
-        Matter.Body.setPosition(latestCharacter.object, this.characterController.latestCharacterPosition);
+        Body.setPosition(latestCharacter.object, this.characterController.latestCharacterPosition);
       }
       const { characters } = this.characterController;
       characters.forEach((character) => character.onBeforeUpdate());
@@ -42,7 +41,7 @@ export class MatterController {
 
   /** エンジンを動かす */
   run() {
-    Matter.Engine.run(this.engine);
+    Engine.run(this.engine);
   }
 
   /**
@@ -82,29 +81,25 @@ export class MatterController {
   }
 
   /**
-   * ワールドにオブジェクトを追加（単体）
-   * @param object {Matter.Body} 追加したいオブジェクト
+   * マウスイベントをハンドラを付与
+   * @param element 指定されたHTMLエレメント内のみ、マウスイベントを処理する
    */
-  private addObject(object: Matter.Body): void {
-    Matter.World.add(this.engine.world, object);
+  setMouseEventHandler(element: HTMLElement) {
+    const mouse = Mouse.create(element);
+    const options = { mouse };
+    const mouseConstraint = MouseConstraint.create(this.engine, options);
+    World.add(this.engine.world, mouseConstraint);
+  }
+
+  private addObject(object: Body): void {
+    World.add(this.engine.world, object);
   }
 
   /**
    * ワールドのオブジェクトを削除（単体）
    * @param object {Matter.Body} 削除したいオブジェクト
    */
-  private removeObject(object: Matter.Body): void {
-    Matter.World.remove(this.engine.world, object);
-  }
-
-  /**
-   * マウスイベントをハンドラを付与
-   * @param element 指定されたHTMLエレメント内のみ、マウスイベントを処理する
-   */
-  setMouseEventHandler(element: HTMLElement) {
-    const mouse = Matter.Mouse.create(element);
-    const options = { mouse };
-    const mouseConstraint = Matter.MouseConstraint.create(this.engine, options);
-    Matter.World.add(this.engine.world, mouseConstraint);
+  private removeObject(object: Body): void {
+    World.remove(this.engine.world, object);
   }
 }
