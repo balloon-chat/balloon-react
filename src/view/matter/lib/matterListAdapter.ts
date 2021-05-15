@@ -14,6 +14,7 @@ export class MatterListAdapter extends ListAdapter<MessageEntity> {
     if (!p5) return;
     const character = CharacterFactory.create(
       p5,
+      this.controller.isMobile,
       this.controller.canvas,
       {
         id: item.id,

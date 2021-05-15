@@ -25,6 +25,7 @@ type CharacterFactoryParams = {
 export class CharacterFactory {
   /**
    * @param p5 描画用のp5インスタンス
+   * @param isMobile 表示されるのが小さい画面の場合、キャラクターの大きさを小さくする
    * @param canvas キャンバスサイズ キャラクターの配置位置を決めるために利用
    * @param id メッセージのID
    * @param message メッセージ
@@ -33,10 +34,11 @@ export class CharacterFactory {
    */
   static create(
     p5: P5Types,
+    isMobile: boolean,
     canvas: CanvasParameter,
     { id, message, senderId, sender }: CharacterFactoryParams,
   ): Character {
-    const radius = this.getCharacterSize(p5, message);
+    const radius = this.getCharacterSize(p5, isMobile, message);
     const sign = {
       x: Math.random() > 0.5 ? 1 : -1,
       y: Math.random() > 0.5 ? 1 : -1,
@@ -66,13 +68,18 @@ export class CharacterFactory {
     );
   }
 
-  static getCharacterSize(p5: P5Types, text: string): CharacterSize {
-    let lines = Character.getTextLines(p5, text, CharacterSize.small).length;
-    if (lines <= 3) return CharacterSize.small;
+  static getCharacterSize(p5: P5Types, isMobile:boolean, text: string): CharacterSize {
+    // モバイルで表示するときは、キャラクターの大きさを75%にする
+    const expansionRate = isMobile ? 0.75 : 1.0;
 
-    lines = Character.getTextLines(p5, text, CharacterSize.medium).length;
-    if (lines <= 3) return CharacterSize.medium;
+    let characterSize = CharacterSize.small * expansionRate;
+    let lines = Character.getTextLines(p5, text, characterSize).length;
+    if (lines <= 3) return characterSize;
 
-    return CharacterSize.large;
+    characterSize = CharacterSize.medium * expansionRate;
+    lines = Character.getTextLines(p5, text, characterSize).length;
+    if (lines <= 3) return characterSize;
+
+    return CharacterSize.large * expansionRate;
   }
 }

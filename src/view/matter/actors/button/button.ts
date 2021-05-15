@@ -61,6 +61,7 @@ export class Button {
       const msg = `${now}`;
       const character = CharacterFactory.create(
         matterController.p5,
+        matterController.isMobile,
         matterController.canvas,
         {
           id: `${Common.nextId()}`,

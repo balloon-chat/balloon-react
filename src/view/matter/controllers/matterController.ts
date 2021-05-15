@@ -5,6 +5,7 @@ import { CanvasParameter } from 'src/view/matter/models/canvasParameter';
 import { MatterListAdapter } from 'src/view/matter/lib/matterListAdapter';
 import P5Types from 'p5';
 import { Button } from 'src/view/matter/actors/button/button';
+import { mediaQuery } from 'src/components/constants/mediaQuery';
 
 export class MatterController {
   public readonly adapter: MatterListAdapter;
@@ -32,6 +33,10 @@ export class MatterController {
     Events.on(this.engine, 'beforeUpdate', () => {
       this.characterController.onBeforeUpdate(this.canvas);
     });
+  }
+
+  get isMobile():boolean {
+    return this.canvas.width <= mediaQuery.mobile.landscape;
   }
 
   run() {
