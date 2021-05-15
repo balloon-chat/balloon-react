@@ -52,29 +52,23 @@ export class Character implements CharacterAction {
    * テキストがボックスに入るように分割する
    */
   static getTextLines(p5: P5Types, text: string, radius: number): string[] {
-    let texts = text;
-    let textLine = '';
-    const textLines = [];
     const textBoxWidth = Character.getTextBoxWidth(radius);
 
     // テキストボックスに収まるように、テキストを行に分割
     p5.textSize(Character.textSize);
-    for (let i = 0, prevTextWidth = 0; i < text.length; i += 1) {
-      const currentChar = texts[0];
-      const textWidth = prevTextWidth + p5.textWidth(currentChar);
-      if (textWidth > textBoxWidth) {
-        // テキストボックスより文字幅が大きくなったら、改行
-        textLines.push(textLine);
-        prevTextWidth = 0;
-        textLine = '';
-      } else {
-        // テキストボックスより文字幅が小さければ、行に文字を追加
-        textLine += currentChar;
-        prevTextWidth += p5.textWidth(currentChar);
-        texts = texts.slice(1);
-      }
-    }
-    textLines.push(textLine);
+    let currentLine = 0;
+    const textLines: string[] = [];
+    text.split('').forEach((char) => {
+      const currentLineTextWidth = p5.textWidth(textLines[currentLine]);
+      const textWidth = currentLineTextWidth + p5.textWidth(char);
+
+      // テキストボックスより文字幅が大きくなったら、改行
+      if (textWidth > textBoxWidth) currentLine += 1;
+
+      // 行に文字を追加
+      if (!textLines[currentLine]) textLines[currentLine] = '';
+      textLines[currentLine] += char;
+    });
 
     return textLines;
   }
@@ -146,6 +140,7 @@ export class Character implements CharacterAction {
   private drawText(p5: P5Types) {
     // textの描画
     const textLines = Character.getTextLines(p5, this.text, this.radius);
+    console.log(textLines);
 
     // 目とキャラクター下端との中点。これを基準としてテキストを配置していく。
     const basePosition = Vector.create(
