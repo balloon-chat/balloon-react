@@ -66,6 +66,7 @@ export class Button {
           id: `${Common.nextId()}`,
           message: msg,
           senderId: 'test',
+          sender: 'test',
         },
       );
       matterController.addCharacter(character);

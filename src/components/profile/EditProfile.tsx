@@ -35,7 +35,6 @@ export const EditProfile = ({ user, loginId }: Props) => {
   }, []);
 
   useEffect(() => {
-    console.log(name);
     if (name && photoUrl) setValid(true);
     else setValid(false);
   }, [name, image]);

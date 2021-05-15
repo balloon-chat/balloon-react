@@ -17,12 +17,15 @@ export class Character implements CharacterAction {
 
   private static readonly scaleY = 1;
 
-  private static readonly textSize = 16;
+  private static readonly messageTextSize = 16;
+
+  private static readonly senderNameTextSize = 14;
 
   constructor(
     readonly id: string,
     readonly object: Body,
-    readonly text: string,
+    readonly message: string,
+    readonly sender: string,
     readonly radius: number,
     readonly color: string,
   ) {
@@ -55,7 +58,7 @@ export class Character implements CharacterAction {
     const textBoxWidth = Character.getTextBoxWidth(radius);
 
     // テキストボックスに収まるように、テキストを行に分割
-    p5.textSize(Character.textSize);
+    p5.textSize(Character.messageTextSize);
     let currentLine = 0;
     const textLines: string[] = [];
     text.split('').forEach((char) => {
@@ -112,7 +115,8 @@ export class Character implements CharacterAction {
 
   draw(p5: P5Types) {
     this.drawCharacter(p5);
-    this.drawText(p5);
+    const textBoxBottomY = this.drawMessage(p5);
+    this.drawSenderName(p5, textBoxBottomY);
   }
 
   private drawCharacter(p5: P5Types) {
@@ -137,20 +141,19 @@ export class Character implements CharacterAction {
     p5.pop();
   }
 
-  private drawText(p5: P5Types) {
+  private drawMessage(p5: P5Types): number {
     // textの描画
-    const textLines = Character.getTextLines(p5, this.text, this.radius);
-    console.log(textLines);
+    const textLines = Character.getTextLines(p5, this.message, this.radius);
 
     // 目とキャラクター下端との中点。これを基準としてテキストを配置していく。
     const basePosition = Vector.create(
       this.position.x,
       this.eyePosition.left.y + (this.radius * Character.scaleX) * Math.tan(75 / 180),
     );
-    p5.textSize(Character.textSize);
+    p5.textSize(Character.messageTextSize);
 
     const textBoxWidth = Character.getTextBoxWidth(this.radius);
-    const textBoxHeight = textLines.length * Character.textSize;
+    const textBoxHeight = textLines.length * Character.messageTextSize;
     let startPosition: Vector;
     if (textLines.length === 1) {
       // 一行だけのときは、中央寄せ
@@ -165,20 +168,33 @@ export class Character implements CharacterAction {
         basePosition.y - textBoxHeight / 3,
       );
     }
+
+    let bottomYPosition: number;
     // 格納したtextの描画
     if (textLines.length === 1) {
       p5.fill(0)
         .textAlign('center', 'center')
-        .textSize(Character.textSize)
+        .textSize(Character.messageTextSize)
         .text(textLines[0], startPosition.x, startPosition.y);
+      bottomYPosition = startPosition.y + Character.messageTextSize;
     } else {
       for (let i = 0; i < textLines.length; i += 1) {
         p5.fill(0)
           .textAlign('left', 'center')
-          .textSize(Character.textSize)
-          .text(textLines[i], startPosition.x, startPosition.y + Character.textSize * i);
+          .textSize(Character.messageTextSize)
+          .text(textLines[i], startPosition.x, startPosition.y + Character.messageTextSize * i);
       }
+      bottomYPosition = startPosition.y + Character.messageTextSize * textLines.length;
     }
+
+    return bottomYPosition;
+  }
+
+  private drawSenderName(p5: P5Types, textBoxBottomY: number) {
+    p5.fill('#2D2D2D')
+      .textSize(Character.senderNameTextSize)
+      .textAlign('center', 'center')
+      .text(`@ ${this.sender}`, this.position.x, textBoxBottomY + 8);
   }
 
   // ============================

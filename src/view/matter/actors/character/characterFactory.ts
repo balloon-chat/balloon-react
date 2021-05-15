@@ -18,7 +18,8 @@ const characterColors: string[] = [
 type CharacterFactoryParams = {
   id: string,
   message: string,
-  senderId: string
+  senderId: string,
+  sender: string,
 }
 
 export class CharacterFactory {
@@ -28,11 +29,12 @@ export class CharacterFactory {
    * @param id メッセージのID
    * @param message メッセージ
    * @param senderId 送信者のID 同じIDなら、キャラクターの色が同じになる
+   * @param sender 送信者の名前
    */
   static create(
     p5: P5Types,
     canvas: CanvasParameter,
-    { id, message, senderId }: CharacterFactoryParams,
+    { id, message, senderId, sender }: CharacterFactoryParams,
   ): Character {
     const radius = this.getCharacterSize(p5, message);
     const sign = {
@@ -58,6 +60,7 @@ export class CharacterFactory {
         },
       }),
       message,
+      sender,
       radius,
       color,
     );
