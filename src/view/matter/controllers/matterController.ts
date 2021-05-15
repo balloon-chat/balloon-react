@@ -1,4 +1,4 @@
-import { Body, Engine, Events, Mouse, MouseConstraint, World } from 'matter-js';
+import { Body, Engine, Events, Mouse, MouseConstraint, Runner, World } from 'matter-js';
 import { CharacterController } from 'src/view/matter/controllers/characterController';
 import { Character } from 'src/view/matter/actors/character/character';
 import { CanvasParameter } from 'src/view/matter/models/canvasParameter';
@@ -10,6 +10,8 @@ export class MatterController {
   public readonly adapter: MatterListAdapter;
 
   public p5: P5Types | null = null;
+
+  private runner: Runner|null = null;
 
   constructor(
     public readonly engine: Engine,
@@ -33,7 +35,11 @@ export class MatterController {
   }
 
   run() {
-    Engine.run(this.engine);
+    this.runner = Runner.run(this.engine);
+  }
+
+  clear() {
+    if (this.runner) Runner.stop(this.runner);
   }
 
   addCharacter(character: Character): void {

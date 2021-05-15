@@ -7,19 +7,20 @@ import styled from 'styled-components';
 export const Canvas: React.FC = () => {
   const { messages } = useMessageState();
   const renderRef = useRef<HTMLDivElement>(null);
-
-  const controller = MatterControllerFactory.create(
+  const controllerRef = useRef(MatterControllerFactory.create(
     document.documentElement.clientWidth,
     document.documentElement.clientHeight,
-  );
+  ));
 
   useEffect(() => {
     if (!messages) return;
+    const controller = controllerRef.current;
     controller.adapter.submit(messages);
   }, [messages]);
 
   useEffect(() => {
     if (!renderRef.current) return undefined;
+
     const parent = renderRef.current;
 
     const p5 = new P5Types((p: P5Types) => {
@@ -31,10 +32,14 @@ export const Canvas: React.FC = () => {
       p.mouseClicked = () => mousePressed(p);
     });
 
+    const controller = controllerRef.current;
+    controller.setMouseEventHandler(parent);
+    controller.run();
     controller.p5 = p5;
 
     return () => {
       p5.remove();
+      controller.clear();
       controller.p5 = null;
     };
   }, [renderRef]);
@@ -45,12 +50,11 @@ export const Canvas: React.FC = () => {
       canvasParentRef.clientHeight,
     );
     renderer.parent(canvasParentRef);
-    controller.setMouseEventHandler(canvasParentRef);
-    controller.run();
   };
 
   const draw = (p5: P5Types) => {
     // キャンバスサイズの更新
+    const controller = controllerRef.current;
     if (renderRef.current) {
       controller.canvas.checkResize(renderRef.current, (width, height) => {
         p5.resizeCanvas(width, height, true);
@@ -73,6 +77,7 @@ export const Canvas: React.FC = () => {
   };
 
   const mousePressed = (p5: P5Types) => {
+    const controller = controllerRef.current;
     controller.buttons.forEach((button) => {
       button.onPressed(controller, p5.mouseX, p5.mouseY);
     });
