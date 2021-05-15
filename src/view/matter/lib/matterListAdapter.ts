@@ -19,6 +19,7 @@ export class MatterListAdapter extends ListAdapter<MessageEntity> {
         id: item.id,
         message: item.body,
         senderId: item.senderId,
+        sender: item.senderName,
       },
     );
     this.controller.addCharacter(character);
