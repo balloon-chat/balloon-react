@@ -26,15 +26,14 @@ export class FirebaseMessageDatabase implements IMessageDatabase {
 
   observeAll(topicId: string): Observable<MessageDto[]> {
     const behaviorSubject = new BehaviorSubject<MessageDto[]>([]);
-    this.messagesRef(topicId).on(
-      'value',
-      (snapshots) => {
-        const data: MessageDto[] = [];
-        snapshots.forEach((snapshot) => {
-          const dto = MessageDto.fromJSON(snapshot.toJSON());
-          if (dto) data.push(dto);
-        });
-        if (!behaviorSubject.closed) behaviorSubject.next(data);
+    const messages: MessageDto[] = [];
+
+    this.messagesRef(topicId).limitToFirst(50).on(
+      'child_added',
+      (snapshot) => {
+        const dto = MessageDto.fromJSON(snapshot.toJSON());
+        if (dto) messages.push(dto);
+        if (!behaviorSubject.closed) behaviorSubject.next(messages);
       },
       (error) => {
         if (!behaviorSubject.closed) behaviorSubject.error(error);
