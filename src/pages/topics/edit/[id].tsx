@@ -21,7 +21,7 @@ type Props = {
 export const EditTopicPage = ({ topic, isEditable }: Props) => (
   <>
     <Head>
-      <title>{pageTitle.topics.create}</title>
+      <title>{pageTitle.topics.edit}</title>
     </Head>
     <NavBar />
     {
