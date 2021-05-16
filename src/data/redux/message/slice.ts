@@ -20,5 +20,4 @@ const slice = createSlice({
 });
 
 export const messageReducer = slice.reducer;
-export const { observeStart } = slice.actions;
-export const { observeFulfilled } = slice.actions;
+export const { observeStart, observeFulfilled } = slice.actions;

@@ -3,7 +3,6 @@ import { rootPath, topicPath } from 'src/view/route/pagePath';
 import styled from 'styled-components';
 import { useUserSelector } from 'src/data/redux/user/selector';
 import React, { useEffect, useState } from 'react';
-import 'firebase/auth';
 import Link from 'next/link';
 import { NavBarHeader } from 'src/components/navbar/NavBarHeader';
 import { mediaQuery } from 'src/components/constants/mediaQuery';

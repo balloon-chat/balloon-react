@@ -4,14 +4,30 @@ import { map, mergeMap } from 'rxjs/operators';
 import { observeFulfilled, observeStart } from 'src/data/redux/message/slice';
 import { RootState } from 'src/data/redux/state';
 import { MessageService } from 'src/domain/message/service/MessageService';
+import { Subject } from 'rxjs';
+
+let service: MessageService|null = null;
 
 export const messageEpic: Epic<ObserveStart, ObserveFulfilled, RootState> = (
-  action$,
+  action$, state$,
 ) => action$.pipe(
   ofType(observeStart.type),
   mergeMap(({ payload }) => {
-    const service = new MessageService();
-    return service.observeMessageData(payload.topicId).pipe(
+    service = service ?? new MessageService();
+
+    // TopicIDが変化したときに、メッセージのサブスクリプションを停止する
+    const unsubscribe = new Subject<void>();
+    const subscription = state$.subscribe({
+      next: ({ topic }) => {
+        if (topic.topicId !== payload.topicId && !unsubscribe.closed) {
+          unsubscribe.next();
+          unsubscribe.complete();
+          if (!subscription.closed) subscription.unsubscribe();
+        }
+      },
+    });
+
+    return service.observeMessageData(payload.topicId, unsubscribe).pipe(
       map(
         (messages): ObserveFulfilled => ({
           type: observeFulfilled.type,

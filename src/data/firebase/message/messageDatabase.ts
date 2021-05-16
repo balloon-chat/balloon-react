@@ -1,6 +1,6 @@
 import { IMessageDatabase } from 'src/data/core/message/messageDatabase';
 import { MessageDto } from 'src/data/core/message/messageDto';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import firebase from 'firebase/app';
 import 'firebase/database';
 
@@ -24,22 +24,35 @@ export class FirebaseMessageDatabase implements IMessageDatabase {
     return MessageDto.fromJSON(snapshot.toJSON());
   }
 
-  observeAll(topicId: string): Observable<MessageDto[]> {
+  observeAll(topicId: string, unsubscribe?: Subject<void>): Observable<MessageDto[]> {
     const behaviorSubject = new BehaviorSubject<MessageDto[]>([]);
-    this.messagesRef(topicId).on(
-      'value',
-      (snapshots) => {
-        const data: MessageDto[] = [];
-        snapshots.forEach((snapshot) => {
-          const dto = MessageDto.fromJSON(snapshot.toJSON());
-          if (dto) data.push(dto);
-        });
-        if (!behaviorSubject.closed) behaviorSubject.next(data);
+    const messages: MessageDto[] = [];
+
+    const query = this.messagesRef(topicId).limitToFirst(50);
+    query.on(
+      'child_added',
+      (snapshot) => {
+        const dto = MessageDto.fromJSON(snapshot.toJSON());
+        if (dto) messages.push(dto);
+
+        if (behaviorSubject.closed) query.off();
+        else behaviorSubject.next(messages);
       },
       (error) => {
         if (!behaviorSubject.closed) behaviorSubject.error(error);
       },
     );
+
+    unsubscribe?.subscribe({
+      next: () => {
+        if (!behaviorSubject.closed) behaviorSubject.complete();
+        query.off('child_added');
+      },
+      complete: () => {
+        if (!behaviorSubject.closed) behaviorSubject.complete();
+        query.off('child_added');
+      },
+    });
 
     return behaviorSubject.asObservable();
   }

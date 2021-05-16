@@ -1,6 +1,6 @@
 // eslint-disable-next-line max-classes-per-file
 import { IMessageRepository } from 'src/domain/message/repository/messageRepository';
-import { Observable, Operator, Subscriber, TeardownLogic } from 'rxjs';
+import { Observable, Operator, Subject, Subscriber, TeardownLogic } from 'rxjs';
 import { TopicId } from 'src/domain/topic/models/topicId';
 import { Message } from 'src/domain/message/models/message';
 import { IUserRepository } from 'src/domain/user/repository/userRepository';
@@ -17,10 +17,10 @@ export class ObserveMessages implements IObserveMessages {
   ) {
   }
 
-  execute(topicId: TopicId): Observable<Message[]> {
+  execute(topicId: TopicId, unsubscribe?: Subject<void>): Observable<Message[]> {
     const bindUserOperator = new BindUserOperator(this.userRepository);
     return this.messageRepository
-      .observeAll(topicId)
+      .observeAll(topicId, unsubscribe)
       .lift(bindUserOperator)
       .pipe(
         map((messages) => messages.sort((a, b) => b.createdAt - a.createdAt)),
