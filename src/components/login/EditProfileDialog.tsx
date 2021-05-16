@@ -1,10 +1,10 @@
 import { Dialog } from 'src/components/common/Dialog';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { TextField } from 'src/components/common/TextField';
 import { Button, TextButton } from 'src/components/common/Button';
-import ReactImageUploading, { ImageType } from 'react-images-uploading';
 import { AvatarImage } from 'src/components/common/AvatarImage';
+import { useDropzone } from 'react-dropzone';
 import { imagePath } from '../constants/imagePath';
 
 type Props = {
@@ -20,59 +20,48 @@ export const EditProfileDialog = ({
   onSave,
   onCancel,
 }: Props) => {
+  const defaultIconUrl = photoUrl || process.env.TEMPLATE_USER_ICON_URL || imagePath.character.blue;
+
   const [mName, setName] = useState(name);
   const [nameError, setNameError] = useState<string | null>(null);
-  const [image, setImage] = useState<ImageType>();
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imageUri, setImageUri] = useState<string>(defaultIconUrl);
+
+  const { getInputProps, open, acceptedFiles } = useDropzone({
+    maxFiles: 2,
+    accept: 'image/jpeg, image/png',
+    noDrag: true,
+    noKeyboard: true,
+    noClick: true,
+  });
 
   const handleOnSave = () => {
     if (!mName || mName.length === 0) {
       setNameError('表示名を入力してください');
       return;
     }
+    onSave(mName, imageUri, imageFile);
+  };
 
-    const defaultIconUrl = process.env.TEMPLATE_USER_ICON_URL;
-    if (!photoUrl && !defaultIconUrl && !imageFile) {
-      return;
+  useEffect(() => {
+    if (acceptedFiles.length === 0) {
+      setImageFile(null);
+      setImageUri(defaultIconUrl);
+    } else {
+      setImageFile(acceptedFiles[0]);
+      setImageUri(URL.createObjectURL(acceptedFiles[0]));
     }
-    onSave(
-      mName,
-      image?.dataURL ?? photoUrl ?? defaultIconUrl!,
-      imageFile,
-    );
-  };
-
-  const updateImage = (image?: ImageType) => {
-    setImage(image);
-    if (image?.file) setImageFile(image.file);
-  };
+  }, [acceptedFiles]);
 
   return (
-    <Dialog onClose={() => {
-    }}
-    >
+    <Dialog onClose={() => {}}>
       <Title>登録内容を修正</Title>
       <Spacer />
-      <ReactImageUploading
-        maxNumber={2}
-        onChange={(imageList) => updateImage(imageList[imageList.length - 1])}
-        value={image ? [image] : []}
-      >
-        {
-          ({
-            onImageUpload,
-          }) => (
-            <ProfileImageContainer>
-              <AvatarImage
-                size={126}
-                floating
-                src={image?.dataURL ?? photoUrl ?? imagePath.character.blue}
-              />
-              <TextButton onClick={onImageUpload}>アイコンを変更</TextButton>
-            </ProfileImageContainer>
-          )
-        }
-      </ReactImageUploading>
+      <ProfileImageContainer>
+        <input {...getInputProps()} />
+        <AvatarImage size={126} src={imageUri} floating />
+        <TextButton type="button" onClick={() => open()}>アイコンを変更</TextButton>
+      </ProfileImageContainer>
       <Spacer />
       <TextField
         title="表示名"

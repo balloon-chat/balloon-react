@@ -1,4 +1,3 @@
-import ReactImageUploading, { ImageType } from 'react-images-uploading';
 import { AvatarImage } from 'src/components/common/AvatarImage';
 import { Button, TextButton } from 'src/components/common/Button';
 import { TextField } from 'src/components/common/TextField';
@@ -14,6 +13,7 @@ import { UserActionStates } from 'src/data/redux/user/state';
 import { ErrorDialog } from 'src/components/common/ErrorDialog';
 import { useRouter } from 'next/router';
 import { Snackbar } from 'src/components/common/Snackbar';
+import { useDropzone } from 'react-dropzone';
 
 type Props = {
   user: UserEntity
@@ -24,10 +24,17 @@ export const EditProfile = ({ user, loginId }: Props) => {
   const dispatcher = useDispatch();
   const router = useRouter();
 
-  const [name, setName] = useState(user.name);
+  const { getInputProps, open, acceptedFiles } = useDropzone({
+    maxFiles: 2,
+    accept: 'image/jpeg, image/png',
+    noDrag: true,
+    noKeyboard: true,
+    noClick: true,
+  });
+
   const [valid, setValid] = useState(false);
-  const [photoUrl, setPhotoUrl] = useState(user.photoUrl);
-  const [image, setImage] = useState<ImageType|null>(null);
+  const [name, setName] = useState(user.name);
+  const [photo, setPhoto] = useState<File|null>(null);
   const { state } = useUserSelector();
 
   useEffect(() => () => {
@@ -35,28 +42,29 @@ export const EditProfile = ({ user, loginId }: Props) => {
   }, []);
 
   useEffect(() => {
-    if (name && photoUrl) setValid(true);
+    if (acceptedFiles.length === 0) setPhoto(null);
+    else setPhoto(acceptedFiles[0]);
+  }, [acceptedFiles]);
+
+  useEffect(() => {
+    if (name) setValid(true);
     else setValid(false);
-  }, [name, image]);
+  }, [name]);
 
-  const updateImage = (image?: ImageType) => {
-    if (image) setImage(image);
-    if (image?.dataURL) setPhotoUrl(image.dataURL);
-  };
-
-  const updateProfile = () => {
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
     if (valid) {
       dispatcher(updateProfileAction({
         userId: user.uid,
         loginId,
         name,
-        photo: image?.file,
+        photo: photo ?? undefined,
       }));
     }
   };
 
   return (
-    <>
+    <Form onSubmit={handleSubmit}>
       {
         state === UserActionStates.PROFILE_UPDATED && <Snackbar message="更新しました" />
       }
@@ -69,22 +77,11 @@ export const EditProfile = ({ user, loginId }: Props) => {
           />
         )
       }
-      <ReactImageUploading
-        maxNumber={2}
-        onChange={(imageList) => updateImage(imageList[imageList.length - 1])}
-        value={image ? [image] : []}
-      >
-        {
-        ({
-          onImageUpload,
-        }) => (
-          <ProfileImageContainer>
-            <AvatarImage size={126} floating src={photoUrl} />
-            <TextButton onClick={onImageUpload}>アイコンを変更</TextButton>
-          </ProfileImageContainer>
-        )
-      }
-      </ReactImageUploading>
+      <ProfileImageContainer>
+        <input {...getInputProps()} />
+        <AvatarImage size={126} floating src={photo ? URL.createObjectURL(photo) : user.photoUrl} />
+        <TextButton type="button" onClick={() => open()}>アイコンを変更</TextButton>
+      </ProfileImageContainer>
       <Spacer />
       <TextField
         placeholder="名前(ニックネーム)"
@@ -92,18 +89,17 @@ export const EditProfile = ({ user, loginId }: Props) => {
         maxLength={50}
         onChange={(v) => setName(v)}
       />
-      <SaveButton
-        onClick={() => updateProfile()}
-        isEnabled={valid}
-      >
-        更新する
-      </SaveButton>
-    </>
+      <SaveButton isEnabled={valid}>更新する</SaveButton>
+    </Form>
   );
 };
 
-const SaveButton = styled(Button)`
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+`;
 
+const SaveButton = styled(Button)`
   @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
     align-self: flex-end;
   }

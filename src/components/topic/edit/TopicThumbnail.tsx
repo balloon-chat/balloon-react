@@ -1,5 +1,4 @@
-import ReactImageUploading, { ImageType } from 'react-images-uploading';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { ThumbnailTemplate } from 'src/components/topic/edit/ThumbnailTemplate';
 import { ImageFileContext } from 'src/components/topic/edit/context';
@@ -7,6 +6,7 @@ import { DeleteImageButton, UploadImageButton } from 'src/components/topic/edit/
 import { UploadDialog } from 'src/components/topic/edit/UploadDialog';
 import Delete from 'src/components/svgs/delete.svg';
 import UploadFile from 'src/components/svgs/upload_file.svg';
+import { useDropzone } from 'react-dropzone';
 
 type Props = {
   title: string,
@@ -19,47 +19,48 @@ export const TopicThumbnail = ({
   imgUrl,
   description,
 }: Props) => {
-  const [imageUrl, setImageUrl] = useState<string|undefined>(imgUrl ?? undefined);
+  const [imageUrl, setImageUrl] = useState<string|null>(imgUrl);
   const { setImageFile } = useContext(ImageFileContext);
 
-  const updateImage = (image?: ImageType) => {
-    setImageUrl(image?.dataURL);
-    if (image?.file) setImageFile(image.file);
-  };
+  const { getRootProps, getInputProps, open, isDragActive, acceptedFiles } = useDropzone({
+    maxFiles: 2,
+    accept: 'image/jpeg, image/png',
+    noKeyboard: true,
+    noClick: true,
+  });
+
+  useEffect(() => {
+    if (acceptedFiles.length === 0) {
+      setImageUrl(null);
+    } else {
+      setImageFile(acceptedFiles[0]);
+      setImageUrl(URL.createObjectURL(acceptedFiles[0]));
+    }
+  }, [acceptedFiles]);
 
   return (
-    <ReactImageUploading
-      maxNumber={2}
-      onChange={(imageList) => updateImage(imageList[imageList.length - 1])}
-      value={imageUrl ? [{ dataUrl: imageUrl }] : []}
-    >
-      {({
-        onImageUpload,
-        onImageRemoveAll,
-        isDragging,
-        dragProps,
-      }) => (
-        <div {...dragProps}>
-          <UploadDialog isDragging={isDragging as boolean} />
-          {imageUrl ? (
-            <ThumbnailImage src={imageUrl} alt="" />
-          ) : (
-            <ThumbnailTemplate title={title} description={description} />
-          )}
-          {imageUrl ? (
-            <DeleteImageButton onClick={onImageRemoveAll}>
-              <Delete />
-              アップロードした画像を削除
-            </DeleteImageButton>
-          ) : (
-            <UploadImageButton onClick={onImageUpload}>
-              <UploadFile />
-              サムネイル画像をアップロード
-            </UploadImageButton>
-          )}
-        </div>
+    <>
+      <input {...getInputProps()} />
+      <UploadDialog isDragging={isDragActive as boolean} />
+      <div {...getRootProps()}>
+        {imageUrl ? (
+          <ThumbnailImage src={imageUrl} alt="" />
+        ) : (
+          <ThumbnailTemplate title={title} description={description} />
+        )}
+      </div>
+      {imageUrl ? (
+        <DeleteImageButton type="button" onClick={() => setImageUrl(null)}>
+          <Delete />
+          アップロードした画像を削除
+        </DeleteImageButton>
+      ) : (
+        <UploadImageButton type="button" onClick={() => open()}>
+          <UploadFile />
+          サムネイル画像をアップロード
+        </UploadImageButton>
       )}
-    </ReactImageUploading>
+    </>
   );
 };
 

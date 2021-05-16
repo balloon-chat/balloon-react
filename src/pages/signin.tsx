@@ -81,10 +81,10 @@ const SignInPage = ({ accessToken, name, photoUrl }: Props) => {
       </Head>
       <Container>
         {
-        dialogState === DialogStates.SHOW_WELCOME && (
+        dialogState === DialogStates.SHOW_WELCOME && mName && mPhotoUrl && (
           <WelcomeDialog
-            name={name!}
-            imgUrl={photoUrl ?? ''}
+            name={mName}
+            imgUrl={mPhotoUrl}
             onEdit={() => setDialogState(DialogStates.SHOW_EDIT)}
             onCreateUser={createNewUser}
           />
@@ -93,8 +93,8 @@ const SignInPage = ({ accessToken, name, photoUrl }: Props) => {
         {
         dialogState === DialogStates.SHOW_EDIT && (
           <EditProfileDialog
-            name={name ?? null}
-            photoUrl={photoUrl ?? null}
+            name={mName}
+            photoUrl={mPhotoUrl}
             onCancel={() => setDialogState(DialogStates.SHOW_WELCOME)}
             onSave={handleOnSaveEdit}
           />
