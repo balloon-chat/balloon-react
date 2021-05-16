@@ -1,7 +1,7 @@
 import { MessageEntity } from 'src/domain/message/repository/messageEntity';
 import { MessageId } from 'src/domain/message/models/messageId';
 import { TopicId } from 'src/domain/topic/models/topicId';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 export interface IMessageRepository {
   find(
@@ -15,7 +15,7 @@ export interface IMessageRepository {
    */
   messageCount(topicId: TopicId): Promise<number>;
 
-  observeAll(topicId: TopicId): Observable<MessageEntity[]>;
+  observeAll(topicId: TopicId, unsubscribe?: Subject<void>): Observable<MessageEntity[]>;
 
   save(topicId: TopicId, message: MessageEntity): Promise<void>;
 }

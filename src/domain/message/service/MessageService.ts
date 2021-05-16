@@ -1,6 +1,6 @@
 import { AddMessage } from 'src/domain/message/usecases/addMessage';
 import { UserId } from 'src/domain/user/models/userId';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { TopicId } from 'src/domain/topic/models/topicId';
 import { MessageRepository } from 'src/data/core/message/messageRepository';
 import { IMessageRepository } from 'src/domain/message/repository/messageRepository';
@@ -35,9 +35,9 @@ export class MessageService {
     );
   }
 
-  observeMessageData(topicId: string): Observable<MessageEntity[]> {
+  observeMessageData(topicId: string, unsubscribe?: Subject<void>): Observable<MessageEntity[]> {
     return this.observeMessageUsecase
-      .execute(new TopicId(topicId))
+      .execute(new TopicId(topicId), unsubscribe)
       .pipe(
         map((messages) => messages.map((message) => MessageEntityFactory.create(
           message,
