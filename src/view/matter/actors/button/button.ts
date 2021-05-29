@@ -7,7 +7,7 @@ import { CharacterFactory } from 'src/view/matter/actors/character/characterFact
 export class Button {
     public readonly object: Body;
 
-    public static radius = 50;
+    public static radius = 25;
 
     constructor(
       readonly x: number,

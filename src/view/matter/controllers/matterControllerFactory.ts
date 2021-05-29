@@ -18,9 +18,9 @@ export class MatterControllerFactory {
     const characterController = new CharacterController();
 
     // ボタンを生成
-    const addButton = ButtonFactory.create(Button.radius, 150, buttonType.add, 'blue');
-    const removeAllButton = ButtonFactory.create(Button.radius, 150 + Button.radius * 2, buttonType.removeAll, 'green');
-    const shakeAllButton = ButtonFactory.create(Button.radius, 150 + Button.radius * 4, buttonType.shakeAll, 'red');
+    const addButton = ButtonFactory.create(Button.radius, Button.radius, buttonType.add, 'blue');
+    const removeAllButton = ButtonFactory.create(Button.radius * 3, Button.radius, buttonType.removeAll, 'green');
+    const shakeAllButton = ButtonFactory.create(Button.radius * 5, Button.radius, buttonType.shakeAll, 'red');
 
     this._instance = new MatterController(
       engine,
