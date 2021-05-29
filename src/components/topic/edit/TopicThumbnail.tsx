@@ -12,14 +12,16 @@ type Props = {
   title: string,
   imgUrl: string| null,
   description: string,
+  isDefaultThumbnail: boolean,
 };
 
 export const TopicThumbnail = ({
   title,
   imgUrl,
   description,
+  isDefaultThumbnail,
 }: Props) => {
-  const [imageUrl, setImageUrl] = useState<string|null>(imgUrl);
+  const [imageUrl, setImageUrl] = useState<string|null>(isDefaultThumbnail ? null : imgUrl);
   const { setImageFile } = useContext(ImageFileContext);
 
   const { getRootProps, getInputProps, open, isDragActive, acceptedFiles } = useDropzone({
@@ -31,7 +33,7 @@ export const TopicThumbnail = ({
 
   useEffect(() => {
     if (acceptedFiles.length === 0) {
-      setImageUrl(null);
+      setImageUrl(isDefaultThumbnail ? null : imgUrl);
     } else {
       setImageFile(acceptedFiles[0]);
       setImageUrl(URL.createObjectURL(acceptedFiles[0]));

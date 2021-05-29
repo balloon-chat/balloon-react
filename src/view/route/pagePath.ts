@@ -42,7 +42,7 @@ export const pageTitle = {
   topics: {
     index: getPageTitle('話題一覧'),
     create: getPageTitle('話題を作成'),
-    edit: (topicTitle: string) => getPageTitle(`${topicTitle}|編集`),
+    edit: getPageTitle('話題を編集'),
     topic: (topicTitle: string) => getPageTitle(topicTitle),
   },
   users: {

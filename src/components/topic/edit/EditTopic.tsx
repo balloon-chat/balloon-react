@@ -159,6 +159,7 @@ export const EditTopic = ({ topic }: Props) => {
               imgUrl={topic?.thumbnailUrl ?? null}
               title={title}
               description={description}
+              isDefaultThumbnail
             />
           </ImageFileContext.Provider>
         </ThumbnailInputRow>
