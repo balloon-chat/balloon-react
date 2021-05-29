@@ -1,6 +1,5 @@
 import { Action, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { topicStateName } from 'src/data/redux/topic/state';
-import { Topic } from 'src/domain/topic/models/topic';
 import { TopicService } from 'src/domain/topic/service/topicService';
 import { TopicEntity, TopicEntityFactory } from 'src/view/types/topic';
 
@@ -12,7 +11,9 @@ const FETCH_TOPIC_BY_CODE = `${topicStateName}/fetch_by_code`;
 const UPDATE_TOPIC = `${topicStateName}/update`;
 
 export const createTopic = createAsyncThunk<
-  Topic,
+  {
+    created: TopicEntity,
+  },
   {
     description: string;
     isPrivate: boolean,
@@ -22,7 +23,9 @@ export const createTopic = createAsyncThunk<
   }
 >(CREATE_TOPIC, async ({ description, isPrivate, title, thumbnail, userId }) => {
   const service = new TopicService();
-  return service.createTopic(title, description, userId, thumbnail, isPrivate);
+  return {
+    created: await service.createTopic(title, description, userId, thumbnail, isPrivate),
+  };
 });
 
 export const updateTopic = createAsyncThunk<

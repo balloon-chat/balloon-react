@@ -9,7 +9,7 @@ import { TopicEntity, TopicEntityFactory } from 'src/view/types/topic';
 import { TopicService } from 'src/domain/topic/service/topicService';
 import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
-import { setCurrentTopic, setInvitationCode, setTopicId } from 'src/data/redux/topic/slice';
+import { setCurrentTopic, setInvitationCode } from 'src/data/redux/topic/slice';
 import { useUserSelector } from 'src/data/redux/user/selector';
 import { UserId } from 'src/domain/user/models/userId';
 import { observeStart } from 'src/data/redux/message/slice';
@@ -26,16 +26,14 @@ type Props = {
 const TopicPage = ({ topic, code }: Props) => {
   const dispatcher = useDispatch();
   const { uid, loginState } = useUserSelector();
-  const { topicId } = useTopicState();
+  const { currentTopic } = useTopicState();
 
   useEffect(() => {
-    dispatcher(setTopicId({ topicId: topic?.id ?? null }));
     dispatcher(setInvitationCode({ code }));
     dispatcher(setCurrentTopic({ topic }));
 
     return () => {
       // reset current state
-      dispatcher(setTopicId({ topicId: null }));
       dispatcher(setInvitationCode({ code: null }));
       dispatcher(setCurrentTopic({ topic: null }));
     };
@@ -65,8 +63,8 @@ const TopicPage = ({ topic, code }: Props) => {
   }, [loginState]);
 
   useEffect(() => {
-    if (topicId) dispatcher(observeStart({ topicId }));
-  }, [topicId]);
+    if (currentTopic) dispatcher(observeStart({ topicId: currentTopic.id }));
+  }, [currentTopic?.id]);
 
   return (
     <Container>

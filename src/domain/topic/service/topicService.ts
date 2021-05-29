@@ -1,6 +1,5 @@
 import { ITopicRepository } from 'src/domain/topic/repository/topicRepository';
 import { CreateTopic } from 'src/domain/topic/usecases/createTopic';
-import { Topic } from 'src/domain/topic/models/topic';
 import { UserId } from 'src/domain/user/models/userId';
 import { GetTopics } from 'src/domain/topic/usecases/getTopics';
 import { IMessageRepository } from 'src/domain/message/repository/messageRepository';
@@ -100,20 +99,26 @@ export class TopicService {
     );
   }
 
-  createTopic(
+  async createTopic(
     title: string,
     description: string,
     createdBy: string,
     thumbnail: File | Blob,
     isPrivate: boolean,
-  ): Promise<Topic> {
-    return this.createTopicUsecase.execute(
+  ): Promise<TopicEntity> {
+    const topic = await this.createTopicUsecase.execute(
       title,
       description,
       new UserId(createdBy),
       thumbnail,
       isPrivate,
     );
+
+    return TopicEntityFactory.fromTopic({
+      topic,
+      commentCount: 0,
+      createdBy: new UserId(createdBy),
+    });
   }
 
   async updateTopic(topicId: string, params: {

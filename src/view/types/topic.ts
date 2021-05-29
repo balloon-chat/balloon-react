@@ -1,4 +1,6 @@
 import { TopicData } from 'src/domain/topic/models/topicData';
+import { Topic } from 'src/domain/topic/models/topic';
+import { UserId } from 'src/domain/user/models/userId';
 
 export type TopicEntity = {
   id: string,
@@ -25,6 +27,28 @@ export class TopicEntityFactory {
       createdBy: topic.createdBy.id.value,
       thumbnailUrl: topic.thumbnailUrl,
       commentCount: topic.commentCount,
+      label: null,
+      isPrivate: topic.isPrivate,
+    };
+  }
+
+  static fromTopic({
+    topic,
+    commentCount,
+    createdBy,
+  }:{
+    topic: Topic,
+    commentCount: number,
+    createdBy: UserId,
+  }): TopicEntity {
+    return {
+      id: topic.id.value,
+      title: topic.title.value,
+      description: topic.description?.value ?? null,
+      createdAt: topic.createdAt.valueOf(),
+      createdBy: createdBy.value,
+      thumbnailUrl: topic.thumbnailUrl,
+      commentCount,
       label: null,
       isPrivate: topic.isPrivate,
     };

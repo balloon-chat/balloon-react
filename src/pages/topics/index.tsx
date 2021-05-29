@@ -3,7 +3,7 @@ import { NavBar } from 'src/components/navbar/NavBar';
 import { ScrollableTopicList } from 'src/components/topic/TopicList';
 import { GetServerSideProps } from 'next';
 import { TopicService } from 'src/domain/topic/service/topicService';
-import { TopicEntity } from 'src/view/types/topic';
+import { TopicEntity, TopicEntityFactory } from 'src/view/types/topic';
 import { useDispatch } from 'react-redux';
 import { setTopics } from 'src/data/redux/topic/slice';
 import { BottomNavigation } from 'src/components/navbar/bottomNavigation/BottomNavigation';
@@ -18,12 +18,11 @@ import { ErrorPage } from 'src/components/common/ErrorPage';
 type Props = {
   pickup: TopicEntity | null,
   topics: TopicEntity[],
-  // 招待コードから取得した話題のID
-  topicId: string | null,
+  invitationTopic: TopicEntity | null,
   error: string | null,
 };
 
-const TopicIndexPage: React.FC<Props> = ({ topics, pickup, topicId, error }) => {
+const TopicIndexPage: React.FC<Props> = ({ topics, pickup, invitationTopic, error }) => {
   const dispatcher = useDispatch();
   const router = useRouter();
 
@@ -31,8 +30,8 @@ const TopicIndexPage: React.FC<Props> = ({ topics, pickup, topicId, error }) => 
     dispatcher(setTopics({ topics }));
   }, []);
 
-  if (topicId) {
-    router.replace(rootPath.topicPath.topic(topicId)).then();
+  if (invitationTopic) {
+    router.replace(rootPath.topicPath.topic(invitationTopic.id)).then();
     return (<></>);
   }
 
@@ -71,7 +70,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
       props: {
         pickup: null,
         topics: [],
-        topicId: topic?.id.value ?? null,
+        invitationTopic: topic ? TopicEntityFactory.create(topic) : null,
         error: topic ? null : topicStates.CANNOT_FIND_BY_CODE,
       },
     };
@@ -96,7 +95,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
     props: {
       pickup: entities.length > 0 ? entities[0] : null,
       topics: entities.length > 1 ? entities.slice(1, entities.length) : [],
-      topicId: null,
+      invitationTopic: null,
       error: null,
     },
   };

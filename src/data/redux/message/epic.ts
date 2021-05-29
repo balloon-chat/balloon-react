@@ -19,7 +19,7 @@ export const messageEpic: Epic<ObserveStart, ObserveFulfilled, RootState> = (
     const unsubscribe = new Subject<void>();
     const subscription = state$.subscribe({
       next: ({ topic }) => {
-        if (topic.topicId !== payload.topicId && !unsubscribe.closed) {
+        if (topic.currentTopic?.id !== payload.topicId && !unsubscribe.closed) {
           unsubscribe.next();
           unsubscribe.complete();
           if (!subscription.closed) subscription.unsubscribe();

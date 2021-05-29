@@ -33,7 +33,7 @@ const CreateTopicPage = ({ isLoggedIn }: Props) => {
       <NavBar />
       <Body>
         <ContainerCard>
-          <EditTopic />
+          <EditTopic topic={null} />
         </ContainerCard>
       </Body>
       <BottomNavigation />
