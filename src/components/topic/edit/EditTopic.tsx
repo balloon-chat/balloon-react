@@ -17,17 +17,20 @@ import { topicStates } from 'src/data/redux/topic/state';
 import { ErrorDialog } from 'src/components/common/ErrorDialog';
 import { mediaQuery } from 'src/components/constants/mediaQuery';
 import { TopicEntity } from 'src/view/types/topic';
-import { resetTopicState } from 'src/data/redux/topic/slice';
+import { resetTopicState, setCurrentTopic } from 'src/data/redux/topic/slice';
 
 type Props = {
-  topic?: TopicEntity|null
+  topic: TopicEntity|null
 }
 
+/**
+ * 話題の作成や、話題の編集を行うコンポーネント
+ */
 export const EditTopic = ({ topic }: Props) => {
   const dispatcher = useDispatch();
   const router = useRouter();
   const { uid } = useUserSelector();
-  const { state, topicId } = useTopicState();
+  const { state, currentTopic } = useTopicState();
 
   // タイトル
   const [title, setTitle] = useState(topic?.title ?? '');
@@ -45,9 +48,11 @@ export const EditTopic = ({ topic }: Props) => {
 
   useEffect(() => () => {
     dispatcher(resetTopicState());
+    dispatcher(setCurrentTopic({ topic }));
   }, []);
 
   useEffect(() => {
+    const topicId = (topic ?? currentTopic)?.id;
     if (!topicId) return;
 
     if (

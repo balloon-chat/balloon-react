@@ -17,7 +17,7 @@ export const InvitationCodeForm = () => {
   const [codes, setCodes] = useState<(number | null)[]|null>();
   const [isAvailable, setIsAvailable] = useState(false);
 
-  const { state, topicId } = useTopicState();
+  const { state, currentTopic } = useTopicState();
 
   useEffect(() => {
     const filled = codes?.every((c) => c !== null);
@@ -25,13 +25,13 @@ export const InvitationCodeForm = () => {
   }, [codes]);
 
   useEffect(() => {
-    if (state === topicStates.TOPIC_FOUND && topicId) {
+    if (state === topicStates.TOPIC_FOUND && currentTopic) {
       // 話題のページにリダイレクト
-      router.push(rootPath.topicPath.topic(topicId)).then(() => {
+      router.push(rootPath.topicPath.topic(currentTopic.id)).then(() => {
         dispatcher(resetTopicState());
       });
     }
-  });
+  }, [state, currentTopic]);
 
   const updatedCodes = (codes: (number|null)[]) => {
     setCodes(codes);

@@ -10,7 +10,7 @@ import { ChatMenu } from 'src/components/chat/ChatMenu';
 
 export const MessageField = () => {
   const dispatcher = useDispatch();
-  const { topicId } = useTopicState();
+  const { currentTopic } = useTopicState();
   const { uid } = useUserSelector();
   const [text, setText] = useState('');
 
@@ -28,11 +28,11 @@ export const MessageField = () => {
   };
 
   const sendMessage = (message: string) => {
-    if (topicId && uid && message) {
+    if (currentTopic && uid && message) {
       dispatcher(sendMessageAction({
         message,
         userId: uid,
-        topicId,
+        topicId: currentTopic.id,
       }));
     }
     setText('');
