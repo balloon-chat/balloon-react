@@ -37,7 +37,7 @@ const TopicPage = ({ topic, code }: Props) => {
       dispatcher(setInvitationCode({ code: null }));
       dispatcher(setCurrentTopic({ topic: null }));
     };
-  }, [loginState]);
+  }, []);
 
   useEffect(() => {
     // ユーザーが未ログイン時は、一時的なIDを付与する
