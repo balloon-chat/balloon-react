@@ -7,6 +7,7 @@ import { useUserSelector } from 'src/data/redux/user/selector';
 import { mediaQuery } from 'src/components/constants/mediaQuery';
 import { ReactComponent as Send } from 'src/components/svgs/send.svg';
 import { ChatMenu } from 'src/components/chat/ChatMenu';
+import { CommentListMenu } from 'src/components/topic/commetns/CommentListMenu';
 
 export const MessageField = () => {
   const dispatcher = useDispatch();
@@ -40,6 +41,7 @@ export const MessageField = () => {
 
   return (
     <Container>
+      <CommentListMenu />
       <MessageForm onSubmit={(e) => handleSubmit(e)}>
         <TextFieldContainer>
           <TextField
@@ -76,7 +78,10 @@ const Container = styled.div`
 const MessageForm = styled.form`
   max-width: 500px;
   width: 100%;
-  margin-right: 16px;
+  margin: 0 8px;
+  @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
+    margin: 0 16px;
+  }
 `;
 
 const TextFieldContainer = styled.div`

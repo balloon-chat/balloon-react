@@ -31,7 +31,7 @@ export class MatterController {
 
     // characterのアップデート前に行う動作
     Events.on(this.engine, 'beforeUpdate', () => {
-      this.characterController.onBeforeUpdate(this.canvas);
+      this.characterController.onBeforeUpdate();
     });
   }
 

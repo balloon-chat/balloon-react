@@ -11,7 +11,7 @@ import { CharacterAction, EyePosition } from 'src/view/matter/actors/character/t
  *  @param {string} color 色
  */
 export class Character implements CharacterAction {
-  public static readonly maxSpeed = 20;
+  public static readonly maxSpeed = 10;
 
   private static readonly scaleX = 1.25;
 
