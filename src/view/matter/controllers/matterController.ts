@@ -21,7 +21,7 @@ export class MatterController {
 
     // 重力を無効化する
     this.disableGravity();
-    this.engine.timing.timeScale = 0.01;
+    this.engine.timing.timeScale = 1.0;
     // ボタンをワールドに追加
     this.buttons = buttons;
     this.buttons.forEach((button) => this.addObject(button.object));

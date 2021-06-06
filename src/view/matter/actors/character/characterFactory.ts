@@ -35,13 +35,9 @@ export class CharacterFactory {
     { id, message, senderId }: CharacterFactoryParams,
   ): Character {
     const radius = this.getCharacterSize(p5, message);
-    const sign = {
-      x: Math.random() > 0.5 ? 1 : -1,
-      y: Math.random() > 0.5 ? 1 : -1,
-    };
     const generatePosition = Vector.create(
-      canvas.center.x + sign.x * 50 * Math.random(),
-      canvas.center.y + sign.y * 50 * Math.random(),
+      canvas.width * Math.random(),
+      canvas.height * Math.random(),
     );
     const color = characterColors[senderId.charCodeAt(0) % characterColors.length];
     return new Character(
@@ -54,7 +50,7 @@ export class CharacterFactory {
           group: 0,
           category: 0x0002,
           // eslint-disable-next-line no-bitwise
-          mask: 0x0002 | 0x0001,
+          mask: 0x0001,
         },
       }),
       message,

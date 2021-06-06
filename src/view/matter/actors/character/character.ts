@@ -74,8 +74,8 @@ export class Character implements CharacterAction {
         texts = texts.slice(1);
       }
     }
+    textLine += texts; // 余った最後の一文字を追加
     textLines.push(textLine);
-
     return textLines;
   }
 
@@ -87,7 +87,8 @@ export class Character implements CharacterAction {
   }
 
   onBeforeUpdate() {
-    this.controlSpeed();
+    Body.setVelocity(this.object, Vector.create(0, 0)); // 速度０で固定
+    // this.controlSpeed();
     // 回転の防止
     Body.setAngle(this.object, 0);
   }
