@@ -1,6 +1,7 @@
 import { Body, Common, Vector } from 'matter-js';
 import P5Types from 'p5';
-import { CharacterAction, EyePosition } from 'src/view/matter/actors/character/types';
+import { CharacterAction } from 'src/view/matter/actors/character/types';
+import { CharacterDrawer } from 'src/view/matter/actors/character/characterDrawer';
 
 /**
  * キャラクター（オブジェクトとテキストの情報を持っている）
@@ -13,13 +14,7 @@ import { CharacterAction, EyePosition } from 'src/view/matter/actors/character/t
 export class Character implements CharacterAction {
   public static readonly maxSpeed = 10;
 
-  private static readonly scaleX = 1.25;
-
-  private static readonly scaleY = 1;
-
-  private static readonly messageTextSize = 16;
-
-  private static readonly senderNameTextSize = 14;
+  private readonly drawer = new CharacterDrawer();
 
   constructor(
     readonly id: string,
@@ -31,56 +26,11 @@ export class Character implements CharacterAction {
   ) {
     this.object.id = Common.nextId();
     this.object.label = 'character';
-    Body.scale(this.object, Character.scaleX, Character.scaleY);
+    Body.scale(this.object, CharacterDrawer.scaleX, CharacterDrawer.scaleY);
   }
 
   get position() {
     return this.object.position;
-  }
-
-  private get eyePosition(): EyePosition {
-    return {
-      left: Vector.create(
-        this.position.x - this.radius * 0.35,
-        this.position.y - this.radius * 0.45,
-      ),
-      right: Vector.create(
-        this.position.x + this.radius * 0.35,
-        this.position.y - this.radius * 0.45,
-      ),
-    };
-  }
-
-  /**
-   * テキストがボックスに入るように分割する
-   */
-  static getTextLines(p5: P5Types, text: string, radius: number): string[] {
-    const textBoxWidth = Character.getTextBoxWidth(radius);
-
-    // テキストボックスに収まるように、テキストを行に分割
-    p5.textSize(Character.messageTextSize);
-    let currentLine = 0;
-    const textLines: string[] = [];
-    text.split('').forEach((char) => {
-      const currentLineTextWidth = p5.textWidth(textLines[currentLine]);
-      const textWidth = currentLineTextWidth + p5.textWidth(char);
-
-      // テキストボックスより文字幅が大きくなったら、改行
-      if (textWidth > textBoxWidth) currentLine += 1;
-
-      // 行に文字を追加
-      if (!textLines[currentLine]) textLines[currentLine] = '';
-      textLines[currentLine] += char;
-    });
-
-    return textLines;
-  }
-
-  static getTextBoxWidth(radius: number) {
-    const degree = 40; // 度数法で入力 ( 0 < degree < 90 )
-    const radian = (degree * Math.PI) / 180; // 弧度法
-    const rCosine = radius * Math.cos(radian);
-    return 2 * rCosine * Character.scaleX;
   }
 
   onBeforeUpdate() {
@@ -114,87 +64,9 @@ export class Character implements CharacterAction {
   }
 
   draw(p5: P5Types) {
-    this.drawCharacter(p5);
-    const textBoxBottomY = this.drawMessage(p5);
-    this.drawSenderName(p5, textBoxBottomY);
-  }
-
-  private drawCharacter(p5: P5Types) {
-    // bodyの描画
-    p5.push();
-    p5.fill(this.color)
-      .noStroke()
-      .ellipse(
-        this.position.x,
-        this.position.y,
-        this.radius * 2 * Character.scaleX,
-        this.radius * 2 * Character.scaleY,
-      );
-    p5.pop();
-
-    // 目の描画
-    p5.push();
-    p5.fill('#585858')
-      .noStroke()
-      .circle(this.eyePosition.left.x, this.eyePosition.left.y, this.radius * 0.15)
-      .circle(this.eyePosition.right.x, this.eyePosition.right.y, this.radius * 0.15);
-    p5.pop();
-  }
-
-  private drawMessage(p5: P5Types): number {
-    // textの描画
-    const textLines = Character.getTextLines(p5, this.message, this.radius);
-
-    // 目とキャラクター下端との中点。これを基準としてテキストを配置していく。
-    const basePosition = Vector.create(
-      this.position.x,
-      this.eyePosition.left.y + (this.radius * Character.scaleX) * Math.tan(75 / 180),
-    );
-    p5.textSize(Character.messageTextSize);
-
-    const textBoxWidth = Character.getTextBoxWidth(this.radius);
-    const textBoxHeight = textLines.length * Character.messageTextSize;
-    let startPosition: Vector;
-    if (textLines.length === 1) {
-      // 一行だけのときは、中央寄せ
-      startPosition = Vector.create(
-        basePosition.x,
-        basePosition.y - textBoxHeight / 3,
-      );
-    } else {
-      // 複数行のときは、左詰め
-      startPosition = Vector.create(
-        basePosition.x - textBoxWidth / 2,
-        basePosition.y - textBoxHeight / 3,
-      );
-    }
-
-    let bottomYPosition: number;
-    // 格納したtextの描画
-    if (textLines.length === 1) {
-      p5.fill(0)
-        .textAlign('center', 'center')
-        .textSize(Character.messageTextSize)
-        .text(textLines[0], startPosition.x, startPosition.y);
-      bottomYPosition = startPosition.y + Character.messageTextSize;
-    } else {
-      for (let i = 0; i < textLines.length; i += 1) {
-        p5.fill(0)
-          .textAlign('left', 'center')
-          .textSize(Character.messageTextSize)
-          .text(textLines[i], startPosition.x, startPosition.y + Character.messageTextSize * i);
-      }
-      bottomYPosition = startPosition.y + Character.messageTextSize * textLines.length;
-    }
-
-    return bottomYPosition;
-  }
-
-  private drawSenderName(p5: P5Types, textBoxBottomY: number) {
-    p5.fill('#2D2D2D')
-      .textSize(Character.senderNameTextSize)
-      .textAlign('center', 'center')
-      .text(`@ ${this.sender}`, this.position.x, textBoxBottomY + 8);
+    this.drawer.drawBody(this, p5);
+    const textBoxBottomY = this.drawer.drawMessage(this, p5);
+    this.drawer.drawSenderName(this, p5, textBoxBottomY);
   }
 
   // ============================

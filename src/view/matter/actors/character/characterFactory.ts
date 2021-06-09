@@ -2,6 +2,7 @@ import { Character } from 'src/view/matter/actors/character/character';
 import { Bodies, Vector } from 'matter-js';
 import { CanvasParameter } from 'src/view/matter/models/canvasParameter';
 import P5Types from 'p5';
+import { CharacterDrawer } from 'src/view/matter/actors/character/characterDrawer';
 
 enum CharacterSize {
   small = 80,
@@ -73,11 +74,11 @@ export class CharacterFactory {
     const expansionRate = isMobile ? 0.75 : 1.0;
 
     let characterSize = CharacterSize.small * expansionRate;
-    let lines = Character.getTextLines(p5, text, characterSize).length;
+    let lines = CharacterDrawer.getTextLines(p5, text, characterSize).length;
     if (lines <= 3) return characterSize;
 
     characterSize = CharacterSize.medium * expansionRate;
-    lines = Character.getTextLines(p5, text, characterSize).length;
+    lines = CharacterDrawer.getTextLines(p5, text, characterSize).length;
     if (lines <= 3) return characterSize;
 
     return CharacterSize.large * expansionRate;
