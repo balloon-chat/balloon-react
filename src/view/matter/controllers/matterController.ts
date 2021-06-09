@@ -1,6 +1,5 @@
-import { Body, Engine, Events, Mouse, MouseConstraint, Runner, World } from 'matter-js';
+import { Engine, Events, Mouse, MouseConstraint, Runner, World } from 'matter-js';
 import { CharacterController } from 'src/view/matter/controllers/characterController';
-import { Character } from 'src/view/matter/actors/character/character';
 import { CanvasParameter } from 'src/view/matter/models/canvasParameter';
 import { MatterListAdapter } from 'src/view/matter/lib/matterListAdapter';
 import P5Types from 'p5';
@@ -17,7 +16,7 @@ export class MatterController {
   constructor(
     public readonly engine: Engine,
     public readonly buttons: Button[],
-    public readonly characterController: CharacterController,
+    public readonly character: CharacterController,
     public readonly canvas: CanvasParameter,
   ) {
     this.adapter = new MatterListAdapter(this);
@@ -27,12 +26,16 @@ export class MatterController {
     this.engine.timing.timeScale = 0.01;
     // ボタンをワールドに追加
     this.buttons = buttons;
-    this.buttons.forEach((button) => this.addObject(button.object));
+    this.buttons.forEach((button) => World.add(this.world, button.object));
 
     // characterのアップデート前に行う動作
     Events.on(this.engine, 'beforeUpdate', () => {
-      this.characterController.onBeforeUpdate();
+      this.character.onBeforeUpdate();
     });
+  }
+
+  get world(): World {
+    return this.engine.world;
   }
 
   get isMobile():boolean {
@@ -69,13 +72,5 @@ export class MatterController {
     const mouseConstraint = MouseConstraint.create(this.engine, options);
     mouseConstraint.constraint.stiffness = 1.0; // ドラッグ時にバネの挙動をさせない
     World.add(this.engine.world, mouseConstraint);
-  }
-
-  private addObject(object: Body): void {
-    World.add(this.engine.world, object);
-  }
-
-  private removeObject(object: Body): void {
-    World.remove(this.engine.world, object);
   }
 }

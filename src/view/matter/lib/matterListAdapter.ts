@@ -23,12 +23,16 @@ export class MatterListAdapter extends ListAdapter<MessageEntity> {
         sender: item.senderName,
       },
     );
-    this.controller.addCharacter(character);
+    this.controller
+      .character
+      .add(this.controller.world, character);
   }
 
   protected onDeleteItem(item: MessageEntity): void {
-    const character = this.controller.characterController.findCharacterById(item.id);
+    const character = this.controller.character.findCharacterById(item.id);
     if (!character) return;
-    this.controller.removeCharacter(character);
+    this.controller
+      .character
+      .remove(this.controller.world, character);
   }
 }
