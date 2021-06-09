@@ -1,4 +1,4 @@
-import { Body, Common, Vector } from 'matter-js';
+import Matter, { Body, Common, Vector } from 'matter-js';
 import P5Types from 'p5';
 import { CharacterAction } from 'src/view/matter/actors/character/types';
 import { CharacterDrawer } from 'src/view/matter/actors/character/characterDrawer';
@@ -23,7 +23,9 @@ export class Character implements CharacterAction {
     readonly sender: string,
     readonly radius: number,
     readonly color: string,
+    collision: boolean = true,
   ) {
+    this.collision = collision;
     this.object.id = Common.nextId();
     this.object.label = 'character';
     Body.scale(this.object, CharacterDrawer.scaleX, CharacterDrawer.scaleY);
@@ -61,6 +63,24 @@ export class Character implements CharacterAction {
 
     const newVelocity = Vector.mult(this.object.velocity, 1.0 - decelerationRate);
     Body.setVelocity(this.object, newVelocity);
+  }
+
+  /**
+   * 他のキャラクターとの衝突をするかどうかを設定。
+   */
+  set collision(value: boolean) {
+    if (value) {
+      this.object.collisionFilter = {
+        group: 0,
+        category: 0x2,
+        // eslint-disable-next-line no-bitwise
+        mask: 0x2 | 0x1,
+      };
+    } else {
+      this.object.collisionFilter = {
+        group: -1,
+      };
+    }
   }
 
   draw(p5: P5Types) {

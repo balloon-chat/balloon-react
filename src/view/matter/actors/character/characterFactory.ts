@@ -55,12 +55,6 @@ export class CharacterFactory {
         inertia: Infinity,
         frictionAir: 0,
         restitution: 0.3,
-        collisionFilter: {
-          group: 0,
-          category: 0x0002,
-          // eslint-disable-next-line no-bitwise
-          mask: 0x0002 | 0x0001,
-        },
       }),
       message,
       sender,
