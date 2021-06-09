@@ -65,15 +65,8 @@ export const Canvas: React.FC = () => {
     // 背面を白で塗りつぶす
     p5.background(255);
 
-    controller.buttons.forEach((button) => {
-      button.draw(p5);
-    });
-
     // キャラクターの描画
-    const { characters } = controller.characterController;
-    characters.forEach((character) => {
-      character.draw(p5);
-    });
+    controller.draw(p5);
   };
 
   const mousePressed = (p5: P5Types) => {

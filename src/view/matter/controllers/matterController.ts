@@ -47,14 +47,11 @@ export class MatterController {
     if (this.runner) Runner.stop(this.runner);
   }
 
-  addCharacter(character: Character): void {
-    this.addObject(character.object);
-    this.characterController.add(character);
-  }
-
-  removeCharacter(character: Character): void {
-    this.removeObject(character.object);
-    this.characterController.remove(character);
+  draw(p5: P5Types) {
+    this.character.draw(p5);
+    this.buttons.forEach((button) => {
+      button.draw(p5);
+    });
   }
 
   private disableGravity() {
