@@ -1,7 +1,7 @@
 import { Character } from 'src/view/matter/actors/character/character';
 
-export class CharacterController {
-  private readonly _characters: Map<string, Character>;
+export abstract class CharacterController {
+  protected readonly _characters: Map<string, Character>;
 
   constructor() {
     this._characters = new Map();
@@ -11,17 +11,14 @@ export class CharacterController {
     return Array.from(this._characters.values());
   }
 
+  abstract onBeforeUpdate(): void
+
   add(character: Character) {
     this._characters.set(character.id, character);
-    character.moveSomeWhere();
   }
 
   remove(character: Character) {
     this._characters.delete(character.id);
-  }
-
-  onBeforeUpdate() {
-    this.characters.forEach((character) => character.onBeforeUpdate());
   }
 
   findCharacterById(id: string | number): Character | null {
@@ -31,3 +28,4 @@ export class CharacterController {
     return this.characters.find((c) => c.object.id === id) ?? null;
   }
 }
+
