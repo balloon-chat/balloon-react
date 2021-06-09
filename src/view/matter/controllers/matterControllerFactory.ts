@@ -3,8 +3,8 @@ import { CanvasParameter } from 'src/view/matter/models/canvasParameter';
 import { MatterController } from 'src/view/matter/controllers/matterController';
 import { Button } from 'src/view/matter/actors/button/button';
 import { ButtonFactory, buttonType } from 'src/view/matter/actors/button/buttonFactory';
-import { BoundCharacterController } from 'src/view/matter/controllers/boundCharacterController';
 import { CharacterController } from 'src/view/matter/controllers/characterController';
+import { PopupCharacterController } from 'src/view/matter/controllers/popupCharacterController';
 
 export class MatterControllerFactory {
   private static _instance: MatterController | null;
@@ -16,7 +16,7 @@ export class MatterControllerFactory {
     const canvas = new CanvasParameter(windowWidth, windowHeight);
 
     // キャラクターを管理するクラス
-    const characterController: CharacterController = new BoundCharacterController();
+    const characterController: CharacterController = new PopupCharacterController(canvas);
 
     // ボタンを生成
     const addButton = ButtonFactory.create(Button.radius, Button.radius, buttonType.add, 'blue');

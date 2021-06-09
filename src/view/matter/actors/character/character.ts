@@ -35,10 +35,8 @@ export class Character implements CharacterAction {
     return this.object.position;
   }
 
-  onBeforeUpdate() {
-    this.controlSpeed();
-    // 回転の防止
-    Body.setAngle(this.object, 0);
+  set position(position: Vector) {
+    Matter.Body.setPosition(this.object, position);
   }
 
   /**
