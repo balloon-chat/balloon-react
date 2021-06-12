@@ -12,6 +12,24 @@ export class CharacterDrawer {
 
   private static readonly senderNameTextSize = 14;
 
+  static getColor(character: Character, p5: P5Types) {
+    const alpha = (character.lifespan / 100) * 255;
+
+    const body = p5.color(character.color);
+    body.setAlpha(alpha);
+
+    const text = p5.color(0, alpha);
+
+    const sender = p5.color('#2D2D2D');
+    sender.setAlpha(alpha);
+
+    return {
+      body,
+      text,
+      sender,
+    };
+  }
+
   /**
    * テキストがボックスに入るように分割する
    */
@@ -62,7 +80,7 @@ export class CharacterDrawer {
   drawBody(character: Character, p5: P5Types) {
     // bodyの描画
     p5.push();
-    p5.fill(character.color)
+    p5.fill(CharacterDrawer.getColor(character, p5).body)
       .noStroke()
       .ellipse(
         character.position.x,
@@ -115,7 +133,7 @@ export class CharacterDrawer {
     let bottomYPosition: number;
     // 格納したtextの描画
     if (textLines.length === 1) {
-      p5.fill(0)
+      p5.fill(CharacterDrawer.getColor(character, p5).text)
         .textAlign('center', 'center')
         .textSize(messageTextSize)
         .text(textLines[0], startPosition.x, startPosition.y);
@@ -136,7 +154,7 @@ export class CharacterDrawer {
   // eslint-disable-next-line class-methods-use-this
   drawSenderName(character: Character, p5: P5Types, textBoxBottomY: number) {
     const { position, sender } = character;
-    p5.fill('#2D2D2D')
+    p5.fill(CharacterDrawer.getColor(character, p5).sender)
       .textSize(CharacterDrawer.senderNameTextSize)
       .textAlign('center', 'center')
       .text(`@ ${sender}`, position.x, textBoxBottomY + 8);

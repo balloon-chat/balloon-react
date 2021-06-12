@@ -3,19 +3,22 @@ import P5Types from 'p5';
 import { CharacterAction } from 'src/view/matter/actors/character/types';
 import { CharacterDrawer } from 'src/view/matter/actors/character/characterDrawer';
 
-/**
- * キャラクター（オブジェクトとテキストの情報を持っている）
- *  @param {Body} object オブジェクトデータ
- *  @param {string} text テキストデータ
- *  @param {string} id 識別用文字列
- *  @param {number} radius 半径
- *  @param {string} color 色
- */
 export class Character implements CharacterAction {
   public static readonly maxSpeed = 10;
 
   private readonly drawer = new CharacterDrawer();
 
+  /**
+   * キャラクター（オブジェクトとテキストの情報を持っている）
+   *  @param {Body} body オブジェクトデータ
+   *  @param {string} message キャラクターに用事させるメッセージ
+   *  @param {string} id 識別用文字列
+   *  @param {string} sender メッセージ送信者のID
+   *  @param {number} radius 半径
+   *  @param {string} color キャラクターの体の色
+   *  @param {number} lifespan キャラクターの生存期間。 0になると透明になる。
+   *  @param {boolean} collision キャラクター同士の衝突を判定するかどうか
+   */
   constructor(
     readonly id: string,
     readonly body: Body,
@@ -23,6 +26,7 @@ export class Character implements CharacterAction {
     readonly sender: string,
     readonly radius: number,
     readonly color: string,
+    public lifespan: number = 100,
     collision: boolean = true,
   ) {
     this.collision = collision;
