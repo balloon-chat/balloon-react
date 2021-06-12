@@ -72,7 +72,7 @@ export class Button {
       );
       matterController
         .character
-        .add(matterController.engine.world, character);
+        .add(matterController.engine.world, matterController.canvas, character);
     }
 
     /**
