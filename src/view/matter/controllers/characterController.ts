@@ -1,6 +1,7 @@
 import { Character } from 'src/view/matter/actors/character/character';
 import P5Types from 'p5';
-import { Body, World } from 'matter-js';
+import { Body, Engine, IEventTimestamped, World } from 'matter-js';
+import { CanvasParameter } from 'src/view/matter/models/canvasParameter';
 
 export abstract class CharacterController {
   protected readonly _characters: Map<string, Character>;
@@ -13,20 +14,20 @@ export abstract class CharacterController {
     return Array.from(this._characters.values());
   }
 
-  onBeforeUpdate(): void {
+  onBeforeUpdate(_: IEventTimestamped<Engine>): void {
     this._characters.forEach((character) => {
       // 回転の防止
-      Body.setAngle(character.object, 0);
+      Body.setAngle(character.body, 0);
     });
   }
 
-  add(world: World, character: Character) {
-    World.add(world, character.object);
+  add(world: World, _: CanvasParameter, character: Character) {
+    World.add(world, character.body);
     this._characters.set(character.id, character);
   }
 
   remove(world: World, character: Character) {
-    World.remove(world, character.object);
+    World.remove(world, character.body);
     this._characters.delete(character.id);
   }
 
@@ -40,6 +41,6 @@ export abstract class CharacterController {
     if (typeof id === 'string') {
       return this._characters.get(id) ?? null;
     }
-    return this.characters.find((c) => c.object.id === id) ?? null;
+    return this.characters.find((c) => c.body.id === id) ?? null;
   }
 }

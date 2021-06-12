@@ -18,7 +18,7 @@ export class Character implements CharacterAction {
 
   constructor(
     readonly id: string,
-    readonly object: Body,
+    readonly body: Body,
     readonly message: string,
     readonly sender: string,
     readonly radius: number,
@@ -26,30 +26,48 @@ export class Character implements CharacterAction {
     collision: boolean = true,
   ) {
     this.collision = collision;
-    this.object.id = Common.nextId();
-    this.object.label = 'character';
-    Body.scale(this.object, CharacterDrawer.scaleX, CharacterDrawer.scaleY);
+    this.body.id = Common.nextId();
+    this.body.label = 'character';
+    Body.scale(this.body, CharacterDrawer.scaleX, CharacterDrawer.scaleY);
   }
 
   get position() {
-    return this.object.position;
+    return this.body.position;
   }
 
   set position(position: Vector) {
-    Matter.Body.setPosition(this.object, position);
+    Matter.Body.setPosition(this.body, position);
+  }
+
+  /**
+   * 他のキャラクターとの衝突をするかどうかを設定。
+   */
+  set collision(value: boolean) {
+    if (value) {
+      this.body.collisionFilter = {
+        group: 0,
+        category: 0x2,
+        // eslint-disable-next-line no-bitwise
+        mask: 0x2 | 0x1,
+      };
+    } else {
+      this.body.collisionFilter = {
+        group: -1,
+      };
+    }
   }
 
   /**
    * 速度に応じて減衰をかけ、キャラクターの速度が一定以上に達しないように制御する。
    */
   controlSpeed() {
-    const { speed, velocity } = this.object;
+    const { speed, velocity } = this.body;
     const { maxSpeed } = Character;
 
     // 最大速度以下に抑える
     if (speed > maxSpeed) {
       const newVelocity = Vector.mult(Vector.normalise(velocity), maxSpeed);
-      Body.setVelocity(this.object, newVelocity);
+      Body.setVelocity(this.body, newVelocity);
       return;
     }
 
@@ -59,26 +77,8 @@ export class Character implements CharacterAction {
     if (speed < maxSpeed * 0.2) decelerationRate = 0.15;
     else decelerationRate = 0.03;
 
-    const newVelocity = Vector.mult(this.object.velocity, 1.0 - decelerationRate);
-    Body.setVelocity(this.object, newVelocity);
-  }
-
-  /**
-   * 他のキャラクターとの衝突をするかどうかを設定。
-   */
-  set collision(value: boolean) {
-    if (value) {
-      this.object.collisionFilter = {
-        group: 0,
-        category: 0x2,
-        // eslint-disable-next-line no-bitwise
-        mask: 0x2 | 0x1,
-      };
-    } else {
-      this.object.collisionFilter = {
-        group: -1,
-      };
-    }
+    const newVelocity = Vector.mult(this.body.velocity, 1.0 - decelerationRate);
+    Body.setVelocity(this.body, newVelocity);
   }
 
   draw(p5: P5Types) {
@@ -89,6 +89,7 @@ export class Character implements CharacterAction {
 
   // ============================
   // Character Actions
+
   // ============================
   moveSomeWhere() {
     const sign = {
@@ -102,6 +103,6 @@ export class Character implements CharacterAction {
       )),
       Character.maxSpeed,
     );
-    Body.setVelocity(this.object, velocity);
+    Body.setVelocity(this.body, velocity);
   }
 }

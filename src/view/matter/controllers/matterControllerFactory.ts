@@ -16,7 +16,7 @@ export class MatterControllerFactory {
     const canvas = new CanvasParameter(windowWidth, windowHeight);
 
     // キャラクターを管理するクラス
-    const characterController: CharacterController = new PopupCharacterController(canvas);
+    const characterController: CharacterController = new PopupCharacterController();
 
     // ボタンを生成
     const addButton = ButtonFactory.create(Button.radius, Button.radius, buttonType.add, 'blue');

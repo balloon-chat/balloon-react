@@ -25,7 +25,7 @@ export class MatterListAdapter extends ListAdapter<MessageEntity> {
     );
     this.controller
       .character
-      .add(this.controller.world, character);
+      .add(this.controller.world, this.controller.canvas, character);
   }
 
   protected onDeleteItem(item: MessageEntity): void {

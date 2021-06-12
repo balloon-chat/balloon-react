@@ -23,14 +23,14 @@ export class MatterController {
 
     // 重力を無効化する
     this.disableGravity();
-    this.engine.timing.timeScale = 0.01;
+
     // ボタンをワールドに追加
     this.buttons = buttons;
     this.buttons.forEach((button) => World.add(this.world, button.object));
 
     // characterのアップデート前に行う動作
-    Events.on(this.engine, 'beforeUpdate', () => {
-      this.character.onBeforeUpdate();
+    Events.on(this.engine, 'beforeUpdate', (e) => {
+      this.character.onBeforeUpdate(e);
     });
   }
 
