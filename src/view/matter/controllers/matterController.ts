@@ -1,6 +1,5 @@
-import { Body, Engine, Events, Mouse, MouseConstraint, Runner, World } from 'matter-js';
+import { Engine, Events, Mouse, MouseConstraint, Runner, World } from 'matter-js';
 import { CharacterController } from 'src/view/matter/controllers/characterController';
-import { Character } from 'src/view/matter/actors/character/character';
 import { CanvasParameter } from 'src/view/matter/models/canvasParameter';
 import { MatterListAdapter } from 'src/view/matter/lib/matterListAdapter';
 import P5Types from 'p5';
@@ -17,22 +16,26 @@ export class MatterController {
   constructor(
     public readonly engine: Engine,
     public readonly buttons: Button[],
-    public readonly characterController: CharacterController,
+    public readonly character: CharacterController,
     public readonly canvas: CanvasParameter,
   ) {
     this.adapter = new MatterListAdapter(this);
 
     // 重力を無効化する
     this.disableGravity();
-    this.engine.timing.timeScale = 0.01;
+
     // ボタンをワールドに追加
     this.buttons = buttons;
-    this.buttons.forEach((button) => this.addObject(button.object));
+    this.buttons.forEach((button) => World.add(this.world, button.object));
 
     // characterのアップデート前に行う動作
-    Events.on(this.engine, 'beforeUpdate', () => {
-      this.characterController.onBeforeUpdate();
+    Events.on(this.engine, 'beforeUpdate', (e) => {
+      this.character.onBeforeUpdate(e);
     });
+  }
+
+  get world(): World {
+    return this.engine.world;
   }
 
   get isMobile():boolean {
@@ -47,14 +50,11 @@ export class MatterController {
     if (this.runner) Runner.stop(this.runner);
   }
 
-  addCharacter(character: Character): void {
-    this.addObject(character.object);
-    this.characterController.add(character);
-  }
-
-  removeCharacter(character: Character): void {
-    this.removeObject(character.object);
-    this.characterController.remove(character);
+  draw(p5: P5Types) {
+    this.character.draw(p5);
+    this.buttons.forEach((button) => {
+      button.draw(p5);
+    });
   }
 
   private disableGravity() {
@@ -72,13 +72,5 @@ export class MatterController {
     const mouseConstraint = MouseConstraint.create(this.engine, options);
     mouseConstraint.constraint.stiffness = 1.0; // ドラッグ時にバネの挙動をさせない
     World.add(this.engine.world, mouseConstraint);
-  }
-
-  private addObject(object: Body): void {
-    World.add(this.engine.world, object);
-  }
-
-  private removeObject(object: Body): void {
-    World.remove(this.engine.world, object);
   }
 }

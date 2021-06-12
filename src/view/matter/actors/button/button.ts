@@ -70,7 +70,9 @@ export class Button {
           sender: 'test',
         },
       );
-      matterController.addCharacter(character);
+      matterController
+        .character
+        .add(matterController.engine.world, matterController.canvas, character);
     }
 
     /**
@@ -78,8 +80,12 @@ export class Button {
      */
     // eslint-disable-next-line class-methods-use-this
     removeAll(matterController: MatterController) {
-      const { characters } = matterController.characterController;
-      characters.forEach((character) => matterController.removeCharacter(character));
+      const { characters } = matterController.character;
+      characters.forEach((character) => {
+        matterController
+          .character
+          .remove(matterController.world, character);
+      });
     }
 
     /**
@@ -87,7 +93,7 @@ export class Button {
      */
     // eslint-disable-next-line class-methods-use-this
     shakeAll(matterController: MatterController) {
-      const { characters } = matterController.characterController;
+      const { characters } = matterController.character;
       characters.forEach((character) => character.moveSomeWhere());
     }
 
