@@ -21,7 +21,7 @@ export const CommentList = ({ isVisible, onClose }: Props) => {
         <Dialog>
           {
             (messages ?? [])
-              .map((message) => <CommentListItem message={message} />)
+              .map((message, index) => <CommentListItem key={index} message={message} />)
           }
         </Dialog>
       </Container>
