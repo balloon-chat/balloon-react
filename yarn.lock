@@ -6464,11 +6464,6 @@ react-dropzone@^11.3.2:
     file-selector "^0.2.2"
     prop-types "^15.7.2"
 
-react-images-uploading@^3.1.2:
-  version "3.1.2"
-  resolved "https://registry.yarnpkg.com/react-images-uploading/-/react-images-uploading-3.1.2.tgz#c1636bab2cc709cdce47dba3f043a33a8ffe9edf"
-  integrity sha512-Yy7r+I/f1gPM1qN95uvAoHOTGMG23Bu4kgXQLJoS7rnAQ/InpI3y6U0S0QMMCX+85c1JNdNZl4Bn/Z4ge39emQ==
-
 react-infinite-scroll-component@^6.0.0:
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/react-infinite-scroll-component/-/react-infinite-scroll-component-6.0.0.tgz#b5834b81dad51c764e5d217e1007b14bed0ed5e7"

@@ -6,6 +6,8 @@ import { CanvasParameter } from 'src/view/matter/models/canvasParameter';
 export abstract class CharacterController {
   protected readonly _characters: Map<string, Character>;
 
+  private lastUpdateAt: number = 0;
+
   constructor() {
     this._characters = new Map();
   }
@@ -22,6 +24,15 @@ export abstract class CharacterController {
   }
 
   add(world: World, _: CanvasParameter, character: Character) {
+    const current = Date.now();
+    if (current - this.lastUpdateAt > 400) {
+      // TODO: 送信音の有無の設定ができるようにする。
+      const audio = new Audio('/sound/popup.mp3');
+      audio.play().catch((e) => {
+        console.error(e);
+      });
+      this.lastUpdateAt = current;
+    }
     World.add(world, character.body);
     this._characters.set(character.id, character);
   }
