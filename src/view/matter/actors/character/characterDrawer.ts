@@ -80,7 +80,7 @@ export class CharacterDrawer {
   drawBody(character: Character, p5: P5Types) {
     // 影の描画
     p5.push();
-    p5.fill(0, 125)
+    p5.fill('#0040800f')
       .noStroke()
       .ellipse(
         character.position.x - 5,
