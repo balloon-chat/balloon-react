@@ -6,8 +6,8 @@ import { useTopicState } from 'src/data/redux/topic/selector';
 import { useUserSelector } from 'src/data/redux/user/selector';
 import { mediaQuery } from 'src/components/constants/mediaQuery';
 import { ReactComponent as Send } from 'src/components/svgs/send.svg';
-import { ChatMenu } from 'src/components/chat/ChatMenu';
-import { CommentListMenu } from 'src/components/topic/commetns/CommentListMenu';
+import { ChatMenu } from 'src/components/topic/chat/ChatMenu';
+import { MessageLogMenu } from 'src/components/topic/chat/MessageLogMenu';
 
 export const MessageField = () => {
   const dispatcher = useDispatch();
@@ -41,7 +41,7 @@ export const MessageField = () => {
 
   return (
     <Container>
-      <CommentListMenu />
+      <MessageLogMenu />
       <MessageForm onSubmit={(e) => handleSubmit(e)}>
         <TextFieldContainer>
           <TextField
