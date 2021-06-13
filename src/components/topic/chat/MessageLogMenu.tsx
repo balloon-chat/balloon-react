@@ -16,7 +16,7 @@ export const MessageLogMenu = () => {
         onClick={useCallback(() => setIsVisible((prev) => !prev), [])}
         isVisible={isVisible}
       >
-        <MenuIcon />
+        <ChatBubble />
       </MenuIconContainer>
     </>
   );
