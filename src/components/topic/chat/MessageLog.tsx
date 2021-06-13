@@ -15,15 +15,15 @@ export const MessageLog = ({ isVisible, onClose }: Props) => {
   return (
     <Wrapper isVisible={isVisible}>
       <Container isVisible={isVisible}>
-        <CloseButton onClick={() => onClose()}>
-          <CloseIcon />
-        </CloseButton>
         <Dialog>
           {
             (messages ?? [])
               .map((message, index) => <MessageLogItem key={index} message={message} />)
           }
         </Dialog>
+        <CloseButton onClick={() => onClose()}>
+          <CloseIcon />
+        </CloseButton>
       </Container>
     </Wrapper>
   );
@@ -44,7 +44,7 @@ const Wrapper = styled.div<{isVisible: boolean}>`
 
 const Container = styled.div<{isVisible: boolean}>`
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   transform: translateX(${(props) => (props.isVisible ? 0 : -50)}vh);
   transition: all 0.4s ease-in-out;
   visibility: ${(props) => (props.isVisible ? 'visible' : 'hidden')};
@@ -81,6 +81,6 @@ const CloseButton = styled.div`
   justify-content: center;
   width: 32px;
   height: 32px;
-  margin-bottom: 8px;
+  margin-left: 16px;
   cursor: pointer;
 `;
