@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { MessageField } from 'src/components/chat/MessageField';
+import { MessageField } from 'src/components/topic/chat/MessageField';
 import { NavBar } from 'src/components/navbar/NavBar';
 import { ErrorPage } from 'src/components/common/ErrorPage';
 import Head from 'next/head';
@@ -16,7 +16,7 @@ import { observeStart } from 'src/data/redux/message/slice';
 import { useTopicState } from 'src/data/redux/topic/selector';
 import { setUser } from 'src/data/redux/user/slice';
 import { LoginStates } from 'src/data/redux/user/state';
-import { MessageList } from 'src/components/chat/MessageList';
+import { CharacterCanvas } from 'src/components/topic/chat/CharacterCanvas';
 
 type Props = {
   topic: TopicEntity | null,
@@ -74,7 +74,7 @@ const TopicPage = ({ topic, code }: Props) => {
           <Head>
             <title>{pageTitle.topics.topic(topic.title)}</title>
           </Head>
-          <MessageList />
+          <CharacterCanvas />
           <MessageField />
         </>
       )}

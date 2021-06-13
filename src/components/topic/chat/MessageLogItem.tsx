@@ -6,7 +6,7 @@ type Props = {
   message: MessageEntity,
 }
 
-export const CommentListItem = ({ message }: Props) => (
+export const MessageLogItem = ({ message }: Props) => (
   <Container>
     <Thumbnail src={message.senderPhotoUrl} />
     <MainSection>

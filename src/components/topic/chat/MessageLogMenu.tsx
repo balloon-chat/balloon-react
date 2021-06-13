@@ -1,14 +1,14 @@
 import React, { useCallback, useState } from 'react';
-import MenuIcon from 'src/components/svgs/menu.svg';
+import ChatBubble from 'src/components/svgs/chat_bubble.svg';
 import styled from 'styled-components';
-import { CommentList } from 'src/components/topic/commetns/CommentList';
+import { MessageLog } from 'src/components/topic/chat/MessageLog';
 
-export const CommentListMenu = () => {
+export const MessageLogMenu = () => {
   const [isVisible, setIsVisible] = useState(false);
 
   return (
     <>
-      <CommentList
+      <MessageLog
         onClose={useCallback(() => setIsVisible(false), [])}
         isVisible={isVisible}
       />
@@ -16,7 +16,7 @@ export const CommentListMenu = () => {
         onClick={useCallback(() => setIsVisible((prev) => !prev), [])}
         isVisible={isVisible}
       >
-        <MenuIcon />
+        <ChatBubble />
       </MenuIconContainer>
     </>
   );
