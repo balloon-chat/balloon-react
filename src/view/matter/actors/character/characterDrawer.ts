@@ -78,6 +78,17 @@ export class CharacterDrawer {
   }
 
   drawBody(character: Character, p5: P5Types) {
+    // 影の描画
+    p5.push();
+    p5.fill(0, 125)
+      .noStroke()
+      .ellipse(
+        character.position.x - 5,
+        character.position.y + 5,
+        character.radius * 2 * CharacterDrawer.scaleX,
+        character.radius * 2 * CharacterDrawer.scaleY,
+      );
+    p5.pop();
     // bodyの描画
     p5.push();
     p5.fill(CharacterDrawer.getColor(character, p5).body)
