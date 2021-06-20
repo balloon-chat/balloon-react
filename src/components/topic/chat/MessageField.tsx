@@ -65,6 +65,7 @@ export const MessageField = () => {
 const Container = styled.div`
   align-items: center;
   box-sizing: border-box;
+  background-color: white;
   display: flex;
   justify-content: center;
   padding: 0 8px 16px 8px;
