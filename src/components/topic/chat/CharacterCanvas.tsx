@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { LoadDialog } from 'src/components/common/LoadDialog';
 import { Sketch } from 'src/components/p5/Sketch';
 
-export const MessageList = () => {
+export const CharacterCanvas = () => {
   const { messages } = useMessageState();
 
   return (

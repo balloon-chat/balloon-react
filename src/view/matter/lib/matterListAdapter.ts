@@ -9,6 +9,15 @@ export class MatterListAdapter extends ListAdapter<MessageEntity> {
     super(new MessageEntityDiffUtil());
   }
 
+  submit(list: MessageEntity[]) {
+    new Promise(() => {
+      // 日付を降順にソートし、最初の30個の要素だけ、取得する。
+      // TODO: 画面サイズごとに要素数を変更する
+      const sorted = list.slice().sort((a, b) => b.createdAt - a.createdAt);
+      super.submit(sorted.slice(0, 30));
+    }).then();
+  }
+
   protected onAddItem(item: MessageEntity): void {
     const { p5 } = this.controller;
     if (!p5) return;

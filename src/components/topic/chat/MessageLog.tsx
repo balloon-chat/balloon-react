@@ -1,6 +1,6 @@
 import React from 'react';
 import { useMessageState } from 'src/data/redux/message/selector';
-import { CommentListItem } from 'src/components/topic/commetns/CommentListItem';
+import { MessageLogItem } from 'src/components/topic/chat/MessageLogItem';
 import styled from 'styled-components';
 import CloseIcon from 'src/components/svgs/close.svg';
 import { mediaQuery } from 'src/components/constants/mediaQuery';
@@ -10,10 +10,7 @@ type Props = {
   onClose: () => void,
 }
 
-export const CommentList = ({
-  isVisible,
-  onClose,
-}: Props) => {
+export const MessageLog = ({ isVisible, onClose }: Props) => {
   const { messages } = useMessageState();
   return (
     <Wrapper isVisible={isVisible} onClick={onClose}>
@@ -24,7 +21,7 @@ export const CommentList = ({
         <Dialog>
           {
             (messages ?? [])
-              .map((message, index) => <CommentListItem key={index} message={message} />)
+              .map((message, index) => <MessageLogItem key={index} message={message} />)
           }
         </Dialog>
       </Container>
@@ -32,7 +29,7 @@ export const CommentList = ({
   );
 };
 
-const Wrapper = styled.div<{ isVisible: boolean }>`
+const Wrapper = styled.div<{isVisible: boolean}>`
   align-items: center;
   display: flex;
   position: fixed;
