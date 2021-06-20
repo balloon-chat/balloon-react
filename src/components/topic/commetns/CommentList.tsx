@@ -39,15 +39,13 @@ const Wrapper = styled.div<{ isVisible: boolean }>`
   transition: all 0.4s ease-in-out;
   width: 100%;
   height: 100%;
-  top: 0;
-  bottom: 0;
+  inset: 0;
   z-index: 200;
   visibility: ${(props) => (props.isVisible ? 'visible' : 'hidden')};
 
   @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
     background-color: ${(props) => (props.isVisible ? 'rgba(0,0,0,.6)' : 'transparent')};
     padding-left: 64px;
-    position: absolute;
   }
 `;
 

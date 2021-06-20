@@ -7,7 +7,7 @@ export const CommentListMenu = () => {
   const [isVisible, setIsVisible] = useState(false);
 
   return (
-    <>
+    <div style={{ position: 'relative' }}>
       <CommentList
         onClose={useCallback(() => setIsVisible(false), [])}
         isVisible={isVisible}
@@ -18,7 +18,7 @@ export const CommentListMenu = () => {
       >
         <MenuIcon />
       </MenuIconContainer>
-    </>
+    </div>
   );
 };
 
@@ -33,7 +33,7 @@ const MenuIconContainer = styled.div<{isVisible: boolean}>`
   min-height: 36px;
   justify-content: center;
   position: relative;
-  
+
   & > svg {
     fill: ${(props) => (props.isVisible ? '#5b87fa' : undefined)};
   }

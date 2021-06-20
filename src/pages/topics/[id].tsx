@@ -75,7 +75,9 @@ const TopicPage = ({ topic, code }: Props) => {
             <title>{pageTitle.topics.topic(topic.title)}</title>
           </Head>
           <MessageList />
-          <MessageField />
+          <MessageFieldContainer>
+            <MessageField />
+          </MessageFieldContainer>
         </>
       )}
       {!topic && <ErrorPage message="話題が見つかりませんでした" />}
@@ -87,7 +89,15 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-items: stretch;
-  height: 100%;
+  height: 100vh;
+`;
+
+const MessageFieldContainer = styled.div`
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  z-index: 100;
 `;
 
 export const getServerSideProps: GetServerSideProps<Props> = async (
