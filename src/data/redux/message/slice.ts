@@ -3,7 +3,7 @@ import { sendMessage } from 'src/data/redux/message/action';
 import {
   observeFulfilledReducer,
   observeStartReducer,
-  resetMessagesReducer
+  resetMessagesReducer,
 } from 'src/data/redux/message/reducer';
 import { MessageState, messageStateName } from 'src/data/redux/message/state';
 
