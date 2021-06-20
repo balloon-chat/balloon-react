@@ -6,6 +6,7 @@ import { dateFormat } from 'src/view/util/format';
 import LockIcon from 'src/components/svgs/lock.svg';
 import React from 'react';
 import Link from 'next/link';
+import Skeleton from 'react-loading-skeleton';
 
 export const TopicCard: React.FC<TopicEntity> = ({
   id,
@@ -22,7 +23,13 @@ export const TopicCard: React.FC<TopicEntity> = ({
       <Container>
         <Thumbnail>
           <ThumbnailImageContainer>
-            <Image src={thumbnailUrl} layout="fill" objectFit="cover" />
+            <Skeleton height="100%" />
+            <Image
+              placeholder="bluer"
+              src={thumbnailUrl}
+              layout="fill"
+              objectFit="cover"
+            />
           </ThumbnailImageContainer>
           {label && <Label labelColor={label.color}>{label.title}</Label>}
           {isPrivate && <PrivateContainer><LockIcon /></PrivateContainer>}
