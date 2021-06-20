@@ -15,18 +15,21 @@ export class CharacterDrawer {
   static getColor(character: Character, p5: P5Types) {
     const alpha = (character.lifespan / 100) * 255;
 
-    const body = p5.color(character.color);
-    body.setAlpha(alpha);
+    const colorBody = p5.color(character.color);
+    colorBody.setAlpha(alpha);
 
-    const text = p5.color(0, alpha);
+    const colorText = p5.color(0, alpha);
 
-    const sender = p5.color('#2D2D2D');
-    sender.setAlpha(alpha);
+    const colorEye = p5.color(88, alpha);
+
+    const colorSender = p5.color('#2D2D2D');
+    colorSender.setAlpha(alpha);
 
     return {
-      body,
-      text,
-      sender,
+      colorBody,
+      colorEye,
+      colorText,
+      colorSender,
     };
   }
 
@@ -89,9 +92,11 @@ export class CharacterDrawer {
         character.radius * 2 * CharacterDrawer.scaleY,
       );
     p5.pop();
+
     // bodyの描画
+    const { colorBody } = CharacterDrawer.getColor(character, p5);
     p5.push();
-    p5.fill(CharacterDrawer.getColor(character, p5).body)
+    p5.fill(colorBody)
       .noStroke()
       .ellipse(
         character.position.x,
@@ -103,8 +108,9 @@ export class CharacterDrawer {
 
     // 目の描画
     const eyePosition = this.getEyePosition(character);
+    const { colorEye } = CharacterDrawer.getColor(character, p5);
     p5.push();
-    p5.fill('#585858')
+    p5.fill(colorEye)
       .noStroke()
       .circle(eyePosition.left.x, eyePosition.left.y, character.radius * 0.15)
       .circle(eyePosition.right.x, eyePosition.right.y, character.radius * 0.15);
@@ -144,7 +150,8 @@ export class CharacterDrawer {
     let bottomYPosition: number;
     // 格納したtextの描画
     if (textLines.length === 1) {
-      p5.fill(CharacterDrawer.getColor(character, p5).text)
+      const { colorText } = CharacterDrawer.getColor(character, p5);
+      p5.fill(colorText)
         .textAlign('center', 'center')
         .textSize(messageTextSize)
         .text(textLines[0], startPosition.x, startPosition.y);
@@ -165,7 +172,8 @@ export class CharacterDrawer {
   // eslint-disable-next-line class-methods-use-this
   drawSenderName(character: Character, p5: P5Types, textBoxBottomY: number) {
     const { position, sender } = character;
-    p5.fill(CharacterDrawer.getColor(character, p5).sender)
+    const { colorSender } = CharacterDrawer.getColor(character, p5);
+    p5.fill(colorSender)
       .textSize(CharacterDrawer.senderNameTextSize)
       .textAlign('center', 'center')
       .text(`@ ${sender}`, position.x, textBoxBottomY + 8);
