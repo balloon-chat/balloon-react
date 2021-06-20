@@ -1,5 +1,5 @@
 import { CaseReducer } from '@reduxjs/toolkit';
-import { ObserveFulfilled, ObserveStart } from 'src/data/redux/message/action';
+import { ObserveFulfilled, ObserveStart, ResetMessages } from 'src/data/redux/message/action';
 import { MessageState } from 'src/data/redux/message/state';
 
 export const observeStartReducer: CaseReducer<MessageState, ObserveStart> = (
@@ -14,4 +14,12 @@ export const observeFulfilledReducer: CaseReducer<
 > = (state, { payload }) => ({
   ...state,
   messages: payload.messages,
+} as const);
+
+export const resetMessagesReducer: CaseReducer<
+  MessageState,
+  ResetMessages
+> = (state) => ({
+  ...state,
+  messages: null,
 } as const);

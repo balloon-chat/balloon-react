@@ -13,6 +13,7 @@ export const sendMessage = createAsyncThunk<
   await service.sendMessage(message, userId, topicId);
 });
 
+export type ResetMessages = PayloadAction<{}>;
 export type ObserveStart = PayloadAction<{ topicId: string }>;
 export type ObserveFulfilled = PayloadAction<{
   topicId: string;
