@@ -10,10 +10,13 @@ type Props = {
   onClose: () => void,
 }
 
-export const CommentList = ({ isVisible, onClose }: Props) => {
+export const CommentList = ({
+  isVisible,
+  onClose,
+}: Props) => {
   const { messages } = useMessageState();
   return (
-    <Wrapper isVisible={isVisible}>
+    <Wrapper isVisible={isVisible} onClick={onClose}>
       <Container isVisible={isVisible}>
         <CloseButton onClick={() => onClose()}>
           <CloseIcon />
@@ -29,36 +32,48 @@ export const CommentList = ({ isVisible, onClose }: Props) => {
   );
 };
 
-const Wrapper = styled.div<{isVisible: boolean}>`
+const Wrapper = styled.div<{ isVisible: boolean }>`
   align-items: center;
   display: flex;
-  position: absolute;
+  position: fixed;
+  transition: all 0.4s ease-in-out;
+  width: 100%;
+  height: 100%;
   top: 0;
   bottom: 0;
-  left: 8px;
+  z-index: 200;
+  visibility: ${(props) => (props.isVisible ? 'visible' : 'hidden')};
 
   @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
-    left: 16px;
+    background-color: ${(props) => (props.isVisible ? 'rgba(0,0,0,.6)' : 'transparent')};
+    padding-left: 64px;
+    position: absolute;
   }
 `;
 
-const Container = styled.div<{isVisible: boolean}>`
+const Container = styled.div<{ isVisible: boolean }>`
   display: flex;
-  flex-direction: column;
-  transform: translateX(${(props) => (props.isVisible ? 0 : -50)}vh);
+  flex-direction: row;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
   transition: all 0.4s ease-in-out;
+  transform: translateX(${(props) => (props.isVisible ? 0 : -50)}vh);
   visibility: ${(props) => (props.isVisible ? 'visible' : 'hidden')};
-  z-index: 200;
+
+  @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
+    flex-direction: column;
+    max-width: 500px;
+  }
 `;
 
 const Dialog = styled.div`
   background-color: white;
+  box-sizing: border-box;
   padding: 16px;
-  box-shadow: 20px 20px 60px rgba(0,0,0,.1);
-  border-radius: 10px;
-  height: 500px;
-  width: 350px;
-  max-width: calc(100vw - 64px);
+  box-shadow: 20px 20px 60px rgba(0, 0, 0, .1);
+  height: 100%;
+  width: 100%;
   position: relative;
   overflow-y: auto;
   overflow-x: hidden;
@@ -70,17 +85,25 @@ const Dialog = styled.div`
   & > div:last-child {
     margin-bottom: 0;
   }
+
+  @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
+    border-radius: 0 0 10px 10px;
+    max-height: 600px;
+    max-width: calc(100vw - 64px);
+  }
 `;
 
 const CloseButton = styled.div`
   align-items: center;
-  border-radius: 50px;
-  border: 2px solid rgba(0,0,0,.4);
-  background-color: white;
+  box-sizing: border-box;
+  background-color: #caeaeb;
   display: flex;
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  margin-bottom: 8px;
+  padding: 8px 2px;
   cursor: pointer;
+
+  @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
+    border-radius: 10px 10px 0 0;
+    width: 100%;
+  }
 `;
