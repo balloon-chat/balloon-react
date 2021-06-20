@@ -39,7 +39,10 @@ const Wrapper = styled.div<{ isVisible: boolean }>`
   transition: all 0.4s ease-in-out;
   width: 100%;
   height: 100%;
-  inset: 0;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
   z-index: 200;
   visibility: ${(props) => (props.isVisible ? 'visible' : 'hidden')};
 
