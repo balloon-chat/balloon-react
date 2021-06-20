@@ -38,8 +38,10 @@ export abstract class CharacterController {
   }
 
   remove(world: World, character: Character) {
-    World.remove(world, character.body);
-    this._characters.delete(character.id);
+    character.fadeout(400, () => {
+      World.remove(world, character.body);
+      this._characters.delete(character.id);
+    });
   }
 
   draw(p5: P5Types) {

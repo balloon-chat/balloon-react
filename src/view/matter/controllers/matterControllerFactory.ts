@@ -1,8 +1,6 @@
 import { Engine } from 'matter-js';
 import { CanvasParameter } from 'src/view/matter/models/canvasParameter';
 import { MatterController } from 'src/view/matter/controllers/matterController';
-import { Button } from 'src/view/matter/actors/button/button';
-import { ButtonFactory, buttonType } from 'src/view/matter/actors/button/buttonFactory';
 import { CharacterController } from 'src/view/matter/controllers/characterController';
 import { PopupCharacterController } from 'src/view/matter/controllers/popupCharacterController';
 
@@ -18,14 +16,8 @@ export class MatterControllerFactory {
     // キャラクターを管理するクラス
     const characterController: CharacterController = new PopupCharacterController();
 
-    // ボタンを生成
-    const addButton = ButtonFactory.create(Button.radius, Button.radius, buttonType.add, 'blue');
-    const removeAllButton = ButtonFactory.create(Button.radius * 3, Button.radius, buttonType.removeAll, 'green');
-    const shakeAllButton = ButtonFactory.create(Button.radius * 5, Button.radius, buttonType.shakeAll, 'red');
-
     this._instance = new MatterController(
       engine,
-      [addButton, removeAllButton, shakeAllButton],
       characterController,
       canvas,
     );

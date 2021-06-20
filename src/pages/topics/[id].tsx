@@ -12,7 +12,7 @@ import { useDispatch } from 'react-redux';
 import { setCurrentTopic, setInvitationCode } from 'src/data/redux/topic/slice';
 import { useUserSelector } from 'src/data/redux/user/selector';
 import { UserId } from 'src/domain/user/models/userId';
-import { observeStart } from 'src/data/redux/message/slice';
+import { observeStart, resetMessages } from 'src/data/redux/message/slice';
 import { useTopicState } from 'src/data/redux/topic/selector';
 import { setUser } from 'src/data/redux/user/slice';
 import { LoginStates } from 'src/data/redux/user/state';
@@ -64,6 +64,10 @@ const TopicPage = ({ topic, code }: Props) => {
 
   useEffect(() => {
     if (currentTopic) dispatcher(observeStart({ topicId: currentTopic.id }));
+
+    return () => {
+      dispatcher(resetMessages({}));
+    };
   }, [currentTopic?.id]);
 
   return (

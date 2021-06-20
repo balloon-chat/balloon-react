@@ -3,7 +3,6 @@ import { CharacterController } from 'src/view/matter/controllers/characterContro
 import { CanvasParameter } from 'src/view/matter/models/canvasParameter';
 import { MatterListAdapter } from 'src/view/matter/lib/matterListAdapter';
 import P5Types from 'p5';
-import { Button } from 'src/view/matter/actors/button/button';
 import { mediaQuery } from 'src/components/constants/mediaQuery';
 
 export class MatterController {
@@ -15,7 +14,6 @@ export class MatterController {
 
   constructor(
     public readonly engine: Engine,
-    public readonly buttons: Button[],
     public readonly character: CharacterController,
     public readonly canvas: CanvasParameter,
   ) {
@@ -23,10 +21,6 @@ export class MatterController {
 
     // 重力を無効化する
     this.disableGravity();
-
-    // ボタンをワールドに追加
-    this.buttons = buttons;
-    this.buttons.forEach((button) => World.add(this.world, button.object));
 
     // characterのアップデート前に行う動作
     Events.on(this.engine, 'beforeUpdate', (e) => {
@@ -48,13 +42,11 @@ export class MatterController {
 
   clear() {
     if (this.runner) Runner.stop(this.runner);
+    this.adapter.submit([]);
   }
 
   draw(p5: P5Types) {
     this.character.draw(p5);
-    this.buttons.forEach((button) => {
-      button.draw(p5);
-    });
   }
 
   private disableGravity() {

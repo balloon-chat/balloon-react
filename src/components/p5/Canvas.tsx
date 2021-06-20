@@ -28,8 +28,6 @@ export const Canvas: React.FC = () => {
       p.setup = () => setup(p, parent);
       // eslint-disable-next-line no-param-reassign
       p.draw = () => draw(p);
-      // eslint-disable-next-line no-param-reassign
-      p.mouseClicked = () => mousePressed(p);
     });
 
     const controller = controllerRef.current;
@@ -67,13 +65,6 @@ export const Canvas: React.FC = () => {
 
     // キャラクターの描画
     controller.draw(p5);
-  };
-
-  const mousePressed = (p5: P5Types) => {
-    const controller = controllerRef.current;
-    controller.buttons.forEach((button) => {
-      button.onPressed(controller, p5.mouseX, p5.mouseY);
-    });
   };
 
   return <Container ref={renderRef} />;

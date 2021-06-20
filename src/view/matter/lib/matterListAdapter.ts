@@ -3,19 +3,36 @@ import { MessageEntity } from 'src/view/types/message';
 import { CharacterFactory } from 'src/view/matter/actors/character/characterFactory';
 import { MatterController } from 'src/view/matter/controllers/matterController';
 import { MessageEntityDiffUtil } from 'src/view/matter/lib/messageEntityDiffUtil';
+import { mediaQuery } from 'src/components/constants/mediaQuery';
 
 export class MatterListAdapter extends ListAdapter<MessageEntity> {
   constructor(private readonly controller: MatterController) {
     super(new MessageEntityDiffUtil());
   }
 
+  private get maxCharacterSize() {
+    const { width } = this.controller.canvas;
+    if (width < mediaQuery.mobile.landscape) {
+      return 5;
+    } if (width < mediaQuery.tablet.portrait) {
+      return 20;
+    }
+    return 30;
+  }
+
   submit(list: MessageEntity[]) {
-    new Promise(() => {
-      // 日付を降順にソートし、最初の30個の要素だけ、取得する。
-      // TODO: 画面サイズごとに要素数を変更する
-      const sorted = list.slice().sort((a, b) => b.createdAt - a.createdAt);
-      super.submit(sorted.slice(0, 30));
-    }).then();
+    if (list.length > this.maxCharacterSize) {
+      const sortByDate = list.slice().sort((a, b) => b.createdAt - a.createdAt);
+
+      // 古いものから削除していく
+      const keepMessages = sortByDate.slice(
+        0,
+        this.maxCharacterSize,
+      );
+      super.submit(keepMessages);
+    } else {
+      super.submit(list);
+    }
   }
 
   protected onAddItem(item: MessageEntity): void {

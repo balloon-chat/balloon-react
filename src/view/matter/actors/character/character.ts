@@ -65,7 +65,10 @@ export class Character implements CharacterAction {
    * 速度に応じて減衰をかけ、キャラクターの速度が一定以上に達しないように制御する。
    */
   controlSpeed() {
-    const { speed, velocity } = this.body;
+    const {
+      speed,
+      velocity,
+    } = this.body;
     const { maxSpeed } = Character;
 
     // 最大速度以下に抑える
@@ -78,8 +81,11 @@ export class Character implements CharacterAction {
     // 減衰させる
     // 最大速度の20％になった時点で、減衰率を上げ画面外に出ていかないようにする。
     let decelerationRate;
-    if (speed < maxSpeed * 0.2) decelerationRate = 0.15;
-    else decelerationRate = 0.03;
+    if (speed < maxSpeed * 0.2) {
+      decelerationRate = 0.15;
+    } else {
+      decelerationRate = 0.03;
+    }
 
     const newVelocity = Vector.mult(this.body.velocity, 1.0 - decelerationRate);
     Body.setVelocity(this.body, newVelocity);
@@ -93,7 +99,6 @@ export class Character implements CharacterAction {
 
   // ============================
   // Character Actions
-
   // ============================
   moveSomeWhere() {
     const sign = {
@@ -108,5 +113,17 @@ export class Character implements CharacterAction {
       Character.maxSpeed,
     );
     Body.setVelocity(this.body, velocity);
+  }
+
+  fadeout(span: number, onFadeOuted: () => void) {
+    const interval = span / this.lifespan;
+    const id = setInterval(() => {
+      if (this.lifespan > 0) {
+        this.lifespan -= 1;
+      } else {
+        onFadeOuted();
+        clearInterval(id);
+      }
+    }, interval);
   }
 }
