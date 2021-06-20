@@ -42,6 +42,7 @@ export class MatterController {
 
   clear() {
     if (this.runner) Runner.stop(this.runner);
+    this.adapter.submit([]);
   }
 
   draw(p5: P5Types) {
