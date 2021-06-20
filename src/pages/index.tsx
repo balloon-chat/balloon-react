@@ -48,7 +48,13 @@ const IndexPage: React.FC<Props> = ({
       <TopicContainer>
         <SectionTitle>
           <SectionImageContainer>
-            <Image src={imagePath.character.yellow} height={64} width={64} objectFit="contain" objectPosition="center left" />
+            <Image
+              src={imagePath.character.yellow}
+              height={64}
+              width={64}
+              objectFit="contain"
+              objectPosition="center left"
+            />
           </SectionImageContainer>
           <div>ワダイな話題</div>
         </SectionTitle>
@@ -59,7 +65,13 @@ const IndexPage: React.FC<Props> = ({
       <TopicContainer color="#E5F6FB">
         <SectionTitle>
           <SectionImageContainer>
-            <Image src={imagePath.character.pink} height={64} width={64} objectFit="contain" objectPosition="center left" />
+            <Image
+              src={imagePath.character.pink}
+              height={64}
+              width={64}
+              objectFit="contain"
+              objectPosition="center left"
+            />
           </SectionImageContainer>
           <div>最新の話題</div>
         </SectionTitle>
@@ -91,7 +103,7 @@ const SectionTitle = styled.div`
   text-align: center;
   justify-content: center;
   width: 100%;
-  
+
   & > div:last-child {
     margin-top: 16px;
   }
@@ -155,7 +167,7 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
       },
       newest,
     },
-    revalidate: 1,
+    revalidate: 60 * 10, // in sec,
   } as const;
 };
 
