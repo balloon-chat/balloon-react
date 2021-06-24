@@ -83,4 +83,10 @@ const App = ({ Component, pageProps }: AppProps) => (
 // initialize app before render
 initializeFirebase();
 
+if (process.env.NODE_ENV !== 'development') {
+  console.log = () => {};
+  console.error = () => {};
+  console.dir = () => {};
+}
+
 export default App;

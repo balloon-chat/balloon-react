@@ -67,6 +67,10 @@ export class FirebaseMessageDatabase implements IMessageDatabase {
     return snapshots.numChildren();
   }
 
+  deleteAllMessagesOf(topicId: string): Promise<void> {
+    return this.messagesRef(topicId).remove();
+  }
+
   private messagesRef = (topicId: string) => this.database.ref(`/messages/${topicId}`);
 
   // eslint-disable-next-line max-len

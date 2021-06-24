@@ -33,4 +33,8 @@ export class MessageRepository implements IMessageRepository {
   messageCount(topicId: TopicId): Promise<number> {
     return this.messageDatabase.messageCount(topicId.value);
   }
+
+  deleteAllMessagesOf(topicId: TopicId): Promise<void> {
+    return this.messageDatabase.deleteAllMessagesOf(topicId.value);
+  }
 }

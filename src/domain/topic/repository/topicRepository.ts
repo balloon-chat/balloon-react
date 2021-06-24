@@ -37,7 +37,9 @@ export interface ITopicRepository {
    */
   updateTopic(topicId: TopicId, params: UpdateTopicParams): Promise<void>
 
-  save(topic: TopicEntity): Promise<void>;
+  save(topic: TopicEntity): Promise<void>
+
+  delete(topicId: TopicId): Promise<void>
 }
 
 export type UpdateTopicParams = {

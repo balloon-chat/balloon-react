@@ -18,4 +18,9 @@ export interface IMessageRepository {
   observeAll(topicId: TopicId, unsubscribe?: Subject<void>): Observable<MessageEntity[]>;
 
   save(topicId: TopicId, message: MessageEntity): Promise<void>;
+
+  /**
+   * 指定したTopic内のメッセージをすべて削除
+   */
+  deleteAllMessagesOf(topicId: TopicId): Promise<void>
 }

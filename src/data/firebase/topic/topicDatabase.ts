@@ -87,6 +87,11 @@ export class FirebaseTopicDatabase implements ITopicDatabase {
     await ref.set(topic.toJSON());
   }
 
+  delete(topicId: string): Promise<void> {
+    const ref = this.document(topicId);
+    return ref.delete();
+  }
+
   private collection = () => this.database.collection('/topics');
 
   private document = (topicId: string) => this.collection()
