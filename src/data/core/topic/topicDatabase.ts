@@ -12,6 +12,8 @@ export interface ITopicDatabase {
   updateTopic(topicId: string, params: UpdateTopicParams): Promise<void>;
 
   save(topic: TopicDto): Promise<void>;
+
+  delete(topicId: string): Promise<void>;
 }
 
 export type UpdateTopicParams = {

@@ -7,4 +7,6 @@ export interface IInvitationRepository {
   findTopicIdByInvitationCode(code: InvitationCode): Promise<TopicId | null>
 
   findInvitationCodeByTopicId(topicId: TopicId): Promise<InvitationCode|null>
+
+  deleteInvitationOf(topicId: TopicId): Promise<void>
 }

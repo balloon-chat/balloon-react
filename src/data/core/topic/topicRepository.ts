@@ -46,4 +46,8 @@ export class TopicRepository implements ITopicRepository {
   async save(topic: TopicEntity): Promise<void> {
     await this.topicDatabase.save(TopicDto.from(topic));
   }
+
+  delete(topicId: TopicId): Promise<void> {
+    return this.topicDatabase.delete(topicId.value);
+  }
 }

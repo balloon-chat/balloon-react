@@ -5,6 +5,7 @@ import { FakeBaseRepository } from 'tests/data/FakeBaseRepository';
 import { UserId } from 'src/domain/user/models/userId';
 
 export class FakeTopicRepository implements ITopicRepository {
+  // key: topic id
   private readonly repository = new FakeBaseRepository<string, TopicEntity>();
 
   find(topicId: TopicId): Promise<TopicEntity | undefined> {
@@ -65,6 +66,10 @@ export class FakeTopicRepository implements ITopicRepository {
 
   async save(topic: TopicEntity): Promise<void> {
     await this.repository.save(topic.id.value, topic);
+  }
+
+  async delete(topicId: TopicId): Promise<void> {
+    this.repository.delete(topicId.value);
   }
 
   clean() {

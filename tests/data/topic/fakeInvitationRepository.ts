@@ -31,6 +31,10 @@ export class FakeInvitationRepository implements IInvitationRepository {
     return this.repository.find(topicId.value)?.invitationCode ?? null;
   }
 
+  async deleteInvitationOf(topicId: TopicId): Promise<void> {
+    this.repository.delete(topicId.value);
+  }
+
   clean() {
     this.repository.clean();
   }

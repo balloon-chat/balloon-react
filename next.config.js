@@ -20,6 +20,7 @@ module.exports = {
     OAUTH_GOOGLE_LOGIN_RESULT_URL: process.env.OAUTH_GOOGLE_LOGIN_RESULT_URL,
     CREATE_INVITATION_API_URL: process.env.CREATE_INVITATION_API_URL,
     INVITATION_TOPIC_API_URL: process.env.INVITATION_TOPIC_API_URL,
+    DELETE_INVITATION_API_URL: process.env.DELETE_INVITATION_API_URL,
   },
   images: {
     domains: ['firebasestorage.googleapis.com']
