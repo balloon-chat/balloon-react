@@ -23,7 +23,7 @@ export class MessageEntity {
 }
 
 export class MessageEntityFactory {
-  static create(body: MessageBody, senderId: UserId): MessageEntity {
-    return new MessageEntity(new MessageId(), body, Date.now(), senderId);
+  static create(message: string, senderId: UserId): MessageEntity {
+    return new MessageEntity(new MessageId(), new MessageBody(message), Date.now(), senderId);
   }
 }
