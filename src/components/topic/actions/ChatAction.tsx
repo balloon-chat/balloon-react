@@ -50,6 +50,5 @@ const Action = styled.div`
   @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
     visibility: visible;
     position: inherit;
-    user-select: inherit;
   }
 `;
