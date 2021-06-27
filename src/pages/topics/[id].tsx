@@ -18,6 +18,9 @@ import { setUser } from 'src/data/redux/user/slice';
 import { LoginStates } from 'src/data/redux/user/state';
 import { CharacterCanvas } from 'src/components/topic/chat/CharacterCanvas';
 import { ZIndex } from 'src/components/constants/z_index';
+import { resetChatState, setInvitation, updateIsEditable } from 'src/data/redux/chat/slice';
+import { createInvitation } from 'src/view/lib/invitation';
+import { useRouter } from 'next/router';
 
 type Props = {
   topic: TopicEntity | null,
@@ -25,6 +28,7 @@ type Props = {
 };
 
 const TopicPage = ({ topic, code }: Props) => {
+  const router = useRouter();
   const dispatcher = useDispatch();
   const { uid, loginState } = useUserSelector();
   const { currentTopic } = useTopicState();
@@ -33,12 +37,30 @@ const TopicPage = ({ topic, code }: Props) => {
     dispatcher(setInvitationCode({ code }));
     dispatcher(setCurrentTopic({ topic }));
 
+    if (topic) {
+      const invitation = createInvitation({
+        title: topic.title,
+        currentPath: router.asPath,
+        code,
+      });
+      dispatcher(setInvitation({ invitation }));
+    }
+
     return () => {
       // reset current state
       dispatcher(setInvitationCode({ code: null }));
       dispatcher(setCurrentTopic({ topic: null }));
+      dispatcher(resetChatState());
     };
   }, []);
+
+  useEffect(() => {
+    dispatcher(updateIsEditable({ isEditable: uid === topic?.createdBy }));
+
+    return () => {
+      dispatcher(updateIsEditable({ isEditable: false }));
+    };
+  }, [uid]);
 
   useEffect(() => {
     // ユーザーが未ログイン時は、一時的なIDを付与する

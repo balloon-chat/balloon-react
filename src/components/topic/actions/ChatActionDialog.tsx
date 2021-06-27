@@ -6,21 +6,19 @@ import { useTopicState } from 'src/data/redux/topic/selector';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { FullscreenContainer } from 'src/components/common/FullscreenContainer';
 import { ZIndex } from 'src/components/constants/z_index';
+import { useChatState } from 'src/data/redux/chat/selector';
 
 type Props = {
   isVisible: boolean,
   onClose: () => void,
-  invitation: string,
-  isEditable: boolean,
 }
 
 export const ChatActionDialog = ({
   isVisible,
   onClose,
-  invitation,
-  isEditable,
 }: Props) => {
   const { currentTopic } = useTopicState();
+  const { invitation, isEditable } = useChatState();
   return (
     <>
       <FullscreenContainer
@@ -31,7 +29,7 @@ export const ChatActionDialog = ({
       <DialogContainer isVisible={isVisible}>
         <Dialog>
           <CopyToClipboard
-            text={invitation}
+            text={invitation ?? ''}
             onCopy={onClose}
           >
             <li>招待をコピー</li>

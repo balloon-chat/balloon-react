@@ -9,12 +9,18 @@ import { ReactComponent as Send } from 'src/components/svgs/send.svg';
 import { ShowMessageLog } from 'src/components/topic/actions/ShowMessageLog';
 import { DeriveTopic } from 'src/components/topic/actions/DeriveTopic';
 import { DetailActions } from 'src/components/topic/actions/DetailActions';
+import { DeriveTopicDialog } from 'src/components/topic/derive/DeriveTopicDialog';
+import { useChatState } from 'src/data/redux/chat/selector';
+import { closeDerivedTopicDialog, closeMessageLog } from 'src/data/redux/chat/slice';
+import { MessageLog } from 'src/components/topic/log/MessageLog';
 
 export const ChatForm = () => {
   const dispatcher = useDispatch();
   const { currentTopic } = useTopicState();
   const { uid } = useUserSelector();
   const [text, setText] = useState('');
+
+  const { dialog } = useChatState();
 
   const handleInput = (value: string | null) => {
     if (value) setText(value);
@@ -41,30 +47,43 @@ export const ChatForm = () => {
   };
 
   return (
-    <Container>
-      <ActionContainer>
-        <DeriveTopic />
-        <ShowMessageLog />
-      </ActionContainer>
-      <MessageForm onSubmit={(e) => handleSubmit(e)}>
-        <TextFieldContainer>
-          <TextField
-            contentEditable
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            onInput={(e) => handleInput(e.currentTarget.textContent)}
-            placeholder="メッセージを送信"
-            role="textbox"
-            spellCheck={false}
-            type="text"
+    <>
+      {
+        dialog.deriveTopicDialog && (
+          <DeriveTopicDialog
+            onClose={() => dispatcher(closeDerivedTopicDialog())}
           />
-          <Send onClick={() => handleSend()} />
-        </TextFieldContainer>
-      </MessageForm>
-      <MainActionContainer>
-        <DetailActions />
-      </MainActionContainer>
-    </Container>
+        )
+      }
+      <MessageLog
+        isVisible={dialog.messageLog}
+        onClose={() => dispatcher(closeMessageLog())}
+      />
+      <Container>
+        <ActionContainer>
+          <DeriveTopic />
+          <ShowMessageLog />
+        </ActionContainer>
+        <MessageForm onSubmit={(e) => handleSubmit(e)}>
+          <TextFieldContainer>
+            <TextField
+              contentEditable
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              onInput={(e) => handleInput(e.currentTarget.textContent)}
+              placeholder="メッセージを送信"
+              role="textbox"
+              spellCheck={false}
+              type="text"
+            />
+            <Send onClick={() => handleSend()} />
+          </TextFieldContainer>
+        </MessageForm>
+        <MainActionContainer>
+          <DetailActions />
+        </MainActionContainer>
+      </Container>
+    </>
   );
 };
 

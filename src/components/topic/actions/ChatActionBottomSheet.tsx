@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import React from 'react';
+import React, { useCallback } from 'react';
 import AddIcon from 'src/components/svgs/add.svg';
 import ChatBubbleIcon from 'src/components/svgs/chat_bubble.svg';
 import EditIcon from 'src/components/svgs/edit_fill.svg';
@@ -12,38 +12,51 @@ import { useTopicState } from 'src/data/redux/topic/selector';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { FullscreenContainer } from 'src/components/common/FullscreenContainer';
 import { ZIndex } from 'src/components/constants/z_index';
+import { useDispatch } from 'react-redux';
+import { useChatState } from 'src/data/redux/chat/selector';
+import {
+  showDeriveTopicDialog as showDeriveTopicDialogAction,
+  showMessageLog as showMessageLogAction,
+} from 'src/data/redux/chat/slice';
 
 type Props = {
   isVisible: boolean,
   onClose: () => void,
-  onShowLog: () => void,
-  invitation: string,
-  isEditable: boolean,
 }
 
 export const ChatActionBottomSheet = ({
   isVisible,
-  isEditable,
-  invitation,
   onClose,
-  onShowLog,
 }: Props) => {
+  const dispatcher = useDispatch();
   const { currentTopic } = useTopicState();
+  const { invitation, isEditable } = useChatState();
+
+  const showDeriveTopicDialog = useCallback(() => {
+    onClose();
+    dispatcher(showDeriveTopicDialogAction());
+  }, []);
+
+  const showMessageLog = useCallback(() => {
+    onClose();
+    dispatcher(showMessageLogAction());
+  }, []);
+
   return (
     <>
       <FullscreenContainer isVisible={isVisible} onClick={onClose} />
       <Wrapper isVisible={isVisible}>
         <BottomSheet isVisible={isVisible}>
           <ActionContainer>
-            <BottomSheetAction>
+            <BottomSheetAction onClick={showDeriveTopicDialog}>
               話題を広げる
               <AddIcon />
             </BottomSheetAction>
-            <BottomSheetAction onClick={onShowLog}>
+            <BottomSheetAction onClick={showMessageLog}>
               ログを表示
               <ChatBubbleIcon />
             </BottomSheetAction>
-            <CopyToClipboard text={invitation} onCopy={onClose}>
+            <CopyToClipboard text={invitation ?? ''} onCopy={onClose}>
               <BottomSheetAction>
                 招待をコピー
                 <MailIcon />
