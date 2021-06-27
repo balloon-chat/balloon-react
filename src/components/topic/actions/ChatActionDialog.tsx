@@ -5,6 +5,7 @@ import { rootPath, topicPath } from 'src/view/route/pagePath';
 import { useTopicState } from 'src/data/redux/topic/selector';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { FullscreenContainer } from 'src/components/common/FullscreenContainer';
+import { ZIndex } from 'src/components/constants/z_index';
 
 type Props = {
   isVisible: boolean,
@@ -63,7 +64,7 @@ const Dialog = styled.ul`
   border-radius: 5px;
   border: 1px rgba(0, 0, 0, .1) solid;
   box-shadow: 0 10px 10px -2px rgb(0 64 128 / 15%);
-  z-index: 100;
+  z-index: ${ZIndex.dialog};
   margin: 0;
   transform: translateY(-100%);
   padding: 0;

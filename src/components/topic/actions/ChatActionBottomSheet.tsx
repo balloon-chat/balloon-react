@@ -11,6 +11,7 @@ import Link from 'next/link';
 import { useTopicState } from 'src/data/redux/topic/selector';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { FullscreenContainer } from 'src/components/common/FullscreenContainer';
+import { ZIndex } from 'src/components/constants/z_index';
 
 type Props = {
   isVisible: boolean,
@@ -79,6 +80,7 @@ const Wrapper = styled.div<{ isVisible: boolean }>`
   right: 0;
   bottom: 0;
   left: 0;
+  z-index: ${ZIndex.dialog};
 `;
 
 const BottomSheet = styled.div<{ isVisible: boolean }>`
@@ -91,7 +93,7 @@ const BottomSheet = styled.div<{ isVisible: boolean }>`
   transition: all 0.4s ease-in-out;
   transform: translateY(${(props) => (props.isVisible ? 0 : 80)}vh);
 
-  position: absolute;
+  position: fixed;
   bottom: 0;
   left: 0;
   right: 0;

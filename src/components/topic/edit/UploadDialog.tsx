@@ -1,6 +1,7 @@
 import React, { CSSProperties } from 'react';
 import styled from 'styled-components';
 import UploadFile from 'src/components/svgs/upload_file.svg';
+import { ZIndex } from 'src/components/constants/z_index';
 
 export const UploadDialog: React.FC<{ isDragging: boolean }> = ({
   isDragging,
@@ -28,7 +29,7 @@ const UploadDialogContainer = styled.div`
   position: absolute;
   transform: translate(-50%, 0);
   transition: all 0.2s ease-out 0s;
-  z-index: 2000;
+  z-index: ${ZIndex.dialog};
 
   & > svg {
     fill: white;

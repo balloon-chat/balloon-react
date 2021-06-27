@@ -17,6 +17,7 @@ import { useTopicState } from 'src/data/redux/topic/selector';
 import { setUser } from 'src/data/redux/user/slice';
 import { LoginStates } from 'src/data/redux/user/state';
 import { CharacterCanvas } from 'src/components/topic/chat/CharacterCanvas';
+import { ZIndex } from 'src/components/constants/z_index';
 
 type Props = {
   topic: TopicEntity | null,
@@ -101,7 +102,7 @@ const MessageFieldContainer = styled.div`
   bottom: 0;
   right: 0;
   left: 0;
-  z-index: 100;
+  z-index: ${ZIndex.messageField};
 `;
 
 export const getServerSideProps: GetServerSideProps<Props> = async (

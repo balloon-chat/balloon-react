@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import React from 'react';
 import { mediaQuery } from 'src/components/constants/mediaQuery';
+import { ZIndex } from 'src/components/constants/z_index';
 
 type Props = {
   onClose: () => void,
@@ -29,7 +30,7 @@ const FullscreenContainer = styled.div<{backgroundColor: string}>`
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: 200;
+  z-index: ${ZIndex.dialog};
 `;
 
 const Container = styled.div`

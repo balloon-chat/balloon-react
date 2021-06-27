@@ -4,6 +4,7 @@ import { MessageLogItem } from 'src/components/topic/log/MessageLogItem';
 import styled from 'styled-components';
 import CloseIcon from 'src/components/svgs/close.svg';
 import { mediaQuery } from 'src/components/constants/mediaQuery';
+import { ZIndex } from 'src/components/constants/z_index';
 
 type Props = {
   isVisible: boolean,
@@ -40,7 +41,7 @@ const Wrapper = styled.div<{isVisible: boolean}>`
   right: 0;
   left: 0;
   bottom: 0;
-  z-index: 200;
+  z-index: ${ZIndex.dialog};
   visibility: ${(props) => (props.isVisible ? 'visible' : 'hidden')};
 
   @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
