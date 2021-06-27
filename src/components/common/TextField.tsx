@@ -5,6 +5,8 @@ type Props = {
   initialValue?: string,
   placeholder?: string,
   title?: string,
+  titleTextSize?: number,
+  boldTitle?: boolean,
   maxLength?: number,
   onChange: (value :string) => void,
   error?: string | null
@@ -13,6 +15,8 @@ type Props = {
 export const TextField = ({
   initialValue,
   title,
+  titleTextSize,
+  boldTitle = true,
   maxLength,
   placeholder,
   error,
@@ -27,7 +31,12 @@ export const TextField = ({
 
   return (
     <InputRow>
-      <Title>{title}</Title>
+      <Title
+        bold={boldTitle}
+        textSize={titleTextSize}
+      >
+        {title}
+      </Title>
       <Input
         defaultValue={initialValue}
         maxLength={maxLength}
@@ -55,9 +64,9 @@ const InputRowFooter = styled.div`
   margin-top: 4px;
 `;
 
-const Title = styled.div`
-  font-size: 20px;
-  font-weight: bold;
+const Title = styled.div<{textSize?: number, bold: boolean}>`
+  font-size: ${(props) => props.textSize ?? 20}px;
+  font-weight: ${(props) => (props.bold ? 'bold' : 'normal')};
   margin-bottom: 4px;
 `;
 
@@ -66,6 +75,7 @@ const Input = styled.input`
   outline: none;
   border: 1px solid #ccc;
   border-radius: 5px;
+  font-size: 20px;
 
   :focus {
     border: 1px solid #5b87fa;

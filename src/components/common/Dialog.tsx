@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import React from 'react';
 import { mediaQuery } from 'src/components/constants/mediaQuery';
 import { ZIndex } from 'src/components/constants/z_index';
+import { FullscreenContainer } from 'src/components/common/FullscreenContainer';
 
 type Props = {
   onClose: () => void,
@@ -11,25 +12,31 @@ type Props = {
 export const Dialog: React.FC<Props> = ({
   children,
   onClose,
-  backgroundColor = 'rgba(0,0,0,.5)',
 }) => (
-  <FullscreenContainer backgroundColor={backgroundColor} onClick={onClose}>
+  <Wrapper>
+    <FullscreenContainer
+      isVisible
+      transparent={false}
+      onClick={onClose}
+    />
     <Container>
       {children}
     </Container>
-  </FullscreenContainer>
+  </Wrapper>
 );
 
-const FullscreenContainer = styled.div<{backgroundColor: string}>`
-  background-color: ${(props) => props.backgroundColor};
+const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  position: absolute;
+  user-select: none;
+
+  position: fixed;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
+  
   z-index: ${ZIndex.dialog};
 `;
 
@@ -40,7 +47,8 @@ const Container = styled.div`
   padding: 32px 24px;
   min-width: calc(100% - 16px);
   max-width: calc(100% - 16px);
-  
+  z-index: ${ZIndex.dialog};
+
   @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
     min-width: 400px;
   }
