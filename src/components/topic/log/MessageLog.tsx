@@ -1,6 +1,6 @@
 import React from 'react';
 import { useMessageState } from 'src/data/redux/message/selector';
-import { MessageLogItem } from 'src/components/topic/chat/MessageLogItem';
+import { MessageLogItem } from 'src/components/topic/log/MessageLogItem';
 import styled from 'styled-components';
 import CloseIcon from 'src/components/svgs/close.svg';
 import { mediaQuery } from 'src/components/constants/mediaQuery';

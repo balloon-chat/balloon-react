@@ -6,10 +6,11 @@ import { useTopicState } from 'src/data/redux/topic/selector';
 import { useUserSelector } from 'src/data/redux/user/selector';
 import { mediaQuery } from 'src/components/constants/mediaQuery';
 import { ReactComponent as Send } from 'src/components/svgs/send.svg';
-import { ChatMenu } from 'src/components/topic/chat/ChatMenu';
-import { MessageLogMenu } from 'src/components/topic/chat/MessageLogMenu';
+import { ShowMessageLog } from 'src/components/topic/actions/ShowMessageLog';
+import { DeriveTopic } from 'src/components/topic/actions/DeriveTopic';
+import { DetailActions } from 'src/components/topic/actions/DetailActions';
 
-export const MessageField = () => {
+export const ChatForm = () => {
   const dispatcher = useDispatch();
   const { currentTopic } = useTopicState();
   const { uid } = useUserSelector();
@@ -41,7 +42,10 @@ export const MessageField = () => {
 
   return (
     <Container>
-      <MessageLogMenu />
+      <ActionContainer>
+        <DeriveTopic />
+        <ShowMessageLog />
+      </ActionContainer>
       <MessageForm onSubmit={(e) => handleSubmit(e)}>
         <TextFieldContainer>
           <TextField
@@ -57,7 +61,9 @@ export const MessageField = () => {
           <Send onClick={() => handleSend()} />
         </TextFieldContainer>
       </MessageForm>
-      <ChatMenu />
+      <MainActionContainer>
+        <DetailActions />
+      </MainActionContainer>
     </Container>
   );
 };
@@ -66,13 +72,38 @@ const Container = styled.div`
   align-items: center;
   box-sizing: border-box;
   background-color: white;
+  border-top: 1px solid rgba(0, 0, 0, .1);
   display: flex;
   justify-content: center;
-  padding: 0 8px 16px 8px;
+  padding: 8px;
   width: 100%;
 
   @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
-    padding-bottom: 24px;
+    padding-bottom: 16px;
+  }
+`;
+
+const MainActionContainer = styled.div`
+  margin-left: 8px;
+`;
+
+const ActionContainer = styled.div`
+  display: flex;
+  margin: 0 8px;
+  
+  & > div {
+    margin: 0 8px;
+  }
+
+  // モバイル版の場合隠す
+  position: fixed;
+  visibility: hidden;
+  user-select: none;
+
+  @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
+    position: inherit;
+    visibility: visible;
+    user-select: inherit;
   }
 `;
 

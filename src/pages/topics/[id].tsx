@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { MessageField } from 'src/components/topic/chat/MessageField';
+import { ChatForm } from 'src/components/topic/chat/ChatForm';
 import { NavBar } from 'src/components/navbar/NavBar';
 import { ErrorPage } from 'src/components/common/ErrorPage';
 import Head from 'next/head';
@@ -80,7 +80,7 @@ const TopicPage = ({ topic, code }: Props) => {
           </Head>
           <CharacterCanvas />
           <MessageFieldContainer>
-            <MessageField />
+            <ChatForm />
           </MessageFieldContainer>
         </>
       )}
