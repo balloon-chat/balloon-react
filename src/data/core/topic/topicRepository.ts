@@ -4,6 +4,9 @@ import { TopicEntity } from 'src/domain/topic/repository/topicEntity';
 import { ITopicDatabase } from 'src/data/core/topic/topicDatabase';
 import { TopicDto } from 'src/data/core/topic/topicDto';
 import { UserId } from 'src/domain/user/models/userId';
+import { DerivedTopicEntity } from 'src/domain/topic/repository/derivedTopicEntity';
+import { DerivedTopicId } from 'src/domain/topic/models/derivedTopic';
+import { DerivedTopicDto } from 'src/data/core/topic/derivedTopicDto';
 
 export class TopicRepository implements ITopicRepository {
   constructor(private readonly topicDatabase: ITopicDatabase) {}
@@ -49,5 +52,26 @@ export class TopicRepository implements ITopicRepository {
 
   delete(topicId: TopicId): Promise<void> {
     return this.topicDatabase.delete(topicId.value);
+  }
+
+  findDerivedTopic(
+    topicId: TopicId,
+    derivedTopicId: DerivedTopicId,
+  ): Promise<DerivedTopicEntity | null> {
+    return this.topicDatabase.findDerivedTopic(topicId.value, derivedTopicId.value) ?? null;
+  }
+
+  addDerivedTopic(topicId: TopicId, derivedTopic: DerivedTopicEntity): Promise<void> {
+    return this.topicDatabase.addDerivedTopic(
+      topicId.value,
+      DerivedTopicDto.fromEntity(derivedTopic),
+    );
+  }
+
+  deleteDerivedTopic(topicId: TopicId, derivedTopicId: DerivedTopicId): Promise<void> {
+    return this.topicDatabase.deleteDerivedTopic(
+      topicId.value,
+      derivedTopicId.value,
+    );
   }
 }

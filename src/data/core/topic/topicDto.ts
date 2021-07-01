@@ -3,6 +3,7 @@ import { TopicTitle } from 'src/domain/topic/models/topicTitle';
 import { UserId } from 'src/domain/user/models/userId';
 import { TopicDescription } from 'src/domain/topic/models/topicDescription';
 import { TopicEntity } from 'src/domain/topic/repository/topicEntity';
+import { DerivedTopicDto, DerivedTopicJSON } from 'src/data/core/topic/derivedTopicDto';
 
 export class TopicDto {
   constructor(
@@ -13,6 +14,7 @@ export class TopicDto {
     readonly createdBy: string,
     readonly thumbnailURL: string,
     readonly isPrivate: boolean,
+    readonly derivedTopics: DerivedTopicDto[],
   ) {}
 
   static from(topic: TopicEntity): TopicDto {
@@ -24,6 +26,7 @@ export class TopicDto {
       topic.createdBy.value,
       topic.thumbnailURL,
       topic.isPrivate,
+      topic.derivedTopics.map((e) => DerivedTopicDto.fromEntity(e)),
     );
   }
 
@@ -38,6 +41,7 @@ export class TopicDto {
         src.createdBy,
         src.thumbnailURL,
         src.isPrivate,
+        [], // TODO: ドキュメントからIDを取得する
       );
     }
     return undefined;
@@ -56,6 +60,7 @@ export class TopicDto {
       this.thumbnailURL,
       this.isPrivate,
       TopicDescription.create(this.description) ?? null,
+      this.derivedTopics.map((e) => e.toEntity()),
     );
   }
 
@@ -68,6 +73,7 @@ export class TopicDto {
       createdBy: this.createdBy,
       thumbnailURL: this.thumbnailURL,
       isPrivate: this.isPrivate,
+      derivedTopics: this.derivedTopics.map((e) => e.toJSON()),
     };
   }
 }
@@ -79,7 +85,8 @@ type TopicJSON = {
   createdAt: number
   createdBy: string
   thumbnailURL: string
-  isPrivate: boolean
+  isPrivate: boolean,
+  derivedTopics: DerivedTopicJSON[]
 };
 
 const isTopicJSON = (obj: any): obj is TopicJSON => typeof obj.id === 'string'

@@ -80,14 +80,14 @@ export class TopicService {
       this.getTopicUsecase,
     );
     this.getTopicsUsecase = new GetTopics(
-      messageRepository,
       topicRepository,
+      messageRepository,
       userRepository,
     );
     this.getTopicsCreatedByUsecase = new GetTopicsCreatedBy(
       topicRepository,
+      messageRepository,
       userRepository,
-      this.getTopicUsecase,
     );
     this.getRecommendTopicsUsecase = new GetRecommendTopics(
       this.getTopicsUsecase,

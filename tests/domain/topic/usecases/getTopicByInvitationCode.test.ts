@@ -17,7 +17,11 @@ const topicRepository = new FakeTopicRepository();
 const messageRepository = new FakeMessageRepository();
 const userRepository = new FakeUserRepository();
 const invitationRepository = new FakeInvitationRepository();
-const getTopicUsecase = new GetTopic(messageRepository, topicRepository, userRepository);
+const getTopicUsecase = new GetTopic(
+  messageRepository,
+  topicRepository,
+  userRepository,
+);
 const usecase: IGetTopicByInvitationCode = new GetTopicByInvitationCode(
   invitationRepository,
   getTopicUsecase,

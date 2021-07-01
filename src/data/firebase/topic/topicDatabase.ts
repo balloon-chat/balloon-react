@@ -2,6 +2,8 @@ import { ITopicDatabase, UpdateTopicParams } from 'src/data/core/topic/topicData
 import { TopicDto } from 'src/data/core/topic/topicDto';
 import firebase from 'firebase/app';
 import 'firebase/firestore';
+import { DerivedTopicDto } from 'src/data/core/topic/derivedTopicDto';
+import { DerivedTopicEntity } from 'src/domain/topic/repository/derivedTopicEntity';
 
 export class FirebaseTopicDatabase implements ITopicDatabase {
   private constructor(private readonly database = firebase.firestore()) {
@@ -83,17 +85,53 @@ export class FirebaseTopicDatabase implements ITopicDatabase {
   }
 
   async save(topic: TopicDto): Promise<void> {
-    const ref = this.document(topic.id);
-    await ref.set(topic.toJSON());
+    const document = this.document(topic.id);
+    await document.set(topic.toJSON());
   }
 
   delete(topicId: string): Promise<void> {
-    const ref = this.document(topicId);
-    return ref.delete();
+    const document = this.document(topicId);
+    return document.delete();
+  }
+
+  async findDerivedTopic(
+    topicId: string,
+    derivedTopicId: string,
+  ): Promise<DerivedTopicEntity | null> {
+    const document = this.derivedTopicDocument(topicId, derivedTopicId);
+    const snapshot = await document.get();
+    const json = snapshot.data();
+    if (!json) return null;
+
+    const dto = DerivedTopicDto.fromJSON(json);
+    if (!dto) return null;
+
+    return dto?.toEntity() ?? undefined;
+  }
+
+  async addDerivedTopic(topicId: string, derivedTopic: DerivedTopicDto): Promise<void> {
+    const document = this.derivedTopicDocument(topicId, derivedTopic.id);
+    await document.set(derivedTopic.toJSON());
+  }
+
+  async deleteDerivedTopic(topicId: string, derivedTopicId: string): Promise<void> {
+    const document = this.derivedTopicDocument(topicId, derivedTopicId);
+    await document.delete();
   }
 
   private collection = () => this.database.collection('/topics');
 
   private document = (topicId: string) => this.collection()
     .doc(topicId);
+
+  private derivedTopicsCollection = (
+    topicId: string,
+  ) => this.document(topicId)
+    .collection('/derive');
+
+  private derivedTopicDocument = (
+    topicId: string,
+    derivedTopicId: string,
+  ) => this.derivedTopicsCollection(topicId)
+    .doc(derivedTopicId);
 }

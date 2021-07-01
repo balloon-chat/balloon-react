@@ -1,33 +1,41 @@
-import { FakeDerivedTopicRepository } from 'tests/data/topic/fakeDerivedTopicRepository';
 import { IDeriveTopic } from 'src/domain/topic/types/deriveTopic';
 import { DeriveTopic } from 'src/domain/topic/usecases/deriveTopic';
-import { TopicId } from 'src/domain/topic/models/topicId';
 import { DerivedTopicTitle } from 'src/domain/topic/models/derivedTopic';
+import { FakeTopicRepository } from 'tests/data/topic/fakeTopicRepository';
+import { TopicFactory } from 'src/domain/topic/models/topic';
+import { UserId } from 'src/domain/user/models/userId';
+import { TopicEntity } from 'src/domain/topic/repository/topicEntity';
 
-const deriveTopicRepository = new FakeDerivedTopicRepository();
-const usecase: IDeriveTopic = new DeriveTopic(deriveTopicRepository);
+const topicRepository = new FakeTopicRepository();
+const topic = TopicFactory.create({
+  createdBy: new UserId(),
+  thumbnailUrl: '',
+  title: 'test',
+  isPrivate: false,
+});
+const usecase: IDeriveTopic = new DeriveTopic(topicRepository);
 
 afterEach(() => {
-  deriveTopicRepository.clean();
+  topicRepository.clean();
 });
 
 test('話題を派生', async () => {
   /*
   初期データ:
-    DerivedTopicRepository: []
+    TopicRepository: [Topic(derived=[])]
    */
-  const topicId = new TopicId();
-  const title = new DerivedTopicTitle('test');
-  const derivedTopic = await usecase.execute(topicId.value, title.value);
+  await topicRepository.save(TopicEntity.from(topic));
 
   /*
   Expected:
-    DerivedTopicRepository: [DerivedTopic]
+    TopicRepository: [Topic(derived=[DerivedTopic])]
     return: DerivedTopic
    */
+  const title = new DerivedTopicTitle('test');
+  const derivedTopic = await usecase.execute(topic.id.value, title.value);
   expect(derivedTopic.title).toStrictEqual(title);
 
-  const saved = await deriveTopicRepository.find(topicId, derivedTopic.id);
+  const saved = await topicRepository.findDerivedTopic(topic.id, derivedTopic.id);
   expect(saved).not.toBeNull();
   expect(saved?.title).toStrictEqual(title);
 });

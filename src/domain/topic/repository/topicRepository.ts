@@ -3,6 +3,8 @@ import { TopicId } from 'src/domain/topic/models/topicId';
 import { UserId } from 'src/domain/user/models/userId';
 import { TopicTitle } from 'src/domain/topic/models/topicTitle';
 import { TopicDescription } from 'src/domain/topic/models/topicDescription';
+import { DerivedTopicEntity } from 'src/domain/topic/repository/derivedTopicEntity';
+import { DerivedTopic, DerivedTopicId } from 'src/domain/topic/models/derivedTopic';
 
 export interface ITopicRepository {
   find(topicId: TopicId): Promise<TopicEntity | undefined>;
@@ -40,6 +42,15 @@ export interface ITopicRepository {
   save(topic: TopicEntity): Promise<void>
 
   delete(topicId: TopicId): Promise<void>
+
+  findDerivedTopic(
+    topicId: TopicId,
+    derivedTopicId: DerivedTopicId
+  ): Promise<DerivedTopic|null>
+
+  addDerivedTopic(topicId: TopicId, derivedTopic: DerivedTopicEntity): Promise<void>
+
+  deleteDerivedTopic(topicId: TopicId, derivedTopicId: DerivedTopicId): Promise<void>
 }
 
 export type UpdateTopicParams = {

@@ -3,6 +3,7 @@ import { TopicTitle } from 'src/domain/topic/models/topicTitle';
 import { Topic, TopicFactory } from 'src/domain/topic/models/topic';
 import { UserId } from 'src/domain/user/models/userId';
 import { TopicDescription } from 'src/domain/topic/models/topicDescription';
+import { DerivedTopicEntity } from 'src/domain/topic/repository/derivedTopicEntity';
 
 export class TopicEntity {
   constructor(
@@ -13,19 +14,8 @@ export class TopicEntity {
     public readonly thumbnailURL: string,
     public readonly isPrivate: boolean,
     public readonly description: TopicDescription | null,
+    public readonly derivedTopics: DerivedTopicEntity[],
   ) {}
-
-  toTopic(): Topic {
-    return TopicFactory.create({
-      topicId: this.id,
-      title: this.title,
-      createdAt: this.createdAt,
-      createdBy: this.createdBy,
-      thumbnailUrl: this.thumbnailURL,
-      isPrivate: this.isPrivate,
-      description: this.description?.value,
-    });
-  }
 
   static from(topic: Topic): TopicEntity {
     return new TopicEntity(
@@ -36,6 +26,20 @@ export class TopicEntity {
       topic.thumbnailUrl,
       topic.isPrivate,
       topic.description ?? null,
+      topic.derivedTopics.map((e) => DerivedTopicEntity.from(e)),
     );
+  }
+
+  toTopic(): Topic {
+    return TopicFactory.create({
+      topicId: this.id,
+      title: this.title,
+      createdAt: this.createdAt,
+      createdBy: this.createdBy,
+      thumbnailUrl: this.thumbnailURL,
+      isPrivate: this.isPrivate,
+      description: this.description?.value,
+      derivedTopics: this.derivedTopics.map((e) => e.toDerivedTopic()),
+    });
   }
 }

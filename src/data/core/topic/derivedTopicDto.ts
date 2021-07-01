@@ -26,7 +26,7 @@ export class DerivedTopicDto {
     );
   }
 
-  toJSON() {
+  toJSON(): DerivedTopicJSON {
     return {
       id: this.id,
       title: this.title,
@@ -39,4 +39,9 @@ export class DerivedTopicDto {
       new DerivedTopicTitle(this.title),
     );
   }
+}
+
+export type DerivedTopicJSON = {
+  id: string,
+  title: string,
 }

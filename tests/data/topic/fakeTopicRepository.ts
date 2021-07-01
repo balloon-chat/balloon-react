@@ -3,6 +3,8 @@ import { TopicEntity } from 'src/domain/topic/repository/topicEntity';
 import { TopicId } from 'src/domain/topic/models/topicId';
 import { FakeBaseRepository } from 'tests/data/FakeBaseRepository';
 import { UserId } from 'src/domain/user/models/userId';
+import { DerivedTopicEntity } from 'src/domain/topic/repository/derivedTopicEntity';
+import { DerivedTopic, DerivedTopicId } from 'src/domain/topic/models/derivedTopic';
 
 export class FakeTopicRepository implements ITopicRepository {
   // key: topic id
@@ -10,6 +12,16 @@ export class FakeTopicRepository implements ITopicRepository {
 
   find(topicId: TopicId): Promise<TopicEntity | undefined> {
     return Promise.resolve(this.repository.find(topicId.value));
+  }
+
+  async findDerivedTopic(
+    topicId: TopicId,
+    derivedTopicId: DerivedTopicId,
+  ): Promise<DerivedTopic|null> {
+    const topic = this.repository.find(topicId.value);
+    if (!topic) return null;
+
+    return topic.derivedTopics.find((e) => e.id.value === derivedTopicId.value) ?? null;
   }
 
   /**
@@ -52,15 +64,16 @@ export class FakeTopicRepository implements ITopicRepository {
     description,
     thumbnailUrl,
     isPrivate,
-  }:UpdateTopicParams): Promise<void> {
+  }: UpdateTopicParams): Promise<void> {
     const old = this.repository.find(topicId.value);
     if (!old) return;
-    const updated = old.toTopic().copyWith({
-      title: title ?? undefined,
-      description: description?.value,
-      thumbnailUrl: thumbnailUrl ?? undefined,
-      isPrivate: isPrivate ?? undefined,
-    });
+    const updated = old.toTopic()
+      .copyWith({
+        title: title ?? undefined,
+        description: description?.value,
+        thumbnailUrl: thumbnailUrl ?? undefined,
+        isPrivate: isPrivate ?? undefined,
+      });
     this.repository.save(topicId.value, TopicEntity.from(updated));
   }
 
@@ -70,6 +83,28 @@ export class FakeTopicRepository implements ITopicRepository {
 
   async delete(topicId: TopicId): Promise<void> {
     this.repository.delete(topicId.value);
+  }
+
+  async addDerivedTopic(topicId: TopicId, derivedTopic: DerivedTopicEntity): Promise<void> {
+    const entity = this.repository.find(topicId.value);
+    if (!entity) return;
+
+    this.repository.delete(topicId.value);
+
+    const topic = entity.toTopic();
+    topic.addDerivedTopic(derivedTopic);
+    this.repository.save(topicId.value, TopicEntity.from(topic));
+  }
+
+  async deleteDerivedTopic(topicId: TopicId, derivedTopicId: DerivedTopicId): Promise<void> {
+    const entity = this.repository.find(topicId.value);
+    if (!entity) return;
+
+    this.repository.delete(topicId.value);
+
+    const topic = entity.toTopic();
+    topic.deleteDerivedTopic(derivedTopicId);
+    this.repository.save(topicId.value, TopicEntity.from(topic));
   }
 
   clean() {

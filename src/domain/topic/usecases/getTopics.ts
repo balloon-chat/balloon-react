@@ -1,17 +1,26 @@
 import { ITopicRepository } from 'src/domain/topic/repository/topicRepository';
-import { IMessageRepository } from 'src/domain/message/repository/messageRepository';
-import { IUserRepository } from 'src/domain/user/repository/userRepository';
-import { TopicData, TopicDataFactory } from 'src/domain/topic/models/topicData';
+import { TopicData } from 'src/domain/topic/models/topicData';
 import { TopicId } from 'src/domain/topic/models/topicId';
-import { GetTopic } from 'src/domain/topic/usecases/getTopic';
 import { IGetTopics } from 'src/domain/topic/types/getTopics';
+import { IGetTopic } from 'src/domain/topic/types/getTopic';
+import { IMessageRepository } from 'src/domain/message/repository/messageRepository';
+import { GetTopic } from 'src/domain/topic/usecases/getTopic';
+import { IUserRepository } from 'src/domain/user/repository/userRepository';
 
 export class GetTopics implements IGetTopics {
+  private readonly getTopicUsecase: IGetTopic;
+
   constructor(
-    private readonly messageRepository: IMessageRepository,
     private readonly topicRepository: ITopicRepository,
-    private readonly userRepository: IUserRepository,
-  ) {}
+    messageRepository: IMessageRepository,
+    userRepository: IUserRepository,
+  ) {
+    this.getTopicUsecase = new GetTopic(
+      messageRepository,
+      this.topicRepository,
+      userRepository,
+    );
+  }
 
   execute(topicIds: TopicId[]): Promise<TopicData[]>;
 
@@ -23,15 +32,9 @@ export class GetTopics implements IGetTopics {
   }
 
   async getAll(topicsIds: TopicId[]): Promise<TopicData[]> {
-    const getTopicUseCase = new GetTopic(
-      this.messageRepository,
-      this.topicRepository,
-      this.userRepository,
-    );
-
     // 並列でTopicを取得する
     const results: (TopicData | undefined)[] = await Promise.all(
-      topicsIds.map((topicId) => getTopicUseCase.execute(topicId)),
+      topicsIds.map((topicId) => this.getTopicUsecase.execute(topicId)),
     );
 
     const topics: TopicData[] = [];
@@ -52,18 +55,7 @@ export class GetTopics implements IGetTopics {
     );
     // 並列でTopicを取得する
     const results: (undefined | TopicData)[] = await Promise.all(
-      entities.map(async (topic) => {
-        const createdBy = await this.userRepository.find(topic.createdBy);
-        if (!createdBy) return undefined;
-        const commentCount = await this.messageRepository.messageCount(
-          topic.id,
-        );
-        return TopicDataFactory.create({
-          topic: topic.toTopic(),
-          commentCount,
-          createdBy,
-        });
-      }),
+      entities.map(async (topic) => this.getTopicUsecase.execute(topic.id)),
     );
 
     const topics: TopicData[] = [];
