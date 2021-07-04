@@ -3,7 +3,7 @@ import { TopicTitle } from 'src/domain/topic/models/topicTitle';
 import { UserId } from 'src/domain/user/models/userId';
 import { TopicDescription } from 'src/domain/topic/models/topicDescription';
 import { TopicEntity } from 'src/domain/topic/repository/topicEntity';
-import { DerivedTopicDto, DerivedTopicJSON } from 'src/data/core/topic/derivedTopicDto';
+import { DerivedTopicDto, DerivedTopicJSON } from 'src/data/firebase/types/derivedTopicDto';
 
 export class TopicDto {
   constructor(
@@ -14,7 +14,6 @@ export class TopicDto {
     readonly createdBy: string,
     readonly thumbnailURL: string,
     readonly isPrivate: boolean,
-    readonly derivedTopics: DerivedTopicDto[],
   ) {}
 
   static from(topic: TopicEntity): TopicDto {
@@ -26,11 +25,10 @@ export class TopicDto {
       topic.createdBy.value,
       topic.thumbnailURL,
       topic.isPrivate,
-      topic.derivedTopics.map((e) => DerivedTopicDto.fromEntity(e)),
     );
   }
 
-  static fromJSON(json: Object | null): TopicDto | undefined {
+  static fromJSON(json: Object | null): TopicDto | null {
     if (json && isTopicJSON(json)) {
       const src = json as TopicJSON;
       return new TopicDto(
@@ -41,17 +39,12 @@ export class TopicDto {
         src.createdBy,
         src.thumbnailURL,
         src.isPrivate,
-        [], // TODO: ドキュメントからIDを取得する
       );
     }
-    return undefined;
+    return null;
   }
 
-  static toTopicEntities(dto: TopicDto[]): TopicEntity[] {
-    return dto.map((d) => d.toTopicEntity());
-  }
-
-  toTopicEntity(): TopicEntity {
+  toTopicEntity({ derivedTopics } : {derivedTopics: DerivedTopicDto[]}): TopicEntity {
     return new TopicEntity(
       new TopicId(this.id),
       new TopicTitle(this.title),
@@ -60,7 +53,7 @@ export class TopicDto {
       this.thumbnailURL,
       this.isPrivate,
       TopicDescription.create(this.description) ?? null,
-      this.derivedTopics.map((e) => e.toEntity()),
+      derivedTopics.map((e) => e.toEntity()),
     );
   }
 
@@ -73,7 +66,6 @@ export class TopicDto {
       createdBy: this.createdBy,
       thumbnailURL: this.thumbnailURL,
       isPrivate: this.isPrivate,
-      derivedTopics: this.derivedTopics.map((e) => e.toJSON()),
     };
   }
 }
@@ -86,7 +78,7 @@ type TopicJSON = {
   createdBy: string
   thumbnailURL: string
   isPrivate: boolean,
-  derivedTopics: DerivedTopicJSON[]
+  derive?: DerivedTopicJSON[]
 };
 
 const isTopicJSON = (obj: any): obj is TopicJSON => typeof obj.id === 'string'

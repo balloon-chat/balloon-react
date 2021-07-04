@@ -1,29 +1,50 @@
-import { ITopicDatabase, UpdateTopicParams } from 'src/data/core/topic/topicDatabase';
-import { TopicDto } from 'src/data/core/topic/topicDto';
+import { TopicDto } from 'src/data/firebase/types/topicDto';
 import firebase from 'firebase/app';
 import 'firebase/firestore';
-import { DerivedTopicDto } from 'src/data/core/topic/derivedTopicDto';
+import { DerivedTopicDto } from 'src/data/firebase/types/derivedTopicDto';
 import { DerivedTopicEntity } from 'src/domain/topic/repository/derivedTopicEntity';
+import { ITopicRepository, UpdateTopicParams } from 'src/domain/topic/repository/topicRepository';
+import { TopicId } from 'src/domain/topic/models/topicId';
+import { DerivedTopicId } from 'src/domain/topic/models/derivedTopic';
+import { TopicEntity } from 'src/domain/topic/repository/topicEntity';
+import { UserId } from 'src/domain/user/models/userId';
 
-export class FirebaseTopicDatabase implements ITopicDatabase {
+export class FirebaseTopicDatabase implements ITopicRepository {
   private constructor(private readonly database = firebase.firestore()) {
   }
 
-  private static _instance: ITopicDatabase;
+  private static _instance: ITopicRepository;
 
-  static get instance(): ITopicDatabase {
+  static get instance(): ITopicRepository {
     if (!this._instance) {
       this._instance = new FirebaseTopicDatabase();
     }
     return this._instance;
   }
 
-  async find(topicId: string): Promise<TopicDto | undefined> {
+  async getTopicDto(topicId: TopicId): Promise<TopicDto|null> {
     const snapshot = await this.document(topicId).get();
     return TopicDto.fromJSON(snapshot.data() ?? null);
   }
 
-  async findAllPublicTopicsSortByCreatedAt(limit: number, from?: string): Promise<TopicDto[]> {
+  async getDerivedTopicsDto(topicId: TopicId): Promise<DerivedTopicDto[]> {
+    const snapshots = await this.derivedTopicsCollection(topicId).get();
+    return snapshots.docs
+      .map((snapshot) => DerivedTopicDto.fromJSON(snapshot.data() ?? null))
+      .filter((e): e is DerivedTopicDto => e !== null);
+  }
+
+  async find(topicId: TopicId): Promise<TopicEntity | undefined> {
+    const [topicDto, derivedTopicsDto] = await Promise.all([
+      this.getTopicDto(topicId),
+      this.getDerivedTopicsDto(topicId),
+    ]);
+    if (!topicDto) return undefined;
+
+    return topicDto.toTopicEntity({ derivedTopics: derivedTopicsDto });
+  }
+
+  async findAllPublicTopicsSortByCreatedAt(limit: number, from?: TopicId): Promise<TopicDto[]> {
     let query = this.collection()
       .where('isPrivate', '==', false)
       .orderBy('createdAt', 'desc');
@@ -40,30 +61,46 @@ export class FirebaseTopicDatabase implements ITopicDatabase {
       .filter<TopicDto>((e): e is TopicDto => e !== undefined);
   }
 
-  async findAllPublicTopicsCreatedBy(createdBy: string): Promise<TopicDto[]> {
+  async findAllPublicTopicsCreatedBy(createdBy: UserId): Promise<TopicEntity[]> {
     const query = this.collection()
-      .where('createdBy', '==', createdBy)
+      .where('createdBy', '==', createdBy.value)
       .where('isPrivate', '==', false)
       .orderBy('createdAt', 'desc');
 
     const snapshots = await query.get();
+
+    // 派生した話題の詳細については、話題を一覧で表示する分には不要なため、取得しない
     return snapshots.docs
       .map((snapshot) => TopicDto.fromJSON(snapshot.data()))
-      .filter<TopicDto>((e): e is TopicDto => e !== undefined);
+      .filter<TopicDto>((e): e is TopicDto => e !== undefined)
+      .map((e) => e.toTopicEntity({ derivedTopics: [] }));
   }
 
-  async findAllTopicsCreatedBy(createdBy: string): Promise<TopicDto[]> {
+  async findAllTopicsCreatedBy(createdBy: UserId): Promise<TopicEntity[]> {
     const query = this.collection()
-      .where('createdBy', '==', createdBy)
+      .where('createdBy', '==', createdBy.value)
       .orderBy('createdAt', 'desc');
 
     const snapshots = await query.get();
+
+    // 派生した話題の詳細については、話題を一覧で表示する分には不要なため、取得しない
     return snapshots.docs
       .map((snapshot) => TopicDto.fromJSON(snapshot.data()))
-      .filter<TopicDto>((e): e is TopicDto => e !== undefined);
+      .filter<TopicDto>((e): e is TopicDto => e !== undefined)
+      .map((e) => e.toTopicEntity({ derivedTopics: [] }));
   }
 
-  async updateTopic(topicId: string, {
+  async findAllPublicTopicsOrderByCreatedAt(
+    limit: number,
+    from?: TopicId,
+  ): Promise<TopicEntity[]> {
+    const dto = await this.findAllPublicTopicsSortByCreatedAt(limit, from);
+
+    // 派生した話題の詳細については、話題を一覧で表示する分には不要なため、取得しない
+    return dto.map((e) => e.toTopicEntity({ derivedTopics: [] }));
+  }
+
+  async updateTopic(topicId: TopicId, {
     title,
     description,
     thumbnailUrl,
@@ -84,19 +121,25 @@ export class FirebaseTopicDatabase implements ITopicDatabase {
     });
   }
 
-  async save(topic: TopicDto): Promise<void> {
+  async save(topic: TopicEntity): Promise<void> {
     const document = this.document(topic.id);
-    await document.set(topic.toJSON());
+    const topicDto = TopicDto.from(topic);
+    await document.set(topicDto.toJSON());
+
+    const derivedTopicDto = topic.derivedTopics.map((e) => DerivedTopicDto.fromEntity(e));
+    await Promise.all(
+      derivedTopicDto.map((e) => document.set(e.toJSON())),
+    );
   }
 
-  delete(topicId: string): Promise<void> {
+  delete(topicId: TopicId): Promise<void> {
     const document = this.document(topicId);
     return document.delete();
   }
 
   async findDerivedTopic(
-    topicId: string,
-    derivedTopicId: string,
+    topicId: TopicId,
+    derivedTopicId: DerivedTopicId,
   ): Promise<DerivedTopicEntity | null> {
     const document = this.derivedTopicDocument(topicId, derivedTopicId);
     const snapshot = await document.get();
@@ -109,29 +152,30 @@ export class FirebaseTopicDatabase implements ITopicDatabase {
     return dto?.toEntity() ?? undefined;
   }
 
-  async addDerivedTopic(topicId: string, derivedTopic: DerivedTopicDto): Promise<void> {
+  async addDerivedTopic(topicId: TopicId, derivedTopic: DerivedTopicEntity): Promise<void> {
     const document = this.derivedTopicDocument(topicId, derivedTopic.id);
-    await document.set(derivedTopic.toJSON());
+    const dto = DerivedTopicDto.fromEntity(derivedTopic);
+    await document.set(dto.toJSON());
   }
 
-  async deleteDerivedTopic(topicId: string, derivedTopicId: string): Promise<void> {
+  async deleteDerivedTopic(topicId: TopicId, derivedTopicId: DerivedTopicId): Promise<void> {
     const document = this.derivedTopicDocument(topicId, derivedTopicId);
     await document.delete();
   }
 
   private collection = () => this.database.collection('/topics');
 
-  private document = (topicId: string) => this.collection()
-    .doc(topicId);
+  private document = (topicId: TopicId) => this.collection()
+    .doc(topicId.value);
 
   private derivedTopicsCollection = (
-    topicId: string,
+    topicId: TopicId,
   ) => this.document(topicId)
     .collection('/derive');
 
   private derivedTopicDocument = (
-    topicId: string,
-    derivedTopicId: string,
+    topicId: TopicId,
+    derivedTopicId: DerivedTopicId,
   ) => this.derivedTopicsCollection(topicId)
-    .doc(derivedTopicId);
+    .doc(derivedTopicId.value);
 }
