@@ -8,6 +8,7 @@ import {
 } from 'src/data/redux/topic/reducer';
 import {
   createTopic,
+  deriveTopic,
   fetchTopic,
   fetchTopicByCode,
   fetchTopicsCreatedBy,
@@ -41,6 +42,10 @@ const topicSlice = createSlice({
       .addCase(createTopic.rejected, (state) => ({
         ...state,
         state: topicStates.CRETE_TOPIC_ERROR,
+      }))
+      .addCase(deriveTopic.fulfilled, (state, { payload }) => ({
+        ...state,
+        currentTopic: payload.topic,
       }))
       .addCase(fetchTopic.fulfilled, (state, { payload }) => ({
         ...state,
