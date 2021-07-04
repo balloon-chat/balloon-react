@@ -1,7 +1,9 @@
 import { createContext } from 'react';
 
-export const ImageFileContext = createContext<{
-  setImageFile:(blob: Blob | File) => void;
-    }>({
-      setImageFile: () => {},
-    });
+type ImageFileContextType = {
+  setImageFile:(blob: Blob | File) => void,
+}
+
+export const ImageFileContext = createContext<ImageFileContextType>({
+  setImageFile: () => {},
+});

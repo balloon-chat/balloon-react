@@ -3,12 +3,16 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { TopicEntity } from 'src/view/types/topic';
 
 const initialState: ChatState = {
+  topic: null,
+  topicId: null,
+  branchTopicId: null,
   dialog: {
     deriveTopicDialog: false,
     derivedTopicsDialog: false,
     messageLog: false,
   },
   invitation: null,
+  invitationCode: null,
   isEditable: false,
   notification: null,
 };
@@ -38,6 +42,33 @@ const slice = createSlice({
     closeMessageLog: (state) => {
       state.dialog.messageLog = false;
     },
+    notify: (state, { payload }: ShowNotification) => {
+      state.notification = {
+        type: payload.type,
+        message: payload.message,
+      };
+    },
+    clearNotification: (state) => {
+      state.notification = null;
+    },
+    setTopic: (state, { payload }: PayloadAction<{topic: TopicEntity | null}>) => {
+      state.topicId = payload.topic?.id ?? null;
+      state.topic = payload.topic;
+    },
+    setBranch: (state, { payload }: PayloadAction<{index: number| null}>) => {
+      const { index } = payload;
+      const { topic } = state;
+      if (!topic) return;
+
+      if (index === null) {
+        state.branchTopicId = null;
+      } else if (index < topic.derivedTopics.length) {
+        state.branchTopicId = topic.derivedTopics[index].id;
+      }
+    },
+    setInvitationCode: (state, { payload }: PayloadAction<{ code: number[] | null}>) => {
+      state.invitationCode = payload.code;
+    },
     setInvitation: (state, { payload }: PayloadAction<{ invitation: string | null }>) => {
       state.invitation = payload.invitation;
     },
@@ -55,16 +86,23 @@ const slice = createSlice({
 
 export const chatReducer = slice.reducer;
 export const {
-  clearNotification,
-  closeDerivedTopicDialog,
-  closeDerivedTopicsDialog,
-  closeMessageLog,
-  notify,
-  resetChatState,
+  setTopic,
+  setBranch,
+
   showDeriveTopicDialog,
   showDerivedTopicsDialog,
   showMessageLog,
+  closeDerivedTopicDialog,
+  closeDerivedTopicsDialog,
   closeMessageLog,
+
+  notify,
+  clearNotification,
+
   setInvitation,
+  setInvitationCode,
+
   updateIsEditable,
+
+  resetChatState,
 } = slice.actions;

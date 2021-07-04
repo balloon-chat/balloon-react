@@ -140,12 +140,17 @@ export class TopicService {
   }
 
   async updateTopic(topicId: string, params: {
-      title?: string,
+    title?: string,
     description?: string,
     thumbnail?: File|Blob,
     isPrivate?: boolean,
-  }): Promise<void> {
-    await this.updateTopicUsecase.execute(topicId, params);
+  }): Promise<TopicEntity> {
+    const topic = await this.updateTopicUsecase.execute(topicId, params);
+    return TopicEntityFactory.fromTopic({
+      topic,
+      commentCount: 0,
+      createdBy: topic.createdBy,
+    });
   }
 
   fetchTopic(topicId: string): Promise<TopicData | undefined> {

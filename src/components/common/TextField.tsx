@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import React, { useState } from 'react';
 
 type Props = {
-  initialValue?: string,
+  initialValue?: string | null,
   placeholder?: string,
   title?: string,
   titleTextSize?: number,
@@ -38,7 +38,7 @@ export const TextField = ({
         {title}
       </Title>
       <Input
-        defaultValue={initialValue}
+        defaultValue={initialValue ?? undefined}
         maxLength={maxLength}
         placeholder={placeholder}
         onChange={(e) => handleOnChange(e.target.value)}
