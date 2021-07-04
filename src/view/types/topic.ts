@@ -1,6 +1,7 @@
 import { TopicData } from 'src/domain/topic/models/topicData';
 import { Topic } from 'src/domain/topic/models/topic';
 import { UserId } from 'src/domain/user/models/userId';
+import { DerivedTopicEntity, DerivedTopicEntityFactory } from 'src/view/types/derivedTopic';
 
 export type TopicEntity = {
   id: string,
@@ -11,6 +12,7 @@ export type TopicEntity = {
   thumbnailUrl: string,
   commentCount: number,
   isPrivate: boolean,
+  derivedTopics: DerivedTopicEntity[],
   label?: {
     title: string;
     color: string;
@@ -19,6 +21,9 @@ export type TopicEntity = {
 
 export class TopicEntityFactory {
   static create(topic: TopicData): TopicEntity {
+    const derived = topic.derivedTopics
+      .map((derivedTopic) => DerivedTopicEntityFactory.fromDerivedTopic({ derivedTopic }));
+
     return {
       id: topic.id.value,
       title: topic.title.value,
@@ -29,6 +34,7 @@ export class TopicEntityFactory {
       commentCount: topic.commentCount,
       label: null,
       isPrivate: topic.isPrivate,
+      derivedTopics: derived,
     };
   }
 
@@ -41,6 +47,8 @@ export class TopicEntityFactory {
     commentCount: number,
     createdBy: UserId,
   }): TopicEntity {
+    const derived = topic.derivedTopics
+      .map((derivedTopic) => DerivedTopicEntityFactory.fromDerivedTopic({ derivedTopic }));
     return {
       id: topic.id.value,
       title: topic.title.value,
@@ -51,6 +59,7 @@ export class TopicEntityFactory {
       commentCount,
       label: null,
       isPrivate: topic.isPrivate,
+      derivedTopics: derived,
     };
   }
 }

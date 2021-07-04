@@ -19,7 +19,6 @@ import { FirebaseUserDatabase } from 'src/data/firebase/user/userDatabase';
 import { UserRepository } from 'src/data/core/user/userRepository';
 import { MessageRepository } from 'src/data/core/message/messageRepository';
 import { TopicImageRepository } from 'src/data/core/topic/topicImageRepository';
-import { TopicRepository } from 'src/data/core/topic/topicRepository';
 import { IGetRecommendTopics } from 'src/domain/topic/types/getRecommendTopics';
 import { ICreateTopic } from 'src/domain/topic/types/createTopic';
 import { IGetTopics } from 'src/domain/topic/types/getTopics';
@@ -34,9 +33,13 @@ import { GetTopicByInvitationCode } from 'src/domain/topic/usecases/getTopicByIn
 import { IUpdateTopic } from 'src/domain/topic/types/updateTopic';
 import { UpdateTopic } from 'src/domain/topic/usecases/updateTopic';
 import { TopicEntity, TopicEntityFactory } from 'src/view/types/topic';
+import { IDeriveTopic } from 'src/domain/topic/types/deriveTopic';
+import { DeriveTopic } from 'src/domain/topic/usecases/deriveTopic';
 
 export class TopicService {
   private readonly createTopicUsecase: ICreateTopic;
+
+  private readonly deriveTopicUsecase: IDeriveTopic;
 
   private readonly getTopicUsecase: IGetTopic;
 
@@ -52,7 +55,7 @@ export class TopicService {
 
   constructor(
     topicRepository: ITopicRepository
-    = new TopicRepository(FirebaseTopicDatabase.instance),
+    = FirebaseTopicDatabase.instance,
     recommendTopicRepository: IRecommendTopicRepository
     = new RecommendTopicRepository(FirebaseRecommendTopicDatabase.instance),
     topicImageRepository: ITopicImageRepository
@@ -69,6 +72,9 @@ export class TopicService {
       topicImageRepository,
       userRepository,
       invitationRepository,
+    );
+    this.deriveTopicUsecase = new DeriveTopic(
+      topicRepository,
     );
     this.getTopicUsecase = new GetTopic(
       messageRepository,
@@ -119,6 +125,18 @@ export class TopicService {
       commentCount: 0,
       createdBy: new UserId(createdBy),
     });
+  }
+
+  async deriveTopic(topicId: string, title: string): Promise<TopicEntity|undefined> {
+    await this.deriveTopicUsecase.execute(topicId, title);
+    return this.getTopic(topicId);
+  }
+
+  async getTopic(topicId: string): Promise<TopicEntity|undefined> {
+    const topicData = await this.getTopicUsecase.execute(new TopicId(topicId));
+    if (!topicData) return undefined;
+
+    return TopicEntityFactory.create(topicData);
   }
 
   async updateTopic(topicId: string, params: {
