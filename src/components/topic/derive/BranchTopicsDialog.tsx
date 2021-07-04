@@ -1,28 +1,28 @@
 import React, { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import { closeDerivedTopicsDialog } from 'src/data/redux/chat/slice';
+import { closeBranchTopicsDialog } from 'src/data/redux/chat/slice';
 import { SwipeInDialog } from 'src/components/topic/dialog/SwipeInDialog';
 import { useChatState } from 'src/data/redux/chat/selector';
 import styled from 'styled-components';
 import Link from 'next/link';
 import { rootPath } from 'src/view/route/pagePath';
 
-export const DerivedTopicsDialog = () => {
+export const BranchTopicsDialog = () => {
   const dispatcher = useDispatch();
   const { topic, dialog } = useChatState();
 
   const handleClose = useCallback(() => {
-    dispatcher(closeDerivedTopicsDialog());
+    dispatcher(closeBranchTopicsDialog());
   }, []);
 
   return (
-    <SwipeInDialog onClose={handleClose} isVisible={dialog.derivedTopicsDialog}>
+    <SwipeInDialog onClose={handleClose} isVisible={dialog.branchTopicDialog}>
       <Container>
         {
-          topic && topic.derivedTopics.map((branch, i) => (
+          topic && topic.branchTopics.map((branch, i) => (
             <Link key={i} href={rootPath.topicPath.topicBranch(topic.id, i)}>
               <ItemContainer onClick={handleClose}>
-                <DerivedTopicTitle>{branch.title}</DerivedTopicTitle>
+                <BranchTopicTitle>{branch.title}</BranchTopicTitle>
               </ItemContainer>
             </Link>
           ))
@@ -48,7 +48,7 @@ const ItemContainer = styled.a`
   }
 `;
 
-const DerivedTopicTitle = styled.div`
+const BranchTopicTitle = styled.div`
   font-size: 20px;
   
   :before {

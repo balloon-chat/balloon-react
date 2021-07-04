@@ -18,7 +18,7 @@ export type ChatState = {
   } | null,
   dialog: {
     deriveTopicDialog: boolean,
-    derivedTopicsDialog: boolean,
+    branchTopicDialog: boolean,
     messageLog: boolean,
   }
 }
@@ -28,7 +28,7 @@ export const ChatNotificationTypes = {
   SIMPLE_MESSAGE: 'SIMPLE_MESSAGE',
 
   // 話題が派生した
-  DERIVED_TOPIC_CREATED: 'DERIVED_TOPIC_CREATED',
+  BRANCH_TOPIC_CREATED: 'BRANCH_TOPIC_CREATED',
 };
 
 export type ChatNotification = typeof ChatNotificationTypes[keyof typeof ChatNotificationTypes];

@@ -9,7 +9,7 @@ import { ShowMessageLog } from 'src/components/topic/actions/ShowMessageLog';
 import { DeriveTopic } from 'src/components/topic/actions/DeriveTopic';
 import { DetailActions } from 'src/components/topic/actions/DetailActions';
 import { useChatState } from 'src/data/redux/chat/selector';
-import { ShowAllDerivedTopic } from 'src/components/topic/actions/ShowAllDerivedTopic';
+import { ShowAllBranchTopics } from 'src/components/topic/actions/ShowAllBranchTopics';
 
 export const ChatForm = () => {
   const dispatcher = useDispatch();
@@ -45,7 +45,7 @@ export const ChatForm = () => {
     <Container>
       <ActionContainer>
         <DeriveTopic />
-        <ShowAllDerivedTopic />
+        <ShowAllBranchTopics />
       </ActionContainer>
       <MessageForm onSubmit={(e) => handleSubmit(e)}>
         <TextFieldContainer>

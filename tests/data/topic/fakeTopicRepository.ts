@@ -3,8 +3,8 @@ import { TopicEntity } from 'src/domain/topic/repository/topicEntity';
 import { TopicId } from 'src/domain/topic/models/topicId';
 import { FakeBaseRepository } from 'tests/data/FakeBaseRepository';
 import { UserId } from 'src/domain/user/models/userId';
-import { DerivedTopicEntity } from 'src/domain/topic/repository/derivedTopicEntity';
-import { DerivedTopic, DerivedTopicId } from 'src/domain/topic/models/derivedTopic';
+import { BranchTopicEntity } from 'src/domain/topic/repository/branchTopicEntity';
+import { BranchTopic, BranchTopicId } from 'src/domain/topic/models/branchTopic';
 
 export class FakeTopicRepository implements ITopicRepository {
   // key: topic id
@@ -14,14 +14,14 @@ export class FakeTopicRepository implements ITopicRepository {
     return Promise.resolve(this.repository.find(topicId.value));
   }
 
-  async findDerivedTopic(
+  async findBranchTopic(
     topicId: TopicId,
-    derivedTopicId: DerivedTopicId,
-  ): Promise<DerivedTopic|null> {
+    branchTopicId: BranchTopicId,
+  ): Promise<BranchTopic|null> {
     const topic = this.repository.find(topicId.value);
     if (!topic) return null;
 
-    return topic.derivedTopics.find((e) => e.id.value === derivedTopicId.value) ?? null;
+    return topic.branchTopics.find((e) => e.id.value === branchTopicId.value) ?? null;
   }
 
   /**
@@ -85,25 +85,25 @@ export class FakeTopicRepository implements ITopicRepository {
     this.repository.delete(topicId.value);
   }
 
-  async addDerivedTopic(topicId: TopicId, derivedTopic: DerivedTopicEntity): Promise<void> {
+  async addBranchTopic(topicId: TopicId, branchTopic: BranchTopicEntity): Promise<void> {
     const entity = this.repository.find(topicId.value);
     if (!entity) return;
 
     this.repository.delete(topicId.value);
 
     const topic = entity.toTopic();
-    topic.addDerivedTopic(derivedTopic);
+    topic.addBranchTopic(branchTopic);
     this.repository.save(topicId.value, TopicEntity.from(topic));
   }
 
-  async deleteDerivedTopic(topicId: TopicId, derivedTopicId: DerivedTopicId): Promise<void> {
+  async deleteBranchTopic(topicId: TopicId, branchTopicId: BranchTopicId): Promise<void> {
     const entity = this.repository.find(topicId.value);
     if (!entity) return;
 
     this.repository.delete(topicId.value);
 
     const topic = entity.toTopic();
-    topic.deleteDerivedTopic(derivedTopicId);
+    topic.deleteBranchTopic(branchTopicId);
     this.repository.save(topicId.value, TopicEntity.from(topic));
   }
 

@@ -3,7 +3,7 @@ import { TopicId } from 'src/domain/topic/models/topicId';
 import { TopicTitle } from 'src/domain/topic/models/topicTitle';
 import { UserId } from 'src/domain/user/models/userId';
 import { TopicDescription } from 'src/domain/topic/models/topicDescription';
-import { DerivedTopic, DerivedTopicId } from 'src/domain/topic/models/derivedTopic';
+import { BranchTopic, BranchTopicId } from 'src/domain/topic/models/branchTopic';
 
 export class Topic {
   constructor(
@@ -13,24 +13,24 @@ export class Topic {
     public readonly createdBy: UserId,
     public readonly thumbnailUrl: string,
     public readonly isPrivate: boolean,
-    public derivedTopics: DerivedTopic[],
+    public branchTopics: BranchTopic[],
     public readonly description?: TopicDescription,
   ) {}
 
-  addDerivedTopic(derivedTopic: DerivedTopic) {
-    this.derivedTopics.push(derivedTopic);
+  addBranchTopic(branchTopic: BranchTopic) {
+    this.branchTopics.push(branchTopic);
   }
 
-  deleteDerivedTopic(derivedTopicId: DerivedTopicId) {
-    this.derivedTopics = this.derivedTopics
-      .filter((e) => e.id.value !== derivedTopicId.value);
+  deleteBranchTopic(branchTopicId: BranchTopicId) {
+    this.branchTopics = this.branchTopics
+      .filter((e) => e.id.value !== branchTopicId.value);
   }
 
   copyWith({
     topicId,
     title,
     description,
-    derivedTopics,
+    branchTopics,
     createdBy,
     createdAt,
     thumbnailUrl,
@@ -41,7 +41,7 @@ export class Topic {
     createdBy?: UserId,
     createdAt?: number,
     description?: string,
-    derivedTopics?: DerivedTopic[],
+    branchTopics?: BranchTopic[],
     thumbnailUrl?: string,
     isPrivate?: boolean,
   }): Topic {
@@ -52,7 +52,7 @@ export class Topic {
       createdBy ?? this.createdBy,
       thumbnailUrl ?? this.thumbnailUrl,
       isPrivate ?? this.isPrivate,
-      derivedTopics ?? this.derivedTopics,
+      branchTopics ?? this.branchTopics,
       TopicDescription.create(description) ?? this.description,
     );
   }
@@ -63,7 +63,7 @@ export class TopicFactory {
     topicId,
     title,
     description,
-    derivedTopics,
+    branchTopics,
     createdBy,
     createdAt,
     thumbnailUrl,
@@ -72,7 +72,7 @@ export class TopicFactory {
     topicId?: TopicId,
     title: TopicTitle|string,
     description?: string,
-    derivedTopics?: DerivedTopic[],
+    branchTopics?: BranchTopic[],
     createdBy: UserId,
     createdAt?: number,
     thumbnailUrl: string,
@@ -85,7 +85,7 @@ export class TopicFactory {
       createdBy,
       thumbnailUrl,
       isPrivate ?? false,
-      derivedTopics ?? [],
+      branchTopics ?? [],
       TopicDescription.create(description),
     );
   }

@@ -1,4 +1,4 @@
-import { DerivedTopic } from 'src/domain/topic/models/derivedTopic';
+import { BranchTopic } from 'src/domain/topic/models/branchTopic';
 
 export interface IDeriveTopic {
   /**
@@ -6,5 +6,5 @@ export interface IDeriveTopic {
    * @param topicId 派生させるもととなる Topic のID
    * @param title 派生させる話題のタイトル
    */
-  execute(topicId: string, title: string): Promise<DerivedTopic>
+  execute(topicId: string, title: string): Promise<BranchTopic>
 }

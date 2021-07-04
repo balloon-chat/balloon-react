@@ -6,14 +6,14 @@ import { ChatNotificationTypes } from 'src/data/redux/chat/state';
 import { useDispatch } from 'react-redux';
 import { clearNotification } from 'src/data/redux/chat/slice';
 
-export const DerivedTopicCreatedNotification = () => {
+export const BranchTopicCreatedNotification = () => {
   const dispatcher = useDispatch();
   const { notification } = useChatState();
   const [visible, setIsVisible] = useState(false);
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    if (notification?.type === ChatNotificationTypes.DERIVED_TOPIC_CREATED) {
+    if (notification?.type === ChatNotificationTypes.BRANCH_TOPIC_CREATED) {
       setIsVisible(true);
       // メッセージをキャッシュしておく
       setMessage(notification.message);

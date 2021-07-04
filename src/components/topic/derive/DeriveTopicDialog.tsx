@@ -5,7 +5,7 @@ import { TextField } from 'src/components/common/TextField';
 import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
 import { deriveTopic } from 'src/data/redux/topic/action';
-import { closeDerivedTopicDialog } from 'src/data/redux/chat/slice';
+import { closeDeriveTopicDialog } from 'src/data/redux/chat/slice';
 import { useChatState } from 'src/data/redux/chat/selector';
 
 type Props = {
@@ -22,7 +22,7 @@ export const DeriveTopicDialog = ({ onClose }: Props) => {
     if (!topicId || !title) return;
 
     dispatcher(deriveTopic({ topicId, title }));
-    dispatcher(closeDerivedTopicDialog());
+    dispatcher(closeDeriveTopicDialog());
   };
 
   return (

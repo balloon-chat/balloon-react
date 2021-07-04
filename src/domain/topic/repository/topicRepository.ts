@@ -3,8 +3,8 @@ import { TopicId } from 'src/domain/topic/models/topicId';
 import { UserId } from 'src/domain/user/models/userId';
 import { TopicTitle } from 'src/domain/topic/models/topicTitle';
 import { TopicDescription } from 'src/domain/topic/models/topicDescription';
-import { DerivedTopicEntity } from 'src/domain/topic/repository/derivedTopicEntity';
-import { DerivedTopic, DerivedTopicId } from 'src/domain/topic/models/derivedTopic';
+import { BranchTopicEntity } from 'src/domain/topic/repository/branchTopicEntity';
+import { BranchTopic, BranchTopicId } from 'src/domain/topic/models/branchTopic';
 
 export interface ITopicRepository {
   find(topicId: TopicId): Promise<TopicEntity | undefined>;
@@ -43,14 +43,14 @@ export interface ITopicRepository {
 
   delete(topicId: TopicId): Promise<void>
 
-  findDerivedTopic(
+  findBranchTopic(
     topicId: TopicId,
-    derivedTopicId: DerivedTopicId
-  ): Promise<DerivedTopic|null>
+    branchTopicId: BranchTopicId
+  ): Promise<BranchTopic|null>
 
-  addDerivedTopic(topicId: TopicId, derivedTopic: DerivedTopicEntity): Promise<void>
+  addBranchTopic(topicId: TopicId, branchTopic: BranchTopicEntity): Promise<void>
 
-  deleteDerivedTopic(topicId: TopicId, derivedTopicId: DerivedTopicId): Promise<void>
+  deleteBranchTopic(topicId: TopicId, branchTopicId: BranchTopicId): Promise<void>
 }
 
 export type UpdateTopicParams = {

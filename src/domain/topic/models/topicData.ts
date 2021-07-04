@@ -3,13 +3,13 @@ import { TopicTitle } from 'src/domain/topic/models/topicTitle';
 import { TopicDescription } from 'src/domain/topic/models/topicDescription';
 import { User } from 'src/domain/user/models/user';
 import { Topic } from 'src/domain/topic/models/topic';
-import { DerivedTopic } from 'src/domain/topic/models/derivedTopic';
+import { BranchTopic } from 'src/domain/topic/models/branchTopic';
 
 export type TopicData = {
   id: TopicId,
   title: TopicTitle,
   description?: TopicDescription,
-  derivedTopics: DerivedTopic[],
+  branchTopics: BranchTopic[],
   thumbnailUrl: string,
   createdAt: Date,
   createdBy: User,
@@ -31,7 +31,7 @@ export class TopicDataFactory {
       id: topic.id,
       title: topic.title,
       description: topic.description,
-      derivedTopics: topic.derivedTopics,
+      branchTopics: topic.branchTopics,
       thumbnailUrl: topic.thumbnailUrl,
       createdAt: new Date(topic.createdAt),
       isPrivate: topic.isPrivate,

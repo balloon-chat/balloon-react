@@ -8,7 +8,7 @@ const initialState: ChatState = {
   branchTopicId: null,
   dialog: {
     deriveTopicDialog: false,
-    derivedTopicsDialog: false,
+    branchTopicDialog: false,
     messageLog: false,
   },
   invitation: null,
@@ -27,14 +27,14 @@ const slice = createSlice({
     showDeriveTopicDialog: (state) => {
       state.dialog.deriveTopicDialog = true;
     },
-    closeDerivedTopicDialog: (state) => {
-      state.dialog.deriveTopicDialog = false;
+    closeDeriveTopicDialog: (state) => {
+      state.dialog.branchTopicDialog = false;
     },
-    showDerivedTopicsDialog: (state) => {
-      state.dialog.derivedTopicsDialog = true;
+    showBranchTopicsDialog: (state) => {
+      state.dialog.branchTopicDialog = true;
     },
-    closeDerivedTopicsDialog: (state) => {
-      state.dialog.derivedTopicsDialog = false;
+    closeBranchTopicsDialog: (state) => {
+      state.dialog.branchTopicDialog = false;
     },
     showMessageLog: (state) => {
       state.dialog.messageLog = true;
@@ -62,8 +62,8 @@ const slice = createSlice({
 
       if (index === null) {
         state.branchTopicId = null;
-      } else if (index < topic.derivedTopics.length) {
-        state.branchTopicId = topic.derivedTopics[index].id;
+      } else if (index < topic.branchTopics.length) {
+        state.branchTopicId = topic.branchTopics[index].id;
       }
     },
     setInvitationCode: (state, { payload }: PayloadAction<{ code: number[] | null}>) => {
@@ -90,10 +90,12 @@ export const {
   setBranch,
 
   showDeriveTopicDialog,
-  showDerivedTopicsDialog,
+  closeDeriveTopicDialog,
+
+  showBranchTopicsDialog,
+  closeBranchTopicsDialog,
+
   showMessageLog,
-  closeDerivedTopicDialog,
-  closeDerivedTopicsDialog,
   closeMessageLog,
 
   notify,

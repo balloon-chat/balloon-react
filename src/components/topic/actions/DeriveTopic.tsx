@@ -3,7 +3,7 @@ import React, { useCallback } from 'react';
 import { ChatAction } from 'src/components/topic/actions/ChatAction';
 import { useDispatch } from 'react-redux';
 import { useChatState } from 'src/data/redux/chat/selector';
-import { closeDerivedTopicDialog, showDeriveTopicDialog } from 'src/data/redux/chat/slice';
+import { closeDeriveTopicDialog, showDeriveTopicDialog } from 'src/data/redux/chat/slice';
 
 export const DeriveTopic = () => {
   const dispatcher = useDispatch();
@@ -11,7 +11,7 @@ export const DeriveTopic = () => {
 
   const onClickHandler = useCallback(() => {
     if (dialog.deriveTopicDialog) {
-      dispatcher(closeDerivedTopicDialog());
+      dispatcher(closeDeriveTopicDialog());
     } else {
       dispatcher(showDeriveTopicDialog());
     }

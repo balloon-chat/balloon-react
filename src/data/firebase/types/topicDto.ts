@@ -3,7 +3,7 @@ import { TopicTitle } from 'src/domain/topic/models/topicTitle';
 import { UserId } from 'src/domain/user/models/userId';
 import { TopicDescription } from 'src/domain/topic/models/topicDescription';
 import { TopicEntity } from 'src/domain/topic/repository/topicEntity';
-import { DerivedTopicDto, DerivedTopicJSON } from 'src/data/firebase/types/derivedTopicDto';
+import { BranchTopicDto } from 'src/data/firebase/types/branchTopicDto';
 
 export class TopicDto {
   constructor(
@@ -44,7 +44,7 @@ export class TopicDto {
     return null;
   }
 
-  toTopicEntity({ derivedTopics } : {derivedTopics: DerivedTopicDto[]}): TopicEntity {
+  toTopicEntity({ branchTopics } : {branchTopics: BranchTopicDto[]}): TopicEntity {
     return new TopicEntity(
       new TopicId(this.id),
       new TopicTitle(this.title),
@@ -53,7 +53,7 @@ export class TopicDto {
       this.thumbnailURL,
       this.isPrivate,
       TopicDescription.create(this.description) ?? null,
-      derivedTopics.map((e) => e.toEntity()),
+      branchTopics.map((e) => e.toEntity()),
     );
   }
 
@@ -78,7 +78,6 @@ type TopicJSON = {
   createdBy: string
   thumbnailURL: string
   isPrivate: boolean,
-  derive?: DerivedTopicJSON[]
 };
 
 const isTopicJSON = (obj: any): obj is TopicJSON => typeof obj.id === 'string'

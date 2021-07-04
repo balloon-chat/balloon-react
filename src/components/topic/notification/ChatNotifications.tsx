@@ -1,8 +1,8 @@
 import React from 'react';
-import { DerivedTopicCreatedNotification } from 'src/components/topic/notification/DerivedTopicCreatedNotification';
+import { BranchTopicCreatedNotification } from 'src/components/topic/notification/BranchTopicCreatedNotification';
 
 export const ChatNotifications = () => (
   <>
-    <DerivedTopicCreatedNotification />
+    <BranchTopicCreatedNotification />
   </>
 );

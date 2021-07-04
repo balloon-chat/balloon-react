@@ -3,25 +3,25 @@ import { ChatAction } from 'src/components/topic/actions/ChatAction';
 import ForumIcon from 'src/components/svgs/forum.svg';
 import { useDispatch } from 'react-redux';
 import { useChatState } from 'src/data/redux/chat/selector';
-import { closeDerivedTopicsDialog, showDerivedTopicsDialog } from 'src/data/redux/chat/slice';
+import { closeBranchTopicsDialog, showBranchTopicsDialog } from 'src/data/redux/chat/slice';
 
-export const ShowAllDerivedTopic = () => {
+export const ShowAllBranchTopics = () => {
   const dispatcher = useDispatch();
   const { dialog } = useChatState();
 
   const handleClick = useCallback(() => {
-    if (dialog.derivedTopicsDialog) {
-      dispatcher(closeDerivedTopicsDialog());
+    if (dialog.branchTopicDialog) {
+      dispatcher(closeBranchTopicsDialog());
     } else {
-      dispatcher(showDerivedTopicsDialog());
+      dispatcher(showBranchTopicsDialog());
     }
-  }, [dialog.derivedTopicsDialog]);
+  }, [dialog.branchTopicDialog]);
 
   return (
     <ChatAction
       message="すべての話題を表示"
       onClick={handleClick}
-      isActive={dialog.derivedTopicsDialog}
+      isActive={dialog.branchTopicDialog}
     >
       <ForumIcon />
     </ChatAction>

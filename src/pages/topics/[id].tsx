@@ -17,7 +17,7 @@ import { LoginStates } from 'src/data/redux/user/state';
 import { CharacterCanvas } from 'src/components/topic/chat/CharacterCanvas';
 import { ZIndex } from 'src/components/constants/z_index';
 import {
-  closeDerivedTopicDialog,
+  closeDeriveTopicDialog,
   closeMessageLog,
   resetChatState,
   setBranch,
@@ -31,7 +31,7 @@ import { useRouter } from 'next/router';
 import { ChatNotifications } from 'src/components/topic/notification/ChatNotifications';
 import { useChatState } from 'src/data/redux/chat/selector';
 import { DeriveTopicDialog } from 'src/components/topic/derive/DeriveTopicDialog';
-import { DerivedTopicsDialog } from 'src/components/topic/derive/DerivedTopicsDialog';
+import { BranchTopicsDialog } from 'src/components/topic/derive/BranchTopicsDialog';
 import { MessageLog } from 'src/components/topic/log/MessageLog';
 
 type Props = {
@@ -127,11 +127,11 @@ const TopicPage = ({ topic, code }: Props) => {
       {
         dialog.deriveTopicDialog && (
           <DeriveTopicDialog
-            onClose={() => dispatcher(closeDerivedTopicDialog())}
+            onClose={() => dispatcher(closeDeriveTopicDialog())}
           />
         )
       }
-      <DerivedTopicsDialog />
+      <BranchTopicsDialog />
       <MessageLog
         isVisible={dialog.messageLog}
         onClose={() => dispatcher(closeMessageLog())}
