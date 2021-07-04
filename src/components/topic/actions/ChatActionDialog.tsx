@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
 import { rootPath, topicPath } from 'src/view/route/pagePath';
-import { useTopicState } from 'src/data/redux/topic/selector';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { FullscreenContainer } from 'src/components/common/FullscreenContainer';
 import { ZIndex } from 'src/components/constants/z_index';
@@ -17,7 +16,7 @@ export const ChatActionDialog = ({
   isVisible,
   onClose,
 }: Props) => {
-  const { currentTopic } = useTopicState();
+  const { topicId } = useChatState();
   const { invitation, isEditable } = useChatState();
   return (
     <>
@@ -35,8 +34,8 @@ export const ChatActionDialog = ({
             <li>招待をコピー</li>
           </CopyToClipboard>
           {
-            currentTopic && isEditable && (
-              <Link href={topicPath.edit(currentTopic.id)}>
+            isEditable && topicId && (
+              <Link href={topicPath.edit(topicId)}>
                 <li>話題を編集</li>
               </Link>
             )

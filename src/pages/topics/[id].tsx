@@ -9,7 +9,6 @@ import { TopicEntity, TopicEntityFactory } from 'src/view/types/topic';
 import { TopicService } from 'src/domain/topic/service/topicService';
 import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
-import { setCurrentTopic, setInvitationCode } from 'src/data/redux/topic/slice';
 import { useUserSelector } from 'src/data/redux/user/selector';
 import { UserId } from 'src/domain/user/models/userId';
 import { observeStart, resetMessages } from 'src/data/redux/message/slice';
@@ -23,6 +22,7 @@ import {
   resetChatState,
   setBranch,
   setInvitation,
+  setInvitationCode,
   setTopic,
   updateIsEditable,
 } from 'src/data/redux/chat/slice';
@@ -43,11 +43,11 @@ const TopicPage = ({ topic, code }: Props) => {
   const router = useRouter();
   const dispatcher = useDispatch();
   const { uid, loginState } = useUserSelector();
-  const { currentTopic } = useTopicState();
+  const { topicId, branchTopicId, dialog } = useChatState();
 
   useEffect(() => {
     dispatcher(setInvitationCode({ code }));
-    dispatcher(setCurrentTopic({ topic }));
+    dispatcher(setTopic({ topic }));
 
     if (topic) {
       const invitation = createInvitation({
@@ -61,10 +61,34 @@ const TopicPage = ({ topic, code }: Props) => {
     return () => {
       // reset current state
       dispatcher(setInvitationCode({ code: null }));
-      dispatcher(setCurrentTopic({ topic: null }));
+      dispatcher(setTopic({ topic: null }));
+      dispatcher(setBranch({ index: null }));
       dispatcher(resetChatState());
     };
   }, []);
+
+  useEffect(() => {
+    if (!topicId) return () => {};
+
+    dispatcher(observeStart({ topicId: branchTopicId ?? topicId }));
+
+    return () => {
+      dispatcher(resetMessages({}));
+    };
+  }, [topicId, branchTopicId]);
+
+  useEffect(() => {
+    let branchIndex: number|null;
+    const paramBranchIndex = router.query.branch;
+    if (typeof paramBranchIndex === 'string') {
+      const value = parseInt(paramBranchIndex, 10);
+      branchIndex = !Number.isNaN(value) ? value : null;
+    } else {
+      branchIndex = null;
+    }
+
+    dispatcher(setBranch({ index: branchIndex }));
+  }, [router.query.branch]);
 
   useEffect(() => {
     dispatcher(updateIsEditable({ isEditable: uid === topic?.createdBy }));
@@ -97,14 +121,6 @@ const TopicPage = ({ topic, code }: Props) => {
     };
   }, [loginState]);
 
-  useEffect(() => {
-    if (currentTopic) dispatcher(observeStart({ topicId: currentTopic.id }));
-
-    return () => {
-      dispatcher(resetMessages({}));
-    };
-  }, [currentTopic?.id]);
-
   return (
     <Wrapper>
       <NavBar />
@@ -125,6 +141,7 @@ const TopicPage = ({ topic, code }: Props) => {
           <Head>
             <title>{pageTitle.topics.topic(topic.title)}</title>
           </Head>
+          <ChatNotifications />
           <CharacterCanvas />
           <MessageFieldContainer>
             <ChatForm />
@@ -170,6 +187,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
   const code = await service.fetchInvitationCode(id);
 
   const topic = TopicEntityFactory.create(topicData);
+
   return {
     props: {
       topic,

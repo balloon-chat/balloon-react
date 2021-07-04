@@ -1,8 +1,17 @@
+import { TopicEntity } from 'src/view/types/topic';
+
 export const chatStateName = 'chatState';
 
 export type ChatState = {
+  branchTopicId: string | null,
+  topicId: string | null,
+  topic: TopicEntity | null,
+
+  invitationCode: number[] | null,
   invitation: string | null,
+
   isEditable: boolean,
+
   notification: {
     type: ChatNotification,
     message: string,

@@ -8,7 +8,6 @@ import MailIcon from 'src/components/svgs/mail.svg';
 import { TextButton } from 'src/components/common/Button';
 import { rootPath, topicPath } from 'src/view/route/pagePath';
 import Link from 'next/link';
-import { useTopicState } from 'src/data/redux/topic/selector';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { FullscreenContainer } from 'src/components/common/FullscreenContainer';
 import { ZIndex } from 'src/components/constants/z_index';
@@ -29,7 +28,7 @@ export const ChatActionBottomSheet = ({
   onClose,
 }: Props) => {
   const dispatcher = useDispatch();
-  const { currentTopic } = useTopicState();
+  const { topicId } = useChatState();
   const { invitation, isEditable } = useChatState();
 
   const showDeriveTopicDialog = useCallback(() => {
@@ -63,8 +62,8 @@ export const ChatActionBottomSheet = ({
               </BottomSheetAction>
             </CopyToClipboard>
             {
-              isEditable && currentTopic && (
-                <Link href={topicPath.edit(currentTopic.id)}>
+              isEditable && topicId && (
+                <Link href={topicPath.edit(topicId)}>
                   <BottomSheetAction>
                     話題を編集
                     <EditIcon />
