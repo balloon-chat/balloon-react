@@ -112,8 +112,8 @@ export class FirebaseTopicDatabase implements ITopicRepository {
       const data = TopicDto.fromJSON(doc.data() ?? null);
       if (data) {
         transaction.update(topicRef, {
-          title: title ?? data.title,
-          description: description ?? data.description,
+          title: title?.value ?? data.title,
+          description: description?.value ?? data.description,
           thumbnailURL: thumbnailUrl ?? data.thumbnailURL,
           isPrivate: isPrivate ?? data.isPrivate,
         });
@@ -165,17 +165,14 @@ export class FirebaseTopicDatabase implements ITopicRepository {
 
   private collection = () => this.database.collection('/topics');
 
-  private document = (topicId: TopicId) => this.collection()
-    .doc(topicId.value);
+  private document = (topicId: TopicId) => this.collection().doc(topicId.value);
 
   private derivedTopicsCollection = (
     topicId: TopicId,
-  ) => this.document(topicId)
-    .collection('/derive');
+  ) => this.document(topicId).collection('/derive');
 
   private derivedTopicDocument = (
     topicId: TopicId,
     derivedTopicId: DerivedTopicId,
-  ) => this.derivedTopicsCollection(topicId)
-    .doc(derivedTopicId.value);
+  ) => this.derivedTopicsCollection(topicId).doc(derivedTopicId.value);
 }
