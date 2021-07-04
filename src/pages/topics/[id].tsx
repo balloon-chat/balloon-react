@@ -13,14 +13,26 @@ import { setCurrentTopic, setInvitationCode } from 'src/data/redux/topic/slice';
 import { useUserSelector } from 'src/data/redux/user/selector';
 import { UserId } from 'src/domain/user/models/userId';
 import { observeStart, resetMessages } from 'src/data/redux/message/slice';
-import { useTopicState } from 'src/data/redux/topic/selector';
 import { setUser } from 'src/data/redux/user/slice';
 import { LoginStates } from 'src/data/redux/user/state';
 import { CharacterCanvas } from 'src/components/topic/chat/CharacterCanvas';
 import { ZIndex } from 'src/components/constants/z_index';
-import { resetChatState, setInvitation, updateIsEditable } from 'src/data/redux/chat/slice';
+import {
+  closeDerivedTopicDialog,
+  closeMessageLog,
+  resetChatState,
+  setBranch,
+  setInvitation,
+  setTopic,
+  updateIsEditable,
+} from 'src/data/redux/chat/slice';
 import { createInvitation } from 'src/view/lib/invitation';
 import { useRouter } from 'next/router';
+import { ChatNotifications } from 'src/components/topic/notification/ChatNotifications';
+import { useChatState } from 'src/data/redux/chat/selector';
+import { DeriveTopicDialog } from 'src/components/topic/derive/DeriveTopicDialog';
+import { DerivedTopicsDialog } from 'src/components/topic/derive/DerivedTopicsDialog';
+import { MessageLog } from 'src/components/topic/log/MessageLog';
 
 type Props = {
   topic: TopicEntity | null,
@@ -96,6 +108,18 @@ const TopicPage = ({ topic, code }: Props) => {
   return (
     <Wrapper>
       <NavBar />
+      {
+        dialog.deriveTopicDialog && (
+          <DeriveTopicDialog
+            onClose={() => dispatcher(closeDerivedTopicDialog())}
+          />
+        )
+      }
+      <DerivedTopicsDialog />
+      <MessageLog
+        isVisible={dialog.messageLog}
+        onClose={() => dispatcher(closeMessageLog())}
+      />
       {topic && (
         <>
           <Head>

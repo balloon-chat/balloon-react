@@ -2,25 +2,20 @@ import styled from 'styled-components';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { sendMessage as sendMessageAction } from 'src/data/redux/message/action';
-import { useTopicState } from 'src/data/redux/topic/selector';
 import { useUserSelector } from 'src/data/redux/user/selector';
 import { mediaQuery } from 'src/components/constants/mediaQuery';
 import { ReactComponent as Send } from 'src/components/svgs/send.svg';
 import { ShowMessageLog } from 'src/components/topic/actions/ShowMessageLog';
 import { DeriveTopic } from 'src/components/topic/actions/DeriveTopic';
 import { DetailActions } from 'src/components/topic/actions/DetailActions';
-import { DeriveTopicDialog } from 'src/components/topic/derive/DeriveTopicDialog';
 import { useChatState } from 'src/data/redux/chat/selector';
-import { closeDerivedTopicDialog, closeMessageLog } from 'src/data/redux/chat/slice';
-import { MessageLog } from 'src/components/topic/log/MessageLog';
+import { ShowAllDerivedTopic } from 'src/components/topic/actions/ShowAllDerivedTopic';
 
 export const ChatForm = () => {
   const dispatcher = useDispatch();
-  const { currentTopic } = useTopicState();
+  const { topicId, branchTopicId } = useChatState();
   const { uid } = useUserSelector();
   const [text, setText] = useState('');
-
-  const { dialog } = useChatState();
 
   const handleInput = (value: string | null) => {
     if (value) setText(value);
@@ -36,54 +31,42 @@ export const ChatForm = () => {
   };
 
   const sendMessage = (message: string) => {
-    if (currentTopic && uid && message) {
+    if (topicId && uid && message) {
       dispatcher(sendMessageAction({
         message,
         userId: uid,
-        topicId: currentTopic.id,
+        topicId: branchTopicId ?? topicId,
       }));
     }
     setText('');
   };
 
   return (
-    <>
-      {
-        dialog.deriveTopicDialog && (
-          <DeriveTopicDialog
-            onClose={() => dispatcher(closeDerivedTopicDialog())}
+    <Container>
+      <ActionContainer>
+        <DeriveTopic />
+        <ShowAllDerivedTopic />
+      </ActionContainer>
+      <MessageForm onSubmit={(e) => handleSubmit(e)}>
+        <TextFieldContainer>
+          <TextField
+            contentEditable
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            onInput={(e) => handleInput(e.currentTarget.textContent)}
+            placeholder="メッセージを送信"
+            role="textbox"
+            spellCheck={false}
+            type="text"
           />
-        )
-      }
-      <MessageLog
-        isVisible={dialog.messageLog}
-        onClose={() => dispatcher(closeMessageLog())}
-      />
-      <Container>
-        <ActionContainer>
-          <DeriveTopic />
-          <ShowMessageLog />
-        </ActionContainer>
-        <MessageForm onSubmit={(e) => handleSubmit(e)}>
-          <TextFieldContainer>
-            <TextField
-              contentEditable
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              onInput={(e) => handleInput(e.currentTarget.textContent)}
-              placeholder="メッセージを送信"
-              role="textbox"
-              spellCheck={false}
-              type="text"
-            />
-            <Send onClick={() => handleSend()} />
-          </TextFieldContainer>
-        </MessageForm>
-        <MainActionContainer>
-          <DetailActions />
-        </MainActionContainer>
-      </Container>
-    </>
+          <Send onClick={() => handleSend()} />
+        </TextFieldContainer>
+      </MessageForm>
+      <MainActionContainer>
+        <ShowMessageLog />
+        <DetailActions />
+      </MainActionContainer>
+    </Container>
   );
 };
 
@@ -100,10 +83,6 @@ const Container = styled.div`
   @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
     padding-bottom: 16px;
   }
-`;
-
-const MainActionContainer = styled.div`
-  margin-left: 8px;
 `;
 
 const ActionContainer = styled.div`
@@ -123,6 +102,28 @@ const ActionContainer = styled.div`
     position: inherit;
     visibility: visible;
     user-select: inherit;
+  }
+`;
+
+const MainActionContainer = styled(ActionContainer)`
+  margin-left: 8px;
+
+  position: inherit;
+  visibility: visible;
+  user-select: inherit;
+
+  & > div:first-child {
+    position: fixed;
+    visibility: hidden;
+    user-select: none;
+  }
+
+  @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
+    & > div:first-child {
+      position: inherit;
+      visibility: visible;
+      user-select: inherit;
+    }
   }
 `;
 

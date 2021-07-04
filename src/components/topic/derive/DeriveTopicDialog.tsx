@@ -3,23 +3,33 @@ import { Dialog } from 'src/components/common/Dialog';
 import { Button } from 'src/components/common/Button';
 import { TextField } from 'src/components/common/TextField';
 import styled from 'styled-components';
+import { useDispatch } from 'react-redux';
+import { deriveTopic } from 'src/data/redux/topic/action';
+import { closeDerivedTopicDialog } from 'src/data/redux/chat/slice';
+import { useChatState } from 'src/data/redux/chat/selector';
 
 type Props = {
   onClose: () => void,
 }
 
 export const DeriveTopicDialog = ({ onClose }: Props) => {
+  const dispatcher = useDispatch();
   const [title, setTitle] = useState<string>();
+  const { topicId } = useChatState();
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
+    if (!topicId || !title) return;
+
+    dispatcher(deriveTopic({ topicId, title }));
+    dispatcher(closeDerivedTopicDialog());
   };
 
   return (
     <Dialog onClose={useCallback(onClose, [])}>
       <Title>話題を広げる</Title>
       <div>話題を広げて、この話題を更に盛り上げましょう！</div>
-      <Form onSubmit={useCallback(handleSubmit, [title])}>
+      <Form onSubmit={handleSubmit}>
         <InputContainer>
           <TextField
             placeholder="新しい話題のタイトル"
@@ -28,7 +38,7 @@ export const DeriveTopicDialog = ({ onClose }: Props) => {
             onChange={useCallback(setTitle, [title])}
           />
         </InputContainer>
-        <Button isEnabled={!!title}>作成</Button>
+        <Button type="submit" isEnabled={!!title}>作成</Button>
       </Form>
     </Dialog>
   );

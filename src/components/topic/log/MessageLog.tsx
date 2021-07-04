@@ -1,10 +1,8 @@
 import React from 'react';
 import { useMessageState } from 'src/data/redux/message/selector';
 import { MessageLogItem } from 'src/components/topic/log/MessageLogItem';
+import { SwipeInDialog } from 'src/components/topic/dialog/SwipeInDialog';
 import styled from 'styled-components';
-import CloseIcon from 'src/components/svgs/close.svg';
-import { mediaQuery } from 'src/components/constants/mediaQuery';
-import { ZIndex } from 'src/components/constants/z_index';
 
 type Props = {
   isVisible: boolean,
@@ -14,68 +12,19 @@ type Props = {
 export const MessageLog = ({ isVisible, onClose }: Props) => {
   const { messages } = useMessageState();
   return (
-    <Wrapper isVisible={isVisible} onClick={onClose}>
-      <Container isVisible={isVisible}>
-        <CloseButton onClick={() => onClose()}>
-          <CloseIcon />
-        </CloseButton>
-        <Dialog>
-          {
-            (messages ?? [])
-              .map((message, index) => <MessageLogItem key={index} message={message} />)
-          }
-        </Dialog>
+    <SwipeInDialog isVisible={isVisible} onClose={onClose}>
+      <Container>
+        {
+          (messages ?? [])
+            .map((message, index) => <MessageLogItem key={index} message={message} />)
+        }
       </Container>
-    </Wrapper>
+    </SwipeInDialog>
   );
 };
 
-const Wrapper = styled.div<{isVisible: boolean}>`
-  align-items: center;
-  display: flex;
-  position: fixed;
-  transition: all 0.4s ease-in-out;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  right: 0;
-  left: 0;
-  bottom: 0;
-  z-index: ${ZIndex.dialog};
-  visibility: ${(props) => (props.isVisible ? 'visible' : 'hidden')};
-
-  @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
-    background-color: ${(props) => (props.isVisible ? 'rgba(0,0,0,.6)' : 'transparent')};
-    padding-left: 64px;
-  }
-`;
-
-const Container = styled.div<{ isVisible: boolean }>`
-  display: flex;
-  flex-direction: row;
-  height: 100%;
-  width: 100%;
-  justify-content: center;
-  transition: all 0.4s ease-in-out;
-  transform: translateX(${(props) => (props.isVisible ? 0 : -50)}vh);
-  visibility: ${(props) => (props.isVisible ? 'visible' : 'hidden')};
-
-  @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
-    flex-direction: column;
-    max-width: 500px;
-  }
-`;
-
-const Dialog = styled.div`
-  background-color: white;
-  box-sizing: border-box;
+const Container = styled.div`
   padding: 16px;
-  box-shadow: 20px 20px 60px rgba(0, 0, 0, .1);
-  height: 100%;
-  width: 100%;
-  position: relative;
-  overflow-y: auto;
-  overflow-x: hidden;
 
   & > div {
     margin-bottom: 16px;
@@ -83,26 +32,5 @@ const Dialog = styled.div`
 
   & > div:last-child {
     margin-bottom: 0;
-  }
-
-  @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
-    border-radius: 0 0 10px 10px;
-    max-height: 600px;
-    max-width: calc(100vw - 64px);
-  }
-`;
-
-const CloseButton = styled.div`
-  align-items: center;
-  box-sizing: border-box;
-  background-color: #caeaeb;
-  display: flex;
-  justify-content: center;
-  padding: 8px 2px;
-  cursor: pointer;
-
-  @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
-    border-radius: 10px 10px 0 0;
-    width: 100%;
   }
 `;
