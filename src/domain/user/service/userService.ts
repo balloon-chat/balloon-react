@@ -1,5 +1,4 @@
 import { IUserRepository } from 'src/domain/user/repository/userRepository';
-import { UserRepository } from 'src/data/core/user/userRepository';
 import { FirebaseUserDatabase } from 'src/data/firebase/user/userDatabase';
 import { CreateUser } from 'src/domain/user/usecases/createUser';
 import { UserEntity, UserEntityFactory } from 'src/view/types/user';
@@ -25,7 +24,7 @@ export class UserService {
 
   constructor(
     userRepository: IUserRepository
-    = new UserRepository(FirebaseUserDatabase.instance),
+    = FirebaseUserDatabase.instance,
     userImageRepository: IUserImageRepository
     = new UserImageRepository(FirebaseUserImageDatabase.instance),
   ) {

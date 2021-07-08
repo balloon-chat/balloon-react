@@ -16,7 +16,6 @@ import { FirebaseTopicDatabase } from 'src/data/firebase/topic/topicDatabase';
 import { FirebaseTopicImageDatabase } from 'src/data/firebase/topic/topicImageDatabase';
 import { FirebaseMessageDatabase } from 'src/data/firebase/message/messageDatabase';
 import { FirebaseUserDatabase } from 'src/data/firebase/user/userDatabase';
-import { UserRepository } from 'src/data/core/user/userRepository';
 import { MessageRepository } from 'src/data/core/message/messageRepository';
 import { TopicImageRepository } from 'src/data/core/topic/topicImageRepository';
 import { IGetRecommendTopics } from 'src/domain/topic/types/getRecommendTopics';
@@ -69,7 +68,7 @@ export class TopicService {
     messageRepository: IMessageRepository
     = new MessageRepository(FirebaseMessageDatabase.instance),
     userRepository: IUserRepository
-    = new UserRepository(FirebaseUserDatabase.instance),
+    = FirebaseUserDatabase.instance,
     private readonly invitationRepository: IInvitationRepository
     = new InvitationApi(),
   ) {

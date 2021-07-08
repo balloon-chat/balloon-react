@@ -8,7 +8,6 @@ import { FirebaseMessageDatabase } from 'src/data/firebase/message/messageDataba
 import { MessageEntity, MessageEntityFactory } from 'src/view/types/message';
 import { ObserveMessages } from 'src/domain/message/usecases/observeMessages';
 import { IUserRepository } from 'src/domain/user/repository/userRepository';
-import { UserRepository } from 'src/data/core/user/userRepository';
 import { FirebaseUserDatabase } from 'src/data/firebase/user/userDatabase';
 import { map } from 'rxjs/operators';
 import { IObserveMessages } from 'src/domain/message/types/observeMessages';
@@ -21,12 +20,10 @@ export class MessageService {
   private readonly observeMessageUsecase: IObserveMessages;
 
   constructor(
-    messageRepository: IMessageRepository = new MessageRepository(
-      FirebaseMessageDatabase.instance,
-    ),
-    userRepository: IUserRepository = new UserRepository(
-      FirebaseUserDatabase.instance,
-    ),
+    messageRepository: IMessageRepository
+    = new MessageRepository(FirebaseMessageDatabase.instance),
+    userRepository: IUserRepository
+    = FirebaseUserDatabase.instance,
   ) {
     this.addMessageUsecase = new AddMessage(messageRepository);
     this.observeMessageUsecase = new ObserveMessages(

@@ -1,7 +1,6 @@
 import axios, { AxiosError } from 'axios';
 import { UserEntity, UserEntityFactory } from 'src/view/types/user';
 import firebase from 'firebase/app';
-import { UserRepository } from 'src/data/core/user/userRepository';
 import { IUserRepository } from 'src/domain/user/repository/userRepository';
 import { FirebaseUserDatabase } from 'src/data/firebase/user/userDatabase';
 import { IGetUserByLoginId } from 'src/domain/user/types/getUserByLoginId';
@@ -38,7 +37,7 @@ export class AuthService {
 
   constructor(
     userRepository: IUserRepository
-    = new UserRepository(FirebaseUserDatabase.instance),
+    = FirebaseUserDatabase.instance,
   ) {
     this.getUserByLoginIdUsecase = new GetUserByLoginId(userRepository);
   }
