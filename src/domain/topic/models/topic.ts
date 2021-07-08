@@ -3,6 +3,7 @@ import { TopicId } from 'src/domain/topic/models/topicId';
 import { TopicTitle } from 'src/domain/topic/models/topicTitle';
 import { UserId } from 'src/domain/user/models/userId';
 import { TopicDescription } from 'src/domain/topic/models/topicDescription';
+import { BranchTopic, BranchTopicId } from 'src/domain/topic/models/branchTopic';
 
 export class Topic {
   constructor(
@@ -12,13 +13,24 @@ export class Topic {
     public readonly createdBy: UserId,
     public readonly thumbnailUrl: string,
     public readonly isPrivate: boolean,
+    public branchTopics: BranchTopic[],
     public readonly description?: TopicDescription,
   ) {}
+
+  addBranchTopic(branchTopic: BranchTopic) {
+    this.branchTopics.push(branchTopic);
+  }
+
+  deleteBranchTopic(branchTopicId: BranchTopicId) {
+    this.branchTopics = this.branchTopics
+      .filter((e) => e.id.value !== branchTopicId.value);
+  }
 
   copyWith({
     topicId,
     title,
     description,
+    branchTopics,
     createdBy,
     createdAt,
     thumbnailUrl,
@@ -26,9 +38,10 @@ export class Topic {
   }: {
     topicId?: TopicId,
     title?: TopicTitle,
-    description?: string,
     createdBy?: UserId,
     createdAt?: number,
+    description?: string,
+    branchTopics?: BranchTopic[],
     thumbnailUrl?: string,
     isPrivate?: boolean,
   }): Topic {
@@ -39,6 +52,7 @@ export class Topic {
       createdBy ?? this.createdBy,
       thumbnailUrl ?? this.thumbnailUrl,
       isPrivate ?? this.isPrivate,
+      branchTopics ?? this.branchTopics,
       TopicDescription.create(description) ?? this.description,
     );
   }
@@ -49,14 +63,16 @@ export class TopicFactory {
     topicId,
     title,
     description,
+    branchTopics,
     createdBy,
     createdAt,
     thumbnailUrl,
     isPrivate,
   }: {
     topicId?: TopicId,
-    title: TopicTitle,
+    title: TopicTitle|string,
     description?: string,
+    branchTopics?: BranchTopic[],
     createdBy: UserId,
     createdAt?: number,
     thumbnailUrl: string,
@@ -64,11 +80,12 @@ export class TopicFactory {
   }): Topic {
     return new Topic(
       topicId ?? new TopicId(),
-      title,
+      typeof title === 'string' ? new TopicTitle(title) : title,
       createdAt ?? Date.now(),
       createdBy,
       thumbnailUrl,
       isPrivate ?? false,
+      branchTopics ?? [],
       TopicDescription.create(description),
     );
   }

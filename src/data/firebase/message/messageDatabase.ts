@@ -39,6 +39,7 @@ export class FirebaseMessageDatabase implements IMessageDatabase {
         else behaviorSubject.next(messages);
       },
       (error) => {
+        console.error(error);
         if (!behaviorSubject.closed) behaviorSubject.error(error);
       },
     );

@@ -3,6 +3,9 @@ import { TopicId } from 'src/domain/topic/models/topicId';
 import { UserId } from 'src/domain/user/models/userId';
 import { TopicTitle } from 'src/domain/topic/models/topicTitle';
 import { TopicDescription } from 'src/domain/topic/models/topicDescription';
+import { BranchTopicEntity } from 'src/domain/topic/repository/branchTopicEntity';
+import { BranchTopic, BranchTopicId } from 'src/domain/topic/models/branchTopic';
+import { Observable, Subject } from 'rxjs';
 
 export interface ITopicRepository {
   find(topicId: TopicId): Promise<TopicEntity | undefined>;
@@ -31,6 +34,8 @@ export interface ITopicRepository {
    */
   findAllTopicsCreatedBy(createdBy: UserId): Promise<TopicEntity[]>
 
+  observeTopic(topicId: TopicId, unsubscribe?: Subject<void>): Observable<TopicEntity | null>
+
   /**
    * {@param topicId}で指定された話題のプロパティを更新
    * @param params undefinedでないプロパティは更新される
@@ -40,6 +45,15 @@ export interface ITopicRepository {
   save(topic: TopicEntity): Promise<void>
 
   delete(topicId: TopicId): Promise<void>
+
+  findBranchTopic(
+    topicId: TopicId,
+    branchTopicId: BranchTopicId
+  ): Promise<BranchTopic | null>
+
+  addBranchTopic(topicId: TopicId, branchTopic: BranchTopicEntity): Promise<void>
+
+  deleteBranchTopic(topicId: TopicId, branchTopicId: BranchTopicId): Promise<void>
 }
 
 export type UpdateTopicParams = {

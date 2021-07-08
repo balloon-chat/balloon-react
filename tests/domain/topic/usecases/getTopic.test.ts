@@ -20,7 +20,11 @@ const topicRepository = new FakeTopicRepository();
 const messageRepository = new FakeMessageRepository();
 const userRepository = new FakeUserRepository();
 
-const usecase: IGetTopic = new GetTopic(messageRepository, topicRepository, userRepository);
+const usecase: IGetTopic = new GetTopic(
+  messageRepository,
+  topicRepository,
+  userRepository,
+);
 
 const thumbnailUrl = 'some.img';
 const user = new LoginUser(new UserId(), null, new UserName('test'), 'test');

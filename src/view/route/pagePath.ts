@@ -6,6 +6,7 @@ export const topicPath = {
   index: '/topics',
   create: '/topics/create',
   topic: (id: string) => `/topics/${id}`,
+  topicBranch: (id: string, branch: number) => `/topics/${id}?branch=${branch}`,
   edit: (id: string) => `/topics/edit/${id}`,
 };
 

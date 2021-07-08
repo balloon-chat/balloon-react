@@ -19,7 +19,6 @@ import { FirebaseUserDatabase } from 'src/data/firebase/user/userDatabase';
 import { UserRepository } from 'src/data/core/user/userRepository';
 import { MessageRepository } from 'src/data/core/message/messageRepository';
 import { TopicImageRepository } from 'src/data/core/topic/topicImageRepository';
-import { TopicRepository } from 'src/data/core/topic/topicRepository';
 import { IGetRecommendTopics } from 'src/domain/topic/types/getRecommendTopics';
 import { ICreateTopic } from 'src/domain/topic/types/createTopic';
 import { IGetTopics } from 'src/domain/topic/types/getTopics';
@@ -34,9 +33,17 @@ import { GetTopicByInvitationCode } from 'src/domain/topic/usecases/getTopicByIn
 import { IUpdateTopic } from 'src/domain/topic/types/updateTopic';
 import { UpdateTopic } from 'src/domain/topic/usecases/updateTopic';
 import { TopicEntity, TopicEntityFactory } from 'src/view/types/topic';
+import { IDeriveTopic } from 'src/domain/topic/types/deriveTopic';
+import { DeriveTopic } from 'src/domain/topic/usecases/deriveTopic';
+import { Observable, Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { IObserveTopic } from 'src/domain/topic/types/observeTopic';
+import { ObserveTopic } from 'src/domain/topic/usecases/observeTopic';
 
 export class TopicService {
   private readonly createTopicUsecase: ICreateTopic;
+
+  private readonly deriveTopicUsecase: IDeriveTopic;
 
   private readonly getTopicUsecase: IGetTopic;
 
@@ -48,11 +55,13 @@ export class TopicService {
 
   private readonly getRecommendTopicsUsecase: IGetRecommendTopics;
 
+  private readonly observeTopicUsecase: IObserveTopic;
+
   private readonly updateTopicUsecase: IUpdateTopic;
 
   constructor(
     topicRepository: ITopicRepository
-    = new TopicRepository(FirebaseTopicDatabase.instance),
+    = FirebaseTopicDatabase.instance,
     recommendTopicRepository: IRecommendTopicRepository
     = new RecommendTopicRepository(FirebaseRecommendTopicDatabase.instance),
     topicImageRepository: ITopicImageRepository
@@ -70,6 +79,9 @@ export class TopicService {
       userRepository,
       invitationRepository,
     );
+    this.deriveTopicUsecase = new DeriveTopic(
+      topicRepository,
+    );
     this.getTopicUsecase = new GetTopic(
       messageRepository,
       topicRepository,
@@ -80,18 +92,21 @@ export class TopicService {
       this.getTopicUsecase,
     );
     this.getTopicsUsecase = new GetTopics(
-      messageRepository,
       topicRepository,
+      messageRepository,
       userRepository,
     );
     this.getTopicsCreatedByUsecase = new GetTopicsCreatedBy(
       topicRepository,
+      messageRepository,
       userRepository,
-      this.getTopicUsecase,
     );
     this.getRecommendTopicsUsecase = new GetRecommendTopics(
       this.getTopicsUsecase,
       recommendTopicRepository,
+    );
+    this.observeTopicUsecase = new ObserveTopic(
+      topicRepository,
     );
     this.updateTopicUsecase = new UpdateTopic(
       topicRepository,
@@ -117,17 +132,32 @@ export class TopicService {
     return TopicEntityFactory.fromTopic({
       topic,
       commentCount: 0,
-      createdBy: new UserId(createdBy),
     });
   }
 
+  async deriveTopic(topicId: string, title: string): Promise<TopicEntity|undefined> {
+    await this.deriveTopicUsecase.execute(topicId, title);
+    return this.getTopic(topicId);
+  }
+
+  async getTopic(topicId: string): Promise<TopicEntity|undefined> {
+    const topicData = await this.getTopicUsecase.execute(new TopicId(topicId));
+    if (!topicData) return undefined;
+
+    return TopicEntityFactory.create(topicData);
+  }
+
   async updateTopic(topicId: string, params: {
-      title?: string,
+    title?: string,
     description?: string,
     thumbnail?: File|Blob,
     isPrivate?: boolean,
-  }): Promise<void> {
-    await this.updateTopicUsecase.execute(topicId, params);
+  }): Promise<TopicEntity> {
+    const topic = await this.updateTopicUsecase.execute(topicId, params);
+    return TopicEntityFactory.fromTopic({
+      topic,
+      commentCount: 0,
+    });
   }
 
   fetchTopic(topicId: string): Promise<TopicData | undefined> {
@@ -166,5 +196,18 @@ export class TopicService {
     } catch (e) {
       return null;
     }
+  }
+
+  observeTopic(topicId: string, unsubscribe: Subject<void>): Observable<TopicEntity| null> {
+    return this.observeTopicUsecase.execute(topicId, unsubscribe)
+      .pipe(
+        map((topic) => {
+          if (!topic) return null;
+          return TopicEntityFactory.fromTopic({
+            topic,
+            commentCount: 0,
+          });
+        }),
+      );
   }
 }

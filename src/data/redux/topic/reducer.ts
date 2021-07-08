@@ -1,39 +1,38 @@
-import { CaseReducer } from '@reduxjs/toolkit';
-import {
-  ResetTopicState,
-  SetCurrentTopic,
-  SetInvitationCode,
-  SetTopics,
-} from 'src/data/redux/topic/action';
-import { TopicState } from 'src/data/redux/topic/state';
+import { Action, CaseReducer, PayloadAction } from '@reduxjs/toolkit';
+import { EditTopicMode, EditTopicModes, TopicStateType } from 'src/data/redux/topic/state';
+import { TopicEntity } from 'src/view/types/topic';
 
-export const resetTopicStateReducer: CaseReducer<TopicState, ResetTopicState> = (
-  state,
+export const editTopicReducer: CaseReducer<
+  TopicStateType,
+  PayloadAction<{mode: EditTopicMode, topic: TopicEntity | null }>
+> = (
+  state, { payload },
 ) => ({
   ...state,
-  state: undefined,
+  edit: {
+    state: null,
+    mode: payload.mode,
+    update: payload.mode === EditTopicModes.UPDATE && payload.topic
+      ? {
+        topic: payload.topic,
+      }
+      : null,
+    create: null,
+  },
 });
 
-export const setCurrentTopicReducer: CaseReducer<TopicState, SetCurrentTopic> = (
-  state,
-  { payload },
-) => ({
+export const finishEditTopicReducer: CaseReducer<
+  TopicStateType,
+  Action
+> = (state) => ({
   ...state,
-  currentTopic: payload.topic ?? undefined,
+  edit: null,
 });
 
-export const setTopicsReducer: CaseReducer<TopicState, SetTopics> = (
-  state,
-  { payload },
-) => ({
+export const setTopicsReducer: CaseReducer<
+  TopicStateType,
+  PayloadAction<{ topics: TopicEntity[] }>
+> = (state, { payload }) => ({
   ...state,
   topics: payload.topics,
-});
-
-export const setInvitationCodeReducer: CaseReducer<TopicState, SetInvitationCode> = (
-  state,
-  { payload },
-) => ({
-  ...state,
-  code: payload.code,
 });

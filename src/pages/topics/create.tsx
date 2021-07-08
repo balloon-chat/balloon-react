@@ -1,6 +1,6 @@
 import { NavBar } from 'src/components/navbar/NavBar';
 import { EditTopic } from 'src/components/topic/edit/EditTopic';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ContainerCard } from 'src/components/common/ContainerCard';
 import styled from 'styled-components';
 import { pageTitle, rootPath } from 'src/view/route/pagePath';
@@ -9,12 +9,16 @@ import Head from 'next/head';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import { AuthService } from 'src/domain/auth/service/AuthService';
+import { editTopic, finishEditTopic } from 'src/data/redux/topic/slice';
+import { EditTopicModes } from 'src/data/redux/topic/state';
+import { useDispatch } from 'react-redux';
 
 type Props = {
   isLoggedIn: boolean,
 }
 
 const CreateTopicPage = ({ isLoggedIn }: Props) => {
+  const dispatcher = useDispatch();
   const router = useRouter();
 
   if (!isLoggedIn) {
@@ -24,6 +28,14 @@ const CreateTopicPage = ({ isLoggedIn }: Props) => {
     }).then();
     return (<></>);
   }
+
+  useEffect(() => {
+    dispatcher(editTopic({ mode: EditTopicModes.CREATE, topic: null }));
+
+    return () => {
+      dispatcher(finishEditTopic());
+    };
+  }, []);
 
   return (
     <>

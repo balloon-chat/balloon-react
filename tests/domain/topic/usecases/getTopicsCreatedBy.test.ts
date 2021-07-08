@@ -1,5 +1,4 @@
 import { FakeTopicRepository } from 'tests/data/topic/fakeTopicRepository';
-import { GetTopic } from 'src/domain/topic/usecases/getTopic';
 import { FakeMessageRepository } from 'tests/data/message/FakeMessageRepository';
 import { FakeUserRepository } from 'tests/data/user/FakeUserRepository';
 import { GetTopicsCreatedBy } from 'src/domain/topic/usecases/getTopicsCreatedBy';
@@ -17,8 +16,8 @@ const topicRepository = new FakeTopicRepository();
 const userRepository = new FakeUserRepository();
 const usecase: IGetTopicsCreatedBy = new GetTopicsCreatedBy(
   topicRepository,
+  messageRepository,
   userRepository,
-  new GetTopic(messageRepository, topicRepository, userRepository),
 );
 
 const thumbnailUrl = 'test.user';
@@ -145,66 +144,5 @@ describe('プライベートな話題を取得', () => {
     expect(results).toStrictEqual([
       TopicDataFactory.create({ topic: publicTopic, commentCount: 0, createdBy: user }),
     ]);
-  });
-});
-
-describe('プライベートな話題を取得', () => {
-  const user = new LoginUser(new UserId(), 'creator', new UserName('Test'), photoUrl);
-  const publicTopic = TopicFactory.create({
-    title: topicTitle,
-    createdBy: user.id,
-    thumbnailUrl,
-    isPrivate: false,
-  });
-  const privateTopic = TopicFactory.create({
-    title: topicTitle,
-    createdBy: user.id,
-    thumbnailUrl,
-    isPrivate: true,
-  });
-
-  test('作成したユーザーが取得', async () => {
-    /*
-   初期データ:
-     UserRepository : UserA
-     TopicRepository: [Topic(public, user=UserA), Topic(private, user=UserA)]
-    */
-    await userRepository.save(user);
-    await topicRepository.save(TopicEntity.from(publicTopic));
-    await topicRepository.save(TopicEntity.from(privateTopic));
-
-    /*
-    閲覧者が作成者の場合のみ、プライベートなTopicが取得される
-    Expected:
-      return: [Topic(public, user=UserA), Topic(private, user=UserA)]
-     */
-    const results = await usecase.execute(user.id.value, user.loginId!);
-    expect(results)
-      .toStrictEqual([
-        TopicDataFactory.create({ topic: publicTopic, commentCount: 0, createdBy: user }),
-        TopicDataFactory.create({ topic: privateTopic, commentCount: 0, createdBy: user }),
-      ]);
-  });
-
-  test('作成者でないユーザーが取得', async () => {
-    /*
-      初期データ:
-        UserRepository : UserA
-        TopicRepository: [Topic(public, user=UserA), Topic(private, user=UserA)]
-       */
-    await userRepository.save(user);
-    await topicRepository.save(TopicEntity.from(publicTopic));
-    await topicRepository.save(TopicEntity.from(privateTopic));
-
-    /*
-    閲覧者が作成者の場合のみ、プライベートなTopicが取得される
-    Expected:
-      return: [Topic(public, user=UserA)]
-     */
-    const results = await usecase.execute(user.id.value, 'other user');
-    expect(results)
-      .toStrictEqual([
-        TopicDataFactory.create({ topic: publicTopic, commentCount: 0, createdBy: user }),
-      ]);
   });
 });

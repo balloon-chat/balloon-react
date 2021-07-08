@@ -9,15 +9,19 @@ export class GetTopic {
     private readonly messageRepository: IMessageRepository,
     private readonly topicRepository: ITopicRepository,
     private readonly userRepository: IUserRepository,
-  ) {}
+  ) {
+  }
 
   async execute(topicId: TopicId): Promise<TopicData | undefined> {
     const topic = await this.topicRepository.find(topicId);
     if (!topic) return undefined;
-    const createdBy = await this.userRepository.find(topic.createdBy);
-    if (!createdBy) return undefined;
 
-    const commentCount = await this.messageRepository.messageCount(topic.id);
+    const [createdBy, commentCount] = await Promise.all([
+      this.userRepository.find(topic.createdBy),
+      this.messageRepository.messageCount(topic.id),
+    ]);
+
+    if (!createdBy) return undefined;
 
     return TopicDataFactory.create({
       topic: topic.toTopic(),

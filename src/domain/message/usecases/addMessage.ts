@@ -13,23 +13,20 @@ export class AddMessage implements IAddMessage {
    * 新しくTopicを作成し、IMessageRepositoryに保存する。
    */
   async execute(
-    value: string,
+    message: string,
     senderId: UserId,
     topicId: TopicId,
   ): Promise<MessageEntity> {
-    if (!MessageBody.require(value)) {
+    if (!MessageBody.require(message)) {
       return Promise.reject(
         new IllegalArgumentException(
-          'value must satisfy the constraints of MessageBody',
+          'message must satisfy the constraints of MessageBody',
         ),
       );
     }
 
-    const message = MessageEntityFactory.create(
-      new MessageBody(value),
-      senderId,
-    );
-    await this.messageRepository.save(topicId, message);
-    return Promise.resolve(message);
+    const entity = MessageEntityFactory.create(message, senderId);
+    await this.messageRepository.save(topicId, entity);
+    return entity;
   }
 }

@@ -7,25 +7,24 @@ import { MessageService } from 'src/domain/message/service/MessageService';
 import { Subject } from 'rxjs';
 
 let service: MessageService|null = null;
+const unsubscribeSubjects: Subject<void>[] = [];
 
 export const messageEpic: Epic<ObserveStart, ObserveFulfilled, RootState> = (
-  action$, state$,
+  action$,
 ) => action$.pipe(
   ofType(observeStart.type),
   mergeMap(({ payload }) => {
     service = service ?? new MessageService();
 
-    // TopicIDが変化したときに、メッセージのサブスクリプションを停止する
-    const unsubscribe = new Subject<void>();
-    const subscription = state$.subscribe({
-      next: ({ topic }) => {
-        if (topic.currentTopic?.id !== payload.topicId && !unsubscribe.closed) {
-          unsubscribe.next();
-          unsubscribe.complete();
-          if (!subscription.closed) subscription.unsubscribe();
-        }
-      },
+    // 前回までのサブスクリプションをすべてキャンセルする。
+    unsubscribeSubjects.forEach((s) => {
+      s.next();
+      s.complete();
     });
+    unsubscribeSubjects.splice(0);
+
+    const unsubscribe = new Subject<void>();
+    unsubscribeSubjects.push(unsubscribe);
 
     return service.observeMessageData(payload.topicId, unsubscribe).pipe(
       map(

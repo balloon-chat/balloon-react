@@ -12,7 +12,7 @@ import { pageTitle, rootPath } from 'src/view/route/pagePath';
 import Head from 'next/head';
 import { InvitationCodeForm } from 'src/components/topic/invitation/InvitationCodeForm';
 import { useRouter } from 'next/router';
-import { topicStates } from 'src/data/redux/topic/state';
+import { TopicStates } from 'src/data/redux/topic/state';
 import { ErrorPage } from 'src/components/common/ErrorPage';
 
 type Props = {
@@ -71,7 +71,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
         pickup: null,
         topics: [],
         invitationTopic: topic ? TopicEntityFactory.create(topic) : null,
-        error: topic ? null : topicStates.CANNOT_FIND_BY_CODE,
+        error: topic ? null : TopicStates.CANNOT_FIND_BY_CODE,
       },
     };
   }

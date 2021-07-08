@@ -1,9 +1,10 @@
-import { Action, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk } from '@reduxjs/toolkit';
 import { topicStateName } from 'src/data/redux/topic/state';
 import { TopicService } from 'src/domain/topic/service/topicService';
 import { TopicEntity, TopicEntityFactory } from 'src/view/types/topic';
 
 const CREATE_TOPIC = `${topicStateName}/create`;
+const DERIVE_TOPIC = `${topicStateName}/derive`;
 const FETCH_TOPIC = `${topicStateName}/fetch_topic`;
 const FETCH_TOPICS = `${topicStateName}/fetch_topics`;
 const FETCH_TOPICS_CREATED_BY = `${topicStateName}/fetch_topics_created_by`;
@@ -15,7 +16,7 @@ export const createTopic = createAsyncThunk<
     created: TopicEntity,
   },
   {
-    description: string;
+    description: string,
     isPrivate: boolean,
     title: string;
     thumbnail: File | Blob;
@@ -30,7 +31,7 @@ export const createTopic = createAsyncThunk<
 
 export const updateTopic = createAsyncThunk<
   {
-    topicId: string,
+    topic: TopicEntity,
   },
   {
     topicId: string,
@@ -41,8 +42,8 @@ export const updateTopic = createAsyncThunk<
   }
 >(UPDATE_TOPIC, async ({ topicId, title, description, thumbnail, isPrivate }) => {
   const service = new TopicService();
-  await service.updateTopic(topicId, { title, description, thumbnail, isPrivate });
-  return { topicId };
+  const topic = await service.updateTopic(topicId, { title, description, thumbnail, isPrivate });
+  return { topic };
 });
 
 export const fetchTopic = createAsyncThunk<
@@ -91,9 +92,13 @@ export const fetchTopicByCode = createAsyncThunk<
   };
 });
 
-export type SetIsTopicCreated = PayloadAction<{ isTopicCreated: boolean }>;
-export type SetTopicId = PayloadAction<{ topicId: string | null }>;
-export type SetCurrentTopic = PayloadAction<{topic: TopicEntity | null}>
-export type SetInvitationCode = PayloadAction<{ code: number[] | null}>
-export type SetTopics = PayloadAction<{ topics: TopicEntity[] }>;
-export type ResetTopicState = Action;
+export const deriveTopic = createAsyncThunk<
+  { topic: TopicEntity },
+  { topicId: string, title: string }
+>(DERIVE_TOPIC, async ({ topicId, title }) => {
+  const service = new TopicService();
+  const topic = await service.deriveTopic(topicId, title);
+  if (!topic) throw Error(`Topic(${topicId}) was not found`);
+
+  return { topic };
+});

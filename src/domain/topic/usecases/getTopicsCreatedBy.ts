@@ -4,13 +4,22 @@ import { UserId } from 'src/domain/user/models/userId';
 import { TopicData } from 'src/domain/topic/models/topicData';
 import { IGetTopic } from 'src/domain/topic/types/getTopic';
 import { IUserRepository } from 'src/domain/user/repository/userRepository';
+import { GetTopic } from 'src/domain/topic/usecases/getTopic';
+import { IMessageRepository } from 'src/domain/message/repository/messageRepository';
 
 export class GetTopicsCreatedBy implements IGetTopicsCreatedBy {
+  private readonly getTopicUseCase: IGetTopic;
+
   constructor(
     private readonly topicRepository: ITopicRepository,
+    messageRepository: IMessageRepository,
     private readonly userRepository: IUserRepository,
-    private readonly getTopicUseCase: IGetTopic,
   ) {
+    this.getTopicUseCase = new GetTopic(
+      messageRepository,
+      this.topicRepository,
+      this.userRepository,
+    );
   }
 
   async execute(createdBy: string, loginId?: string): Promise<TopicData[]> {
