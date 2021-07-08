@@ -1,8 +1,8 @@
 import React, { useCallback, useState } from 'react';
 import { ChatAction } from 'src/components/topic/actions/ChatAction';
 import styled from 'styled-components';
-import { ChatActionDialog } from 'src/components/topic/actions/ChatActionDialog';
-import { ChatActionBottomSheet } from 'src/components/topic/actions/ChatActionBottomSheet';
+import { ChatActionDialog } from 'src/components/topic/dialog/ChatActionDialog';
+import { ChatActionBottomSheet } from 'src/components/topic/dialog/ChatActionBottomSheet';
 import { mediaQuery } from 'src/components/constants/mediaQuery';
 
 export const DetailActions = () => {

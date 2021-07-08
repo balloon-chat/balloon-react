@@ -8,11 +8,7 @@ import { deriveTopic } from 'src/data/redux/topic/action';
 import { closeDeriveTopicDialog } from 'src/data/redux/chat/slice';
 import { useChatState } from 'src/data/redux/chat/selector';
 
-type Props = {
-  onClose: () => void,
-}
-
-export const DeriveTopicDialog = ({ onClose }: Props) => {
+export const DeriveTopicDialog = () => {
   const dispatcher = useDispatch();
   const [title, setTitle] = useState<string>();
   const { topicId } = useChatState();
@@ -22,6 +18,10 @@ export const DeriveTopicDialog = ({ onClose }: Props) => {
     if (!topicId || !title) return;
 
     dispatcher(deriveTopic({ topicId, title }));
+    onClose();
+  };
+
+  const onClose = () => {
     dispatcher(closeDeriveTopicDialog());
   };
 
