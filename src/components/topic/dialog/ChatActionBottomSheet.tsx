@@ -4,7 +4,8 @@ import AddIcon from 'src/components/svgs/add.svg';
 import ChatBubbleIcon from 'src/components/svgs/chat_bubble.svg';
 import EditIcon from 'src/components/svgs/edit_fill.svg';
 import ExitIcon from 'src/components/svgs/exit.svg';
-import MailIcon from 'src/components/svgs/mail.svg';
+import ForumIcon from 'src/components/svgs/forum.svg';
+import CopyIcon from 'src/components/svgs/content_copy.svg';
 import { TextButton } from 'src/components/common/Button';
 import { rootPath, topicPath } from 'src/view/route/pagePath';
 import Link from 'next/link';
@@ -14,6 +15,7 @@ import { ZIndex } from 'src/components/constants/z_index';
 import { useDispatch } from 'react-redux';
 import { useChatState } from 'src/data/redux/chat/selector';
 import {
+  showBranchTopicsDialog as showBranchTopicsDialogAction,
   showDeriveTopicDialog as showDeriveTopicDialogAction,
   showMessageLog as showMessageLogAction,
 } from 'src/data/redux/chat/slice';
@@ -36,6 +38,11 @@ export const ChatActionBottomSheet = ({
     dispatcher(showDeriveTopicDialogAction());
   }, []);
 
+  const showBranchTopicsDialog = useCallback(() => {
+    onClose();
+    dispatcher(showBranchTopicsDialogAction());
+  }, []);
+
   const showMessageLog = useCallback(() => {
     onClose();
     dispatcher(showMessageLogAction());
@@ -51,6 +58,10 @@ export const ChatActionBottomSheet = ({
               話題を広げる
               <AddIcon />
             </BottomSheetAction>
+            <BottomSheetAction onClick={showBranchTopicsDialog}>
+              すべての話題を表示
+              <ForumIcon />
+            </BottomSheetAction>
             <BottomSheetAction onClick={showMessageLog}>
               ログを表示
               <ChatBubbleIcon />
@@ -58,7 +69,7 @@ export const ChatActionBottomSheet = ({
             <CopyToClipboard text={invitation ?? ''} onCopy={onClose}>
               <BottomSheetAction>
                 招待をコピー
-                <MailIcon />
+                <CopyIcon />
               </BottomSheetAction>
             </CopyToClipboard>
             {
