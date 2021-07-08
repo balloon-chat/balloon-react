@@ -6,7 +6,12 @@ import { MessageEntityDiffUtil } from 'src/view/matter/lib/messageEntityDiffUtil
 import { mediaQuery } from 'src/components/constants/mediaQuery';
 
 export class MatterListAdapter extends ListAdapter<MessageEntity> {
-  constructor(private readonly controller: MatterController) {
+  constructor(
+    private readonly controller: MatterController,
+
+    // 画面生成直後かを判別するためのパラメータ
+    private readonly createdAt: number = Date.now(),
+  ) {
     super(new MessageEntityDiffUtil());
   }
 
@@ -59,6 +64,11 @@ export class MatterListAdapter extends ListAdapter<MessageEntity> {
     if (!character) return;
     this.controller
       .character
-      .remove(this.controller.world, character);
+      .remove(
+        this.controller.world,
+        character,
+        // 画面生成直後には、アニメーションしない
+        { animate: Date.now() - 5 * 1000 > this.createdAt },
+      );
   }
 }

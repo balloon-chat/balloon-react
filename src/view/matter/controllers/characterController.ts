@@ -40,11 +40,18 @@ export abstract class CharacterController {
     });
   }
 
-  remove(world: World, character: Character) {
-    character.fadeout(400, () => {
+  remove(world: World, character: Character, { animate }: {animate: boolean} = { animate: true }) {
+    // eslint-disable-next-line no-underscore-dangle
+    const _remove = () => {
       World.remove(world, character.body);
       this._characters.delete(character.id);
-    });
+    };
+
+    if (!animate) {
+      _remove();
+      return;
+    }
+    character.fadeout(400, _remove);
   }
 
   draw(p5: P5Types) {
