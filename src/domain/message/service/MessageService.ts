@@ -2,7 +2,6 @@ import { AddMessage } from 'src/domain/message/usecases/addMessage';
 import { UserId } from 'src/domain/user/models/userId';
 import { Observable, Subject } from 'rxjs';
 import { TopicId } from 'src/domain/topic/models/topicId';
-import { MessageRepository } from 'src/data/core/message/messageRepository';
 import { IMessageRepository } from 'src/domain/message/repository/messageRepository';
 import { FirebaseMessageDatabase } from 'src/data/firebase/message/messageDatabase';
 import { MessageEntity, MessageEntityFactory } from 'src/view/types/message';
@@ -21,7 +20,7 @@ export class MessageService {
 
   constructor(
     messageRepository: IMessageRepository
-    = new MessageRepository(FirebaseMessageDatabase.instance),
+    = FirebaseMessageDatabase.instance,
     userRepository: IUserRepository
     = FirebaseUserDatabase.instance,
   ) {

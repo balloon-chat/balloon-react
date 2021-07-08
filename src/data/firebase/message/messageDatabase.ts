@@ -1,30 +1,33 @@
-import { IMessageDatabase } from 'src/data/core/message/messageDatabase';
-import { MessageDto } from 'src/data/core/message/messageDto';
+import { MessageDto } from 'src/data/firebase/message/types/messageDto';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import firebase from 'firebase/app';
 import 'firebase/database';
+import { IMessageRepository } from 'src/domain/message/repository/messageRepository';
+import { TopicId } from 'src/domain/topic/models/topicId';
+import { MessageId } from 'src/domain/message/models/messageId';
+import { MessageEntity } from 'src/domain/message/repository/messageEntity';
+import { map } from 'rxjs/operators';
 
-export class FirebaseMessageDatabase implements IMessageDatabase {
+export class FirebaseMessageDatabase implements IMessageRepository {
   private constructor(private readonly database = firebase.database()) {}
 
-  private static _instance: IMessageDatabase;
+  private static _instance: IMessageRepository;
 
-  static get instance(): IMessageDatabase {
-    if (!this._instance) {
-      this._instance = new FirebaseMessageDatabase();
-    }
+  static get instance(): IMessageRepository {
+    if (!this._instance) { this._instance = new FirebaseMessageDatabase(); }
     return this._instance;
   }
 
   async find(
-    topicId: string,
-    messageId: string,
-  ): Promise<MessageDto | undefined> {
+    topicId: TopicId,
+    messageId: MessageId,
+  ): Promise<MessageEntity | undefined> {
     const snapshot = await this.messageRef(topicId, messageId).once('value');
-    return MessageDto.fromJSON(snapshot.toJSON());
+    const dto = MessageDto.fromJSON(snapshot.toJSON());
+    return dto?.toEntity();
   }
 
-  observeAll(topicId: string, unsubscribe?: Subject<void>): Observable<MessageDto[]> {
+  observeAll(topicId: TopicId, unsubscribe?: Subject<void>): Observable<MessageEntity[]> {
     const behaviorSubject = new BehaviorSubject<MessageDto[]>([]);
     const messages: MessageDto[] = [];
 
@@ -55,25 +58,28 @@ export class FirebaseMessageDatabase implements IMessageDatabase {
       },
     });
 
-    return behaviorSubject.asObservable();
+    return behaviorSubject.pipe(
+      map((messages) => messages.map((e) => e.toEntity())),
+    );
   }
 
-  async save(topicId: string, message: MessageDto): Promise<void> {
+  async save(topicId: TopicId, message: MessageEntity): Promise<void> {
     const ref = await this.messageRef(topicId, message.id);
-    ref.set(message.toJSON());
+    const dto = MessageDto.from(message);
+    await ref.set(dto.toJSON());
   }
 
-  async messageCount(topicId: string): Promise<number> {
+  async messageCount(topicId: TopicId): Promise<number> {
     const snapshots = await this.messagesRef(topicId).get();
     return snapshots.numChildren();
   }
 
-  deleteAllMessagesOf(topicId: string): Promise<void> {
+  deleteAllMessagesOf(topicId: TopicId): Promise<void> {
     return this.messagesRef(topicId).remove();
   }
 
-  private messagesRef = (topicId: string) => this.database.ref(`/messages/${topicId}`);
+  private messagesRef = (topicId: TopicId) => this.database.ref(`/messages/${topicId.value}`);
 
   // eslint-disable-next-line max-len
-  private messageRef = (topicId: string, messageId: string) => this.messagesRef(topicId).child(messageId);
+  private messageRef = (topicId: TopicId, messageId: MessageId) => this.messagesRef(topicId).child(messageId.value);
 }
