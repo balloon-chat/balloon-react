@@ -6,7 +6,7 @@ import { CharacterDrawer } from 'src/view/matter/actors/character/characterDrawe
 export class Character implements CharacterAction {
   public static readonly maxSpeed = 10;
 
-  private readonly drawer = new CharacterDrawer();
+  private readonly drawer = new CharacterDrawer(1.0, 1.0);
 
   /**
    * キャラクター（オブジェクトとテキストの情報を持っている）
@@ -16,7 +16,6 @@ export class Character implements CharacterAction {
    *  @param {string} sender メッセージ送信者のID
    *  @param {number} radius 半径
    *  @param {string} color キャラクターの体の色
-   *  @param {number} lifespan キャラクターの生存期間。 0になると透明になる。
    *  @param {boolean} collision キャラクター同士の衝突を判定するかどうか
    */
   constructor(
@@ -26,7 +25,6 @@ export class Character implements CharacterAction {
     readonly sender: string,
     readonly radius: number,
     readonly color: string,
-    public lifespan: number = 100, public scale: number = 1.0,
     collision: boolean = true,
   ) {
     this.collision = collision;
@@ -115,7 +113,11 @@ export class Character implements CharacterAction {
     Body.setVelocity(this.body, velocity);
   }
 
-  popout(span: number, onPopOuted: () => void) {
+  /**
+   * @param span アニメーションにかかる時間(ミリ秒)
+   * @param onStart アニメーション開始時のコールバック関数
+   */
+  popout(span: number, onStart: () => void) {
     // スケールの計算
     const scaleCal = (x: number, span: number, maxScale: number) => {
       // 小数をある程度切り捨てる
@@ -127,12 +129,13 @@ export class Character implements CharacterAction {
       return a * rX ** 2 + b * rX + c;
     };
 
-    onPopOuted();
-    const interval: number = span / this.lifespan;
+    onStart();
+
+    const interval: number = span / 100;
     let currentTime: number = 0;
     const id = setInterval(() => {
       if (currentTime <= span) {
-        this.scale = scaleCal(currentTime, span, 1.5);
+        this.drawer.scale = scaleCal(currentTime, span, 1.5);
         currentTime += interval;
       } else {
         clearInterval(id);
@@ -140,11 +143,15 @@ export class Character implements CharacterAction {
     }, interval);
   }
 
+  /**
+   * @param span アニメーションにかかる時間(ミリ秒)
+   * @param onFadeOuted アニメーション終了時のコールバック関数
+   */
   fadeout(span: number, onFadeOuted: () => void) {
-    const interval = span / this.lifespan;
+    const interval = span / 100;
     const id = setInterval(() => {
-      if (this.lifespan > 0) {
-        this.lifespan -= 1;
+      if (this.drawer.opacity > 0) {
+        this.drawer.opacity -= 1 / 100;
       } else {
         onFadeOuted();
         clearInterval(id);
