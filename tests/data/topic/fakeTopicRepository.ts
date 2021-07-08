@@ -5,6 +5,8 @@ import { FakeBaseRepository } from 'tests/data/FakeBaseRepository';
 import { UserId } from 'src/domain/user/models/userId';
 import { BranchTopicEntity } from 'src/domain/topic/repository/branchTopicEntity';
 import { BranchTopic, BranchTopicId } from 'src/domain/topic/models/branchTopic';
+import { Observable, Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 export class FakeTopicRepository implements ITopicRepository {
   // key: topic id
@@ -57,6 +59,13 @@ export class FakeTopicRepository implements ITopicRepository {
     }
 
     return Promise.resolve(result.slice(0, limit));
+  }
+
+  observeTopic(topicId: TopicId, _?: Subject<void>): Observable<TopicEntity | null> {
+    return this.repository.observe(topicId.value)
+      .pipe(
+        map((value) => value ?? null),
+      );
   }
 
   async updateTopic(topicId: TopicId, {

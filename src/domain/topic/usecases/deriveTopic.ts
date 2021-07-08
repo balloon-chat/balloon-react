@@ -9,7 +9,7 @@ export class DeriveTopic implements IDeriveTopic {
   }
 
   async execute(topicId: string, title: string): Promise<BranchTopic> {
-    const branchTopic = BranchTopicFactory.create({ title });
+    const branchTopic = BranchTopicFactory.create({ title, createdAt: Date.now() });
 
     await this.topicRepository.addBranchTopic(
       new TopicId(topicId),

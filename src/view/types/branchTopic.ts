@@ -3,6 +3,7 @@ import { BranchTopic } from 'src/domain/topic/models/branchTopic';
 export type BranchTopicEntity = {
   id: string,
   title: string,
+  createdAt: number,
 }
 
 export class BranchTopicEntityFactory {
@@ -12,6 +13,7 @@ export class BranchTopicEntityFactory {
     return {
       id: branchTopic.id.value,
       title: branchTopic.title.value,
+      createdAt: branchTopic.createdAt,
     };
   }
 }

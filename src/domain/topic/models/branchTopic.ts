@@ -6,6 +6,7 @@ export class BranchTopic {
   constructor(
     public readonly id: BranchTopicId,
     public readonly title: BranchTopicTitle,
+    public readonly createdAt: number,
   ) {
   }
 }
@@ -22,13 +23,16 @@ export class BranchTopicFactory {
   static create({
     id,
     title,
+    createdAt,
   }: {
     id?: BranchTopicId,
-    title: string
+    title: string,
+    createdAt: number,
   }): BranchTopic {
     return new BranchTopic(
       id ?? new BranchTopicId(),
       new BranchTopicTitle(title),
+      createdAt,
     );
   }
 }

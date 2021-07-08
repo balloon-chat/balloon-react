@@ -9,6 +9,7 @@ export class BranchTopicEntity {
   constructor(
     public readonly id: BranchTopicId,
     public readonly title: BranchTopicTitle,
+    public readonly createdAt: number,
   ) {
   }
 
@@ -16,6 +17,7 @@ export class BranchTopicEntity {
     return new BranchTopicEntity(
       branchTopic.id,
       branchTopic.title,
+      branchTopic.createdAt,
     );
   }
 
@@ -23,6 +25,7 @@ export class BranchTopicEntity {
     return BranchTopicFactory.create({
       id: this.id,
       title: this.title.value,
+      createdAt: this.createdAt,
     });
   }
 }

@@ -5,6 +5,7 @@ export class BranchTopicDto {
   constructor(
     readonly id: string,
     readonly title: string,
+    readonly createdAt: number,
   ) {
   }
 
@@ -12,10 +13,12 @@ export class BranchTopicDto {
     if (!json) return null;
     if (typeof json.id !== 'string') return null;
     if (typeof json.title !== 'string') return null;
+    if (typeof json.createdAt !== 'number') return null;
 
     return new BranchTopicDto(
       json.id,
       json.title,
+      json.createdAt,
     );
   }
 
@@ -23,6 +26,7 @@ export class BranchTopicDto {
     return new BranchTopicDto(
       entity.id.value,
       entity.title.value,
+      entity.createdAt,
     );
   }
 
@@ -30,6 +34,7 @@ export class BranchTopicDto {
     return {
       id: this.id,
       title: this.title,
+      createdAt: this.createdAt,
     };
   }
 
@@ -37,6 +42,7 @@ export class BranchTopicDto {
     return new BranchTopicEntity(
       new BranchTopicId(this.id),
       new BranchTopicTitle(this.title),
+      this.createdAt,
     );
   }
 }
@@ -44,4 +50,5 @@ export class BranchTopicDto {
 export type BranchTopicJSON = {
   id: string,
   title: string,
+  createdAt: number,
 }

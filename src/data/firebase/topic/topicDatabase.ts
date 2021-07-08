@@ -173,14 +173,20 @@ export class FirebaseTopicDatabase implements ITopicRepository {
   }
 
   async save(topic: TopicEntity): Promise<void> {
-    const document = this.document(topic.id);
+    const topicDocument = this.document(topic.id);
     const topicDto = TopicDto.from(topic);
-    await document.set(topicDto.toJSON());
 
-    const branchTopicsDto = topic.branchTopics.map((e) => BranchTopicDto.fromEntity(e));
-    await Promise.all(
-      branchTopicsDto.map((e) => document.set(e.toJSON())),
-    );
+    await this.database.runTransaction(async (transaction) => {
+      await transaction.set(topicDocument, topicDto.toJSON());
+
+      const branchTopicsDto = topic.branchTopics.map((e) => BranchTopicDto.fromEntity(e));
+      await Promise.all(
+        branchTopicsDto.map(async (e) => {
+          const document = this.branchTopicDocument(topic.id, new BranchTopicId(e.id));
+          await transaction.set(document, e.toJSON());
+        }),
+      );
+    });
   }
 
   delete(topicId: TopicId): Promise<void> {
@@ -204,14 +210,26 @@ export class FirebaseTopicDatabase implements ITopicRepository {
   }
 
   async addBranchTopic(topicId: TopicId, branchTopicEntity: BranchTopicEntity): Promise<void> {
-    const document = this.branchTopicDocument(topicId, branchTopicEntity.id);
-    const dto = BranchTopicDto.fromEntity(branchTopicEntity);
-    await document.set(dto.toJSON());
+    const topicDocument = this.document(topicId);
+    const branchTopicDocument = this.branchTopicDocument(topicId, branchTopicEntity.id);
+    await this.database.runTransaction(async (transaction) => {
+      await transaction.update(topicDocument, {
+        branch: firebase.firestore.FieldValue.arrayUnion(branchTopicEntity.id.value),
+      });
+      const dto = BranchTopicDto.fromEntity(branchTopicEntity);
+      await transaction.set(branchTopicDocument, dto.toJSON());
+    });
   }
 
   async deleteBranchTopic(topicId: TopicId, branchTopicId: BranchTopicId): Promise<void> {
-    const document = this.branchTopicDocument(topicId, branchTopicId);
-    await document.delete();
+    const topicDocument = this.document(topicId);
+    const branchTopicDocument = this.branchTopicDocument(topicId, branchTopicId);
+    await this.database.runTransaction(async (transaction) => {
+      await transaction.update(topicDocument, {
+        branch: firebase.firestore.FieldValue.arrayRemove(branchTopicId.value),
+      });
+      await transaction.delete(branchTopicDocument);
+    });
   }
 
   private collection = () => this.database.collection('/topics');

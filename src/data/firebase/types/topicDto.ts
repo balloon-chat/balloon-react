@@ -14,6 +14,7 @@ export class TopicDto {
     readonly createdBy: string,
     readonly thumbnailURL: string,
     readonly isPrivate: boolean,
+    readonly branch: string[],
   ) {}
 
   static from(topic: TopicEntity): TopicDto {
@@ -25,6 +26,7 @@ export class TopicDto {
       topic.createdBy.value,
       topic.thumbnailURL,
       topic.isPrivate,
+      topic.branchTopics.map((e) => e.id.value),
     );
   }
 
@@ -39,12 +41,18 @@ export class TopicDto {
         src.createdBy,
         src.thumbnailURL,
         src.isPrivate,
+        src.branch ?? [],
       );
     }
     return null;
   }
 
   toTopicEntity({ branchTopics } : {branchTopics: BranchTopicDto[]}): TopicEntity {
+    const sortedBranch = this.branch
+      .map((id) => branchTopics.find((branch) => branch.id === id))
+      .filter((e): e is BranchTopicDto => e !== undefined)
+      .map((e) => e.toEntity());
+
     return new TopicEntity(
       new TopicId(this.id),
       new TopicTitle(this.title),
@@ -53,7 +61,7 @@ export class TopicDto {
       this.thumbnailURL,
       this.isPrivate,
       TopicDescription.create(this.description) ?? null,
-      branchTopics.map((e) => e.toEntity()),
+      sortedBranch,
     );
   }
 
@@ -66,6 +74,7 @@ export class TopicDto {
       createdBy: this.createdBy,
       thumbnailURL: this.thumbnailURL,
       isPrivate: this.isPrivate,
+      branch: this.branch,
     };
   }
 }
@@ -78,6 +87,7 @@ type TopicJSON = {
   createdBy: string
   thumbnailURL: string
   isPrivate: boolean,
+  branch?: string[],
 };
 
 const isTopicJSON = (obj: any): obj is TopicJSON => typeof obj.id === 'string'
