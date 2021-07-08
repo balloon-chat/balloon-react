@@ -1,5 +1,4 @@
-import { v4 as uuidv4 } from 'uuid';
+import { UniqueId } from 'src/domain/core/uniqueId';
 
-export class UserId {
-  constructor(public readonly value: string = uuidv4()) {}
+export class UserId extends UniqueId {
 }
