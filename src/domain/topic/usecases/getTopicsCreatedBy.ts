@@ -1,7 +1,7 @@
 import { IGetTopicsCreatedBy } from 'src/domain/topic/types/getTopicsCreatedBy';
 import { ITopicRepository } from 'src/domain/topic/repository/topicRepository';
 import { UserId } from 'src/domain/user/models/userId';
-import { TopicData } from 'src/domain/topic/models/topicData';
+import { TopicData } from 'src/domain/topic/models/topic/topicData';
 import { IGetTopic } from 'src/domain/topic/types/getTopic';
 import { IUserRepository } from 'src/domain/user/repository/userRepository';
 import { GetTopic } from 'src/domain/topic/usecases/getTopic';

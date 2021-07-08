@@ -1,5 +1,5 @@
 import React from 'react';
-import { InvitationCode } from 'src/domain/topic/models/invitationCode';
+import { InvitationCode } from 'src/domain/topic/models/invitation/invitationCode';
 import styled from 'styled-components';
 
 type Props = {

@@ -1,8 +1,8 @@
 import { IMessageRepository } from 'src/domain/message/repository/messageRepository';
 import { ITopicRepository } from 'src/domain/topic/repository/topicRepository';
 import { IUserRepository } from 'src/domain/user/repository/userRepository';
-import { TopicId } from 'src/domain/topic/models/topicId';
-import { TopicData, TopicDataFactory } from 'src/domain/topic/models/topicData';
+import { TopicId } from 'src/domain/topic/models/topic/topicId';
+import { TopicData, TopicDataFactory } from 'src/domain/topic/models/topic/topicData';
 
 export class GetTopic {
   constructor(

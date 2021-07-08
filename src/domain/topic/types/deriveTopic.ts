@@ -1,4 +1,4 @@
-import { BranchTopic } from 'src/domain/topic/models/branchTopic';
+import { BranchTopic } from 'src/domain/topic/models/branch/branchTopic';
 
 export interface IDeriveTopic {
   /**

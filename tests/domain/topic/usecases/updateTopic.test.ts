@@ -1,8 +1,8 @@
 import { FakeTopicRepository } from 'tests/data/topic/fakeTopicRepository';
 import { FakeTopicImageRepository } from 'tests/data/topic/fakeTopicImageRepository';
 import { UpdateTopic } from 'src/domain/topic/usecases/updateTopic';
-import { TopicFactory } from 'src/domain/topic/models/topic';
-import { TopicTitle } from 'src/domain/topic/models/topicTitle';
+import { TopicFactory } from 'src/domain/topic/models/topic/topic';
+import { TopicTitle } from 'src/domain/topic/models/topic/topicTitle';
 import { LoginUser } from 'src/domain/user/models/loginUser';
 import { UserId } from 'src/domain/user/models/userId';
 import { UserName } from 'src/domain/user/models/userName';

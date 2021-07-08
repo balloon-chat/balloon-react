@@ -6,8 +6,8 @@ import { FakeMessageRepository } from 'tests/data/message/FakeMessageRepository'
 import { LoginUser } from 'src/domain/user/models/loginUser';
 import { UserId } from 'src/domain/user/models/userId';
 import { UserName } from 'src/domain/user/models/userName';
-import { TopicFactory } from 'src/domain/topic/models/topic';
-import { TopicTitle } from 'src/domain/topic/models/topicTitle';
+import { TopicFactory } from 'src/domain/topic/models/topic/topic';
+import { TopicTitle } from 'src/domain/topic/models/topic/topicTitle';
 import { TopicEntity } from 'src/domain/topic/repository/types/topicEntity';
 import { MessageFactory } from 'src/domain/message/models/message';
 import { MessageBody } from 'src/domain/message/models/messageBody';

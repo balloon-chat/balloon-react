@@ -1,12 +1,12 @@
 import { ITopicRepository } from 'src/domain/topic/repository/topicRepository';
 import { ITopicImageRepository } from 'src/domain/topic/repository/topicImageRepository';
-import { TopicId } from 'src/domain/topic/models/topicId';
+import { TopicId } from 'src/domain/topic/models/topic/topicId';
 import { IllegalArgumentException } from 'src/domain/exceptions/IllegalArgumentException';
 import { v4 as uuidv4 } from 'uuid';
-import { TopicTitle } from 'src/domain/topic/models/topicTitle';
+import { TopicTitle } from 'src/domain/topic/models/topic/topicTitle';
 import { IUpdateTopic, UpdateTopicArgs } from 'src/domain/topic/types/updateTopic';
-import { Topic } from 'src/domain/topic/models/topic';
-import { TopicDescription } from 'src/domain/topic/models/topicDescription';
+import { Topic } from 'src/domain/topic/models/topic/topic';
+import { TopicDescription } from 'src/domain/topic/models/topic/topicDescription';
 
 export class UpdateTopic implements IUpdateTopic {
   constructor(

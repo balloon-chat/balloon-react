@@ -1,5 +1,5 @@
-import { TopicId } from 'src/domain/topic/models/topicId';
-import { TopicData } from 'src/domain/topic/models/topicData';
+import { TopicId } from 'src/domain/topic/models/topic/topicId';
+import { TopicData } from 'src/domain/topic/models/topic/topicData';
 
 export interface IGetTopics {
   /**

@@ -1,8 +1,8 @@
 import { IDeriveTopic } from 'src/domain/topic/types/deriveTopic';
 import { DeriveTopic } from 'src/domain/topic/usecases/deriveTopic';
-import { BranchTopicTitle } from 'src/domain/topic/models/branchTopic';
+import { BranchTopicTitle } from 'src/domain/topic/models/branch/branchTopic';
 import { FakeTopicRepository } from 'tests/data/topic/fakeTopicRepository';
-import { TopicFactory } from 'src/domain/topic/models/topic';
+import { TopicFactory } from 'src/domain/topic/models/topic/topic';
 import { UserId } from 'src/domain/user/models/userId';
 import { TopicEntity } from 'src/domain/topic/repository/types/topicEntity';
 

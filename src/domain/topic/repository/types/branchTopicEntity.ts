@@ -3,7 +3,7 @@ import {
   BranchTopicFactory,
   BranchTopicId,
   BranchTopicTitle,
-} from 'src/domain/topic/models/branchTopic';
+} from 'src/domain/topic/models/branch/branchTopic';
 
 export class BranchTopicEntity {
   constructor(

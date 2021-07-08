@@ -1,5 +1,5 @@
 import { Observable, Subject } from 'rxjs';
-import { Topic } from 'src/domain/topic/models/topic';
+import { Topic } from 'src/domain/topic/models/topic/topic';
 
 export interface IObserveTopic {
   /**

@@ -1,8 +1,8 @@
 import { IGetTopicByInvitationCode } from 'src/domain/topic/types/getTopicByInvitationCode';
-import { TopicData } from 'src/domain/topic/models/topicData';
+import { TopicData } from 'src/domain/topic/models/topic/topicData';
 import { IGetTopic } from 'src/domain/topic/types/getTopic';
 import { IInvitationRepository } from 'src/domain/topic/repository/invitationRepository';
-import { InvitationCode } from 'src/domain/topic/models/invitationCode';
+import { InvitationCode } from 'src/domain/topic/models/invitation/invitationCode';
 
 export class GetTopicByInvitationCode implements IGetTopicByInvitationCode {
   constructor(

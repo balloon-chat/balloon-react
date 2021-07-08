@@ -1,10 +1,10 @@
 import { FakeTopicRepository } from 'tests/data/topic/fakeTopicRepository';
 import { CreateTopic } from 'src/domain/topic/usecases/createTopic';
-import { TopicTitle } from 'src/domain/topic/models/topicTitle';
+import { TopicTitle } from 'src/domain/topic/models/topic/topicTitle';
 import { FakeUserRepository } from 'tests/data/user/FakeUserRepository';
 import { UserId } from 'src/domain/user/models/userId';
 import { UserName } from 'src/domain/user/models/userName';
-import { TopicDescription } from 'src/domain/topic/models/topicDescription';
+import { TopicDescription } from 'src/domain/topic/models/topic/topicDescription';
 import { FakeTopicImageRepository } from 'tests/data/topic/fakeTopicImageRepository';
 import { AnonymousUser } from 'src/domain/user/models/anonymousUser';
 import { LoginUser } from 'src/domain/user/models/loginUser';

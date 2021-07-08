@@ -1,7 +1,7 @@
 import { IMessageRepository } from 'src/domain/message/repository/messageRepository';
 import { FakeMessageRepository } from 'tests/data/message/FakeMessageRepository';
 import { FakeUserRepository } from 'tests/data/user/FakeUserRepository';
-import { TopicId } from 'src/domain/topic/models/topicId';
+import { TopicId } from 'src/domain/topic/models/topic/topicId';
 import { Message, MessageFactory } from 'src/domain/message/models/message';
 import { MessageBody } from 'src/domain/message/models/messageBody';
 import { ObserveMessages } from 'src/domain/message/usecases/observeMessages';

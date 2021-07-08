@@ -3,7 +3,7 @@ import { MessageEntity } from 'src/domain/message/repository/types/messageEntity
 import { FakeBaseRepository } from 'tests/data/FakeBaseRepository';
 import { MessageId } from 'src/domain/message/models/messageId';
 import { Observable } from 'rxjs';
-import { TopicId } from 'src/domain/topic/models/topicId';
+import { TopicId } from 'src/domain/topic/models/topic/topicId';
 import { map } from 'rxjs/operators';
 
 export class FakeMessageRepository implements IMessageRepository {

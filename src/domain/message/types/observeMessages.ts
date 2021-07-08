@@ -1,4 +1,4 @@
-import { TopicId } from 'src/domain/topic/models/topicId';
+import { TopicId } from 'src/domain/topic/models/topic/topicId';
 import { Observable, Subject } from 'rxjs';
 import { Message } from 'src/domain/message/models/message';
 

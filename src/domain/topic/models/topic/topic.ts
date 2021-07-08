@@ -1,9 +1,9 @@
 // eslint-disable-next-line max-classes-per-file
-import { TopicId } from 'src/domain/topic/models/topicId';
-import { TopicTitle } from 'src/domain/topic/models/topicTitle';
+import { TopicId } from 'src/domain/topic/models/topic/topicId';
+import { TopicTitle } from 'src/domain/topic/models/topic/topicTitle';
 import { UserId } from 'src/domain/user/models/userId';
-import { TopicDescription } from 'src/domain/topic/models/topicDescription';
-import { BranchTopic, BranchTopicId } from 'src/domain/topic/models/branchTopic';
+import { TopicDescription } from 'src/domain/topic/models/topic/topicDescription';
+import { BranchTopic, BranchTopicId } from 'src/domain/topic/models/branch/branchTopic';
 
 export class Topic {
   constructor(

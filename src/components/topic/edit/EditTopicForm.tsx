@@ -1,6 +1,6 @@
 import { TextField } from 'src/components/common/TextField';
-import { TopicTitle } from 'src/domain/topic/models/topicTitle';
-import { TopicDescription } from 'src/domain/topic/models/topicDescription';
+import { TopicTitle } from 'src/domain/topic/models/topic/topicTitle';
+import { TopicDescription } from 'src/domain/topic/models/topic/topicDescription';
 import { ImageFileContext } from 'src/components/topic/edit/context';
 import { TopicThumbnail } from 'src/components/topic/edit/TopicThumbnail';
 import styled from 'styled-components';

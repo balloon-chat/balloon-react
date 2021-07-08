@@ -1,7 +1,7 @@
 import { IRecommendTopicRepository } from 'src/domain/topic/repository/recommendTopicRepository';
 import { IGetRecommendTopics } from 'src/domain/topic/types/getRecommendTopics';
 import { IGetTopics } from 'src/domain/topic/types/getTopics';
-import { RecommendTopics } from 'src/domain/topic/models/recommendTopics';
+import { RecommendTopics } from 'src/domain/topic/models/recommend/recommendTopics';
 
 export class GetRecommendTopics implements IGetRecommendTopics {
   constructor(

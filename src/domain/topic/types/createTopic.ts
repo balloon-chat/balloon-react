@@ -1,5 +1,5 @@
 import { UserId } from 'src/domain/user/models/userId';
-import { Topic } from 'src/domain/topic/models/topic';
+import { Topic } from 'src/domain/topic/models/topic/topic';
 
 export interface ICreateTopic {
   /**

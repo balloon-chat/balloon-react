@@ -3,7 +3,7 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import firebase from 'firebase/app';
 import 'firebase/database';
 import { IMessageRepository } from 'src/domain/message/repository/messageRepository';
-import { TopicId } from 'src/domain/topic/models/topicId';
+import { TopicId } from 'src/domain/topic/models/topic/topicId';
 import { MessageId } from 'src/domain/message/models/messageId';
 import { MessageEntity } from 'src/domain/message/repository/types/messageEntity';
 import { map } from 'rxjs/operators';

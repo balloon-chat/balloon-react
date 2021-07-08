@@ -1,6 +1,6 @@
 import { MessageEntity } from 'src/domain/message/repository/types/messageEntity';
 import { MessageId } from 'src/domain/message/models/messageId';
-import { TopicId } from 'src/domain/topic/models/topicId';
+import { TopicId } from 'src/domain/topic/models/topic/topicId';
 import { Observable, Subject } from 'rxjs';
 
 export interface IMessageRepository {

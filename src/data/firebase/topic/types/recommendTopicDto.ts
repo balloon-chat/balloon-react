@@ -1,5 +1,5 @@
 import { RecommendTopicEntity } from 'src/domain/topic/repository/types/recommendTopicEntity';
-import { TopicId } from 'src/domain/topic/models/topicId';
+import { TopicId } from 'src/domain/topic/models/topic/topicId';
 
 export class RecommendTopicDto {
   constructor(readonly pickup: string[]) {}

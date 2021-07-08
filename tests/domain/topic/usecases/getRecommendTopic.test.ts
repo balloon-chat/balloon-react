@@ -3,12 +3,12 @@ import { FakeMessageRepository } from 'tests/data/message/FakeMessageRepository'
 import { FakeTopicRepository } from 'tests/data/topic/fakeTopicRepository';
 import { FakeUserRepository } from 'tests/data/user/FakeUserRepository';
 import { FakeRecommendTopicRepository } from 'tests/data/topic/fakeRecommendTopicRepository';
-import { TopicFactory } from 'src/domain/topic/models/topic';
+import { TopicFactory } from 'src/domain/topic/models/topic/topic';
 import { UserName } from 'src/domain/user/models/userName';
 import { UserId } from 'src/domain/user/models/userId';
-import { TopicTitle } from 'src/domain/topic/models/topicTitle';
+import { TopicTitle } from 'src/domain/topic/models/topic/topicTitle';
 import { TopicEntity } from 'src/domain/topic/repository/types/topicEntity';
-import { TopicDataFactory } from 'src/domain/topic/models/topicData';
+import { TopicDataFactory } from 'src/domain/topic/models/topic/topicData';
 import { RecommendTopicEntity } from 'src/domain/topic/repository/types/recommendTopicEntity';
 import { MessageFactory } from 'src/domain/message/models/message';
 import { MessageBody } from 'src/domain/message/models/messageBody';

@@ -1,8 +1,8 @@
-import { TopicId } from 'src/domain/topic/models/topicId';
-import { TopicTitle } from 'src/domain/topic/models/topicTitle';
-import { Topic, TopicFactory } from 'src/domain/topic/models/topic';
+import { TopicId } from 'src/domain/topic/models/topic/topicId';
+import { TopicTitle } from 'src/domain/topic/models/topic/topicTitle';
+import { Topic, TopicFactory } from 'src/domain/topic/models/topic/topic';
 import { UserId } from 'src/domain/user/models/userId';
-import { TopicDescription } from 'src/domain/topic/models/topicDescription';
+import { TopicDescription } from 'src/domain/topic/models/topic/topicDescription';
 import { BranchTopicEntity } from 'src/domain/topic/repository/types/branchTopicEntity';
 
 export class TopicEntity {

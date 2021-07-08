@@ -1,4 +1,4 @@
-import { InvitationCode } from 'src/domain/topic/models/invitationCode';
+import { InvitationCode } from 'src/domain/topic/models/invitation/invitationCode';
 
 test('招待コードのフォーマット', () => {
   const tests: {code: number[], expected: string}[] = [

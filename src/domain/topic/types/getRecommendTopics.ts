@@ -1,4 +1,4 @@
-import { RecommendTopics } from 'src/domain/topic/models/recommendTopics';
+import { RecommendTopics } from 'src/domain/topic/models/recommend/recommendTopics';
 
 export interface IGetRecommendTopics {
   /**
