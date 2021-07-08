@@ -2,11 +2,11 @@ import { TopicDto } from 'src/data/firebase/types/topicDto';
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 import { BranchTopicDto } from 'src/data/firebase/types/branchTopicDto';
-import { BranchTopicEntity } from 'src/domain/topic/repository/branchTopicEntity';
+import { BranchTopicEntity } from 'src/domain/topic/repository/types/branchTopicEntity';
 import { ITopicRepository, UpdateTopicParams } from 'src/domain/topic/repository/topicRepository';
 import { TopicId } from 'src/domain/topic/models/topicId';
 import { BranchTopicId } from 'src/domain/topic/models/branchTopic';
-import { TopicEntity } from 'src/domain/topic/repository/topicEntity';
+import { TopicEntity } from 'src/domain/topic/repository/types/topicEntity';
 import { UserId } from 'src/domain/user/models/userId';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -18,9 +18,7 @@ export class FirebaseTopicDatabase implements ITopicRepository {
   private static _instance: ITopicRepository;
 
   static get instance(): ITopicRepository {
-    if (!this._instance) {
-      this._instance = new FirebaseTopicDatabase();
-    }
+    if (!this._instance) { this._instance = new FirebaseTopicDatabase(); }
     return this._instance;
   }
 
@@ -36,14 +34,13 @@ export class FirebaseTopicDatabase implements ITopicRepository {
       .filter((e): e is BranchTopicDto => e !== null);
   }
 
-  async find(topicId: TopicId): Promise<TopicEntity | undefined> {
+  async find(topicId: TopicId): Promise<TopicEntity | null> {
     const [topicDto, branchTopics] = await Promise.all([
       this.getTopicDto(topicId),
       this.getBranchTopicsDto(topicId),
     ]);
-    if (!topicDto) return undefined;
 
-    return topicDto.toTopicEntity({ branchTopics });
+    return topicDto?.toTopicEntity({ branchTopics }) ?? null;
   }
 
   async findAllPublicTopicsSortByCreatedAt(limit: number, from?: TopicId): Promise<TopicDto[]> {
@@ -234,17 +231,10 @@ export class FirebaseTopicDatabase implements ITopicRepository {
 
   private collection = () => this.database.collection('/topics');
 
-  private document = (topicId: TopicId) => this.collection()
-    .doc(topicId.value);
+  private document = (topicId: TopicId) => this.collection().doc(topicId.value);
 
-  private branchTopicsCollection = (
-    topicId: TopicId,
-  ) => this.document(topicId)
-    .collection('/branch');
+  private branchTopicsCollection = (topicId: TopicId) => this.document(topicId).collection('/branch');
 
-  private branchTopicDocument = (
-    topicId: TopicId,
-    branchTopicId: BranchTopicId,
-  ) => this.branchTopicsCollection(topicId)
-    .doc(branchTopicId.value);
+  // eslint-disable-next-line max-len
+  private branchTopicDocument = (topicId: TopicId, branchTopicId: BranchTopicId) => this.branchTopicsCollection(topicId).doc(branchTopicId.value);
 }

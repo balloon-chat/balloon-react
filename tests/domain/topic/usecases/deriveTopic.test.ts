@@ -4,7 +4,7 @@ import { BranchTopicTitle } from 'src/domain/topic/models/branchTopic';
 import { FakeTopicRepository } from 'tests/data/topic/fakeTopicRepository';
 import { TopicFactory } from 'src/domain/topic/models/topic';
 import { UserId } from 'src/domain/user/models/userId';
-import { TopicEntity } from 'src/domain/topic/repository/topicEntity';
+import { TopicEntity } from 'src/domain/topic/repository/types/topicEntity';
 
 const topicRepository = new FakeTopicRepository();
 const topic = TopicFactory.create({

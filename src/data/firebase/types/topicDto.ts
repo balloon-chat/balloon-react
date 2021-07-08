@@ -2,7 +2,7 @@ import { TopicId } from 'src/domain/topic/models/topicId';
 import { TopicTitle } from 'src/domain/topic/models/topicTitle';
 import { UserId } from 'src/domain/user/models/userId';
 import { TopicDescription } from 'src/domain/topic/models/topicDescription';
-import { TopicEntity } from 'src/domain/topic/repository/topicEntity';
+import { TopicEntity } from 'src/domain/topic/repository/types/topicEntity';
 import { BranchTopicDto } from 'src/data/firebase/types/branchTopicDto';
 
 export class TopicDto {

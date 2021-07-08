@@ -1,4 +1,4 @@
-import { RecommendTopicEntity } from 'src/domain/topic/repository/recommendTopicEntity';
+import { RecommendTopicEntity } from 'src/domain/topic/repository/types/recommendTopicEntity';
 import { TopicId } from 'src/domain/topic/models/topicId';
 
 export class RecommendTopicDto {

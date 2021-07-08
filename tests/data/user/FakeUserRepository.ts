@@ -7,11 +7,11 @@ import { UserName } from 'src/domain/user/models/userName';
 export class FakeUserRepository implements IUserRepository {
   private repository = new FakeBaseRepository<string, LoginUser>();
 
-  find(userId: UserId): Promise<LoginUser | undefined> {
+  find(userId: UserId): Promise<LoginUser | null> {
     return Promise.resolve(this.repository.find(userId.value));
   }
 
-  findByLoginId(loginId: string): Promise<LoginUser | undefined> {
+  findByLoginId(loginId: string): Promise<LoginUser | null> {
     const users = this.repository
       .findAll()
       .filter((user) => user.loginId === loginId);

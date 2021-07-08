@@ -1,6 +1,6 @@
 import { UserId } from 'src/domain/user/models/userId';
 import { TopicId } from 'src/domain/topic/models/topicId';
-import { MessageEntity } from 'src/domain/message/repository/messageEntity';
+import { MessageEntity } from 'src/domain/message/repository/types/messageEntity';
 
 export interface IAddMessage {
   /**

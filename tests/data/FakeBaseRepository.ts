@@ -11,8 +11,8 @@ export class FakeBaseRepository<K, V> {
     this.behaviorSubject.next(this.data);
   }
 
-  find(key: K): V | undefined {
-    return this.data.get(key);
+  find(key: K): V | null {
+    return this.data.get(key) ?? null;
   }
 
   findAll(): V[] {

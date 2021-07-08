@@ -1,5 +1,5 @@
 import { IMessageRepository } from 'src/domain/message/repository/messageRepository';
-import { MessageEntity } from 'src/domain/message/repository/messageEntity';
+import { MessageEntity } from 'src/domain/message/repository/types/messageEntity';
 import { FakeBaseRepository } from 'tests/data/FakeBaseRepository';
 import { MessageId } from 'src/domain/message/models/messageId';
 import { Observable } from 'rxjs';
@@ -10,10 +10,10 @@ export class FakeMessageRepository implements IMessageRepository {
   // key: topic id
   private repository = new FakeBaseRepository<string, Map<MessageId, MessageEntity>>();
 
-  async find(messageId: MessageId): Promise<MessageEntity | undefined> {
-    const entities = this.repository.findAll();
-    const messages = entities.find((entity) => entity.has(messageId));
-    return Promise.resolve(messages?.get(messageId));
+  async find(topicId: TopicId, messageId: MessageId): Promise<MessageEntity | null> {
+    const messages = this.repository.find(topicId.value);
+    if (!messages) return null;
+    return messages?.get(messageId) ?? null;
   }
 
   // for debug

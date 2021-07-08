@@ -1,5 +1,5 @@
 import { UserId } from 'src/domain/user/models/userId';
-import { MessageEntity, MessageEntityFactory } from 'src/domain/message/repository/messageEntity';
+import { MessageEntity, MessageEntityFactory } from 'src/domain/message/repository/types/messageEntity';
 import { IMessageRepository } from 'src/domain/message/repository/messageRepository';
 import { IllegalArgumentException } from 'src/domain/exceptions/IllegalArgumentException';
 import { MessageBody } from 'src/domain/message/models/messageBody';

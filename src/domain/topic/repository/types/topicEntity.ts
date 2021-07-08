@@ -3,7 +3,7 @@ import { TopicTitle } from 'src/domain/topic/models/topicTitle';
 import { Topic, TopicFactory } from 'src/domain/topic/models/topic';
 import { UserId } from 'src/domain/user/models/userId';
 import { TopicDescription } from 'src/domain/topic/models/topicDescription';
-import { BranchTopicEntity } from 'src/domain/topic/repository/branchTopicEntity';
+import { BranchTopicEntity } from 'src/domain/topic/repository/types/branchTopicEntity';
 
 export class TopicEntity {
   constructor(

@@ -6,9 +6,9 @@ import { UserName } from 'src/domain/user/models/userName';
  * ユーザーの公開情報を保存するリポジトリ
  */
 export interface IUserRepository {
-  find(userId: UserId): Promise<LoginUser | undefined>;
+  find(userId: UserId): Promise<LoginUser | null>;
 
-  findByLoginId(loginId: string): Promise<LoginUser | undefined>
+  findByLoginId(loginId: string): Promise<LoginUser | null>
 
   save(user: LoginUser): Promise<void>;
 

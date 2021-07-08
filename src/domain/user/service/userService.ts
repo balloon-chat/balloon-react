@@ -1,5 +1,4 @@
 import { IUserRepository } from 'src/domain/user/repository/userRepository';
-import { UserRepository } from 'src/data/core/user/userRepository';
 import { FirebaseUserDatabase } from 'src/data/firebase/user/userDatabase';
 import { CreateUser } from 'src/domain/user/usecases/createUser';
 import { UserEntity, UserEntityFactory } from 'src/view/types/user';
@@ -7,7 +6,6 @@ import { ICreateUser } from 'src/domain/user/types/createUser';
 import { IGetUser } from 'src/domain/user/types/getUser';
 import { GetUser } from 'src/domain/user/usecases/getUser';
 import { IUserImageRepository } from 'src/domain/user/repository/userImageRepository';
-import { UserImageRepository } from 'src/data/core/user/userImageRepository';
 import { FirebaseUserImageDatabase } from 'src/data/firebase/user/userImageDatabase';
 import { IGetUserByLoginId } from 'src/domain/user/types/getUserByLoginId';
 import { GetUserByLoginId } from 'src/domain/user/usecases/getUserByLoginId';
@@ -25,9 +23,9 @@ export class UserService {
 
   constructor(
     userRepository: IUserRepository
-    = new UserRepository(FirebaseUserDatabase.instance),
+    = FirebaseUserDatabase.instance,
     userImageRepository: IUserImageRepository
-    = new UserImageRepository(FirebaseUserImageDatabase.instance),
+    = FirebaseUserImageDatabase.instance,
   ) {
     this.createUserUsecase = new CreateUser(userRepository, userImageRepository);
     this.getUserUsecase = new GetUser(userRepository);
