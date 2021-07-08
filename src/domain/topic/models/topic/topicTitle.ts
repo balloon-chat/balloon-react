@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { isEmpty } from 'src/domain/core/string';
+import { isNotBlank } from 'src/domain/core/string';
 
 export class TopicTitle {
   static MAX_TITLE_LENGTH = 50;
@@ -9,6 +9,6 @@ export class TopicTitle {
   }
 
   static require(value: string): boolean {
-    return !isEmpty(value) && value.length <= TopicTitle.MAX_TITLE_LENGTH;
+    return isNotBlank(value) && value.length <= TopicTitle.MAX_TITLE_LENGTH;
   }
 }

@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { isBlank } from 'src/domain/core/string';
+import { isNotBlank } from 'src/domain/core/string';
 
 export class TopicDescription {
   static MAX_DESCRIPTION_LENGTH = 50;
@@ -10,7 +10,7 @@ export class TopicDescription {
 
   static require(value: string): boolean {
     return (
-      !isBlank(value)
+      isNotBlank(value)
       && value.length <= TopicDescription.MAX_DESCRIPTION_LENGTH
     );
   }

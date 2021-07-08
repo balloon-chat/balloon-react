@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { isBlank } from 'src/domain/core/string';
+import { isNotBlank } from 'src/domain/core/string';
 
 export class UserName {
   static readonly MAX_NAME_SIZE = 20;
@@ -9,6 +9,6 @@ export class UserName {
   }
 
   static require(value: string): boolean {
-    return !isBlank(value) && value.length <= this.MAX_NAME_SIZE;
+    return isNotBlank(value) && value.length <= this.MAX_NAME_SIZE;
   }
 }

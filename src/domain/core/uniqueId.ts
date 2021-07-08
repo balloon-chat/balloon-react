@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { isBlank, isEmpty } from 'src/domain/core/string';
+import { isNotBlank } from 'src/domain/core/string';
 import { IllegalArgumentException } from 'src/domain/exceptions/IllegalArgumentException';
 
 export class UniqueId {
@@ -8,6 +8,6 @@ export class UniqueId {
   }
 
   static require(value: string): boolean {
-    return !isEmpty(value) && !isBlank(value);
+    return isNotBlank(value);
   }
 }
