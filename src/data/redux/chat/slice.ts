@@ -1,7 +1,7 @@
-import { ChatNotification, ChatState, chatStateName } from 'src/data/redux/chat/state';
+import { ChatState, chatStateName } from 'src/data/redux/chat/state';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { TopicEntity } from 'src/view/types/topic';
-import { ObserveTopic, ObserveTopicFulfilled } from 'src/data/redux/chat/action';
+import { ObserveTopic, ObserveTopicFulfilled, ShowNotification } from 'src/data/redux/chat/action';
 
 const initialState: ChatState = {
   topic: null,
@@ -18,40 +18,29 @@ const initialState: ChatState = {
   notification: null,
 };
 
-type ShowNotification = PayloadAction<{type: ChatNotification, message: string }>;
-
 /* eslint-disable no-param-reassign */
 const slice = createSlice({
   name: chatStateName,
   initialState,
   reducers: {
-    showDeriveTopicDialog: (state) => {
-      state.dialog.deriveTopicDialog = true;
-    },
-    closeDeriveTopicDialog: (state) => {
-      state.dialog.deriveTopicDialog = false;
-    },
-    showBranchTopicsDialog: (state) => {
-      state.dialog.branchTopicDialog = true;
-    },
-    closeBranchTopicsDialog: (state) => {
-      state.dialog.branchTopicDialog = false;
-    },
-    showMessageLog: (state) => {
-      state.dialog.messageLog = true;
-    },
-    closeMessageLog: (state) => {
-      state.dialog.messageLog = false;
-    },
+    showDeriveTopicDialog: (state) => { state.dialog.deriveTopicDialog = true; },
+    closeDeriveTopicDialog: (state) => { state.dialog.deriveTopicDialog = false; },
+
+    showBranchTopicsDialog: (state) => { state.dialog.branchTopicDialog = true; },
+    closeBranchTopicsDialog: (state) => { state.dialog.branchTopicDialog = false; },
+
+    showMessageLog: (state) => { state.dialog.messageLog = true; },
+    closeMessageLog: (state) => { state.dialog.messageLog = false; },
+
     notify: (state, { payload }: ShowNotification) => {
       state.notification = {
         type: payload.type,
+        title: payload.title,
         message: payload.message,
+        payload: payload.payload,
       };
     },
-    clearNotification: (state) => {
-      state.notification = null;
-    },
+    clearNotification: (state) => { state.notification = null; },
     setTopic: (state, { payload }: PayloadAction<{topic: TopicEntity | null}>) => {
       state.topicId = payload.topic?.id ?? null;
       state.topic = payload.topic;

@@ -33,6 +33,7 @@ import { useChatState } from 'src/data/redux/chat/selector';
 import { DeriveTopicDialog } from 'src/components/topic/dialog/DeriveTopicDialog';
 import { BranchTopicsDialog } from 'src/components/topic/dialog/BranchTopicsDialog';
 import { MessageLog } from 'src/components/topic/log/MessageLog';
+import { useChatNotification } from 'src/view/lib/useNotification';
 
 type Props = {
   topic: TopicEntity | null,
@@ -44,6 +45,8 @@ const TopicPage = ({ topic, code }: Props) => {
   const dispatcher = useDispatch();
   const { uid, loginState } = useUserSelector();
   const { topicId, branchTopicId, dialog } = useChatState();
+
+  useChatNotification();
 
   useEffect(() => {
     dispatcher(setInvitationCode({ code }));

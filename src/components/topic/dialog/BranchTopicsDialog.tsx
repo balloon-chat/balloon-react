@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { closeBranchTopicsDialog, showDeriveTopicDialog } from 'src/data/redux/chat/slice';
 import { SwipeInDialog } from 'src/components/topic/dialog/SwipeInDialog';
@@ -12,7 +12,8 @@ import { TextButton } from 'src/components/common/Button';
 
 export const BranchTopicsDialog = () => {
   const dispatcher = useDispatch();
-  const { topic, dialog } = useChatState();
+  const { topic, dialog, branchTopicId, topicId } = useChatState();
+  const [activeTopic, setActiveTopic] = useState<string|null>();
 
   const handleClose = useCallback(() => {
     dispatcher(closeBranchTopicsDialog());
@@ -22,6 +23,10 @@ export const BranchTopicsDialog = () => {
     dispatcher(closeBranchTopicsDialog());
     dispatcher(showDeriveTopicDialog());
   }, []);
+
+  useEffect(() => {
+    setActiveTopic(branchTopicId ?? topicId);
+  }, [topicId, branchTopicId]);
 
   return (
     <SwipeInDialog onClose={handleClose} isVisible={dialog.branchTopicDialog}>
@@ -42,14 +47,18 @@ export const BranchTopicsDialog = () => {
           <>
             <Link href={rootPath.topicPath.topic(topic.id)}>
               <ItemContainer onClick={handleClose}>
-                <BranchTopicTitle>{topic.title}</BranchTopicTitle>
+                <BranchTopicTitle active={activeTopic === topic.id}>
+                  {topic.title}
+                </BranchTopicTitle>
               </ItemContainer>
             </Link>
             {
               topic.branchTopics.map((branch, i) => (
                 <Link key={i} href={rootPath.topicPath.topicBranch(topic.id, i)}>
                   <ItemContainer onClick={handleClose}>
-                    <BranchTopicTitle>{branch.title}</BranchTopicTitle>
+                    <BranchTopicTitle active={activeTopic === branch.id}>
+                      {branch.title}
+                    </BranchTopicTitle>
                   </ItemContainer>
                 </Link>
               ))
@@ -80,13 +89,15 @@ const ItemContainer = styled.a`
   }
 `;
 
-const BranchTopicTitle = styled.div`
+const BranchTopicTitle = styled.div<{active: boolean}>`
   font-size: 20px;
   
   :before {
     content: '#';
+    font-size: 1.5rem;
     margin-right: 16px;
-    font-weight: bold;
+    font-weight: ${(props) => (props.active ? 'bolder' : 'bold')};
+    color: ${(props) => (props.active ? '#5b87fa' : 'rgba(0,0,0,.6)')};
   }
 `;
 

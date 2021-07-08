@@ -6,11 +6,13 @@ import Image from 'next/image';
 import { imagePath } from 'src/components/constants/imagePath';
 
 type Props = {
+  title?: string,
   message: string,
   visible: boolean,
 }
 
 export const ChatNotification: React.FC<Props> = ({
+  title,
   message,
   visible,
   children,
@@ -23,10 +25,9 @@ export const ChatNotification: React.FC<Props> = ({
           <HeaderTitle>おしらせ</HeaderTitle>
         </Header>
         <Body>
-          <Title>{message}</Title>
-          <Actions>
-            {children}
-          </Actions>
+          {title && <Title>{title}</Title>}
+          <Message>{message}</Message>
+          <Actions>{children}</Actions>
         </Body>
       </Dialog>
     </Container>
@@ -80,27 +81,20 @@ const HeaderTitle = styled.div`
 const Body = styled.div`
   display: flex;
   flex-direction: column;
-  
-  @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
-    align-items: center;
-    flex-direction: row;
-  }
 `;
 
 const Title = styled.div`
-  font-size: 18px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 4px;
+`;
 
-  @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
-    margin-right: 16px;
-  }
+const Message = styled.div`
+  font-size: 1.0rem;
 `;
 
 const Actions = styled.div`
   display: flex;
   justify-content: flex-end;
   margin-top: 16px;
-
-  @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
-    margin: 0;
-  }
 `;
