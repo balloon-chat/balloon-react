@@ -1,10 +1,10 @@
 import { IRecommendTopicRepository } from 'src/domain/topic/repository/recommendTopicRepository';
-import { RecommendTopicEntity } from 'src/domain/topic/repository/recommendTopicEntity';
+import { RecommendTopicEntity } from 'src/domain/topic/repository/types/recommendTopicEntity';
 
 export class FakeRecommendTopicRepository implements IRecommendTopicRepository {
-  private data: RecommendTopicEntity | undefined = undefined;
+  private data: RecommendTopicEntity | null = null;
 
-  find(): Promise<RecommendTopicEntity | undefined> {
+  find(): Promise<RecommendTopicEntity | null> {
     return Promise.resolve(this.data);
   }
 
@@ -13,6 +13,6 @@ export class FakeRecommendTopicRepository implements IRecommendTopicRepository {
   }
 
   clean() {
-    this.data = undefined;
+    this.data = null;
   }
 }

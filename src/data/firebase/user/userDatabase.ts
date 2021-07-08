@@ -18,13 +18,13 @@ export class FirebaseUserDatabase implements IUserRepository {
     return this._instance;
   }
 
-  async find(userId: UserId): Promise<LoginUser | undefined> {
+  async find(userId: UserId): Promise<LoginUser | null> {
     const snapshot = await this.document(userId).get();
     const dto = UserDto.fromJSON(snapshot.data() ?? null);
-    return dto?.toUser();
+    return dto?.toUser() ?? null;
   }
 
-  async findByLoginId(loginId: string): Promise<LoginUser | undefined> {
+  async findByLoginId(loginId: string): Promise<LoginUser | null> {
     const query = this.collection().where('loginId', '==', loginId);
     const snapshots = await query.get();
 
@@ -34,7 +34,7 @@ export class FirebaseUserDatabase implements IUserRepository {
       if (dto) user = dto;
     });
 
-    return user?.toUser();
+    return user?.toUser() ?? null;
   }
 
   async save(user: LoginUser): Promise<void> {

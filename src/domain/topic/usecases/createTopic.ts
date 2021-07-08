@@ -1,7 +1,7 @@
 import { Topic, TopicFactory } from 'src/domain/topic/models/topic';
 import { ITopicRepository } from 'src/domain/topic/repository/topicRepository';
 import { TopicTitle } from 'src/domain/topic/models/topicTitle';
-import { TopicEntity } from 'src/domain/topic/repository/topicEntity';
+import { TopicEntity } from 'src/domain/topic/repository/types/topicEntity';
 import { UserId } from 'src/domain/user/models/userId';
 import { IllegalArgumentException } from 'src/domain/exceptions/IllegalArgumentException';
 import { IUserRepository } from 'src/domain/user/repository/userRepository';

@@ -6,7 +6,7 @@ import { TopicTitle } from 'src/domain/topic/models/topicTitle';
 import { LoginUser } from 'src/domain/user/models/loginUser';
 import { UserId } from 'src/domain/user/models/userId';
 import { UserName } from 'src/domain/user/models/userName';
-import { TopicEntity } from 'src/domain/topic/repository/topicEntity';
+import { TopicEntity } from 'src/domain/topic/repository/types/topicEntity';
 
 const topicRepository = new FakeTopicRepository();
 const topicImageRepository = new FakeTopicImageRepository();

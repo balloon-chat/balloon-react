@@ -5,7 +5,7 @@ import 'firebase/database';
 import { IMessageRepository } from 'src/domain/message/repository/messageRepository';
 import { TopicId } from 'src/domain/topic/models/topicId';
 import { MessageId } from 'src/domain/message/models/messageId';
-import { MessageEntity } from 'src/domain/message/repository/messageEntity';
+import { MessageEntity } from 'src/domain/message/repository/types/messageEntity';
 import { map } from 'rxjs/operators';
 
 export class FirebaseMessageDatabase implements IMessageRepository {
@@ -21,10 +21,10 @@ export class FirebaseMessageDatabase implements IMessageRepository {
   async find(
     topicId: TopicId,
     messageId: MessageId,
-  ): Promise<MessageEntity | undefined> {
+  ): Promise<MessageEntity | null> {
     const snapshot = await this.messageRef(topicId, messageId).once('value');
     const dto = MessageDto.fromJSON(snapshot.toJSON());
-    return dto?.toEntity();
+    return dto?.toEntity() ?? null;
   }
 
   observeAll(topicId: TopicId, unsubscribe?: Subject<void>): Observable<MessageEntity[]> {

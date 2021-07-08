@@ -1,4 +1,4 @@
-import { MessageEntity } from 'src/domain/message/repository/messageEntity';
+import { MessageEntity } from 'src/domain/message/repository/types/messageEntity';
 import { MessageId } from 'src/domain/message/models/messageId';
 import { MessageBody } from 'src/domain/message/models/messageBody';
 import { UserId } from 'src/domain/user/models/userId';

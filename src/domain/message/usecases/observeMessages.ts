@@ -5,7 +5,7 @@ import { TopicId } from 'src/domain/topic/models/topicId';
 import { Message } from 'src/domain/message/models/message';
 import { IUserRepository } from 'src/domain/user/repository/userRepository';
 import { User } from 'src/domain/user/models/user';
-import { MessageEntity } from 'src/domain/message/repository/messageEntity';
+import { MessageEntity } from 'src/domain/message/repository/types/messageEntity';
 import { map } from 'rxjs/operators';
 import { AnonymousUser } from 'src/domain/user/models/anonymousUser';
 import { IObserveMessages } from 'src/domain/message/types/observeMessages';

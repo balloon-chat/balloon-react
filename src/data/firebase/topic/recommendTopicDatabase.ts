@@ -2,7 +2,7 @@ import { RecommendTopicDto } from 'src/data/firebase/topic/types/recommendTopicD
 import firebase from 'firebase/app';
 import 'firebase/database';
 import { IRecommendTopicRepository } from 'src/domain/topic/repository/recommendTopicRepository';
-import { RecommendTopicEntity } from 'src/domain/topic/repository/recommendTopicEntity';
+import { RecommendTopicEntity } from 'src/domain/topic/repository/types/recommendTopicEntity';
 
 export class FirebaseRecommendTopicDatabase implements IRecommendTopicRepository {
   private constructor(private readonly database = firebase.database()) {}
@@ -15,10 +15,10 @@ export class FirebaseRecommendTopicDatabase implements IRecommendTopicRepository
   }
 
   // TODO: findAllに変更
-  async find(): Promise<RecommendTopicEntity | undefined> {
+  async find(): Promise<RecommendTopicEntity | null> {
     const snapshot = await this.recommendRef().get();
     const dto = RecommendTopicDto.fromJSON(snapshot.toJSON());
-    return dto?.toEntity();
+    return dto?.toEntity() ?? null;
   }
 
   private recommendRef = () => this.database.ref('recommend');

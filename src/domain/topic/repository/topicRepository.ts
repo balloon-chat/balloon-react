@@ -1,14 +1,14 @@
-import { TopicEntity } from 'src/domain/topic/repository/topicEntity';
+import { TopicEntity } from 'src/domain/topic/repository/types/topicEntity';
 import { TopicId } from 'src/domain/topic/models/topicId';
 import { UserId } from 'src/domain/user/models/userId';
 import { TopicTitle } from 'src/domain/topic/models/topicTitle';
 import { TopicDescription } from 'src/domain/topic/models/topicDescription';
-import { BranchTopicEntity } from 'src/domain/topic/repository/branchTopicEntity';
+import { BranchTopicEntity } from 'src/domain/topic/repository/types/branchTopicEntity';
 import { BranchTopic, BranchTopicId } from 'src/domain/topic/models/branchTopic';
 import { Observable, Subject } from 'rxjs';
 
 export interface ITopicRepository {
-  find(topicId: TopicId): Promise<TopicEntity | undefined>;
+  find(topicId: TopicId): Promise<TopicEntity | null>;
 
   /**
    * 公開されている話題の一覧を、作成日順に取得

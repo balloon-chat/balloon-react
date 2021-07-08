@@ -1,9 +1,9 @@
 import { ITopicRepository, UpdateTopicParams } from 'src/domain/topic/repository/topicRepository';
-import { TopicEntity } from 'src/domain/topic/repository/topicEntity';
+import { TopicEntity } from 'src/domain/topic/repository/types/topicEntity';
 import { TopicId } from 'src/domain/topic/models/topicId';
 import { FakeBaseRepository } from 'tests/data/FakeBaseRepository';
 import { UserId } from 'src/domain/user/models/userId';
-import { BranchTopicEntity } from 'src/domain/topic/repository/branchTopicEntity';
+import { BranchTopicEntity } from 'src/domain/topic/repository/types/branchTopicEntity';
 import { BranchTopic, BranchTopicId } from 'src/domain/topic/models/branchTopic';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -12,7 +12,7 @@ export class FakeTopicRepository implements ITopicRepository {
   // key: topic id
   private readonly repository = new FakeBaseRepository<string, TopicEntity>();
 
-  find(topicId: TopicId): Promise<TopicEntity | undefined> {
+  find(topicId: TopicId): Promise<TopicEntity | null> {
     return Promise.resolve(this.repository.find(topicId.value));
   }
 
