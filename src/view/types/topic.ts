@@ -1,5 +1,5 @@
-import { TopicData } from 'src/domain/topic/models/topicData';
-import { Topic } from 'src/domain/topic/models/topic';
+import { TopicData } from 'src/domain/topic/models/topic/topicData';
+import { Topic } from 'src/domain/topic/models/topic/topic';
 import { BranchTopicEntity, BranchTopicEntityFactory } from 'src/view/types/branchTopic';
 
 export type TopicEntity = {

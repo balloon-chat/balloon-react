@@ -1,4 +1,4 @@
-import { TopicDescription } from 'src/domain/topic/models/topicDescription';
+import { TopicDescription } from 'src/domain/topic/models/topic/topicDescription';
 
 test('文字数は50文字以内', () => {
   expect(TopicDescription.require('a'.repeat(50))).toBeTruthy();

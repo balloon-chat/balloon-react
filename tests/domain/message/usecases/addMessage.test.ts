@@ -3,7 +3,7 @@ import { IMessageRepository } from 'src/domain/message/repository/messageReposit
 import { FakeMessageRepository } from 'tests/data/message/FakeMessageRepository';
 import { AddMessage } from 'src/domain/message/usecases/addMessage';
 import { MessageBody } from 'src/domain/message/models/messageBody';
-import { TopicId } from 'src/domain/topic/models/topicId';
+import { TopicId } from 'src/domain/topic/models/topic/topicId';
 import { IAddMessage } from 'src/domain/message/types/addMessage';
 
 const messageRepository: IMessageRepository = new FakeMessageRepository();

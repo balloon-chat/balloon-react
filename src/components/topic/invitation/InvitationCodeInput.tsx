@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import React, { useEffect, useState } from 'react';
-import { InvitationCode } from 'src/domain/topic/models/invitationCode';
+import { InvitationCode } from 'src/domain/topic/models/invitation/invitationCode';
 
 type Props = {
   onUpdateCodes: (codes: (number|null)[]) => void

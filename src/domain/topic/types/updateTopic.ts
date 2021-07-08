@@ -1,4 +1,4 @@
-import { Topic } from 'src/domain/topic/models/topic';
+import { Topic } from 'src/domain/topic/models/topic/topic';
 
 export type UpdateTopicArgs = {
   title?: string,

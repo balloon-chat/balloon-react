@@ -5,13 +5,13 @@ import { GetTopic } from 'src/domain/topic/usecases/getTopic';
 import { IGetTopicByInvitationCode } from 'src/domain/topic/types/getTopicByInvitationCode';
 import { GetTopicByInvitationCode } from 'src/domain/topic/usecases/getTopicByInvitationCode';
 import { FakeInvitationRepository } from 'tests/data/topic/fakeInvitationRepository';
-import { TopicFactory } from 'src/domain/topic/models/topic';
-import { TopicTitle } from 'src/domain/topic/models/topicTitle';
+import { TopicFactory } from 'src/domain/topic/models/topic/topic';
+import { TopicTitle } from 'src/domain/topic/models/topic/topicTitle';
 import { LoginUser } from 'src/domain/user/models/loginUser';
 import { UserId } from 'src/domain/user/models/userId';
 import { UserName } from 'src/domain/user/models/userName';
 import { TopicEntity } from 'src/domain/topic/repository/types/topicEntity';
-import { TopicDataFactory } from 'src/domain/topic/models/topicData';
+import { TopicDataFactory } from 'src/domain/topic/models/topic/topicData';
 
 const topicRepository = new FakeTopicRepository();
 const messageRepository = new FakeMessageRepository();

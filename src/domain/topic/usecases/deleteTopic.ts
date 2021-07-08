@@ -1,7 +1,7 @@
 import { IDeleteTopic } from 'src/domain/topic/types/deleteTopic';
 import { IInvitationRepository } from 'src/domain/topic/repository/invitationRepository';
 import { IMessageRepository } from 'src/domain/message/repository/messageRepository';
-import { TopicId } from 'src/domain/topic/models/topicId';
+import { TopicId } from 'src/domain/topic/models/topic/topicId';
 import { ITopicRepository } from '../repository/topicRepository';
 
 export class DeleteTopic implements IDeleteTopic {

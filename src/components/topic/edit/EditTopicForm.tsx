@@ -1,6 +1,6 @@
 import { TextField } from 'src/components/common/TextField';
-import { TopicTitle } from 'src/domain/topic/models/topicTitle';
-import { TopicDescription } from 'src/domain/topic/models/topicDescription';
+import { TopicTitle } from 'src/domain/topic/models/topic/topicTitle';
+import { TopicDescription } from 'src/domain/topic/models/topic/topicDescription';
 import { ImageFileContext } from 'src/components/topic/edit/context';
 import { TopicThumbnail } from 'src/components/topic/edit/TopicThumbnail';
 import styled from 'styled-components';
@@ -25,7 +25,6 @@ type Props = {
 
   error: {
     title: string | null,
-    description: string | null,
   }
 };
 
@@ -78,7 +77,6 @@ export const EditTopicForm = ({
         placeholder="例: 『みんなで今日の晩御飯のメニューの妄想を語り合いましょう。』"
         onChange={(v) => setDescription(v)}
         maxLength={TopicDescription.MAX_DESCRIPTION_LENGTH}
-        error={error.description}
         initialValue={description ?? ''}
       />
       <ThumbnailInputRow>

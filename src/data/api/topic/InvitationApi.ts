@@ -1,5 +1,5 @@
-import { InvitationCode } from 'src/domain/topic/models/invitationCode';
-import { TopicId } from 'src/domain/topic/models/topicId';
+import { InvitationCode } from 'src/domain/topic/models/invitation/invitationCode';
+import { TopicId } from 'src/domain/topic/models/topic/topicId';
 import { IInvitationRepository } from 'src/domain/topic/repository/invitationRepository';
 import axios, { AxiosResponse } from 'axios';
 

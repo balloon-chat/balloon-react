@@ -3,7 +3,7 @@ import { MessageEntity, MessageEntityFactory } from 'src/domain/message/reposito
 import { IMessageRepository } from 'src/domain/message/repository/messageRepository';
 import { IllegalArgumentException } from 'src/domain/exceptions/IllegalArgumentException';
 import { MessageBody } from 'src/domain/message/models/messageBody';
-import { TopicId } from 'src/domain/topic/models/topicId';
+import { TopicId } from 'src/domain/topic/models/topic/topicId';
 import { IAddMessage } from 'src/domain/message/types/addMessage';
 
 export class AddMessage implements IAddMessage {

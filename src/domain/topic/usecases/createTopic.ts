@@ -1,13 +1,13 @@
-import { Topic, TopicFactory } from 'src/domain/topic/models/topic';
+import { Topic, TopicFactory } from 'src/domain/topic/models/topic/topic';
 import { ITopicRepository } from 'src/domain/topic/repository/topicRepository';
-import { TopicTitle } from 'src/domain/topic/models/topicTitle';
+import { TopicTitle } from 'src/domain/topic/models/topic/topicTitle';
 import { TopicEntity } from 'src/domain/topic/repository/types/topicEntity';
 import { UserId } from 'src/domain/user/models/userId';
 import { IllegalArgumentException } from 'src/domain/exceptions/IllegalArgumentException';
 import { IUserRepository } from 'src/domain/user/repository/userRepository';
 import { UserNotFoundException } from 'src/domain/exceptions/UserNotFoundException';
 import { ITopicImageRepository } from 'src/domain/topic/repository/topicImageRepository';
-import { TopicId } from 'src/domain/topic/models/topicId';
+import { TopicId } from 'src/domain/topic/models/topic/topicId';
 import { ICreateTopic } from 'src/domain/topic/types/createTopic';
 import { IInvitationRepository } from 'src/domain/topic/repository/invitationRepository';
 import { v4 as uuidv4 } from 'uuid';

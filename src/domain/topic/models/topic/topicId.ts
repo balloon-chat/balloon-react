@@ -1,5 +1,4 @@
 import { UniqueId } from 'src/domain/core/uniqueId';
 
-export class MessageId extends UniqueId {
-
+export class TopicId extends UniqueId {
 }

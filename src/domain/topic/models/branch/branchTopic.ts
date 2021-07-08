@@ -1,6 +1,6 @@
 // eslint-disable-next-line max-classes-per-file
-import { UniqueId } from 'src/domain/core/UniqueId';
-import { TopicTitle } from 'src/domain/topic/models/topicTitle';
+import { UniqueId } from 'src/domain/core/uniqueId';
+import { TopicTitle } from 'src/domain/topic/models/topic/topicTitle';
 
 export class BranchTopic {
   constructor(

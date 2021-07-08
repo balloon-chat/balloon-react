@@ -1,7 +1,7 @@
 import { AddMessage } from 'src/domain/message/usecases/addMessage';
 import { UserId } from 'src/domain/user/models/userId';
 import { Observable, Subject } from 'rxjs';
-import { TopicId } from 'src/domain/topic/models/topicId';
+import { TopicId } from 'src/domain/topic/models/topic/topicId';
 import { IMessageRepository } from 'src/domain/message/repository/messageRepository';
 import { FirebaseMessageDatabase } from 'src/data/firebase/message/messageDatabase';
 import { MessageEntity, MessageEntityFactory } from 'src/view/types/message';

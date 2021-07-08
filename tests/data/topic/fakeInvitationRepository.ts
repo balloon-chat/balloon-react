@@ -1,7 +1,7 @@
 import { IInvitationRepository } from 'src/domain/topic/repository/invitationRepository';
 import { FakeBaseRepository } from 'tests/data/FakeBaseRepository';
-import { TopicId } from 'src/domain/topic/models/topicId';
-import { InvitationCode } from 'src/domain/topic/models/invitationCode';
+import { TopicId } from 'src/domain/topic/models/topic/topicId';
+import { InvitationCode } from 'src/domain/topic/models/invitation/invitationCode';
 
 type Entity = {topicId: TopicId, invitationCode: InvitationCode};
 

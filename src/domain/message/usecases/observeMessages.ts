@@ -1,7 +1,7 @@
 // eslint-disable-next-line max-classes-per-file
 import { IMessageRepository } from 'src/domain/message/repository/messageRepository';
 import { Observable, Operator, Subject, Subscriber, TeardownLogic } from 'rxjs';
-import { TopicId } from 'src/domain/topic/models/topicId';
+import { TopicId } from 'src/domain/topic/models/topic/topicId';
 import { Message } from 'src/domain/message/models/message';
 import { IUserRepository } from 'src/domain/user/repository/userRepository';
 import { User } from 'src/domain/user/models/user';

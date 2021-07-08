@@ -1,4 +1,4 @@
-import { InvitationCode } from 'src/domain/topic/models/invitationCode';
+import { InvitationCode } from 'src/domain/topic/models/invitation/invitationCode';
 
 export const createInvitation = ({ title, currentPath, code }: {
   title: string,

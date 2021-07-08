@@ -1,8 +1,8 @@
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { IObserveTopic } from 'src/domain/topic/types/observeTopic';
-import { Topic } from 'src/domain/topic/models/topic';
-import { TopicId } from 'src/domain/topic/models/topicId';
+import { Topic } from 'src/domain/topic/models/topic/topic';
+import { TopicId } from 'src/domain/topic/models/topic/topicId';
 import { ITopicRepository } from 'src/domain/topic/repository/topicRepository';
 
 export class ObserveTopic implements IObserveTopic {

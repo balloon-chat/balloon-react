@@ -1,4 +1,4 @@
-import { BranchTopicId, BranchTopicTitle } from 'src/domain/topic/models/branchTopic';
+import { BranchTopicId, BranchTopicTitle } from 'src/domain/topic/models/branch/branchTopic';
 import { BranchTopicEntity } from 'src/domain/topic/repository/types/branchTopicEntity';
 
 export class BranchTopicDto {

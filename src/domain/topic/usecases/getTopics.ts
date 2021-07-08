@@ -1,6 +1,6 @@
 import { ITopicRepository } from 'src/domain/topic/repository/topicRepository';
-import { TopicData } from 'src/domain/topic/models/topicData';
-import { TopicId } from 'src/domain/topic/models/topicId';
+import { TopicData } from 'src/domain/topic/models/topic/topicData';
+import { TopicId } from 'src/domain/topic/models/topic/topicId';
 import { IGetTopics } from 'src/domain/topic/types/getTopics';
 import { IGetTopic } from 'src/domain/topic/types/getTopic';
 import { IMessageRepository } from 'src/domain/message/repository/messageRepository';

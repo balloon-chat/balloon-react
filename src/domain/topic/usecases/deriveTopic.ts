@@ -1,7 +1,7 @@
 import { IDeriveTopic } from 'src/domain/topic/types/deriveTopic';
-import { TopicId } from 'src/domain/topic/models/topicId';
+import { TopicId } from 'src/domain/topic/models/topic/topicId';
 import { ITopicRepository } from 'src/domain/topic/repository/topicRepository';
-import { BranchTopic, BranchTopicFactory } from 'src/domain/topic/models/branchTopic';
+import { BranchTopic, BranchTopicFactory } from 'src/domain/topic/models/branch/branchTopic';
 import { BranchTopicEntity } from 'src/domain/topic/repository/types/branchTopicEntity';
 
 export class DeriveTopic implements IDeriveTopic {

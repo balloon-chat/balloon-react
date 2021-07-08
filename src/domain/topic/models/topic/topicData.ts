@@ -1,9 +1,9 @@
-import { TopicId } from 'src/domain/topic/models/topicId';
-import { TopicTitle } from 'src/domain/topic/models/topicTitle';
-import { TopicDescription } from 'src/domain/topic/models/topicDescription';
+import { TopicId } from 'src/domain/topic/models/topic/topicId';
+import { TopicTitle } from 'src/domain/topic/models/topic/topicTitle';
+import { TopicDescription } from 'src/domain/topic/models/topic/topicDescription';
 import { User } from 'src/domain/user/models/user';
-import { Topic } from 'src/domain/topic/models/topic';
-import { BranchTopic } from 'src/domain/topic/models/branchTopic';
+import { Topic } from 'src/domain/topic/models/topic/topic';
+import { BranchTopic } from 'src/domain/topic/models/branch/branchTopic';
 
 export type TopicData = {
   id: TopicId,

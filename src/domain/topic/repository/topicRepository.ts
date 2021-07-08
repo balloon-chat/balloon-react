@@ -1,10 +1,10 @@
 import { TopicEntity } from 'src/domain/topic/repository/types/topicEntity';
-import { TopicId } from 'src/domain/topic/models/topicId';
+import { TopicId } from 'src/domain/topic/models/topic/topicId';
 import { UserId } from 'src/domain/user/models/userId';
-import { TopicTitle } from 'src/domain/topic/models/topicTitle';
-import { TopicDescription } from 'src/domain/topic/models/topicDescription';
+import { TopicTitle } from 'src/domain/topic/models/topic/topicTitle';
+import { TopicDescription } from 'src/domain/topic/models/topic/topicDescription';
 import { BranchTopicEntity } from 'src/domain/topic/repository/types/branchTopicEntity';
-import { BranchTopic, BranchTopicId } from 'src/domain/topic/models/branchTopic';
+import { BranchTopic, BranchTopicId } from 'src/domain/topic/models/branch/branchTopic';
 import { Observable, Subject } from 'rxjs';
 
 export interface ITopicRepository {

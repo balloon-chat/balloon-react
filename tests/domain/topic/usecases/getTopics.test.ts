@@ -1,14 +1,14 @@
 import { FakeTopicRepository } from 'tests/data/topic/fakeTopicRepository';
 import { FakeMessageRepository } from 'tests/data/message/FakeMessageRepository';
 import { FakeUserRepository } from 'tests/data/user/FakeUserRepository';
-import { TopicFactory } from 'src/domain/topic/models/topic';
-import { TopicTitle } from 'src/domain/topic/models/topicTitle';
+import { TopicFactory } from 'src/domain/topic/models/topic/topic';
+import { TopicTitle } from 'src/domain/topic/models/topic/topicTitle';
 import { TopicEntity } from 'src/domain/topic/repository/types/topicEntity';
 import { MessageFactory } from 'src/domain/message/models/message';
 import { MessageBody } from 'src/domain/message/models/messageBody';
 import { MessageEntity } from 'src/domain/message/repository/types/messageEntity';
 import { GetTopics } from 'src/domain/topic/usecases/getTopics';
-import { TopicData, TopicDataFactory } from 'src/domain/topic/models/topicData';
+import { TopicData, TopicDataFactory } from 'src/domain/topic/models/topic/topicData';
 import { UserId } from 'src/domain/user/models/userId';
 import { UserName } from 'src/domain/user/models/userName';
 import { AnonymousUser } from 'src/domain/user/models/anonymousUser';
