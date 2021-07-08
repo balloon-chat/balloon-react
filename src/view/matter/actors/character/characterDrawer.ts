@@ -36,11 +36,11 @@ export class CharacterDrawer {
   /**
    * テキストがボックスに入るように分割する
    */
-  static getTextLines(p5: P5Types, text: string, radius: number): string[] {
-    const textBoxWidth = CharacterDrawer.getTextBoxWidth(radius);
+  static getTextLines(p5: P5Types, text: string, radius: number, scale: number): string[] {
+    const textBoxWidth = CharacterDrawer.getTextBoxWidth(radius * scale);
 
     // テキストボックスに収まるように、テキストを行に分割
-    p5.textSize(CharacterDrawer.messageTextSize);
+    p5.textSize(CharacterDrawer.messageTextSize * scale);
     let currentLine = 0;
     const textLines: string[] = [];
     text.split('').forEach((char) => {
@@ -70,12 +70,12 @@ export class CharacterDrawer {
     const { position, radius } = character;
     return {
       left: Vector.create(
-        position.x - radius * 0.35,
-        position.y - radius * 0.45,
+        position.x - radius * 0.35 * character.scale,
+        position.y - radius * 0.45 * character.scale,
       ),
       right: Vector.create(
-        position.x + radius * 0.35,
-        position.y - radius * 0.45,
+        position.x + radius * 0.35 * character.scale,
+        position.y - radius * 0.45 * character.scale,
       ),
     };
   }
@@ -88,11 +88,10 @@ export class CharacterDrawer {
       .ellipse(
         character.position.x - 5,
         character.position.y + 5,
-        character.radius * 2 * CharacterDrawer.scaleX,
-        character.radius * 2 * CharacterDrawer.scaleY,
+        character.radius * 2 * CharacterDrawer.scaleX * character.scale,
+        character.radius * 2 * CharacterDrawer.scaleY * character.scale,
       );
     p5.pop();
-
     // bodyの描画
     const { colorBody } = CharacterDrawer.getColor(character, p5);
     p5.push();
@@ -101,8 +100,8 @@ export class CharacterDrawer {
       .ellipse(
         character.position.x,
         character.position.y,
-        character.radius * 2 * CharacterDrawer.scaleX,
-        character.radius * 2 * CharacterDrawer.scaleY,
+        character.radius * 2 * CharacterDrawer.scaleX * character.scale,
+        character.radius * 2 * CharacterDrawer.scaleY * character.scale,
       );
     p5.pop();
 
@@ -112,14 +111,15 @@ export class CharacterDrawer {
     p5.push();
     p5.fill(colorEye)
       .noStroke()
-      .circle(eyePosition.left.x, eyePosition.left.y, character.radius * 0.15)
-      .circle(eyePosition.right.x, eyePosition.right.y, character.radius * 0.15);
+      .circle(eyePosition.left.x, eyePosition.left.y, character.radius * 0.15 * character.scale)
+      .circle(eyePosition.right.x, eyePosition.right.y, character.radius * 0.15 * character.scale);
     p5.pop();
   }
 
   drawMessage(character: Character, p5: P5Types): number {
     // textの描画
-    const textLines = CharacterDrawer.getTextLines(p5, character.message, character.radius);
+    // eslint-disable-next-line max-len
+    const textLines = CharacterDrawer.getTextLines(p5, character.message, character.radius, character.scale);
 
     // 目とキャラクター下端との中点。これを基準としてテキストを配置していく。
     const eyePosition = this.getEyePosition(character);
@@ -128,10 +128,10 @@ export class CharacterDrawer {
       character.position.x,
       eyePosition.left.y + (character.radius * scaleX) * Math.tan(75 / 180),
     );
-    p5.textSize(CharacterDrawer.messageTextSize);
+    p5.textSize(CharacterDrawer.messageTextSize * character.scale);
 
-    const textBoxWidth = CharacterDrawer.getTextBoxWidth(character.radius);
-    const textBoxHeight = textLines.length * messageTextSize;
+    const textBoxWidth = CharacterDrawer.getTextBoxWidth(character.radius * character.scale);
+    const textBoxHeight = textLines.length * messageTextSize * character.scale;
     let startPosition: Vector;
     if (textLines.length === 1) {
       // 一行だけのときは、中央寄せ
@@ -153,17 +153,18 @@ export class CharacterDrawer {
       const { colorText } = CharacterDrawer.getColor(character, p5);
       p5.fill(colorText)
         .textAlign('center', 'center')
-        .textSize(messageTextSize)
+        .textSize(messageTextSize * character.scale)
         .text(textLines[0], startPosition.x, startPosition.y);
-      bottomYPosition = startPosition.y + messageTextSize;
+      bottomYPosition = startPosition.y + messageTextSize * character.scale;
     } else {
       for (let i = 0; i < textLines.length; i += 1) {
         p5.fill(0)
           .textAlign('left', 'center')
-          .textSize(messageTextSize)
-          .text(textLines[i], startPosition.x, startPosition.y + messageTextSize * i);
+          .textSize(messageTextSize * character.scale)
+          // eslint-disable-next-line max-len
+          .text(textLines[i], startPosition.x, startPosition.y + messageTextSize * character.scale * i);
       }
-      bottomYPosition = startPosition.y + messageTextSize * textLines.length;
+      bottomYPosition = startPosition.y + messageTextSize * character.scale * textLines.length;
     }
 
     return bottomYPosition;
@@ -174,7 +175,7 @@ export class CharacterDrawer {
     const { position, sender } = character;
     const { colorSender } = CharacterDrawer.getColor(character, p5);
     p5.fill(colorSender)
-      .textSize(CharacterDrawer.senderNameTextSize)
+      .textSize(CharacterDrawer.senderNameTextSize * character.scale)
       .textAlign('center', 'center')
       .text(`@ ${sender}`, position.x, textBoxBottomY + 8);
   }

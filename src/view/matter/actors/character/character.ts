@@ -26,7 +26,7 @@ export class Character implements CharacterAction {
     readonly sender: string,
     readonly radius: number,
     readonly color: string,
-    public lifespan: number = 100,
+    public lifespan: number = 100, public scale: number = 1.0,
     collision: boolean = true,
   ) {
     this.collision = collision;
@@ -113,6 +113,31 @@ export class Character implements CharacterAction {
       Character.maxSpeed,
     );
     Body.setVelocity(this.body, velocity);
+  }
+
+  popout(span: number, onPopOuted: () => void) {
+    // スケールの計算
+    const scaleCal = (x: number, span: number, maxScale: number) => {
+      // 小数をある程度切り捨てる
+      const rX: number = Math.round(x * 100) / 100;
+      const rM: number = Math.round(maxScale * 10) / 10;
+      const a: number = -(4 * rM - 4) / span ** 2;
+      const b: number = (4 * rM - 4) / span;
+      const c: number = 1;
+      return a * rX ** 2 + b * rX + c;
+    };
+
+    onPopOuted();
+    const interval: number = span / this.lifespan;
+    let currentTime: number = 0;
+    const id = setInterval(() => {
+      if (currentTime <= span) {
+        this.scale = scaleCal(currentTime, span, 1.5);
+        currentTime += interval;
+      } else {
+        clearInterval(id);
+      }
+    }, interval);
   }
 
   fadeout(span: number, onFadeOuted: () => void) {

@@ -25,7 +25,6 @@ export const TopicCard: React.FC<TopicEntity> = ({
           <ThumbnailImageContainer>
             <Skeleton height="100%" />
             <Image
-              placeholder="bluer"
               src={thumbnailUrl}
               layout="fill"
               objectFit="cover"
@@ -64,7 +63,6 @@ const PrivateContainer = styled.div`
   position: absolute;
   bottom: 8px;
   left: 8px;
-  
   & > svg {
     color: #ffbe0f;
     fill: currentColor;

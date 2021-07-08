@@ -33,8 +33,11 @@ export abstract class CharacterController {
       });
       this.lastUpdateAt = current;
     }
-    World.add(world, character.body);
-    this._characters.set(character.id, character);
+
+    character.popout(500, () => {
+      World.add(world, character.body);
+      this._characters.set(character.id, character);
+    });
   }
 
   remove(world: World, character: Character) {
