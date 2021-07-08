@@ -8,6 +8,8 @@ import { TopicId } from 'src/domain/topic/models/topicId';
 import { BranchTopicId } from 'src/domain/topic/models/branchTopic';
 import { TopicEntity } from 'src/domain/topic/repository/topicEntity';
 import { UserId } from 'src/domain/user/models/userId';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 export class FirebaseTopicDatabase implements ITopicRepository {
   private constructor(private readonly database = firebase.firestore()) {
@@ -22,7 +24,7 @@ export class FirebaseTopicDatabase implements ITopicRepository {
     return this._instance;
   }
 
-  async getTopicDto(topicId: TopicId): Promise<TopicDto|null> {
+  async getTopicDto(topicId: TopicId): Promise<TopicDto | null> {
     const snapshot = await this.document(topicId).get();
     return TopicDto.fromJSON(snapshot.data() ?? null);
   }
@@ -100,6 +102,55 @@ export class FirebaseTopicDatabase implements ITopicRepository {
     return dto.map((e) => e.toTopicEntity({ branchTopics: [] }));
   }
 
+  observeTopic(topicId: TopicId, unsubscribe?: Subject<void>): Observable<TopicEntity | null> {
+    const topicDocument = this.document(topicId);
+    const branchTopicCollection = this.branchTopicsCollection(topicId);
+
+    const topicBehaviorSubject = new BehaviorSubject<TopicDto | null>(null);
+    const branchTopicBehaviorSubject = new BehaviorSubject<BranchTopicDto[]>([]);
+
+    const behaviorSubject = new BehaviorSubject<TopicEntity | null>(null);
+
+    const funcUnsubscribeTopic = topicDocument.onSnapshot(
+      (snapshot) => {
+        const data = snapshot.data();
+        const dto = TopicDto.fromJSON(data);
+        topicBehaviorSubject.next(dto);
+      },
+    );
+
+    const funcUnsubscribeBranchTopic = branchTopicCollection.onSnapshot(
+      (snapshots) => {
+        const dto = snapshots.docs.map((snapshot) => {
+          const data = snapshot.data();
+          return BranchTopicDto.fromJSON(data);
+        }).filter((e): e is BranchTopicDto => e != null);
+        branchTopicBehaviorSubject.next(dto);
+      },
+    );
+
+    unsubscribe?.subscribe({
+      next: () => {
+        if (behaviorSubject.closed) behaviorSubject.complete();
+        funcUnsubscribeTopic();
+        funcUnsubscribeBranchTopic();
+      },
+      complete: () => {
+        if (behaviorSubject.closed) behaviorSubject.complete();
+        funcUnsubscribeTopic();
+        funcUnsubscribeBranchTopic();
+      },
+    });
+
+    return combineLatest([topicBehaviorSubject, branchTopicBehaviorSubject])
+      .pipe(
+        map((value) => {
+          const [topic, branchTopics] = value;
+          return topic?.toTopicEntity({ branchTopics }) ?? null;
+        }),
+      );
+  }
+
   async updateTopic(topicId: TopicId, {
     title,
     description,
@@ -165,14 +216,17 @@ export class FirebaseTopicDatabase implements ITopicRepository {
 
   private collection = () => this.database.collection('/topics');
 
-  private document = (topicId: TopicId) => this.collection().doc(topicId.value);
+  private document = (topicId: TopicId) => this.collection()
+    .doc(topicId.value);
 
   private branchTopicsCollection = (
     topicId: TopicId,
-  ) => this.document(topicId).collection('/branch');
+  ) => this.document(topicId)
+    .collection('/branch');
 
   private branchTopicDocument = (
     topicId: TopicId,
     branchTopicId: BranchTopicId,
-  ) => this.branchTopicsCollection(topicId).doc(branchTopicId.value);
+  ) => this.branchTopicsCollection(topicId)
+    .doc(branchTopicId.value);
 }

@@ -28,7 +28,7 @@ export class TopicDto {
     );
   }
 
-  static fromJSON(json: Object | null): TopicDto | null {
+  static fromJSON(json: Object | null | undefined): TopicDto | null {
     if (json && isTopicJSON(json)) {
       const src = json as TopicJSON;
       return new TopicDto(

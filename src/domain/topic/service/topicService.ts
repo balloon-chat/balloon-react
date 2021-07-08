@@ -35,6 +35,10 @@ import { UpdateTopic } from 'src/domain/topic/usecases/updateTopic';
 import { TopicEntity, TopicEntityFactory } from 'src/view/types/topic';
 import { IDeriveTopic } from 'src/domain/topic/types/deriveTopic';
 import { DeriveTopic } from 'src/domain/topic/usecases/deriveTopic';
+import { Observable, Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { IObserveTopic } from 'src/domain/topic/types/observeTopic';
+import { ObserveTopic } from 'src/domain/topic/usecases/observeTopic';
 
 export class TopicService {
   private readonly createTopicUsecase: ICreateTopic;
@@ -50,6 +54,8 @@ export class TopicService {
   private readonly getTopicsCreatedByUsecase: IGetTopicsCreatedBy;
 
   private readonly getRecommendTopicsUsecase: IGetRecommendTopics;
+
+  private readonly observeTopicUsecase: IObserveTopic;
 
   private readonly updateTopicUsecase: IUpdateTopic;
 
@@ -99,6 +105,9 @@ export class TopicService {
       this.getTopicsUsecase,
       recommendTopicRepository,
     );
+    this.observeTopicUsecase = new ObserveTopic(
+      topicRepository,
+    );
     this.updateTopicUsecase = new UpdateTopic(
       topicRepository,
       topicImageRepository,
@@ -123,7 +132,6 @@ export class TopicService {
     return TopicEntityFactory.fromTopic({
       topic,
       commentCount: 0,
-      createdBy: new UserId(createdBy),
     });
   }
 
@@ -149,7 +157,6 @@ export class TopicService {
     return TopicEntityFactory.fromTopic({
       topic,
       commentCount: 0,
-      createdBy: topic.createdBy,
     });
   }
 
@@ -189,5 +196,18 @@ export class TopicService {
     } catch (e) {
       return null;
     }
+  }
+
+  observeTopic(topicId: string, unsubscribe: Subject<void>): Observable<TopicEntity| null> {
+    return this.observeTopicUsecase.execute(topicId, unsubscribe)
+      .pipe(
+        map((topic) => {
+          if (!topic) return null;
+          return TopicEntityFactory.fromTopic({
+            topic,
+            commentCount: 0,
+          });
+        }),
+      );
   }
 }

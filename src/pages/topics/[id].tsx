@@ -17,8 +17,8 @@ import { LoginStates } from 'src/data/redux/user/state';
 import { CharacterCanvas } from 'src/components/topic/chat/CharacterCanvas';
 import { ZIndex } from 'src/components/constants/z_index';
 import {
-  closeDeriveTopicDialog,
   closeMessageLog,
+  observeTopic,
   resetChatState,
   setBranch,
   setInvitation,
@@ -30,8 +30,8 @@ import { createInvitation } from 'src/view/lib/invitation';
 import { useRouter } from 'next/router';
 import { ChatNotifications } from 'src/components/topic/notification/ChatNotifications';
 import { useChatState } from 'src/data/redux/chat/selector';
-import { DeriveTopicDialog } from 'src/components/topic/derive/DeriveTopicDialog';
-import { BranchTopicsDialog } from 'src/components/topic/derive/BranchTopicsDialog';
+import { DeriveTopicDialog } from 'src/components/topic/dialog/DeriveTopicDialog';
+import { BranchTopicsDialog } from 'src/components/topic/dialog/BranchTopicsDialog';
 import { MessageLog } from 'src/components/topic/log/MessageLog';
 
 type Props = {
@@ -50,6 +50,9 @@ const TopicPage = ({ topic, code }: Props) => {
     dispatcher(setTopic({ topic }));
 
     if (topic) {
+      dispatcher(observeTopic({ topicId: topic.id }));
+
+      // 招待メッセージを作成
       const invitation = createInvitation({
         title: topic.title,
         currentPath: router.asPath,
@@ -71,7 +74,6 @@ const TopicPage = ({ topic, code }: Props) => {
     if (!topicId) return () => {};
 
     dispatcher(observeStart({ topicId: branchTopicId ?? topicId }));
-
     return () => {
       dispatcher(resetMessages({}));
     };
@@ -125,11 +127,7 @@ const TopicPage = ({ topic, code }: Props) => {
     <Wrapper>
       <NavBar />
       {
-        dialog.deriveTopicDialog && (
-          <DeriveTopicDialog
-            onClose={() => dispatcher(closeDeriveTopicDialog())}
-          />
-        )
+        dialog.deriveTopicDialog && <DeriveTopicDialog />
       }
       <BranchTopicsDialog />
       <MessageLog
