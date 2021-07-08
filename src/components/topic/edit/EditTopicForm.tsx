@@ -25,7 +25,6 @@ type Props = {
 
   error: {
     title: string | null,
-    description: string | null,
   }
 };
 
@@ -78,7 +77,6 @@ export const EditTopicForm = ({
         placeholder="例: 『みんなで今日の晩御飯のメニューの妄想を語り合いましょう。』"
         onChange={(v) => setDescription(v)}
         maxLength={TopicDescription.MAX_DESCRIPTION_LENGTH}
-        error={error.description}
         initialValue={description ?? ''}
       />
       <ThumbnailInputRow>

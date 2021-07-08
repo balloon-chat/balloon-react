@@ -3,7 +3,6 @@ import { useDispatch } from 'react-redux';
 import { useUserSelector } from 'src/data/redux/user/selector';
 import { createTopic, updateTopic as updateTopicAction } from 'src/data/redux/topic/action';
 import { TopicTitle } from 'src/domain/topic/models/topic/topicTitle';
-import { TopicDescription } from 'src/domain/topic/models/topic/topicDescription';
 import { LoadDialog } from 'src/components/common/LoadDialog';
 import { TopicEntity } from 'src/view/types/topic';
 import { EditTopicModes, EditTopicStates } from 'src/data/redux/topic/state';
@@ -27,7 +26,6 @@ export const EditTopic = ({ topic }: Props) => {
   const { edit } = useTopicState();
 
   const [titleError, setTitleError] = useState<string|null>(null);
-  const [descriptionError, setDescriptionError] = useState<string|null>(null);
 
   const [dialogMessage, setDialogMessage] = useState<string|null>(null);
   const [errorDialogMessage, setErrorDialogMessage] = useState<string|null>(null);
@@ -60,14 +58,12 @@ export const EditTopic = ({ topic }: Props) => {
   }, [edit]);
 
   const handleSubmit = async ({ title, description, thumbnail, isPrivate }: EditTopicArgs) => {
+    setTitleError(null);
+
     // 入力値の検証
     let valid = true;
     if (!title || !TopicTitle.require(title)) {
       setTitleError('この項目は必須です。');
-      valid = false;
-    }
-    if (description && !TopicDescription.require(description)) {
-      setDescriptionError(`文字数は${TopicDescription.MAX_DESCRIPTION_LENGTH}以下です。`);
       valid = false;
     }
 
@@ -120,10 +116,7 @@ export const EditTopic = ({ topic }: Props) => {
       <EditTopicForm
         topic={topic}
         onSubmit={handleSubmit}
-        error={{
-          title: titleError,
-          description: descriptionError,
-        }}
+        error={{ title: titleError }}
       />
     </>
   );
