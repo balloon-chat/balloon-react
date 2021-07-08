@@ -10,13 +10,11 @@ import { TopicData } from 'src/domain/topic/models/topicData';
 import { ITopicImageRepository } from 'src/domain/topic/repository/topicImageRepository';
 import { GetRecommendTopics } from 'src/domain/topic/usecases/getRecommendTopics';
 import { IRecommendTopicRepository } from 'src/domain/topic/repository/recommendTopicRepository';
-import { RecommendTopicRepository } from 'src/data/core/topic/recommendTopicRepository';
 import { FirebaseRecommendTopicDatabase } from 'src/data/firebase/topic/recommendTopicDatabase';
 import { FirebaseTopicDatabase } from 'src/data/firebase/topic/topicDatabase';
 import { FirebaseTopicImageDatabase } from 'src/data/firebase/topic/topicImageDatabase';
 import { FirebaseMessageDatabase } from 'src/data/firebase/message/messageDatabase';
 import { FirebaseUserDatabase } from 'src/data/firebase/user/userDatabase';
-import { TopicImageRepository } from 'src/data/core/topic/topicImageRepository';
 import { IGetRecommendTopics } from 'src/domain/topic/types/getRecommendTopics';
 import { ICreateTopic } from 'src/domain/topic/types/createTopic';
 import { IGetTopics } from 'src/domain/topic/types/getTopics';
@@ -61,9 +59,9 @@ export class TopicService {
     topicRepository: ITopicRepository
     = FirebaseTopicDatabase.instance,
     recommendTopicRepository: IRecommendTopicRepository
-    = new RecommendTopicRepository(FirebaseRecommendTopicDatabase.instance),
+    = FirebaseRecommendTopicDatabase.instance,
     topicImageRepository: ITopicImageRepository
-    = new TopicImageRepository(FirebaseTopicImageDatabase.instance),
+    = FirebaseTopicImageDatabase.instance,
     messageRepository: IMessageRepository
     = FirebaseMessageDatabase.instance,
     userRepository: IUserRepository

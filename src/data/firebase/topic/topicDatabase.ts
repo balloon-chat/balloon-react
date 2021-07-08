@@ -234,17 +234,10 @@ export class FirebaseTopicDatabase implements ITopicRepository {
 
   private collection = () => this.database.collection('/topics');
 
-  private document = (topicId: TopicId) => this.collection()
-    .doc(topicId.value);
+  private document = (topicId: TopicId) => this.collection().doc(topicId.value);
 
-  private branchTopicsCollection = (
-    topicId: TopicId,
-  ) => this.document(topicId)
-    .collection('/branch');
+  private branchTopicsCollection = (topicId: TopicId) => this.document(topicId).collection('/branch');
 
-  private branchTopicDocument = (
-    topicId: TopicId,
-    branchTopicId: BranchTopicId,
-  ) => this.branchTopicsCollection(topicId)
-    .doc(branchTopicId.value);
+  // eslint-disable-next-line max-len
+  private branchTopicDocument = (topicId: TopicId, branchTopicId: BranchTopicId) => this.branchTopicsCollection(topicId).doc(branchTopicId.value);
 }

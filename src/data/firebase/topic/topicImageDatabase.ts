@@ -1,21 +1,20 @@
 import firebase from 'firebase/app';
 import 'firebase/storage';
-import { ITopicImageDatabase } from 'src/data/core/topic/topicImageDatabase';
+import { ITopicImageRepository } from 'src/domain/topic/repository/topicImageRepository';
+import { UserId } from 'src/domain/user/models/userId';
 
-export class FirebaseTopicImageDatabase implements ITopicImageDatabase {
+export class FirebaseTopicImageDatabase implements ITopicImageRepository {
   private constructor(private readonly storage = firebase.storage()) {}
 
-  private static _instance: ITopicImageDatabase;
+  private static _instance: ITopicImageRepository;
 
-  static get instance(): ITopicImageDatabase {
-    if (!this._instance) {
-      this._instance = new FirebaseTopicImageDatabase();
-    }
+  static get instance(): ITopicImageRepository {
+    if (!this._instance) { this._instance = new FirebaseTopicImageDatabase(); }
     return this._instance;
   }
 
   async save(
-    userId: string,
+    userId: UserId,
     fileName: string,
     file: File | Blob,
   ): Promise<string> {
@@ -26,5 +25,7 @@ export class FirebaseTopicImageDatabase implements ITopicImageDatabase {
     return ref.getDownloadURL();
   }
 
-  private userRef = (userId: string) => this.storage.ref().child('users').child(userId);
+  private usersRef = () => this.storage.ref().child('users');
+
+  private userRef = (userId: UserId) => this.usersRef().child(userId.value);
 }
