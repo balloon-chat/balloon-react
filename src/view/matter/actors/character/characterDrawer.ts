@@ -36,7 +36,14 @@ export class CharacterDrawer {
   /**
    * テキストがボックスに入るように分割する
    */
-  static getTextLines(p5: P5Types, text: string, radius: number, scale: number): string[] {
+  static getTextLines(
+    p5: P5Types,
+    { text, radius, scale }: {
+      text: string,
+      radius: number,
+      scale: number,
+    },
+  ): string[] {
     const textBoxWidth = CharacterDrawer.getTextBoxWidth(radius * scale);
 
     // テキストボックスに収まるように、テキストを行に分割
@@ -118,8 +125,8 @@ export class CharacterDrawer {
 
   drawMessage(character: Character, p5: P5Types): number {
     // textの描画
-    // eslint-disable-next-line max-len
-    const textLines = CharacterDrawer.getTextLines(p5, character.message, character.radius, character.scale);
+    const { message, radius, scale } = character;
+    const textLines = CharacterDrawer.getTextLines(p5, { text: message, radius, scale });
 
     // 目とキャラクター下端との中点。これを基準としてテキストを配置していく。
     const eyePosition = this.getEyePosition(character);

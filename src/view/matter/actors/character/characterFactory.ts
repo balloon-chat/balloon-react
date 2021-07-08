@@ -63,16 +63,20 @@ export class CharacterFactory {
     );
   }
 
-  static getCharacterSize(p5: P5Types, isMobile:boolean, text: string): CharacterSize {
+  static getCharacterSize(
+    p5: P5Types,
+    isMobile:boolean,
+    text: string,
+  ): CharacterSize {
     // モバイルで表示するときは、キャラクターの大きさを75%にする
     const expansionRate = isMobile ? 0.75 : 1.0;
 
     let characterSize = CharacterSize.small * expansionRate;
-    let lines = CharacterDrawer.getTextLines(p5, text, characterSize).length;
+    let lines = CharacterDrawer.getTextLines(p5, { text, radius: characterSize, scale: 1 }).length;
     if (lines <= 3) return characterSize;
 
     characterSize = CharacterSize.medium * expansionRate;
-    lines = CharacterDrawer.getTextLines(p5, text, characterSize).length;
+    lines = CharacterDrawer.getTextLines(p5, { text, radius: characterSize, scale: 1 }).length;
     if (lines <= 3) return characterSize;
 
     return CharacterSize.large * expansionRate;
