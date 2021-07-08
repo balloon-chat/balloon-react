@@ -5,40 +5,21 @@ import styled from 'styled-components';
 import { mediaQuery } from 'src/components/constants/mediaQuery';
 import { useRouter } from 'next/router';
 import { useTopicState } from 'src/data/redux/topic/selector';
-import { topicStates } from 'src/data/redux/topic/state';
-import { useDispatch } from 'react-redux';
-import { resetTopicState } from 'src/data/redux/topic/slice';
+import { TopicStates } from 'src/data/redux/topic/state';
 import { rootPath } from 'src/view/route/pagePath';
 
 export const InvitationCodeForm = () => {
   const router = useRouter();
-  const dispatcher = useDispatch();
 
   const [codes, setCodes] = useState<(number | null)[]|null>();
   const [isAvailable, setIsAvailable] = useState(false);
 
-  const { state, currentTopic } = useTopicState();
+  const { state } = useTopicState();
 
   useEffect(() => {
     const filled = codes?.every((c) => c !== null);
     setIsAvailable(filled ?? false);
   }, [codes]);
-
-  useEffect(() => {
-    if (state === topicStates.TOPIC_FOUND && currentTopic) {
-      // 話題のページにリダイレクト
-      router.push(rootPath.topicPath.topic(currentTopic.id)).then(() => {
-        dispatcher(resetTopicState());
-      });
-    }
-  }, [state, currentTopic]);
-
-  const updatedCodes = (codes: (number|null)[]) => {
-    setCodes(codes);
-    if (state === topicStates.CANNOT_FIND_BY_CODE) {
-      dispatcher(resetTopicState());
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -63,11 +44,11 @@ export const InvitationCodeForm = () => {
       <Container>
         <Title>招待コードから参加する</Title>
         <Form onSubmit={handleSubmit}>
-          <InvitationCodeInput onUpdateCodes={updatedCodes} />
+          <InvitationCodeInput onUpdateCodes={setCodes} />
           <Button isEnabled={isAvailable}>参加する</Button>
         </Form>
         {
-          state === topicStates.CANNOT_FIND_BY_CODE
+          state === TopicStates.CANNOT_FIND_BY_CODE
             && <InvitationError>招待コードに対応する話題がありませんでした。</InvitationError>
         }
       </Container>

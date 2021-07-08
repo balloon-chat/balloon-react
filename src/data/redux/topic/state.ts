@@ -2,23 +2,41 @@ import { TopicEntity } from 'src/view/types/topic';
 
 export const topicStateName = 'topicState';
 
-export type TopicState = {
-  currentTopic?: TopicEntity;
-  code: number[] | null,
+export type TopicStateType = {
   topics: TopicEntity[],
   pickup?: TopicEntity,
-  isTopicCreated: boolean,
-  state?: TopicStates,
+
+  state?: TopicState,
+
+  edit: {
+    mode: EditTopicMode,
+    state: EditTopicState | null,
+    update: {
+      topic: TopicEntity,
+    } | null;
+    create: {
+      created: TopicEntity | null,
+    } | null,
+  } | null,
 };
 
-export const topicStates = {
+export const TopicStates = {
   NOT_FOUND: 'NOT_FOUND',
-  TOPIC_CREATED: 'TOPIC_CREATED',
-  CRETE_TOPIC_ERROR: 'CRETE_TOPIC_ERROR',
-  CANNOT_FIND_BY_CODE: 'CANNOT_FIND_BY_CODE',
   TOPIC_FOUND: 'TOPIC_FOUND',
-  TOPIC_UPDATED: 'TOPIC_UPDATED',
-  UPDATE_TOPIC_ERROR: 'UPDATE_TOPIC_ERROR',
+  CANNOT_FIND_BY_CODE: 'CANNOT_FIND_BY_CODE',
 } as const;
+type TopicState = typeof TopicStates[keyof typeof TopicStates];
 
-type TopicStates = typeof topicStates[keyof typeof topicStates];
+export const EditTopicModes = {
+  CREATE: 'CREATE',
+  UPDATE: 'UPDATE',
+} as const;
+export type EditTopicMode = typeof EditTopicModes[keyof typeof EditTopicModes];
+
+export const EditTopicStates = {
+  CREATED: 'CREATED',
+  UPDATED: 'UPDATED',
+  UPDATE_TOPIC_ERROR: 'UPDATE_TOPIC_ERROR',
+  CREATE_TOPIC_ERROR: 'CREATE_TOPIC_ERROR',
+} as const;
+type EditTopicState = typeof EditTopicStates[keyof typeof EditTopicStates];

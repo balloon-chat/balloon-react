@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { MessageField } from 'src/components/topic/chat/MessageField';
+import { ChatForm } from 'src/components/topic/chat/ChatForm';
 import { NavBar } from 'src/components/navbar/NavBar';
 import { ErrorPage } from 'src/components/common/ErrorPage';
 import Head from 'next/head';
@@ -9,14 +9,31 @@ import { TopicEntity, TopicEntityFactory } from 'src/view/types/topic';
 import { TopicService } from 'src/domain/topic/service/topicService';
 import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
-import { setCurrentTopic, setInvitationCode } from 'src/data/redux/topic/slice';
 import { useUserSelector } from 'src/data/redux/user/selector';
 import { UserId } from 'src/domain/user/models/userId';
 import { observeStart, resetMessages } from 'src/data/redux/message/slice';
-import { useTopicState } from 'src/data/redux/topic/selector';
 import { setUser } from 'src/data/redux/user/slice';
 import { LoginStates } from 'src/data/redux/user/state';
 import { CharacterCanvas } from 'src/components/topic/chat/CharacterCanvas';
+import { ZIndex } from 'src/components/constants/z_index';
+import {
+  closeMessageLog,
+  observeTopic,
+  resetChatState,
+  setBranch,
+  setInvitation,
+  setInvitationCode,
+  setTopic,
+  updateIsEditable,
+} from 'src/data/redux/chat/slice';
+import { createInvitation } from 'src/view/lib/invitation';
+import { useRouter } from 'next/router';
+import { ChatNotifications } from 'src/components/topic/notification/ChatNotifications';
+import { useChatState } from 'src/data/redux/chat/selector';
+import { DeriveTopicDialog } from 'src/components/topic/dialog/DeriveTopicDialog';
+import { BranchTopicsDialog } from 'src/components/topic/dialog/BranchTopicsDialog';
+import { MessageLog } from 'src/components/topic/log/MessageLog';
+import { useChatNotification } from 'src/view/lib/useNotification';
 
 type Props = {
   topic: TopicEntity | null,
@@ -24,20 +41,67 @@ type Props = {
 };
 
 const TopicPage = ({ topic, code }: Props) => {
+  const router = useRouter();
   const dispatcher = useDispatch();
   const { uid, loginState } = useUserSelector();
-  const { currentTopic } = useTopicState();
+  const { topicId, branchTopicId, dialog } = useChatState();
+
+  useChatNotification();
 
   useEffect(() => {
     dispatcher(setInvitationCode({ code }));
-    dispatcher(setCurrentTopic({ topic }));
+    dispatcher(setTopic({ topic }));
+
+    if (topic) {
+      dispatcher(observeTopic({ topicId: topic.id }));
+
+      // 招待メッセージを作成
+      const invitation = createInvitation({
+        title: topic.title,
+        currentPath: router.asPath,
+        code,
+      });
+      dispatcher(setInvitation({ invitation }));
+    }
 
     return () => {
       // reset current state
       dispatcher(setInvitationCode({ code: null }));
-      dispatcher(setCurrentTopic({ topic: null }));
+      dispatcher(setTopic({ topic: null }));
+      dispatcher(setBranch({ index: null }));
+      dispatcher(resetChatState());
     };
   }, []);
+
+  useEffect(() => {
+    if (!topicId) return () => {};
+
+    dispatcher(observeStart({ topicId: branchTopicId ?? topicId }));
+    return () => {
+      dispatcher(resetMessages({}));
+    };
+  }, [topicId, branchTopicId]);
+
+  useEffect(() => {
+    let branchIndex: number|null;
+    const paramBranchIndex = router.query.branch;
+    if (typeof paramBranchIndex === 'string') {
+      const value = parseInt(paramBranchIndex, 10);
+      branchIndex = !Number.isNaN(value) ? value : null;
+    } else {
+      branchIndex = null;
+    }
+
+    dispatcher(setBranch({ index: branchIndex }));
+  }, [router.query.branch]);
+
+  useEffect(() => {
+    dispatcher(updateIsEditable({ isEditable: uid === topic?.createdBy }));
+
+    return () => {
+      dispatcher(updateIsEditable({ isEditable: false }));
+    };
+  }, [uid]);
 
   useEffect(() => {
     // ユーザーが未ログイン時は、一時的なIDを付与する
@@ -62,25 +126,26 @@ const TopicPage = ({ topic, code }: Props) => {
     };
   }, [loginState]);
 
-  useEffect(() => {
-    if (currentTopic) dispatcher(observeStart({ topicId: currentTopic.id }));
-
-    return () => {
-      dispatcher(resetMessages({}));
-    };
-  }, [currentTopic?.id]);
-
   return (
     <Wrapper>
       <NavBar />
+      {
+        dialog.deriveTopicDialog && <DeriveTopicDialog />
+      }
+      <BranchTopicsDialog />
+      <MessageLog
+        isVisible={dialog.messageLog}
+        onClose={() => dispatcher(closeMessageLog())}
+      />
       {topic && (
         <>
           <Head>
             <title>{pageTitle.topics.topic(topic.title)}</title>
           </Head>
+          <ChatNotifications />
           <CharacterCanvas />
           <MessageFieldContainer>
-            <MessageField />
+            <ChatForm />
           </MessageFieldContainer>
         </>
       )}
@@ -101,7 +166,7 @@ const MessageFieldContainer = styled.div`
   bottom: 0;
   right: 0;
   left: 0;
-  z-index: 100;
+  z-index: ${ZIndex.messageField};
 `;
 
 export const getServerSideProps: GetServerSideProps<Props> = async (
@@ -123,6 +188,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
   const code = await service.fetchInvitationCode(id);
 
   const topic = TopicEntityFactory.create(topicData);
+
   return {
     props: {
       topic,

@@ -1,13 +1,19 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { TopicState, topicStateName, topicStates } from 'src/data/redux/topic/state';
 import {
-  resetTopicStateReducer,
-  setCurrentTopicReducer,
-  setInvitationCodeReducer,
+  EditTopicModes,
+  EditTopicStates,
+  topicStateName,
+  TopicStates,
+  TopicStateType,
+} from 'src/data/redux/topic/state';
+import {
+  editTopicReducer,
+  finishEditTopicReducer,
   setTopicsReducer,
 } from 'src/data/redux/topic/reducer';
 import {
   createTopic,
+  deriveTopic,
   fetchTopic,
   fetchTopicByCode,
   fetchTopicsCreatedBy,
@@ -16,35 +22,46 @@ import {
 } from 'src/data/redux/topic/action';
 import { TopicEntity } from 'src/view/types/topic';
 
-const initialState: TopicState = {
+const initialState: TopicStateType = {
+  edit: null,
   topics: [] as TopicEntity[],
-  code: null,
-  isTopicCreated: false,
 } as const;
 
 const topicSlice = createSlice({
   name: topicStateName,
   initialState,
   reducers: {
-    setInvitationCode: setInvitationCodeReducer,
-    setCurrentTopic: setCurrentTopicReducer,
+    editTopic: editTopicReducer,
+    finishEditTopic: finishEditTopicReducer,
     setTopics: setTopicsReducer,
-    resetTopicState: resetTopicStateReducer,
   },
   extraReducers: (builder) => {
     builder
       .addCase(createTopic.fulfilled, (state, { payload }) => ({
         ...state,
-        currentTopic: payload.created,
-        state: topicStates.TOPIC_CREATED,
+        edit: {
+          mode: EditTopicModes.CREATE,
+          state: EditTopicStates.CREATED,
+          update: null,
+          create: { created: payload.created },
+        },
       }))
       .addCase(createTopic.rejected, (state) => ({
         ...state,
-        state: topicStates.CRETE_TOPIC_ERROR,
+        edit: {
+          mode: EditTopicModes.CREATE,
+          state: EditTopicStates.CREATE_TOPIC_ERROR,
+          update: null,
+          create: null,
+        },
+      }))
+      .addCase(deriveTopic.fulfilled, (state, { payload }) => ({
+        ...state,
+        currentTopic: payload.topic,
       }))
       .addCase(fetchTopic.fulfilled, (state, { payload }) => ({
         ...state,
-        state: payload === undefined ? topicStates.NOT_FOUND : undefined,
+        state: payload === undefined ? TopicStates.NOT_FOUND : undefined,
         currentTopic: payload,
       }))
       .addCase(fetchTopicsFrom.fulfilled, (state, { payload }) => ({
@@ -57,29 +74,38 @@ const topicSlice = createSlice({
       }))
       .addCase(fetchTopicByCode.rejected, (state) => ({
         ...state,
-        state: topicStates.CANNOT_FIND_BY_CODE,
+        state: TopicStates.CANNOT_FIND_BY_CODE,
       }))
       .addCase(fetchTopicByCode.fulfilled, (state, { payload }) => ({
         ...state,
         topicId: payload.topicId,
-        state: payload.topicId ? topicStates.TOPIC_FOUND : topicStates.CANNOT_FIND_BY_CODE,
-      }))
-      .addCase(updateTopic.rejected, (state) => ({
-        ...state,
-        state: topicStates.UPDATE_TOPIC_ERROR,
+        state: payload.topicId ? TopicStates.TOPIC_FOUND : TopicStates.CANNOT_FIND_BY_CODE,
       }))
       .addCase(updateTopic.fulfilled, (state, { payload }) => ({
         ...state,
-        topicId: payload.topicId,
-        state: topicStates.TOPIC_UPDATED,
+        edit: {
+          mode: EditTopicModes.UPDATE,
+          state: EditTopicStates.UPDATED,
+          update: { topic: payload.topic },
+          create: null,
+        },
+      }))
+      .addCase(updateTopic.rejected, (state) => ({
+        ...state,
+        edit: {
+          mode: EditTopicModes.CREATE,
+          state: EditTopicStates.UPDATE_TOPIC_ERROR,
+          update: null,
+          create: null,
+        },
       }));
   },
 });
 
 export const {
-  setInvitationCode,
-  setCurrentTopic,
+  editTopic,
+  finishEditTopic,
   setTopics,
-  resetTopicState,
 } = topicSlice.actions;
+
 export const topicReducer = topicSlice.reducer;

@@ -23,7 +23,7 @@ const recommendTopicRepository = new FakeRecommendTopicRepository();
 const userRepository = new FakeUserRepository();
 
 const usecase: IGetRecommendTopics = new GetRecommendTopics(
-  new GetTopics(messageRepository, topicRepository, userRepository),
+  new GetTopics(topicRepository, messageRepository, userRepository),
   recommendTopicRepository,
 );
 

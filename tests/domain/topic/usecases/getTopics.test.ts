@@ -19,7 +19,7 @@ const topicRepository = new FakeTopicRepository();
 const messageRepository = new FakeMessageRepository();
 const userRepository = new FakeUserRepository();
 
-const usecase: IGetTopics = new GetTopics(messageRepository, topicRepository, userRepository);
+const usecase: IGetTopics = new GetTopics(topicRepository, messageRepository, userRepository);
 
 const thumbnailUrl = 'some.img';
 const user = new LoginUser(new UserId(), null, new UserName('test'), 'test');
@@ -55,6 +55,7 @@ describe('TopicのIDにより取得', () => {
         id: topic.id,
         title: topic.title,
         description: topic.description,
+        branchTopics: topic.branchTopics,
         createdAt: new Date(topic.createdAt),
         createdBy: user,
         commentCount: 0,
@@ -125,6 +126,7 @@ describe('上限を設定して取得', () => {
       id: result.id,
       title: result.title,
       description: result.description,
+      branchTopics: result.branchTopics,
       createdAt: new Date(result.createdAt),
       createdBy: user,
       thumbnailUrl: topic.thumbnailUrl,

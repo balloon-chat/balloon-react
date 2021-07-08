@@ -14,6 +14,7 @@ import Edit from 'src/components/svgs/edit.svg';
 import Login from 'src/components/svgs/login.svg';
 import { getCurrentLocation, NavLocations } from 'src/view/types/navigation';
 import { useRouter } from 'next/router';
+import { ZIndex } from 'src/components/constants/z_index';
 
 export const NavBarHome = () => (
   <NavBar>
@@ -77,7 +78,7 @@ export const NavBar: React.FC = ({ children }) => {
 const NavContainer = styled.div`
   background-color: white;
   box-shadow: 0 5px 10px 0 rgb(0 64 128 / 5%);
-  z-index: 2;
+  z-index: ${ZIndex.navBar};
 `;
 
 const NavMainContainer = styled.div`
