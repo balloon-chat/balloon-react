@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { sendMessage as sendMessageAction } from 'src/data/redux/message/action';
 import { useUserSelector } from 'src/data/redux/user/selector';
 import { mediaQuery } from 'src/components/constants/mediaQuery';
-import { ReactComponent as Send } from 'src/components/svgs/send.svg';
+import Send from 'src/components/svgs/send.svg';
 import { ShowMessageLog } from 'src/components/topic/actions/ShowMessageLog';
 import { DeriveTopic } from 'src/components/topic/actions/DeriveTopic';
 import { DetailActions } from 'src/components/topic/actions/DetailActions';
