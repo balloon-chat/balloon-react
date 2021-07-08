@@ -1,6 +1,7 @@
 import { ChatNotification, ChatState, chatStateName } from 'src/data/redux/chat/state';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { TopicEntity } from 'src/view/types/topic';
+import { ObserveTopic, ObserveTopicFulfilled } from 'src/data/redux/chat/action';
 
 const initialState: ChatState = {
   topic: null,
@@ -28,7 +29,7 @@ const slice = createSlice({
       state.dialog.deriveTopicDialog = true;
     },
     closeDeriveTopicDialog: (state) => {
-      state.dialog.branchTopicDialog = false;
+      state.dialog.deriveTopicDialog = false;
     },
     showBranchTopicsDialog: (state) => {
       state.dialog.branchTopicDialog = true;
@@ -81,6 +82,13 @@ const slice = createSlice({
       state.invitation = initialState.invitation;
       state.notification = initialState.notification;
     },
+    observeTopic: (state, { payload }: ObserveTopic) => {
+      state.topicId = payload.topicId;
+    },
+    observeTopicFulfilled: (state, { payload }: ObserveTopicFulfilled) => {
+      if (!payload.topic) return;
+      state.topic = payload.topic;
+    },
   },
 });
 
@@ -107,4 +115,7 @@ export const {
   updateIsEditable,
 
   resetChatState,
+
+  observeTopic,
+  observeTopicFulfilled,
 } = slice.actions;
