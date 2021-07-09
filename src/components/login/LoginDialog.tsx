@@ -1,13 +1,12 @@
 import { GoogleLoginButton } from 'src/components/login/LoginButton';
 import styled from 'styled-components';
 import React from 'react';
-import Image from 'next/image';
 import { imagePath } from 'src/components/constants/imagePath';
 
 export const LoginDialog = () => (
   <DialogContainer>
     <TitleContainer>
-      <Image alt="" src={imagePath.character.blue} height={100} width={100} objectFit="contain" />
+      <CharacterImage src={imagePath.character.blue} />
       <h3>おもちゃっとへようこそ！</h3>
     </TitleContainer>
     <GoogleLoginButton />
@@ -36,4 +35,10 @@ const TitleContainer = styled.div`
   & > img {
     margin-bottom: 16px;
   }
+`;
+
+const CharacterImage = styled.img`
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
 `;

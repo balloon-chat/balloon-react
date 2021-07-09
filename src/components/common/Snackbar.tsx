@@ -1,6 +1,6 @@
+/* eslint-disable jsx-a11y/alt-text */
 import React from 'react';
 import styled from 'styled-components';
-import Image from 'next/image';
 import { imagePath } from 'src/components/constants/imagePath';
 import { mediaQuery } from 'src/components/constants/mediaQuery';
 
@@ -10,7 +10,7 @@ type Props = {
 
 export const Snackbar = ({ message }: Props) => (
   <Container>
-    <Image src={imagePath.character.blue} height={32} width={32} />
+    <img alt="" src={imagePath.character.blue} height={32} width={32} />
     <Message>{message}</Message>
   </Container>
 );

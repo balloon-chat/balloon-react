@@ -1,7 +1,6 @@
 import { topicPath } from 'src/view/route/pagePath';
 import styled from 'styled-components';
 import { TopicEntity } from 'src/view/types/topic';
-import Image from 'next/image';
 import { dateFormat } from 'src/view/util/format';
 import LockIcon from 'src/components/svgs/lock.svg';
 import React from 'react';
@@ -19,16 +18,12 @@ export const TopicCard: React.FC<TopicEntity> = ({
   isPrivate,
 }) => (
   <Card>
-    <Link href={topicPath.topic(id)}>
+    <Link href={topicPath.topic(id)} passHref>
       <Container>
         <Thumbnail>
           <ThumbnailImageContainer>
             <Skeleton height="100%" />
-            <Image
-              src={thumbnailUrl}
-              layout="fill"
-              objectFit="cover"
-            />
+            <ThumbnailImage key={id} src={thumbnailUrl} />
           </ThumbnailImageContainer>
           {label && <Label labelColor={label.color}>{label.title}</Label>}
           {isPrivate && <PrivateContainer><LockIcon /></PrivateContainer>}
@@ -90,6 +85,18 @@ const ThumbnailImageContainer = styled.div`
   max-height: 250px;
   height: 100%;
   width: 100%;
+  position: relative;
+`;
+
+const ThumbnailImage = styled.img`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
 `;
 
 const Label = styled.div<{ labelColor: string }>`

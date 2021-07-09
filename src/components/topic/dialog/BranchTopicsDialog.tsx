@@ -5,7 +5,6 @@ import { SwipeInDialog } from 'src/components/topic/dialog/SwipeInDialog';
 import { useChatState } from 'src/data/redux/chat/selector';
 import styled from 'styled-components';
 import Link from 'next/link';
-import Image from 'next/image';
 import { rootPath } from 'src/view/route/pagePath';
 import { imagePath } from 'src/components/constants/imagePath';
 import { TextButton } from 'src/components/common/Button';
@@ -35,7 +34,7 @@ export const BranchTopicsDialog = () => {
           // 派生した話題が無い場合
           !topic?.branchTopics.length && (
           <EmptyBranchTopicContainer>
-            <Image src={imagePath.character.blue} width={130} height={130} objectFit="contain" />
+            <CharacterImage src={imagePath.character.blue} />
             <EmptyBranchTopicMessage>この話題はまだ、これから盛り上がっていくようです。</EmptyBranchTopicMessage>
             <TextButton onClick={handleDeriveTopic}>話題を広げる</TextButton>
           </EmptyBranchTopicContainer>
@@ -102,6 +101,7 @@ const BranchTopicTitle = styled.div<{active: boolean}>`
 `;
 
 const EmptyBranchTopicContainer = styled.div`
+  align-items: center;
   align-content: center;
   box-sizing: border-box;
   display: flex;
@@ -110,6 +110,12 @@ const EmptyBranchTopicContainer = styled.div`
   padding: 0 16px;
   width: 100%;
   height: 100%;
+`;
+
+const CharacterImage = styled.img`
+  width: 130px;
+  height: 130px;
+  object-fit: contain;
 `;
 
 const EmptyBranchTopicMessage = styled.div`

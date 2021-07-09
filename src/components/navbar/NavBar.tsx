@@ -8,7 +8,6 @@ import { NavBarHeader } from 'src/components/navbar/NavBarHeader';
 import { mediaQuery } from 'src/components/constants/mediaQuery';
 import { NavBarUserButton } from 'src/components/navbar/NavBarUserButton';
 import { LoginStates } from 'src/data/redux/user/state';
-import Image from 'next/image';
 import { imagePath } from 'src/components/constants/imagePath';
 import Edit from 'src/components/svgs/edit.svg';
 import Login from 'src/components/svgs/login.svg';
@@ -41,7 +40,7 @@ export const NavBar: React.FC = ({ children }) => {
       <NavMainContainer>
         <Link href={rootPath.index} passHref>
           <NavTitleContainer>
-            <Image src={imagePath.character.blue} height={32} width={32} objectFit="contain" />
+            <NavTitleImage src={imagePath.character.blue} />
             <NavTitle>おもちゃっと</NavTitle>
           </NavTitleContainer>
         </Link>
@@ -112,6 +111,12 @@ const NavTitleContainer = styled.a`
 const NavTitle = styled.div`
   margin-left: 8px;
   white-space: nowrap;
+`;
+
+const NavTitleImage = styled.img`
+  height: 32px;
+  width: 32px;
+  object-fit: contain;
 `;
 
 const ActionContainer = styled.ul`
