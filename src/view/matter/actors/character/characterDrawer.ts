@@ -101,8 +101,11 @@ export class CharacterDrawer {
     const { opacity, scale } = this;
 
     // 影の描画
+    const colorShadow = p5.color('#004080');
+    colorShadow.setAlpha(5 / 100 * 255);
+
     p5.push();
-    p5.fill('#0040800f')
+    p5.fill(colorShadow)
       .noStroke()
       .ellipse(
         character.position.x - 5,

@@ -1,5 +1,4 @@
 export class CanvasParameter {
-  // eslint-disable-next-line no-empty-function
   constructor(public width: number, public height: number) {}
 
   get center() {

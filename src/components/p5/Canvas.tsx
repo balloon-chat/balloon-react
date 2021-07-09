@@ -56,7 +56,7 @@ export const Canvas: React.FC = () => {
     if (renderRef.current) {
       controller.canvas.checkResize(renderRef.current, (width, height) => {
         p5.resizeCanvas(width, height, true);
-        controller.canvas.setSize(width, height);
+        controller.canvas.setSize(width, height - 83);
       });
     }
 
