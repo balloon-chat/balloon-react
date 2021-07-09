@@ -45,7 +45,7 @@ export const BranchTopicsDialog = () => {
           // 話題が派生している場合
           topic?.branchTopics && topic?.branchTopics.length !== 0 && (
           <>
-            <Link href={rootPath.topicPath.topic(topic.id)}>
+            <Link href={rootPath.topicPath.topic(topic.id)} passHref>
               <ItemContainer onClick={handleClose}>
                 <BranchTopicTitle active={activeTopic === topic.id}>
                   {topic.title}
@@ -54,7 +54,7 @@ export const BranchTopicsDialog = () => {
             </Link>
             {
               topic.branchTopics.map((branch, i) => (
-                <Link key={i} href={rootPath.topicPath.topicBranch(topic.id, i)}>
+                <Link key={i} href={rootPath.topicPath.topicBranch(topic.id, i)} passHref>
                   <ItemContainer onClick={handleClose}>
                     <BranchTopicTitle active={activeTopic === branch.id}>
                       {branch.title}

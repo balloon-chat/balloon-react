@@ -1,11 +1,13 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import React from 'react';
 import styled from 'styled-components';
-import Link from 'next/link';
 import { rootPath, topicPath } from 'src/view/route/pagePath';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { FullscreenContainer } from 'src/components/common/FullscreenContainer';
 import { ZIndex } from 'src/components/constants/z_index';
 import { useChatState } from 'src/data/redux/chat/selector';
+import { useRouter } from 'next/router';
 
 type Props = {
   isVisible: boolean,
@@ -16,6 +18,7 @@ export const ChatActionDialog = ({
   isVisible,
   onClose,
 }: Props) => {
+  const router = useRouter();
   const { topicId } = useChatState();
   const { invitation, isEditable } = useChatState();
   return (
@@ -35,12 +38,14 @@ export const ChatActionDialog = ({
           </CopyToClipboard>
           {
             isEditable && topicId && (
-              <Link href={topicPath.edit(topicId)}>
-                <li>話題を編集</li>
-              </Link>
+            <li onClick={() => router.push(topicPath.edit(topicId))}>
+              話題を編集
+            </li>
             )
           }
-          <Link href={rootPath.index}><li>退出</li></Link>
+          <li onClick={() => router.push(rootPath.index)}>
+            退出
+          </li>
         </Dialog>
       </DialogContainer>
     </>

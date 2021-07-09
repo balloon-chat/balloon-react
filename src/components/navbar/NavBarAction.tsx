@@ -18,11 +18,7 @@ export const NavButton: React.FC<Props> = ({
   isActive,
   children,
 }) => (
-  <Link href={{
-    pathname: link,
-    query: linkQuery,
-  }}
-  >
+  <Link href={{ pathname: link, query: linkQuery }} passHref>
     <NavButtonContainer isActive={isActive ?? false}>
       {children}
       <ActionTitle>{label}</ActionTitle>

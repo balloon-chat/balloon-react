@@ -22,13 +22,13 @@ export const NavBarHeader = () => (
       <Title>をもっと面白く。</Title>
     </TitleRow>
     <ActionsRow>
-      <Link href={rootPath.topicPath.create}>
+      <Link href={rootPath.topicPath.create} passHref>
         <CreateTopicButton>
           <EditIcon width={32} height={32} fill="white" />
           <span>話題を作る</span>
         </CreateTopicButton>
       </Link>
-      <Link href={rootPath.topicPath.index}>
+      <Link href={rootPath.topicPath.index} passHref>
         <JoinTopicButton>
           <SpeechBalloon width={32} height={32} fill="white" />
           <span>話題に参加する</span>
@@ -143,7 +143,7 @@ export const RollingTitleContainer = styled.div`
   }
 `;
 
-export const ActionButton = styled.button`
+export const ActionButton = styled.a`
   align-items: center;
   box-sizing: border-box;
   border: none;

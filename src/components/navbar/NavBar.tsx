@@ -39,7 +39,7 @@ export const NavBar: React.FC = ({ children }) => {
   return (
     <NavContainer>
       <NavMainContainer>
-        <Link href={rootPath.index}>
+        <Link href={rootPath.index} passHref>
           <NavTitleContainer>
             <Image src={imagePath.character.blue} height={32} width={32} objectFit="contain" />
             <NavTitle>おもちゃっと</NavTitle>
@@ -91,7 +91,7 @@ const NavMainContainer = styled.div`
   justify-content: space-between;
 `;
 
-const NavTitleContainer = styled.div`
+const NavTitleContainer = styled.a`
   align-items: center;
   cursor: pointer;
   color: inherit;

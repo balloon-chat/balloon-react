@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
 import styled from 'styled-components';
 import { Button } from 'src/components/common/Button';
@@ -14,7 +15,7 @@ export const ErrorPage = ({ message, detail }: Props) => (
     <Title>{message}</Title>
     {detail && <Detail>{detail}</Detail>}
     <Link href={rootPath.index}>
-      <Button>ホームに戻る</Button>
+      <a><Button>ホームに戻る</Button></a>
     </Link>
   </Container>
 );

@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
 import { useUserSelector } from 'src/data/redux/user/selector';
 import styled from 'styled-components';
@@ -15,7 +16,7 @@ export const NavBarUserButton = () => {
         uid && photoUrl
         && (
           <Link href={rootPath.usersPath.user(uid)}>
-            <UserImage height={32} src={photoUrl} />
+            <a><UserImage height={32} src={photoUrl} /></a>
           </Link>
         )
       }
