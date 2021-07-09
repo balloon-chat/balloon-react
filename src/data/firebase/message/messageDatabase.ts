@@ -29,17 +29,52 @@ export class FirebaseMessageDatabase implements IMessageRepository {
 
   observeAll(topicId: TopicId, unsubscribe?: Subject<void>): Observable<MessageEntity[]> {
     const behaviorSubject = new BehaviorSubject<MessageDto[]>([]);
+
+    this._observeAll(topicId, behaviorSubject, unsubscribe).then();
+
+    return behaviorSubject.pipe(
+      map((messages) => messages.map((e) => e.toEntity())),
+    );
+  }
+
+  /**
+   *  保存されているすべてのメッセージを、初期データとして通知する。
+   *  以降、新しいメッセージが追加された時のみ、通知を行う。
+   */
+  private async _observeAll(
+    topicId: TopicId,
+    behaviorSubject: BehaviorSubject<MessageDto[]>,
+    unsubscribe?: Subject<void>,
+  ) {
     const messages: MessageDto[] = [];
 
-    const query = this.messagesRef(topicId).limitToFirst(50);
+    // 現段階のすべてのデータを通知する
+    const snapshots = await this.messagesRef(topicId).get();
+    snapshots.forEach((snapshot) => {
+      const dto = MessageDto.fromJSON(snapshot.toJSON());
+      if (!dto) return;
+      messages.push(dto);
+    });
+
+    behaviorSubject.next(messages);
+    messages.splice(0); // clear
+
+    // 更新があったデータを通知する
+    // child_addedイベントは、読み込み開始時に、更新されていなくても、該当するデータを１件１件通知する。
+    // そのため、不必要な通知を避けるために、更新による通知がされるまで、
+    // BehaviorSubjectを経由しての通知をしない。
+    const startAt = Date.now();
+    const query = this.messagesRef(topicId).orderByChild('createdAt').limitToLast(50);
     query.on(
       'child_added',
       (snapshot) => {
         const dto = MessageDto.fromJSON(snapshot.toJSON());
-        if (dto) messages.push(dto);
+        if (!dto) return;
+        messages.push(dto);
 
         if (behaviorSubject.closed) query.off();
-        else behaviorSubject.next(messages);
+        // 最新の更新が来た時のみ、変更を通知する(古いデータは、この前の処理で通知されている)
+        else if (dto.createdAt - startAt > 0) behaviorSubject.next(messages);
       },
       (error) => {
         console.error(error);
@@ -57,10 +92,6 @@ export class FirebaseMessageDatabase implements IMessageRepository {
         query.off('child_added');
       },
     });
-
-    return behaviorSubject.pipe(
-      map((messages) => messages.map((e) => e.toEntity())),
-    );
   }
 
   async save(topicId: TopicId, message: MessageEntity): Promise<void> {

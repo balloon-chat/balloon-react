@@ -102,7 +102,7 @@ export class CharacterDrawer {
 
     // 影の描画
     const colorShadow = p5.color('#004080');
-    colorShadow.setAlpha(5 / 100 * 255);
+    colorShadow.setAlpha(1 / 100 * 255);
 
     p5.push();
     p5.fill(colorShadow)
