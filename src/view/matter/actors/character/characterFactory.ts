@@ -2,7 +2,7 @@ import { Character } from 'src/view/matter/actors/character/character';
 import { Bodies, Vector } from 'matter-js';
 import { CanvasParameter } from 'src/view/matter/models/canvasParameter';
 import P5Types from 'p5';
-import { CharacterDrawer } from 'src/view/matter/actors/character/characterDrawer';
+import { CharacterDrawer } from 'src/view/matter/actors/character/drawer/characterDrawer';
 
 enum CharacterSize {
   small = 80,
