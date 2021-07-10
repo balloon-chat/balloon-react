@@ -13,7 +13,6 @@ import { useRouter } from 'next/router';
 import { pageTitle, rootPath } from 'src/view/route/pagePath';
 import { Button } from 'src/components/common/Button';
 import Head from 'next/head';
-import Image from 'next/image';
 import { imagePath } from 'src/components/constants/imagePath';
 
 type Props = {
@@ -48,13 +47,7 @@ const IndexPage: React.FC<Props> = ({
       <TopicContainer>
         <SectionTitle>
           <SectionImageContainer>
-            <Image
-              src={imagePath.character.yellow}
-              height={64}
-              width={64}
-              objectFit="contain"
-              objectPosition="center left"
-            />
+            <SectionImage src={imagePath.character.yellow} />
           </SectionImageContainer>
           <div>ワダイな話題</div>
         </SectionTitle>
@@ -65,13 +58,7 @@ const IndexPage: React.FC<Props> = ({
       <TopicContainer color="#E5F6FB">
         <SectionTitle>
           <SectionImageContainer>
-            <Image
-              src={imagePath.character.pink}
-              height={64}
-              width={64}
-              objectFit="contain"
-              objectPosition="center left"
-            />
+            <SectionImage src={imagePath.character.pink} />
           </SectionImageContainer>
           <div>最新の話題</div>
         </SectionTitle>
@@ -116,6 +103,12 @@ const SectionImageContainer = styled.div`
   background-color: white;
   padding: 16px;
   border-radius: 50%;
+`;
+
+const SectionImage = styled.img`
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
 `;
 
 const ShowMoreButton = styled(Button)`

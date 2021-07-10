@@ -1,8 +1,8 @@
+/* eslint-disable jsx-a11y/alt-text */
 import React from 'react';
 import { mediaQuery } from 'src/components/constants/mediaQuery';
 import { ZIndex } from 'src/components/constants/z_index';
 import styled from 'styled-components';
-import Image from 'next/image';
 import { imagePath } from 'src/components/constants/imagePath';
 
 type Props = {
@@ -21,7 +21,7 @@ export const ChatNotification: React.FC<Props> = ({
     <Container>
       <Dialog visible={visible}>
         <Header>
-          <Image src={imagePath.character.blue} width={30} height={30} />
+          <img src={imagePath.character.blue} width={30} height={30} alt="" />
           <HeaderTitle>おしらせ</HeaderTitle>
         </Header>
         <Body>

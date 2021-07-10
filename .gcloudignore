@@ -1,15 +1,30 @@
+# ignore files
+.gcloudignore
+
+# ES lint
+.eslintignore
+.eslintrc.json
+
 /node_modules
 README.md
+
+# Git
+.gitignore
 /.git
 
 # next
-/.next/
-/out/
+/.next
+/out
+/build
 
 # configurations
 /.circleci
 /.github
 /.idea
+.env.development
 
 # jest
 junit.xml
+jest.config.js
+/tests
+

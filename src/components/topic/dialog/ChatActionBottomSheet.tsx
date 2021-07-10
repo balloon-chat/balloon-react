@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import styled from 'styled-components';
 import React, { useCallback } from 'react';
 import AddIcon from 'src/components/svgs/add.svg';
@@ -8,7 +9,6 @@ import ForumIcon from 'src/components/svgs/forum.svg';
 import CopyIcon from 'src/components/svgs/content_copy.svg';
 import { TextButton } from 'src/components/common/Button';
 import { rootPath, topicPath } from 'src/view/route/pagePath';
-import Link from 'next/link';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { FullscreenContainer } from 'src/components/common/FullscreenContainer';
 import { ZIndex } from 'src/components/constants/z_index';
@@ -19,6 +19,7 @@ import {
   showDeriveTopicDialog as showDeriveTopicDialogAction,
   showMessageLog as showMessageLogAction,
 } from 'src/data/redux/chat/slice';
+import { useRouter } from 'next/router';
 
 type Props = {
   isVisible: boolean,
@@ -29,6 +30,7 @@ export const ChatActionBottomSheet = ({
   isVisible,
   onClose,
 }: Props) => {
+  const router = useRouter();
   const dispatcher = useDispatch();
   const { topicId } = useChatState();
   const { invitation, isEditable } = useChatState();
@@ -74,22 +76,18 @@ export const ChatActionBottomSheet = ({
             </CopyToClipboard>
             {
               isEditable && topicId && (
-                <Link href={topicPath.edit(topicId)}>
-                  <BottomSheetAction>
-                    話題を編集
-                    <EditIcon />
-                  </BottomSheetAction>
-                </Link>
+                <BottomSheetAction onClick={() => router.push(topicPath.edit(topicId))}>
+                  話題を編集
+                  <EditIcon />
+                </BottomSheetAction>
               )
             }
           </ActionContainer>
           <ActionContainer>
-            <Link href={rootPath.index}>
-              <BottomSheetAction>
-                退出
-                <ExitIcon />
-              </BottomSheetAction>
-            </Link>
+            <BottomSheetAction onClick={() => router.push(rootPath.index)}>
+              退出
+              <ExitIcon />
+            </BottomSheetAction>
           </ActionContainer>
           <CancelButton onClick={onClose}>閉じる</CancelButton>
         </BottomSheet>
