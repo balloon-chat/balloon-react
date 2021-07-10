@@ -1,5 +1,9 @@
 require('dotenv').config();
 module.exports = {
+  distDir: 'build',  // Google App Engineが.nextディレクトリを読み込め無いため、buildに変更する必要がある。
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   env: {
     API_KEY: process.env.API_KEY,
     AUTH_DOMAIN: process.env.AUTH_DOMAIN,
