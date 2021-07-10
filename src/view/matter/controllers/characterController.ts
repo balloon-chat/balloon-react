@@ -34,10 +34,8 @@ export abstract class CharacterController {
       this.lastUpdateAt = current;
     }
 
-    character.popout(500, () => {
-      World.add(world, character.body);
-      this._characters.set(character.id, character);
-    });
+    this._characters.set(character.id, character);
+    character.popout(500, () => { World.add(world, character.body); });
   }
 
   remove(world: World, character: Character, { animate }: {animate: boolean} = { animate: true }) {

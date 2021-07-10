@@ -1,12 +1,18 @@
 import Matter, { Body, Common, Vector } from 'matter-js';
 import P5Types from 'p5';
-import { CharacterAction } from 'src/view/matter/actors/character/types';
-import { CharacterDrawer } from 'src/view/matter/actors/character/characterDrawer';
+import { CharacterDrawer } from 'src/view/matter/actors/character/drawer/characterDrawer';
+import { CharacterAnimator } from 'src/view/matter/actors/character/animator/characterAnimator';
+import { CharacterPopoutAnimator } from 'src/view/matter/actors/character/animator/characterPopoutAnimator';
+import { v4 as uuidv4 } from 'uuid';
+import { CharacterFadeoutAnimator } from 'src/view/matter/actors/character/animator/characterFadeoutAnimator';
 
-export class Character implements CharacterAction {
+export class Character {
   public static readonly maxSpeed = 10;
 
-  private readonly drawer = new CharacterDrawer(1.0, 1.0);
+  private readonly drawer = new CharacterDrawer();
+
+  // key: アニメーターのID
+  private readonly animators: Map<string, CharacterAnimator> = new Map();
 
   /**
    * キャラクター（オブジェクトとテキストの情報を持っている）
@@ -63,10 +69,7 @@ export class Character implements CharacterAction {
    * 速度に応じて減衰をかけ、キャラクターの速度が一定以上に達しないように制御する。
    */
   controlSpeed() {
-    const {
-      speed,
-      velocity,
-    } = this.body;
+    const { speed, velocity } = this.body;
     const { maxSpeed } = Character;
 
     // 最大速度以下に抑える
@@ -90,14 +93,13 @@ export class Character implements CharacterAction {
   }
 
   draw(p5: P5Types) {
-    this.drawer.drawBody(this, p5);
-    const textBoxBottomY = this.drawer.drawMessage(this, p5);
-    this.drawer.drawSenderName(this, p5, textBoxBottomY);
+    // CharacterAnimatorにより、アニメーションに対応するパラメータの変更を行う
+    this.animators.forEach((animator) => animator.animate(this.drawer));
+
+    // CharacterDrawerにより、描画を行う。
+    this.drawer.draw(this, p5);
   }
 
-  // ============================
-  // Character Actions
-  // ============================
   moveSomeWhere() {
     const sign = {
       x: Math.random() < 0.5 ? -1 : 1,
@@ -114,48 +116,36 @@ export class Character implements CharacterAction {
   }
 
   /**
-   * @param span アニメーションにかかる時間(ミリ秒)
+   * @param duration アニメーションにかかる時間(ミリ秒)
    * @param onStart アニメーション開始時のコールバック関数
    */
-  popout(span: number, onStart: () => void) {
-    // スケールの計算
-    const scaleCal = (x: number, span: number, maxScale: number) => {
-      // 小数をある程度切り捨てる
-      const rX: number = Math.round(x * 100) / 100;
-      const rM: number = Math.round(maxScale * 10) / 10;
-      const a: number = -(4 * rM - 4) / span ** 2;
-      const b: number = (4 * rM - 4) / span;
-      const c: number = 1;
-      return a * rX ** 2 + b * rX + c;
-    };
-
-    onStart();
-
-    const interval: number = span / 100;
-    let currentTime: number = 0;
-    const id = setInterval(() => {
-      if (currentTime <= span) {
-        this.drawer.scale = scaleCal(currentTime, span, 1.5);
-        currentTime += interval;
-      } else {
-        clearInterval(id);
-      }
-    }, interval);
+  popout(duration: number, onStart: () => void) {
+    const animatorId = uuidv4();
+    const animator = new CharacterPopoutAnimator(
+      duration,
+      {
+        onStart,
+        onEnd: () => { this.animators.delete(animatorId); },
+      },
+    );
+    this.animators.set(animatorId, animator);
   }
 
   /**
-   * @param span アニメーションにかかる時間(ミリ秒)
+   * @param duration アニメーションにかかる時間(ミリ秒)
    * @param onFadeOuted アニメーション終了時のコールバック関数
    */
-  fadeout(span: number, onFadeOuted: () => void) {
-    const interval = span / 100;
-    const id = setInterval(() => {
-      if (this.drawer.opacity > 0) {
-        this.drawer.opacity -= 1 / 100;
-      } else {
-        onFadeOuted();
-        clearInterval(id);
-      }
-    }, interval);
+  fadeout(duration: number, onFadeOuted: () => void) {
+    const animatorId = uuidv4();
+    const animator = new CharacterFadeoutAnimator(
+      duration,
+      {
+        onEnd: () => {
+          this.animators.delete(animatorId);
+          onFadeOuted();
+        },
+      },
+    );
+    this.animators.set(animatorId, animator);
   }
 }

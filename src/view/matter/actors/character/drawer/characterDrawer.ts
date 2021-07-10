@@ -12,12 +12,9 @@ export class CharacterDrawer {
 
   private static readonly senderNameTextSize = 14;
 
-  /**
-   * @param scale キャラクターの拡大率
-   * @param opacity キャラクターの透明度(0 ~ 1)
-   */
-  constructor(public scale: number, public opacity: number) {
-  }
+  public scale: number = 1.0;
+
+  public opacity: number = 1.0;
 
   static getColor({ character, opacity, p5 }:{
     character: Character,
@@ -83,7 +80,13 @@ export class CharacterDrawer {
     return 2 * rCosine * CharacterDrawer.scaleX;
   }
 
-  getEyePosition(character: Character): EyePosition {
+  draw(character: Character, p5: P5Types) {
+    this.drawBody(character, p5);
+    const { textBoxBottomY } = this.drawMessage(character, p5);
+    this.drawSenderName(character, p5, textBoxBottomY);
+  }
+
+  private getEyePosition(character: Character): EyePosition {
     const { position, radius } = character;
     return {
       left: Vector.create(
@@ -97,12 +100,12 @@ export class CharacterDrawer {
     };
   }
 
-  drawBody(character: Character, p5: P5Types) {
+  private drawBody(character: Character, p5: P5Types) {
     const { opacity, scale } = this;
 
     // 影の描画
     const colorShadow = p5.color('#004080');
-    colorShadow.setAlpha(1 / 100 * 255);
+    colorShadow.setAlpha(5 / 100 * 255);
 
     p5.push();
     p5.fill(colorShadow)
@@ -139,7 +142,7 @@ export class CharacterDrawer {
     p5.pop();
   }
 
-  drawMessage(character: Character, p5: P5Types): number {
+  private drawMessage(character: Character, p5: P5Types) {
     // textの描画
     const { message, radius } = character;
     const { scale, opacity } = this;
@@ -171,7 +174,7 @@ export class CharacterDrawer {
       );
     }
 
-    let bottomYPosition: number;
+    let textBoxBottomY: number;
     // 格納したtextの描画
     if (textLines.length === 1) {
       const { colorText } = CharacterDrawer.getColor({ character, p5, opacity });
@@ -179,7 +182,7 @@ export class CharacterDrawer {
         .textAlign('center', 'center')
         .textSize(messageTextSize * scale)
         .text(textLines[0], startPosition.x, startPosition.y);
-      bottomYPosition = startPosition.y + messageTextSize * scale;
+      textBoxBottomY = startPosition.y + messageTextSize * scale;
     } else {
       for (let i = 0; i < textLines.length; i += 1) {
         p5.fill(0)
@@ -187,13 +190,13 @@ export class CharacterDrawer {
           .textSize(messageTextSize * scale)
           .text(textLines[i], startPosition.x, startPosition.y + messageTextSize * scale * i);
       }
-      bottomYPosition = startPosition.y + messageTextSize * scale * textLines.length;
+      textBoxBottomY = startPosition.y + messageTextSize * scale * textLines.length;
     }
 
-    return bottomYPosition;
+    return { textBoxBottomY };
   }
 
-  drawSenderName(character: Character, p5: P5Types, textBoxBottomY: number) {
+  private drawSenderName(character: Character, p5: P5Types, textBoxBottomY: number) {
     const { position, sender } = character;
     const { scale, opacity } = this;
     const { colorSender } = CharacterDrawer.getColor({ character, p5, opacity });
