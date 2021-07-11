@@ -1,7 +1,13 @@
-import { LoginStates, UserActionStates, UserState, userStateName } from 'src/data/redux/user/state';
-import { createSlice } from '@reduxjs/toolkit';
-import { setUserActionStateReducer, setUserReducer } from 'src/data/redux/user/reducer';
-import { createUser, login, logout, updateProfile } from 'src/data/redux/user/action';
+/* eslint-disable no-param-reassign */
+import {
+  LoginStates,
+  UserActionState,
+  UserActionStates,
+  UserState,
+  userStateName,
+} from 'src/data/redux/user/state';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createUser, login, logout, SetUser, updateProfile } from 'src/data/redux/user/action';
 
 const initialState: UserState = {
   uid: null,
@@ -15,8 +21,17 @@ const userSlice = createSlice({
   name: userStateName,
   initialState,
   reducers: {
-    setUser: setUserReducer,
-    setUserActionState: setUserActionStateReducer,
+    setUser: (state, { payload }: SetUser) => {
+      state.uid = payload.uid;
+      state.name = payload.name;
+      state.photoUrl = payload.photoUrl;
+      state.loginState = (payload.uid !== null && payload.name !== null && payload.photoUrl)
+        ? LoginStates.LOGGED_IN
+        : LoginStates.NOT_LOGGED_IN;
+    },
+    setUserActionState: (state, { payload }: PayloadAction<{state: UserActionState|null}>) => {
+      state.state = payload.state;
+    },
   },
   extraReducers: (builder) => {
     builder

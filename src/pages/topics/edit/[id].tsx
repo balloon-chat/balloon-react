@@ -2,7 +2,6 @@ import { TopicEntity, TopicEntityFactory } from 'src/view/types/topic';
 import { TopicService } from 'src/domain/topic/service/topicService';
 import { GetServerSideProps, GetServerSidePropsResult } from 'next';
 import { AuthService } from 'src/domain/auth/service/AuthService';
-import { UserService } from 'src/domain/user/service/userService';
 import Head from 'next/head';
 import { pageTitle, rootPath } from 'src/view/route/pagePath';
 import { NavBar } from 'src/components/navbar/NavBar';
@@ -86,19 +85,16 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
   if (redirectParams) return redirectParams;
 
   // 現在のユーザーが作成者であるかの検証
-  // セッションからログインIDを取得
   const authService = new AuthService();
-  const { loginId } = await authService.getUserInfo(context.req.headers.cookie);
-  if (!loginId) return emptyResult;
-  // ログインIDから、ユーザー情報を取得
-  const userService = new UserService();
-  const user = await userService.getUserByLoginId(loginId);
-  if (!user) return emptyResult;
+  const result = await authService.getUserProfile(context.req.headers.cookie);
+
+  if (!result) return emptyResult;
+  const isAuthor = topic.createdBy.id.value === result.id;
 
   return {
     props: {
       topic: TopicEntityFactory.create(topic),
-      isEditable: topic.createdBy.id.value === user.uid, // ユーザーが話題の作成者だったときのみ、編集可能
+      isEditable: isAuthor,
     },
   };
 };

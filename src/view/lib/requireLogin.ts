@@ -1,4 +1,4 @@
-import { AuthService, AuthStates } from 'src/domain/auth/service/AuthService';
+import { AuthService } from 'src/domain/auth/service/AuthService';
 import { rootPath } from 'src/view/route/pagePath';
 import { GetServerSidePropsContext } from 'next';
 
@@ -11,8 +11,8 @@ export const requireLogin = async (context: GetServerSidePropsContext, currentPa
   const currentUrl = rootPath.fullPath(currentPath);
 
   try {
-    const { state } = await service.getUserInfo(context.req.headers.cookie);
-    if (state !== AuthStates.AUTHORIZED) {
+    const result = await service.getUserProfile(context.req.headers.cookie);
+    if (result !== null) {
       return {
         redirect: {
           permanent: false,

@@ -14,5 +14,8 @@ const firebaseConfig = {
 export const initializeFirebase = () => {
   if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
+
+    // Session情報はCookieにのみ残す
+    firebase.auth().setPersistence(firebase.auth.Auth.Persistence.NONE).then();
   }
 };

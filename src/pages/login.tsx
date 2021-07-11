@@ -10,7 +10,7 @@ import { LoadDialog } from 'src/components/common/LoadDialog';
 import { LoginStates } from 'src/data/redux/user/state';
 import Head from 'next/head';
 import { GetServerSideProps } from 'next';
-import { AuthService, AuthStates } from 'src/domain/auth/service/AuthService';
+import { AuthService } from 'src/domain/auth/service/AuthService';
 import { ErrorDialog } from 'src/components/common/ErrorDialog';
 import { NavBar } from 'src/components/navbar/NavBar';
 import { BottomNavigation } from 'src/components/navbar/bottomNavigation/BottomNavigation';
@@ -127,8 +127,8 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({ req, query
   const service = new AuthService();
 
   // すでにログインしていた場合は、元いたページへリダイレクトする。
-  const { state } = await service.getUserInfo(req.headers.cookie);
-  if (state === AuthStates.AUTHORIZED) {
+  const profile = await service.getUserProfile(req.headers.cookie);
+  if (profile !== null) {
     // return_to で遷移先を指定されていたら、その場所へ遷移する。
     let destination = rootPath.index;
     const { return_to } = query;

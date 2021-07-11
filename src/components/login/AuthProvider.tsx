@@ -1,28 +1,22 @@
 import { useDispatch } from 'react-redux';
 import React, { useEffect } from 'react';
-import firebase from 'firebase/app';
 import 'firebase/auth';
-import { login as loginAction } from 'src/data/redux/user/action';
+import { AuthService } from 'src/domain/auth/service/AuthService';
+import { setUser } from 'src/data/redux/user/slice';
 
 export const AuthProvider: React.FC = ({ children }) => {
   const dispatcher = useDispatch();
 
-  const login = async (user: firebase.User) => {
-    const idToken = await user.getIdToken();
-    dispatcher(loginAction({
-      loginId: user.uid,
-      idToken,
-    }));
+  const getUserProfile = async () => {
+    const service = new AuthService();
+    const result = await service.getUserProfile();
+    if (!result) return;
+    const { id, photoUrl, name } = result;
+    dispatcher(setUser({ uid: id, photoUrl, name }));
   };
 
   useEffect(() => {
-    const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
-      if (user) login(user).then();
-    });
-
-    return () => {
-      unsubscribe();
-    };
+    getUserProfile().then();
   }, []);
 
   return <>{children}</>;

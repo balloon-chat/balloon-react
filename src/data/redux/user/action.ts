@@ -1,5 +1,5 @@
 import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { UserActionState, userStateName } from 'src/data/redux/user/state';
+import { userStateName } from 'src/data/redux/user/state';
 import { UserService } from 'src/domain/user/service/userService';
 import { UserEntity } from 'src/view/types/user';
 import { AuthService } from 'src/domain/auth/service/AuthService';
@@ -67,4 +67,3 @@ export type SetUser = PayloadAction<{
   photoUrl: string|null,
   name: string|null
 }>
-export type SetUserActionState = PayloadAction<UserActionState|null>;

@@ -1,4 +1,4 @@
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 import { UserEntity, UserEntityFactory } from 'src/view/types/user';
 import firebase from 'firebase/app';
 import { IUserRepository } from 'src/domain/user/repository/userRepository';
@@ -22,15 +22,6 @@ export const AuthStates = {
 };
 
 export type AuthState = typeof AuthStates[keyof typeof AuthStates];
-
-const HttpCodes = {
-  unauthorized: 401,
-  loginTimeout: 440,
-} as const;
-
-function isAxiosError(error: any): error is AxiosError {
-  return (error as AxiosError).isAxiosError !== undefined;
-}
 
 export class AuthService {
   private readonly getUserByLoginIdUsecase: IGetUserByLoginId;
@@ -128,41 +119,20 @@ export class AuthService {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  async getUserInfo(cookie: string | undefined): Promise<
-    { loginId: string | undefined, state: AuthState }
-  > {
-    if (!cookie) return { loginId: undefined, state: AuthStates.UNAUTHORIZED };
-
+  async getUserProfile(cookie?: string) {
     try {
-      const { data } = await axios.get<{ loginId: string }>(
+      const { data } = await axios.get<{
+        id: string, name: string, photoUrl: string, loginId: string
+      }>(
         process.env.GET_USER_INFO_API_URL!,
         {
           withCredentials: true,
-          headers: {
-            cookie,
-          },
+          headers: { cookie },
         },
       );
-
-      return {
-        loginId: data.loginId,
-        state: AuthStates.AUTHORIZED,
-      } as const;
+      return data;
     } catch (e) {
-      if (isAxiosError(e)) {
-        let state: AuthState = AuthStates.ERROR;
-        if (e.code === `${HttpCodes.unauthorized}`) state = AuthStates.UNAUTHORIZED;
-        else if (e.code === `${HttpCodes.loginTimeout}`) state = AuthStates.TIMEOUT;
-        return {
-          loginId: undefined,
-          state,
-        };
-      }
-
-      return {
-        loginId: undefined,
-        state: AuthStates.ERROR,
-      };
+      return null;
     }
   }
 }
