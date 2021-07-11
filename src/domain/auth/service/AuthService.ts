@@ -68,6 +68,7 @@ export class AuthService {
         authorized: result.status === 200,
       };
     } catch (e) {
+      console.error(e);
       return {
         accessToken: null,
         name: null,
@@ -113,6 +114,7 @@ export class AuthService {
 
   // eslint-disable-next-line class-methods-use-this
   async logout(): Promise<void> {
+    await firebase.auth().signOut();
     try {
       // セッションを削除
       await axios.post(

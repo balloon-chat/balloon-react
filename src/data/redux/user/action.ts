@@ -6,6 +6,7 @@ import { AuthService } from 'src/domain/auth/service/AuthService';
 
 const CREATE_USER = `${userStateName}/create`;
 const LOGIN = `${userStateName}/login`;
+const LOGOUT = `${userStateName}/logout`;
 const UPDATE_PROFILE = `${userStateName}/update_profile`;
 
 export const createUser = createAsyncThunk<
@@ -41,6 +42,15 @@ export const login = createAsyncThunk<
   }
 
   return { user: null };
+});
+
+export const logout = createAsyncThunk<
+  {},
+  {}
+>(LOGOUT, async () => {
+  const service = new AuthService();
+  await service.logout();
+  return {};
 });
 
 export const updateProfile = createAsyncThunk<
