@@ -12,7 +12,7 @@ export const requireLogin = async (context: GetServerSidePropsContext, currentPa
 
   try {
     const result = await service.getUserProfile(context.req.headers.cookie);
-    if (result !== null) {
+    if (result === null) {
       return {
         redirect: {
           permanent: false,
