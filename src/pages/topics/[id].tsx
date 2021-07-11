@@ -112,18 +112,10 @@ const TopicPage = ({ topic, code }: Props) => {
         name: null,
       }));
     }
-
-    return () => {
-      // useEffectのデストラクタは、最後にuseEffectが呼ばれたときの変数の状態を参照するので、
-      // loginStateを依存関係に指定した状態で呼び出さないと、適切に処理がされない。
-      if (loginState === LoginStates.NOT_LOGGED_IN) {
-        dispatcher(setUser({
-          uid: null,
-          photoUrl: null,
-          name: null,
-        }));
-      }
-    };
+    // デストラクタで、ログイン状況を見てユーザー情報をリセットすると、
+    // 古い loginState を参照することになるので、正しくリセットできない。
+    // リセットしなくても、別の話題に写ったときに、同じIDを使い回すことができ
+    // ログイン後には上書きされるので、リセットは行わない。
   }, [loginState]);
 
   return (
