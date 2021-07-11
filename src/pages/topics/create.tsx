@@ -7,27 +7,16 @@ import { pageTitle, rootPath } from 'src/view/route/pagePath';
 import { BottomNavigation } from 'src/components/navbar/bottomNavigation/BottomNavigation';
 import Head from 'next/head';
 import { GetServerSideProps } from 'next';
-import { useRouter } from 'next/router';
-import { AuthService } from 'src/domain/auth/service/AuthService';
 import { editTopic, finishEditTopic } from 'src/data/redux/topic/slice';
 import { EditTopicModes } from 'src/data/redux/topic/state';
 import { useDispatch } from 'react-redux';
+import { requireLogin } from 'src/view/lib/requireLogin';
 
 type Props = {
-  isLoggedIn: boolean,
 }
 
-const CreateTopicPage = ({ isLoggedIn }: Props) => {
+const CreateTopicPage: React.FC<Props> = () => {
   const dispatcher = useDispatch();
-  const router = useRouter();
-
-  if (!isLoggedIn) {
-    router.replace({
-      pathname: rootPath.login,
-      query: { return_to: `${rootPath.fullPath(rootPath.topicPath.create)}` },
-    }).then();
-    return (<></>);
-  }
 
   useEffect(() => {
     dispatcher(editTopic({ mode: EditTopicModes.CREATE, topic: null }));
@@ -61,21 +50,10 @@ const Body = styled.div`
 `;
 
 export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
-  const service = new AuthService();
-  try {
-    const userInfo = await service.getUserInfo(context.req.headers.cookie);
-    return {
-      props: {
-        isLoggedIn: userInfo.loginId !== undefined,
-      },
-    };
-  } catch (e) {
-    return {
-      props: {
-        isLoggedIn: false,
-      },
-    };
-  }
+  const redirectParams = await requireLogin(context, rootPath.topicPath.create);
+  if (redirectParams) return redirectParams;
+
+  return { props: {} };
 };
 
 export default CreateTopicPage;
