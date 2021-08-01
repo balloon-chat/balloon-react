@@ -12,8 +12,10 @@ export class PopupCharacterController extends CharacterController {
     const y = height / 2 + height * 0.45 * Math.random() * yDirection;
     // eslint-disable-next-line no-param-reassign
     character.position = { x, y };
+
+    // 衝突を検知することで、キャラクター同士のかさなりを防ぎ、マウスのドラッグもできるようにする。
     // eslint-disable-next-line no-param-reassign
-    character.collision = false;
+    character.collision = true;
 
     super.add(world, canvas, character);
   }

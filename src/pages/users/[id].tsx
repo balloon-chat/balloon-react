@@ -14,9 +14,10 @@ import { UserService } from 'src/domain/user/service/userService';
 import { UserEntity } from 'src/view/types/user';
 import { pageTitle, rootPath } from 'src/view/route/pagePath';
 import Head from 'next/head';
-import { AuthService, AuthStates } from 'src/domain/auth/service/AuthService';
+import { AuthService } from 'src/domain/auth/service/AuthService';
 import { mediaQuery } from 'src/components/constants/mediaQuery';
-import firebase from 'firebase/app';
+import { useDispatch } from 'react-redux';
+import { logout as logoutAction } from 'src/data/redux/user/action';
 
 type Props = {
   user: UserEntity | null
@@ -29,6 +30,7 @@ const ProfilePage = ({
   user,
   loginRequired,
 }: Props) => {
+  const dispatcher = useDispatch();
   const router = useRouter();
   const { id } = useRouter().query;
   const { uid } = useUserSelector();
@@ -48,8 +50,8 @@ const ProfilePage = ({
   }
 
   const logout = async () => {
-    await firebase.auth().signOut();
-    await router.push(rootPath.logout);
+    router.push(rootPath.index).then();
+    dispatcher(logoutAction({}));
   };
 
   return (
@@ -173,23 +175,10 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
   if (!user) return emptyResult;
 
   const authService = new AuthService();
-  const result = await authService.getUserInfo(context.req.headers.cookie);
-  const {
-    loginId,
-    state,
-  } = result;
-  if (state === AuthStates.TIMEOUT) {
-    return {
-      props: {
-        user: null,
-        userTopics: [],
-        loginRequired: true,
-      },
-    };
-  }
+  const result = await authService.getUserProfile(context.req.headers.cookie);
 
   const topicService = new TopicService();
-  const topics = await topicService.fetchTopicsCreatedBy(id, loginId);
+  const topics = await topicService.fetchTopicsCreatedBy(id, result?.loginId);
   return {
     props: {
       user,

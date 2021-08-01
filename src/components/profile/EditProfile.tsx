@@ -38,7 +38,7 @@ export const EditProfile = ({ user, loginId }: Props) => {
   const { state } = useUserSelector();
 
   useEffect(() => () => {
-    dispatcher(setUserActionState(null));
+    dispatcher(setUserActionState({ state: null }));
   }, []);
 
   useEffect(() => {

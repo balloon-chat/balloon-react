@@ -7,7 +7,6 @@ import { NavBar } from 'src/components/navbar/NavBar';
 import { BottomNavigation } from 'src/components/navbar/bottomNavigation/BottomNavigation';
 import styled from 'styled-components';
 import { AuthService } from 'src/domain/auth/service/AuthService';
-import { UserService } from 'src/domain/user/service/userService';
 import { UserEntity } from 'src/view/types/user';
 import { EditProfile } from 'src/components/profile/EditProfile';
 
@@ -62,18 +61,18 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
     props: { loginId: null, user: null },
   };
   const authService = new AuthService();
-  const { loginId } = await authService.getUserInfo(context.req.headers.cookie);
-  if (!loginId) return emptyResult;
+  const result = await authService.getUserProfile(context.req.headers.cookie);
+  if (!result) return emptyResult;
+  const { loginId } = result;
 
-  const userService = new UserService();
-  const user = await userService.getUserByLoginId(loginId);
-  if (!user) return emptyResult;
+  const user = {
+    uid: result.id,
+    name: result.name,
+    photoUrl: result.photoUrl,
+  } as UserEntity;
 
   return {
-    props: {
-      loginId,
-      user,
-    },
+    props: { loginId, user },
   };
 };
 

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { LoginDialog } from 'src/components/login/LoginDialog';
 import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
@@ -25,6 +25,9 @@ const LoginPage = ({ accessToken, authorized, newUser }: Props) => {
   const dispatcher = useDispatch();
   const router = useRouter();
   const { return_to } = router.query;
+
+  const [dialogMessage, setDialogMessage] = useState<string|null>(null);
+  const [errorMessage, setErrorMessage] = useState<string|null>(null);
   const { loginState } = useUserSelector();
 
   useEffect(() => {
@@ -34,6 +37,36 @@ const LoginPage = ({ accessToken, authorized, newUser }: Props) => {
       loginFirebase().then();
     }
   }, []);
+
+  useEffect(() => {
+    switch (loginState) {
+      case LoginStates.LOGGED_IN:
+        redirect(); // ログイン完了後、元いたページへリダイレクトする。
+        break;
+      case LoginStates.FINDING:
+        setDialogMessage('ユーザー情報を確認しています。');
+        break;
+      case LoginStates.CREATING:
+        setDialogMessage('ユーザー情報を登録しています。');
+        break;
+      case LoginStates.LOGIN_ERROR:
+        setErrorMessage('ログイン中にエラーが発生しました。');
+        break;
+      default:
+        break;
+    }
+
+    return () => {
+      setErrorMessage(null);
+      setDialogMessage(null);
+    };
+  }, [loginState]);
+
+  const redirect = () => {
+    let destination = rootPath.index;
+    if (typeof return_to === 'string' && isInnerPath(destination, process.env.HOST_NAME!)) destination = return_to;
+    router.push(destination).then();
+  };
 
   const loginFirebase = async () => {
     if (!accessToken) return;
@@ -58,22 +91,10 @@ const LoginPage = ({ accessToken, authorized, newUser }: Props) => {
         <title>{pageTitle.login}</title>
       </Head>
       {
-        loginState === LoginStates.FINDING && (
-          <LoadDialog message="ユーザー情報を確認しています。" />
-        )
+        dialogMessage && <LoadDialog message={dialogMessage} />
       }
       {
-        loginState === LoginStates.CREATING && (
-          <LoadDialog message="ユーザー情報を登録しています。" />
-        )
-      }
-      {
-        loginState === LoginStates.LOGIN_ERROR && (
-          <ErrorDialog
-            message="ログイン中にエラーが発生しました。"
-            onClose={() => router.reload()}
-          />
-        )
+        errorMessage && (<ErrorDialog message={errorMessage} onClose={() => router.reload()} />)
       }
       <Wrapper>
         <NavBar />
@@ -102,9 +123,25 @@ const Container = styled.div`
   justify-content: center;
 `;
 
-export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
+export const getServerSideProps: GetServerSideProps<Props> = async ({ req, query }) => {
   const service = new AuthService();
-  const result = await service.getOauthResult(context.req.headers.cookie);
+
+  // すでにログインしていた場合は、元いたページへリダイレクトする。
+  const profile = await service.getUserProfile(req.headers.cookie);
+  if (profile !== null) {
+    // return_to で遷移先を指定されていたら、その場所へ遷移する。
+    let destination = rootPath.index;
+    const { return_to } = query;
+    if (typeof return_to === 'string' && isInnerPath(destination, process.env.HOST_NAME!)) destination = return_to;
+    return {
+      redirect: {
+        permanent: false,
+        destination,
+      },
+    };
+  }
+
+  const result = await service.getOauthResult(req.headers.cookie);
   return { props: result };
 };
 

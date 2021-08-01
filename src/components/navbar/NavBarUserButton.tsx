@@ -16,7 +16,7 @@ export const NavBarUserButton = () => {
         uid && photoUrl
         && (
           <Link href={rootPath.usersPath.user(uid)}>
-            <a><UserImage height={32} src={photoUrl} /></a>
+            <a><UserImage height={40} width={40} src={photoUrl} /></a>
           </Link>
         )
       }
