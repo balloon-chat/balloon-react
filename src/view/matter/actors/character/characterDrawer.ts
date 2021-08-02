@@ -1,7 +1,19 @@
+/* eslint-disable no-param-reassign */
 import P5Types from 'p5';
-import { Character } from 'src/view/matter/actors/character/character';
 import { Vector } from 'matter-js';
-import { EyePosition } from 'src/view/matter/actors/character/types';
+import { CharacterParams } from 'src/view/matter/actors/character/characterParams';
+import { World } from 'src/view/matter/types/world';
+
+export type EyePosition = {
+  left: Vector,
+  right: Vector,
+};
+
+enum CharacterSize {
+  small = 80,
+  medium = 120,
+  large = 160,
+}
 
 export class CharacterDrawer {
   static readonly scaleX = 1.25;
@@ -12,12 +24,8 @@ export class CharacterDrawer {
 
   private static readonly senderNameTextSize = 14;
 
-  public scale: number = 1.0;
-
-  public opacity: number = 1.0;
-
   static getColor({ character, opacity, p5 }:{
-    character: Character,
+    character: CharacterParams,
     opacity: number,
     p5: P5Types
   }) {
@@ -38,6 +46,39 @@ export class CharacterDrawer {
       colorEye,
       colorText,
       colorSender,
+    };
+  }
+
+  static getCharacterSize(
+    p5: P5Types,
+    isMobile:boolean,
+    text: string,
+  ): CharacterSize {
+    // モバイルで表示するときは、キャラクターの大きさを75%にする
+    const expansionRate = isMobile ? 0.75 : 1.0;
+
+    let characterSize = CharacterSize.small * expansionRate;
+    let lines = CharacterDrawer.getTextLines(p5, { text, radius: characterSize, scale: 1 }).length;
+    if (lines <= 3) return characterSize;
+
+    characterSize = CharacterSize.medium * expansionRate;
+    lines = CharacterDrawer.getTextLines(p5, { text, radius: characterSize, scale: 1 }).length;
+    if (lines <= 3) return characterSize;
+
+    return CharacterSize.large * expansionRate;
+  }
+
+  private static getEyePosition(character: CharacterParams): EyePosition {
+    const { position, radius, scale } = character;
+    return {
+      left: Vector.create(
+        position.x - radius * 0.35 * scale,
+        position.y - radius * 0.45 * scale,
+      ),
+      right: Vector.create(
+        position.x + radius * 0.35 * scale,
+        position.y - radius * 0.45 * scale,
+      ),
     };
   }
 
@@ -80,28 +121,8 @@ export class CharacterDrawer {
     return 2 * rCosine * CharacterDrawer.scaleX;
   }
 
-  draw(character: Character, p5: P5Types) {
-    this.drawBody(character, p5);
-    const { textBoxBottomY } = this.drawMessage(character, p5);
-    this.drawSenderName(character, p5, textBoxBottomY);
-  }
-
-  private getEyePosition(character: Character): EyePosition {
-    const { position, radius } = character;
-    return {
-      left: Vector.create(
-        position.x - radius * 0.35 * this.scale,
-        position.y - radius * 0.45 * this.scale,
-      ),
-      right: Vector.create(
-        position.x + radius * 0.35 * this.scale,
-        position.y - radius * 0.45 * this.scale,
-      ),
-    };
-  }
-
-  private drawBody(character: Character, p5: P5Types) {
-    const { opacity, scale } = this;
+  private static drawBody(character: CharacterParams, p5: P5Types) {
+    const { opacity, scale } = character;
 
     // 影の描画
     const colorShadow = p5.color('#004080');
@@ -132,7 +153,7 @@ export class CharacterDrawer {
     p5.pop();
 
     // 目の描画
-    const eyePosition = this.getEyePosition(character);
+    const eyePosition = CharacterDrawer.getEyePosition(character);
     const { colorEye } = CharacterDrawer.getColor({ character, p5, opacity });
     p5.push();
     p5.fill(colorEye)
@@ -142,22 +163,21 @@ export class CharacterDrawer {
     p5.pop();
   }
 
-  private drawMessage(character: Character, p5: P5Types) {
+  private static drawMessage(character: CharacterParams, p5: P5Types) {
     // textの描画
-    const { message, radius } = character;
-    const { scale, opacity } = this;
+    const { scale, opacity, radius, message } = character;
     const textLines = CharacterDrawer.getTextLines(p5, { text: message, radius, scale });
 
     // 目とキャラクター下端との中点。これを基準としてテキストを配置していく。
-    const eyePosition = this.getEyePosition(character);
+    const eyePosition = CharacterDrawer.getEyePosition(character);
     const { scaleX, messageTextSize } = CharacterDrawer;
     const basePosition = Vector.create(
       character.position.x,
-      eyePosition.left.y + (character.radius * scaleX) * Math.tan(75 / 180),
+      eyePosition.left.y + (radius * scaleX) * Math.tan(75 / 180),
     );
     p5.textSize(CharacterDrawer.messageTextSize * scale);
 
-    const textBoxWidth = CharacterDrawer.getTextBoxWidth(character.radius * scale);
+    const textBoxWidth = CharacterDrawer.getTextBoxWidth(radius * scale);
     const textBoxHeight = textLines.length * messageTextSize * scale;
     let startPosition: Vector;
     if (textLines.length === 1) {
@@ -196,13 +216,25 @@ export class CharacterDrawer {
     return { textBoxBottomY };
   }
 
-  private drawSenderName(character: Character, p5: P5Types, textBoxBottomY: number) {
-    const { position, sender } = character;
-    const { scale, opacity } = this;
+  private static drawSenderName(character: CharacterParams, p5: P5Types, textBoxBottomY: number) {
+    const { scale, opacity, position, sender } = character;
     const { colorSender } = CharacterDrawer.getColor({ character, p5, opacity });
     p5.fill(colorSender)
       .textSize(CharacterDrawer.senderNameTextSize * scale)
       .textAlign('center', 'center')
       .text(`@ ${sender}`, position.x, textBoxBottomY + 8);
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  draw(character: CharacterParams, p5: P5Types, world: World): CharacterParams {
+    // キャラクターの大きさを、画面サイズに合わせて変更
+    const radius = CharacterDrawer.getCharacterSize(p5, world.canvas.isMobile, character.message);
+    if (radius !== character.radius) character.radius = radius;
+
+    // キャラクターを描画
+    CharacterDrawer.drawBody(character, p5);
+    const { textBoxBottomY } = CharacterDrawer.drawMessage(character, p5);
+    CharacterDrawer.drawSenderName(character, p5, textBoxBottomY);
+    return character;
   }
 }

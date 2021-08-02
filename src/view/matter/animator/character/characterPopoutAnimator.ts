@@ -1,7 +1,7 @@
-import { CharacterAnimator } from 'src/view/matter/actors/character/animator/characterAnimator';
-import { CharacterDrawer } from 'src/view/matter/actors/character/drawer/characterDrawer';
+import { Animator } from 'src/view/matter/types/animator';
+import { CharacterParams } from 'src/view/matter/actors/character/characterParams';
 
-export class CharacterPopoutAnimator extends CharacterAnimator {
+export class CharacterPopoutAnimator extends Animator<CharacterParams> {
   private static scale(x: number, duration: number, maxScale: number) {
     // 小数をある程度切り捨てる
     const rX: number = Math.round(x * 100) / 100;
@@ -12,8 +12,9 @@ export class CharacterPopoutAnimator extends CharacterAnimator {
     return a * rX ** 2 + b * rX + c;
   }
 
-  protected onAnimate(drawer: CharacterDrawer, timeElapsed: number) {
+  protected onAnimate(params: CharacterParams, timeElapsed: number): CharacterParams {
     // eslint-disable-next-line no-param-reassign
-    drawer.scale = CharacterPopoutAnimator.scale(timeElapsed, this.duration, 1.5);
+    params.scale = CharacterPopoutAnimator.scale(timeElapsed, this.duration, 1.5);
+    return params;
   }
 }

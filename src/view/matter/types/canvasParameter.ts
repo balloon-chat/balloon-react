@@ -1,3 +1,5 @@
+import { mediaQuery } from 'src/components/constants/mediaQuery';
+
 export class CanvasParameter {
   constructor(public width: number, public height: number) {}
 
@@ -6,6 +8,10 @@ export class CanvasParameter {
       x: this.width * 0.5,
       y: this.height * 0.5,
     };
+  }
+
+  get isMobile() :boolean {
+    return this.width <= mediaQuery.mobile.landscape;
   }
 
   setSize(width: number, height: number) {
