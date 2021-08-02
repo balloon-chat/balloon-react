@@ -16,7 +16,11 @@ export abstract class ListAdapter<T> {
   submit(list: T[]) {
     const { added, deleted } = this.diffUtil.run(this.previousList, list);
     added.forEach((e) => this.onAddItem(e));
+    if (added.length) console.info('Item Added:', added);
+
     deleted.forEach((e) => this.onDeleteItem(e));
+    if (added.length) console.info('Item Deleted:', deleted);
+
     this.previousList = list;
   }
 
