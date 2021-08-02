@@ -1,27 +1,34 @@
 import React, { useEffect, useRef } from 'react';
 import P5Types from 'p5';
-import { MatterControllerFactory } from 'src/view/matter/controllers/matterControllerFactory';
+import { MatterWorldFactory } from 'src/view/matter/worlds/matterWorldFactory';
 import { useMessageState } from 'src/data/redux/message/selector';
 import styled from 'styled-components';
+import { Render } from 'matter-js';
+import { MatterListAdapter } from 'src/view/matter/lib/matterListAdapter';
+
+// Matterのレンダラーで表示する（P5だと回転などが考慮されないことがある。）
+const debug = false;
 
 export const Canvas: React.FC = () => {
   const { messages } = useMessageState();
   const renderRef = useRef<HTMLDivElement>(null);
-  const controllerRef = useRef(MatterControllerFactory.create(
+  const listAdapterRef = useRef<MatterListAdapter>();
+  const worldRef = useRef(MatterWorldFactory.create(
     document.documentElement.clientWidth,
     document.documentElement.clientHeight,
   ));
 
   useEffect(() => {
-    if (!messages) return;
-    const controller = controllerRef.current;
-    controller.adapter.submit(messages);
+    const listAdapter = listAdapterRef.current;
+    if (!messages || !listAdapter) return;
+
+    listAdapter.submit(messages);
+    console.log('RECEIVED MESSAGES:', messages);
   }, [messages]);
 
   useEffect(() => {
-    if (!renderRef.current) return undefined;
-
     const parent = renderRef.current;
+    if (!parent) return undefined;
 
     const p5 = new P5Types((p: P5Types) => {
       // eslint-disable-next-line no-param-reassign
@@ -30,33 +37,46 @@ export const Canvas: React.FC = () => {
       p.draw = () => draw(p);
     });
 
-    const controller = controllerRef.current;
-    controller.setMouseEventHandler(parent);
-    controller.run();
-    controller.p5 = p5;
+    const world = worldRef.current;
+    world.setMouseEventHandler(parent);
+    world.run();
+    world.p5 = p5;
+
+    const listAdapter = new MatterListAdapter(world);
+    listAdapterRef.current = listAdapter;
+
+    if (debug) {
+      const renderer = Render.create({
+        element: parent,
+        engine: world.engine,
+        options: {
+          width: parent.clientWidth,
+          height: parent.clientHeight,
+          wireframes: false,
+        },
+      });
+      Render.run(renderer);
+    }
 
     return () => {
       p5.remove();
-      controller.clear();
-      controller.p5 = null;
+      world.clear();
+      listAdapter.submit([]);
     };
   }, [renderRef]);
 
-  const setup = (p5: P5Types, canvasParentRef: HTMLElement) => {
-    const renderer = p5.createCanvas(
-      canvasParentRef.clientWidth,
-      canvasParentRef.clientHeight,
-    );
-    renderer.parent(canvasParentRef);
+  const setup = (p5: P5Types, parent: HTMLElement) => {
+    const renderer = p5.createCanvas(parent.clientWidth, parent.clientHeight);
+    renderer.parent(parent);
   };
 
   const draw = (p5: P5Types) => {
     // キャンバスサイズの更新
-    const controller = controllerRef.current;
+    const world = worldRef.current;
     if (renderRef.current) {
-      controller.canvas.checkResize(renderRef.current, (width, height) => {
+      world.canvas.checkResize(renderRef.current, (width, height) => {
         p5.resizeCanvas(width, height, true);
-        controller.canvas.setSize(width, height - 83);
+        world.canvas.setSize(width, height - 83);
       });
     }
 
@@ -64,7 +84,7 @@ export const Canvas: React.FC = () => {
     p5.background(255);
 
     // キャラクターの描画
-    controller.draw(p5);
+    world.update(p5);
   };
 
   return <Container ref={renderRef} />;
