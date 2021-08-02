@@ -31,7 +31,12 @@ export class CanvasParameter {
     const newWidth = parent.clientWidth;
     const newHeight = parent.clientHeight;
     const sizeChanged = this.width !== newWidth || this.height !== newHeight;
-    if (sizeChanged) onResize(newWidth, newHeight);
+    if (sizeChanged) {
+      onResize(newWidth, newHeight);
+      this.width = newWidth;
+      this.height = newHeight;
+      console.info('detect resize:', { width: this.width, height: this.height });
+    }
     return sizeChanged;
   }
 }
