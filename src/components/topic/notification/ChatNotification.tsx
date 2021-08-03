@@ -4,6 +4,7 @@ import { mediaQuery } from 'src/components/constants/mediaQuery';
 import { ZIndex } from 'src/components/constants/z_index';
 import styled from 'styled-components';
 import { imagePath } from 'src/components/constants/imagePath';
+import { Transition } from 'react-transition-group';
 
 type Props = {
   title?: string,
@@ -17,21 +18,25 @@ export const ChatNotification: React.FC<Props> = ({
   visible,
   children,
 }) => (
-  <Wrapper>
-    <Container>
-      <Dialog visible={visible}>
-        <Header>
-          <img src={imagePath.character.blue} width={30} height={30} alt="" />
-          <HeaderTitle>おしらせ</HeaderTitle>
-        </Header>
-        <Body>
-          {title && <Title>{title}</Title>}
-          <Message>{message}</Message>
-          <Actions>{children}</Actions>
-        </Body>
-      </Dialog>
-    </Container>
-  </Wrapper>
+  <Transition in={visible} timeout={500} mountOnEnter unmountOnExit>
+    {(status) => (
+      <Wrapper>
+        <Container>
+          <Dialog visible={status === 'entered'}>
+            <Header>
+              <img src={imagePath.character.blue} width={30} height={30} alt="" />
+              <HeaderTitle>おしらせ</HeaderTitle>
+            </Header>
+            <Body>
+              {title && <Title>{title}</Title>}
+              <Message>{message}</Message>
+              <Actions>{children}</Actions>
+            </Body>
+          </Dialog>
+        </Container>
+      </Wrapper>
+    )}
+  </Transition>
 );
 
 const Wrapper = styled.div`

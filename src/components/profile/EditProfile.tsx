@@ -68,15 +68,11 @@ export const EditProfile = ({ user, loginId }: Props) => {
       {
         state === UserActionStates.PROFILE_UPDATED && <Snackbar message="更新しました" />
       }
-      {
-        state === UserActionStates.PROFILE_UPDATE_ERROR && (
-          <ErrorDialog
-            message="更新中にエラーが発生しました"
-            closeMessage="再読込み"
-            onClose={() => router.reload()}
-          />
-        )
-      }
+      <ErrorDialog
+        message={state === UserActionStates.PROFILE_UPDATE_ERROR ? '更新中にエラーが発生しました' : null}
+        closeMessage="再読込み"
+        onClose={() => router.reload()}
+      />
       <ProfileImageContainer>
         <input {...getInputProps()} />
         <AvatarImage size={126} floating src={photo ? URL.createObjectURL(photo) : user.photoUrl} />

@@ -93,9 +93,7 @@ const LoginPage = ({ accessToken, authorized, newUser }: Props) => {
       {
         dialogMessage && <LoadDialog message={dialogMessage} />
       }
-      {
-        errorMessage && (<ErrorDialog message={errorMessage} onClose={() => router.reload()} />)
-      }
+      <ErrorDialog message={errorMessage} onClose={() => router.reload()} />
       <Wrapper>
         <NavBar />
         <Container>

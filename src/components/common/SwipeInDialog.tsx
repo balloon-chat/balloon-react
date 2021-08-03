@@ -4,26 +4,39 @@ import { ZIndex } from 'src/components/constants/z_index';
 import { mediaQuery } from 'src/components/constants/mediaQuery';
 import React from 'react';
 import { FullscreenContainer } from 'src/components/common/FullscreenContainer';
+import { Transition } from 'react-transition-group';
 
 type Props = {
   isVisible: boolean,
   onClose: () => void,
 }
 
+const duration = 400;
+
 export const SwipeInDialog: React.FC<Props> = ({ isVisible, onClose, children }) => (
-  <Wrapper>
-    <FullscreenContainer
-      transparent={false}
-      isVisible={isVisible}
-      onClick={onClose}
-    />
-    <Dialog isVisible={isVisible}>
-      <DialogBody>{children}</DialogBody>
-      <CloseButton onClick={() => onClose()}>
-        <CloseIcon />
-      </CloseButton>
-    </Dialog>
-  </Wrapper>
+  <Transition in={isVisible} timeout={duration} mountOnEnter unmountOnExit>
+    {(status) => {
+      const visibleState = status === 'entering' || status === 'entered';
+      return (
+        <>
+          <Wrapper>
+            <FullscreenContainer
+              animate
+              transparent={false}
+              isVisible={visibleState}
+              onClick={onClose}
+            />
+            <Dialog isVisible={visibleState} duration={duration}>
+              <DialogBody>{children}</DialogBody>
+              <CloseButton onClick={() => onClose()}>
+                <CloseIcon />
+              </CloseButton>
+            </Dialog>
+          </Wrapper>
+        </>
+      );
+    }}
+  </Transition>
 );
 
 const Wrapper = styled.div`
@@ -31,7 +44,6 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   user-select: none;
-  visibility: hidden;
   z-index: ${ZIndex.dialog};
   
   position: fixed;
@@ -41,18 +53,18 @@ const Wrapper = styled.div`
   bottom: 0;
 `;
 
-const Dialog = styled.div<{ isVisible: boolean }>`
+const Dialog = styled.div<{ isVisible: boolean, duration: number }>`
   display: flex;
   flex-direction: row;
-  height: 100%;
   width: 100%;
   justify-content: center;
-  transition: all 0.4s ease-in-out;
-  transform: translateX(${(props) => (props.isVisible ? 0 : -100)}px);
-  opacity: ${(props) => (props.isVisible ? 1 : 0)};
-  visibility: ${(props) => (props.isVisible ? 'visible' : 'hidden')};
-
+  
+  animation: fadein ${({ duration }) => duration}ms;
+  transition: all ${({ duration }) => duration}ms;
+  opacity: ${({ isVisible }) => (isVisible ? 1.0 : 0)};
+  transform: translateX(${({ isVisible }) => (isVisible ? 0 : -100)}px);
   z-index: ${ZIndex.dialog};
+
 
   @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
     flex-direction: column;
@@ -71,8 +83,13 @@ const DialogBody = styled.div`
 
   @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
     border-radius: 10px 10px 0 0;
-    max-height: 600px;
+    padding: 16px 0;
+    height: 100%;
     max-width: calc(100vw - 64px);
+  }
+  
+  @media screen and (min-height: 700px) {
+    height: 600px;
   }
 `;
 

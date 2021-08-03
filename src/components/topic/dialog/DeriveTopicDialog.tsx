@@ -12,6 +12,7 @@ export const DeriveTopicDialog = () => {
   const dispatcher = useDispatch();
   const [title, setTitle] = useState<string>();
   const { topicId } = useChatState();
+  const { dialog } = useChatState();
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -26,7 +27,7 @@ export const DeriveTopicDialog = () => {
   };
 
   return (
-    <Dialog onClose={useCallback(onClose, [])}>
+    <Dialog animate isVisible={dialog.deriveTopicDialog} onClose={useCallback(onClose, [])}>
       <Title>話題を広げる</Title>
       <div>話題を広げて、この話題を更に盛り上げましょう！</div>
       <Form onSubmit={handleSubmit}>

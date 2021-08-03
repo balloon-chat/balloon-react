@@ -121,9 +121,7 @@ const TopicPage = ({ topic, code }: Props) => {
   return (
     <Wrapper>
       <NavBar />
-      {
-        dialog.deriveTopicDialog && <DeriveTopicDialog />
-      }
+      <DeriveTopicDialog />
       <BranchTopicsDialog />
       <MessageLog
         isVisible={dialog.messageLog}
