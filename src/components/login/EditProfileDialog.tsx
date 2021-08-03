@@ -54,7 +54,7 @@ export const EditProfileDialog = ({
   }, [acceptedFiles]);
 
   return (
-    <Dialog onClose={() => {}}>
+    <Dialog isVisible onClose={() => {}}>
       <Title>登録内容を修正</Title>
       <Spacer />
       <ProfileImageContainer>
