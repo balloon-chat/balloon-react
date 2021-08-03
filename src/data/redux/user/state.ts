@@ -26,6 +26,8 @@ export const LoginStates = {
 } as const;
 
 export const UserActionStates = {
+  PROFILE_UPDATING: 'PROFILE_UPDATING',
+
   PROFILE_UPDATED: 'PROFILE_UPDATED',
 
   PROFILE_UPDATE_ERROR: 'PROFILE_UPDATE_ERROR',

@@ -58,7 +58,7 @@ export class FirebaseUserDatabase implements IUserRepository {
       const user = UserDto.fromJSON(doc.data() ?? null);
       if (user) {
         transaction.update(userRef, {
-          name,
+          name: name?.value,
           photoUrl,
         });
       }
