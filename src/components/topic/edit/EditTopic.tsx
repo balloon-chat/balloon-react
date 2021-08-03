@@ -105,14 +105,10 @@ export const EditTopic = ({ topic }: Props) => {
       {
         dialogMessage && <LoadDialog message={dialogMessage} />
       }
-      {
-        errorDialogMessage && (
-          <ErrorDialog
-            message={errorDialogMessage}
-            onClose={() => router.reload()}
-          />
-        )
-      }
+      <ErrorDialog
+        message={errorDialogMessage}
+        onClose={() => router.reload()}
+      />
       <EditTopicForm
         topic={topic}
         onSubmit={handleSubmit}

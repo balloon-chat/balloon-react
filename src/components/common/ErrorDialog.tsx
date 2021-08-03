@@ -4,15 +4,15 @@ import React from 'react';
 import styled from 'styled-components';
 
 type Props = {
-  message: string,
+  message: string | null, // nullの場合は表示しない
   closeMessage?: string,
-  onClose: () => void
+  onClose: () => void,
 }
 
 export const ErrorDialog = ({ message, closeMessage, onClose }: Props) => (
-  <Dialog onClose={onClose}>
+  <Dialog onClose={onClose} isVisible={message !== null}>
     <ErrorDialogContainer>
-      <div>{message}</div>
+      <div>{message ?? ''}</div>
       <Button onClick={onClose}>{closeMessage ?? '閉じる'}</Button>
     </ErrorDialogContainer>
   </Dialog>

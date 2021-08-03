@@ -8,7 +8,7 @@ type Props = {
 };
 
 export const LoadDialog: React.FC<Props> = ({ message }) => (
-  <Dialog onClose={() => {}}>
+  <Dialog isVisible onClose={() => {}}>
     <Container>
       <DialogImage src={imagePath.character.blue} />
       <DialogMessage>{message}</DialogMessage>

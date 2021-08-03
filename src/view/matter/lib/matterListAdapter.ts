@@ -6,12 +6,7 @@ import { mediaQuery } from 'src/components/constants/mediaQuery';
 import { World } from 'src/view/matter/types/world';
 
 export class MatterListAdapter extends ListAdapter<MessageEntity> {
-  constructor(
-    private readonly world: World,
-
-    // 画面生成直後かを判別するためのパラメータ
-    // private readonly createdAt: number = Date.now(),
-  ) {
+  constructor(private readonly world: World) {
     super(new MessageEntityDiffUtil());
   }
 

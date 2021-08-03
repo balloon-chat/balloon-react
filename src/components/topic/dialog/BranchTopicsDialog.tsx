@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { closeBranchTopicsDialog, showDeriveTopicDialog } from 'src/data/redux/chat/slice';
-import { SwipeInDialog } from 'src/components/topic/dialog/SwipeInDialog';
+import { SwipeInDialog } from 'src/components/common/SwipeInDialog';
 import { useChatState } from 'src/data/redux/chat/selector';
 import styled from 'styled-components';
 import Link from 'next/link';
@@ -13,6 +13,8 @@ export const BranchTopicsDialog = () => {
   const dispatcher = useDispatch();
   const { topic, dialog, branchTopicId, topicId } = useChatState();
   const [activeTopic, setActiveTopic] = useState<string|null>();
+
+  const isDerived = topic?.branchTopics && topic?.branchTopics.length !== 0;
 
   const handleClose = useCallback(() => {
     dispatcher(closeBranchTopicsDialog());
@@ -31,18 +33,8 @@ export const BranchTopicsDialog = () => {
     <SwipeInDialog onClose={handleClose} isVisible={dialog.branchTopicDialog}>
       <Container>
         {
-          // 派生した話題が無い場合
-          !topic?.branchTopics.length && (
-          <EmptyBranchTopicContainer>
-            <CharacterImage src={imagePath.character.blue} />
-            <EmptyBranchTopicMessage>この話題はまだ、これから盛り上がっていくようです。</EmptyBranchTopicMessage>
-            <TextButton onClick={handleDeriveTopic}>話題を広げる</TextButton>
-          </EmptyBranchTopicContainer>
-          )
-        }
-        {
           // 話題が派生している場合
-          topic?.branchTopics && topic?.branchTopics.length !== 0 && (
+          topic && isDerived && (
           <>
             <Link href={rootPath.topicPath.topic(topic.id)} passHref>
               <ItemContainer onClick={handleClose}>
@@ -63,6 +55,16 @@ export const BranchTopicsDialog = () => {
               ))
             }
           </>
+          )
+        }
+        {
+          // 派生した話題が無い場合
+          !isDerived && (
+            <EmptyBranchTopicContainer>
+              <CharacterImage src={imagePath.character.blue} />
+              <EmptyBranchTopicMessage>この話題はこれから盛り上がっていくようです。</EmptyBranchTopicMessage>
+              <TextButton onClick={handleDeriveTopic}>話題を広げる</TextButton>
+            </EmptyBranchTopicContainer>
           )
         }
       </Container>

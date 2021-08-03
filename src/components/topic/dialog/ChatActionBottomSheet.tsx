@@ -20,6 +20,8 @@ import {
   showMessageLog as showMessageLogAction,
 } from 'src/data/redux/chat/slice';
 import { useRouter } from 'next/router';
+import { Transition } from 'react-transition-group';
+import { fadeinAnimation, slideY } from 'src/components/common/Animations';
 
 type Props = {
   isVisible: boolean,
@@ -51,48 +53,54 @@ export const ChatActionBottomSheet = ({
   }, []);
 
   return (
-    <>
-      <FullscreenContainer isVisible={isVisible} onClick={onClose} />
-      <Wrapper isVisible={isVisible}>
-        <BottomSheet isVisible={isVisible}>
-          <ActionContainer>
-            <BottomSheetAction onClick={showDeriveTopicDialog}>
-              話題を広げる
-              <AddIcon />
-            </BottomSheetAction>
-            <BottomSheetAction onClick={showBranchTopicsDialog}>
-              すべての話題を表示
-              <ForumIcon />
-            </BottomSheetAction>
-            <BottomSheetAction onClick={showMessageLog}>
-              ログを表示
-              <ChatBubbleIcon />
-            </BottomSheetAction>
-            <CopyToClipboard text={invitation ?? ''} onCopy={onClose}>
-              <BottomSheetAction>
-                招待をコピー
-                <CopyIcon />
-              </BottomSheetAction>
-            </CopyToClipboard>
-            {
-              isEditable && topicId && (
-                <BottomSheetAction onClick={() => router.push(topicPath.edit(topicId))}>
-                  話題を編集
-                  <EditIcon />
-                </BottomSheetAction>
-              )
-            }
-          </ActionContainer>
-          <ActionContainer>
-            <BottomSheetAction onClick={() => router.push(rootPath.index)}>
-              退出
-              <ExitIcon />
-            </BottomSheetAction>
-          </ActionContainer>
-          <CancelButton onClick={onClose}>閉じる</CancelButton>
-        </BottomSheet>
-      </Wrapper>
-    </>
+    <Transition in={isVisible} timeout={500} mountOnEnter unmountOnExit>
+      {
+        (status) => (
+          <>
+            <FullscreenContainer animate isVisible={status === 'entering' || status === 'entered'} onClick={onClose} />
+            <Wrapper isVisible={isVisible}>
+              <BottomSheet isVisible={status === 'entering' || status === 'entered'} duration={400}>
+                <ActionContainer>
+                  <BottomSheetAction onClick={showDeriveTopicDialog}>
+                    話題を広げる
+                    <AddIcon />
+                  </BottomSheetAction>
+                  <BottomSheetAction onClick={showBranchTopicsDialog}>
+                    すべての話題を表示
+                    <ForumIcon />
+                  </BottomSheetAction>
+                  <BottomSheetAction onClick={showMessageLog}>
+                    ログを表示
+                    <ChatBubbleIcon />
+                  </BottomSheetAction>
+                  <CopyToClipboard text={invitation ?? ''} onCopy={onClose}>
+                    <BottomSheetAction>
+                      招待をコピー
+                      <CopyIcon />
+                    </BottomSheetAction>
+                  </CopyToClipboard>
+                  {
+                  isEditable && topicId && (
+                    <BottomSheetAction onClick={() => router.push(topicPath.edit(topicId))}>
+                      話題を編集
+                      <EditIcon />
+                    </BottomSheetAction>
+                  )
+                }
+                </ActionContainer>
+                <ActionContainer>
+                  <BottomSheetAction onClick={() => router.push(rootPath.index)}>
+                    退出
+                    <ExitIcon />
+                  </BottomSheetAction>
+                </ActionContainer>
+                <CancelButton onClick={onClose}>閉じる</CancelButton>
+              </BottomSheet>
+            </Wrapper>
+          </>
+        )
+      }
+    </Transition>
   );
 };
 
@@ -104,15 +112,17 @@ const Wrapper = styled.div<{ isVisible: boolean }>`
   z-index: ${ZIndex.dialog};
 `;
 
-const BottomSheet = styled.div<{ isVisible: boolean }>`
+const BottomSheet = styled.div<{ isVisible: boolean, duration: number }>`
   background-color: #f7f7f8;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
   margin: 4px;
   padding: 16px 8px;
-  transition: all 0.4s ease-in-out;
-  transform: translateY(${(props) => (props.isVisible ? 0 : 80)}vh);
+  
+  animation: ${({ duration }) => duration}ms ${slideY(800, 0)}, ${({ duration }) => duration}ms ${fadeinAnimation} ;
+  transition: all ${({ duration }) => duration}ms ease-in-out;
+  transform: translateY(${(props) => (props.isVisible ? 0 : 800)}px);
 
   position: fixed;
   bottom: 0;

@@ -12,7 +12,7 @@ type Props = {
 }
 
 export const WelcomeDialog = ({ name, imgUrl, onEdit, onCreateUser }: Props) => (
-  <Dialog onClose={() => {}}>
+  <Dialog isVisible onClose={() => {}}>
     <Title>Welcome!</Title>
     <Title>{`${name} さん`}</Title>
     <ProfileImageContainer>
