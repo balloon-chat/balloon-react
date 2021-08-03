@@ -14,6 +14,7 @@ import { ErrorDialog } from 'src/components/common/ErrorDialog';
 import { useRouter } from 'next/router';
 import { Snackbar } from 'src/components/common/Snackbar';
 import { useDropzone } from 'react-dropzone';
+import { LoadDialog } from 'src/components/common/LoadDialog';
 
 type Props = {
   user: UserEntity
@@ -65,6 +66,9 @@ export const EditProfile = ({ user, loginId }: Props) => {
 
   return (
     <Form onSubmit={handleSubmit}>
+      {
+        state === UserActionStates.PROFILE_UPDATING && <LoadDialog message="プロフィールを更新中です..." />
+      }
       {
         state === UserActionStates.PROFILE_UPDATED && <Snackbar message="更新しました" />
       }

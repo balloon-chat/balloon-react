@@ -66,6 +66,10 @@ const userSlice = createSlice({
         photoUrl: payload.photoUrl,
         loginState: LoginStates.LOGGED_IN,
       }))
+      .addCase(updateProfile.pending, (state) => ({
+        ...state,
+        state: UserActionStates.PROFILE_UPDATING,
+      }))
       .addCase(updateProfile.rejected, (state) => ({
         ...state,
         state: UserActionStates.PROFILE_UPDATE_ERROR,
