@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChatForm } from 'src/components/topic/chat/ChatForm';
 import { NavBar } from 'src/components/navbar/NavBar';
 import { ErrorPage } from 'src/components/common/ErrorPage';
@@ -45,6 +45,7 @@ const TopicPage = ({ topic, code }: Props) => {
   const dispatcher = useDispatch();
   const { uid, loginState } = useUserSelector();
   const { topicId, branchTopicId, dialog } = useChatState();
+  const [flag, setFlag] = useState<boolean>(true);
 
   useChatNotification();
 
@@ -74,7 +75,7 @@ const TopicPage = ({ topic, code }: Props) => {
   }, []);
 
   useEffect(() => {
-    if (!topicId) return () => {};
+    if (!topicId) return () => { };
 
     dispatcher(observeStart({ topicId: branchTopicId ?? topicId }));
     return () => {
@@ -83,7 +84,7 @@ const TopicPage = ({ topic, code }: Props) => {
   }, [topicId, branchTopicId]);
 
   useEffect(() => {
-    let branchIndex: number|null;
+    let branchIndex: number | null;
     const paramBranchIndex = router.query.branch;
     if (typeof paramBranchIndex === 'string') {
       const value = parseInt(paramBranchIndex, 10);
@@ -138,6 +139,11 @@ const TopicPage = ({ topic, code }: Props) => {
           <CharacterCanvas />
           <MessageFieldContainer>
             <ChatForm />
+            <Notification flag={flag}>
+              <p>友達を招待しましょう!</p>
+              <a href="https://www.google.com/">招待を開く</a>
+              <CloseButton onClick={() => setFlag(false)} />
+            </Notification>
           </MessageFieldContainer>
         </>
       )}
@@ -159,6 +165,66 @@ const MessageFieldContainer = styled.div`
   right: 0;
   left: 0;
   z-index: ${ZIndex.messageField};
+`;
+
+const Notification = styled.div<{ flag: boolean }>`
+  position: absolute;
+  right: 0;
+  top: -100px;
+  display: ${(props) => (props.flag ? 'flex' : 'none')};
+
+  border: 1px solid black;
+  border-radius: 10px;
+  width: 400px;
+  height: 50px;
+  padding: 20px;
+  flex-direction: column;
+  p {
+    margin: 0;
+  }
+  a {
+    text-decoration: none;
+    color: #289ac7;
+  }
+
+  a:hover {
+    opacity: 0.3;
+    transition: 0.2s;
+  }
+`;
+
+const CloseButton = styled.div`
+  display: block;
+  width: 25px;/*枠の大きさ*/
+  height: 25px;/*枠の大きさ*/
+  position: absolute;
+  top: 2px;
+  right: 2px;
+
+  &::before, &::after {
+    content: "";
+    display: block;
+    width: 100%;/*バツ線の長さ*/
+    height: 2px;/*バツ線の太さ*/
+    background: #289ac7;
+    transform: rotate(45deg);
+    transform-origin:0% 50%;
+    position: absolute;
+    top: calc(14% - 2px);
+    left: 14%;
+  }
+
+  &::after {
+    transform: rotate(-45deg);
+    transform-origin:100% 50%;
+    left: auto;
+    right: 14%;
+  }
+
+  &:hover {
+    opacity: 0.3;
+    transition: 0.2s;
+  }
 `;
 
 export const getServerSideProps: GetServerSideProps<Props> = async (

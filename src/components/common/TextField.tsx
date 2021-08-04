@@ -8,7 +8,7 @@ type Props = {
   titleTextSize?: number,
   boldTitle?: boolean,
   maxLength?: number,
-  onChange: (value :string) => void,
+  onChange: (value: string) => void,
   error?: string | null
 }
 
@@ -64,7 +64,7 @@ const InputRowFooter = styled.div`
   margin-top: 4px;
 `;
 
-const Title = styled.div<{textSize?: number, bold: boolean}>`
+const Title = styled.div<{ textSize?: number, bold: boolean }>`
   font-size: ${(props) => props.textSize ?? 20}px;
   font-weight: ${(props) => (props.bold ? 'bold' : 'normal')};
   margin-bottom: 4px;

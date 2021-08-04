@@ -7,6 +7,7 @@ import { PopupCharacterController } from 'src/view/matter/controllers/popupChara
 export class MatterControllerFactory {
   private static _instance: MatterController | null;
 
+  // eslint-disable-next-line max-len
   static create(windowWidth: number, windowHeight: number): MatterController {
     if (this._instance) return this._instance;
 

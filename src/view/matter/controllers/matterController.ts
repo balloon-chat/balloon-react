@@ -10,7 +10,7 @@ export class MatterController {
 
   public p5: P5Types | null = null;
 
-  private runner: Runner|null = null;
+  private runner: Runner | null = null;
 
   constructor(
     public readonly engine: Engine,
@@ -32,7 +32,7 @@ export class MatterController {
     return this.engine.world;
   }
 
-  get isMobile():boolean {
+  get isMobile(): boolean {
     return this.canvas.width <= mediaQuery.mobile.landscape;
   }
 
