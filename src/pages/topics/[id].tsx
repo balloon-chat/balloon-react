@@ -179,6 +179,7 @@ const Notification = styled.div<{ flag: boolean }>`
   width: 400px;
   height: 50px;
   padding: 20px;
+  background-color: white;
   flex-direction: column;
   p {
     margin: 0;
