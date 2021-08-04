@@ -167,6 +167,7 @@ const MessageFieldContainer = styled.div`
   z-index: ${ZIndex.messageField};
 `;
 
+// 新しく追加したもの
 const Notification = styled.div<{ flag: boolean }>`
   position: absolute;
   right: 0;
@@ -193,6 +194,7 @@ const Notification = styled.div<{ flag: boolean }>`
   }
 `;
 
+// 新しく追加したもの
 const CloseButton = styled.div`
   display: block;
   width: 25px;/*枠の大きさ*/
