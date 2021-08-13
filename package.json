@@ -7,6 +7,7 @@
     "start": "next start -p $PORT",
     "gcp-build": "yarn build",
     "deploy": "gcloud app deploy --quiet",
+    "deploy:dispatch": "gcloud app deploy dispatch.yaml",
     "type-check": "tsc",
     "test": "jest",
     "test-ci": "jest --ci --runInBand --reporters=default --reporters=jest-junit",

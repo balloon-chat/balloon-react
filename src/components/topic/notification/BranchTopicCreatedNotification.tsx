@@ -1,32 +1,27 @@
 import { Button, TextButton } from 'src/components/common/Button';
 import { ChatNotification } from 'src/components/topic/notification/ChatNotification';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback } from 'react';
 import { useChatState } from 'src/data/redux/chat/selector';
 import { BranchTopicCreatedPayload, ChatNotificationTypes } from 'src/data/redux/chat/state';
 import { useDispatch } from 'react-redux';
-import { clearNotification } from 'src/data/redux/chat/slice';
+import { clearNotification, notify } from 'src/data/redux/chat/slice';
 import { rootPath } from 'src/view/route/pagePath';
 import { useRouter } from 'next/router';
 
-export const BranchTopicCreatedNotification = () => {
+type Props = {
+  isVisible: boolean,
+  title?: string,
+  message: string,
+}
+
+export const BranchTopicCreatedNotification = ({
+  isVisible,
+  title,
+  message,
+}: Props) => {
   const dispatcher = useDispatch();
   const router = useRouter();
   const { notification, topicId } = useChatState();
-  const [visible, setIsVisible] = useState(false);
-  const [message, setMessage] = useState('');
-  const [title, setTitle] = useState('');
-
-  useEffect(() => {
-    if (notification?.type === ChatNotificationTypes.BRANCH_TOPIC_CREATED) {
-      setIsVisible(true);
-
-      // メッセージをキャッシュしておく
-      if (notification.title) setTitle(notification?.title);
-      setMessage(notification.message);
-    } else {
-      setIsVisible(false);
-    }
-  }, [notification?.type]);
 
   const handleCancel = useCallback(() => {
     dispatcher(clearNotification());
@@ -37,12 +32,18 @@ export const BranchTopicCreatedNotification = () => {
     if (!notification || !topicId) return;
     const { branch } = notification.payload as BranchTopicCreatedPayload;
     await router.push(rootPath.topicPath.topicBranch(topicId, branch));
+    dispatcher(notify({
+      type: ChatNotificationTypes.SIMPLE_MESSAGE,
+      message: '話題を移動しました！',
+      title: null,
+      payload: {},
+    }));
   };
 
   return (
     <>
       <ChatNotification
-        visible={visible}
+        visible={isVisible}
         title={title}
         message={message}
       >

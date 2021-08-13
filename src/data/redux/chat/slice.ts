@@ -35,7 +35,7 @@ const slice = createSlice({
     notify: (state, { payload }: ShowNotification) => {
       state.notification = {
         type: payload.type,
-        title: payload.title,
+        title: payload.title ?? undefined,
         message: payload.message,
         payload: payload.payload,
       };
