@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { sendMessage as sendMessageAction } from 'src/data/redux/message/action';
 import { useUserSelector } from 'src/data/redux/user/selector';
@@ -10,27 +10,48 @@ import { DeriveTopic } from 'src/components/topic/actions/DeriveTopic';
 import { DetailActions } from 'src/components/topic/actions/DetailActions';
 import { useChatState } from 'src/data/redux/chat/selector';
 import { ShowAllBranchTopics } from 'src/components/topic/actions/ShowAllBranchTopics';
+import { MessageBody } from 'src/domain/message/models/messageBody';
+import { notify } from 'src/data/redux/chat/slice';
+import { ChatNotificationTypes } from 'src/data/redux/chat/state';
 
 export const ChatForm = () => {
   const dispatcher = useDispatch();
   const { topicId, branchTopicId } = useChatState();
   const { uid } = useUserSelector();
   const [text, setText] = useState('');
+  const [isTextOverflow, setIsTextOverflow] = useState(false);
+
+  useEffect(() => {
+    setIsTextOverflow(text.length > MessageBody.MAX_MESSAGE_SIZE);
+  }, [text]);
+
+  useEffect(() => {
+    if (isTextOverflow) {
+      dispatcher(notify({
+        type: ChatNotificationTypes.SIMPLE_MESSAGE,
+        title: null,
+        message: `送信できるメッセージは${MessageBody.MAX_MESSAGE_SIZE}文字以内です！`,
+        payload: {},
+      }));
+    }
+  }, [isTextOverflow]);
 
   const handleInput = (value: string | null) => {
     if (value) setText(value);
   };
 
+  // Formの送信イベント
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (text) sendMessage(text);
+    sendMessage(text);
   };
 
-  const handleSend = () => {
-    if (text) sendMessage(text);
-  };
+  // 送信アイコンのクリックハンドラ
+  const handleSend = () => { sendMessage(text); };
 
   const sendMessage = (message: string) => {
+    if (isTextOverflow) return;
+
     if (topicId && uid && message) {
       dispatcher(sendMessageAction({
         message,
@@ -48,7 +69,10 @@ export const ChatForm = () => {
         <ShowAllBranchTopics />
       </ActionContainer>
       <MessageForm onSubmit={(e) => handleSubmit(e)}>
-        <TextFieldContainer>
+        <TextFieldContainer
+          hasError={isTextOverflow}
+          hasWarning={text.length >= MessageBody.MAX_MESSAGE_SIZE - 10}
+        >
           <TextField
             contentEditable
             value={text}
@@ -136,11 +160,15 @@ const MessageForm = styled.form`
   }
 `;
 
-const TextFieldContainer = styled.div`
+const TextFieldContainer = styled.div<{hasError: boolean, hasWarning: boolean}>`
   align-items: center;
   background-color: white;
   box-sizing: border-box;
-  border: rgba(0, 0, 0, 0.2) solid 1px;
+  border: ${({ hasError, hasWarning }) => {
+    if (hasError) return 'red';
+    if (hasWarning) return 'orange';
+    return 'rgba(0, 0, 0, 0.2)';
+  }} solid 1.5px;
   border-radius: 50px;
   box-shadow: 0 10px 40px -10px rgb(0 64 128 / 20%);
   display: flex;
