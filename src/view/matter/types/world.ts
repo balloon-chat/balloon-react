@@ -82,4 +82,8 @@ export abstract class World {
       },
     });
   }
+
+  resizeCanvas(width: number, height: number) {
+    this.canvas.setSize(width, height);
+  }
 }
