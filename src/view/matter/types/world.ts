@@ -1,7 +1,8 @@
-import Matter, { Engine, Runner } from 'matter-js';
+import Matter, { Engine, Mouse, Runner } from 'matter-js';
 import P5Types from 'p5';
 import { Actor } from 'src/view/matter/types/actor';
 import { CanvasParameter } from 'src/view/matter/types/canvasParameter';
+import { Camera } from 'src/view/matter/types/camera';
 
 /**
  * すべてのActorを管理するオブジェクト
@@ -11,6 +12,14 @@ export abstract class World {
   public p5: P5Types | null = null;
 
   private runner: Runner|null = null;
+
+  public readonly camera: Camera = new Camera({
+    bounds: {
+      min: { x: 0, y: 0 },
+    },
+  });
+
+  protected mouse: Mouse|null = null;
 
   protected constructor(
     public readonly engine: Engine,
@@ -34,7 +43,8 @@ export abstract class World {
   /**
    * 物理演算を開始
    */
-  run() {
+  run(p5: P5Types) {
+    this.p5 = p5;
     this.runner = Runner.run(this.engine);
     console.info('RUN');
   }
@@ -61,9 +71,25 @@ export abstract class World {
    * 画面の再描画
    */
   update(p5: P5Types) {
+    this.updateCamera(p5, this.camera);
     Promise
       .all(this.actors.map((actor) => actor.update(p5, this)))
       .then();
+  }
+
+  /**
+   * カメラ位置の更新
+   */
+  private updateCamera(p5:P5Types, camera: Camera) {
+    // キャンバスのズレと、マウスのクリック位置を対応付ける
+    const canvasOffset = {
+      x: camera.offset.x,
+      y: camera.offset.y,
+    };
+    if (this.mouse) Mouse.setOffset(this.mouse, canvasOffset);
+
+    // Actorの位置をカメラの位置と対応するようにずらす
+    p5.translate(-camera.offset.x, -camera.offset.y);
   }
 
   addActor(p5: P5Types, actor: Actor<any>) {
