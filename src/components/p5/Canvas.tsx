@@ -1,10 +1,11 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import P5Types from 'p5';
 import { MatterWorldFactory } from 'src/view/matter/worlds/matterWorldFactory';
 import { useMessageState } from 'src/data/redux/message/selector';
 import styled from 'styled-components';
 import { Render } from 'matter-js';
 import { MatterListAdapter } from 'src/view/matter/lib/matterListAdapter';
+import { CameraController } from 'src/components/topic/camera/CameraController';
 
 // Matterのレンダラーで表示する（P5だと回転などが考慮されないことがある。）
 const debug = false;
@@ -17,6 +18,16 @@ export const Canvas: React.FC = () => {
     document.documentElement.clientWidth,
     document.documentElement.clientHeight,
   ));
+
+  const cameraUpHandler = useCallback(() => {
+    const world = worldRef.current;
+    world.camera.move(0, -10);
+  }, []);
+
+  const cameraDownHandler = useCallback(() => {
+    const world = worldRef.current;
+    world.camera.move(0, 10);
+  }, []);
 
   useEffect(() => {
     const listAdapter = listAdapterRef.current;
@@ -36,7 +47,7 @@ export const Canvas: React.FC = () => {
       // 縦方向にのみ移動する
       world.camera.move(0, e.deltaY);
     };
-    renderer.addEventListener('wheel', handler);
+    renderer.addEventListener('wheel', handler, { passive: false });
 
     return () => {
       renderer.removeEventListener('wheel', handler);
@@ -105,7 +116,12 @@ export const Canvas: React.FC = () => {
     world.update(p5);
   };
 
-  return <Container id="renderer" ref={renderRef} />;
+  return (
+    <>
+      <Container id="renderer" ref={renderRef} />
+      <CameraController cameraUp={cameraUpHandler} cameraDown={cameraDownHandler} />
+    </>
+  );
 };
 
 const Container = styled.div`
