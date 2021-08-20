@@ -40,7 +40,7 @@ export const CameraButton: React.FC<{action: () => void}> = ({ action, children 
 
   return Children.only(
     // eslint-disable-next-line jsx-a11y/no-static-element-interactions
-    <div
+    <ArrowContainer
       onMouseDown={handleStartPress}
       onMouseUp={handleEndPress}
       onTouchStart={handleStartPress}
@@ -48,7 +48,7 @@ export const CameraButton: React.FC<{action: () => void}> = ({ action, children 
       onContextMenu={(e) => e.preventDefault()}
     >
       {children}
-    </div>,
+    </ArrowContainer>,
   );
 };
 
@@ -83,13 +83,23 @@ const CameraIconContainer = styled.div`
   }
 `;
 
+const ArrowContainer = styled.div`
+  cursor: pointer;
+  padding: 8px 0;
+  
+  :active {
+    & > div {
+      border-bottom-color: #5b87fa;
+    }
+  }
+`;
+
 const Arrow = styled.div`
   box-sizing: border-box;
   border-right: 20px solid transparent;
   border-bottom: 16px solid rgba(0, 0, 0, .5);
   border-left: 20px solid transparent;
   cursor: pointer;
-  margin: 8px 0;
   user-select: none;
 `;
 

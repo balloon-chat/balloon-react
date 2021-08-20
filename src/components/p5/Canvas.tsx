@@ -19,16 +19,6 @@ export const Canvas: React.FC = () => {
     document.documentElement.clientHeight,
   ));
 
-  const cameraUpHandler = useCallback(() => {
-    const world = worldRef.current;
-    world.camera.move(0, -10);
-  }, []);
-
-  const cameraDownHandler = useCallback(() => {
-    const world = worldRef.current;
-    world.camera.move(0, 10);
-  }, []);
-
   useEffect(() => {
     const listAdapter = listAdapterRef.current;
     if (!messages || !listAdapter) return;
@@ -36,23 +26,6 @@ export const Canvas: React.FC = () => {
     listAdapter.submit(messages);
     console.log('RECEIVED MESSAGES:', messages);
   }, [messages]);
-
-  useEffect(() => {
-    const renderer = renderRef.current;
-    const world = worldRef.current;
-    if (!renderer || !world) return undefined;
-
-    const handler = (e: WheelEvent) => {
-      e.preventDefault();
-      // 縦方向にのみ移動する
-      world.camera.move(0, e.deltaY);
-    };
-    renderer.addEventListener('wheel', handler, { passive: false });
-
-    return () => {
-      renderer.removeEventListener('wheel', handler);
-    };
-  }, []);
 
   useEffect(() => {
     const parent = renderRef.current;
@@ -115,6 +88,43 @@ export const Canvas: React.FC = () => {
     if (renderer.children.length === 0) return;
     world.update(p5);
   };
+
+  // ======================
+  // カメラ操作
+  // ======================
+  useEffect(() => {
+    // メッセージが一件もないときは、カメラの動きがわからないのでキャンセル
+    if (!messages || messages.length < 1) return undefined;
+
+    const renderer = renderRef.current;
+    const world = worldRef.current;
+    if (!renderer || !world) return undefined;
+
+    const handler = (e: WheelEvent) => {
+      e.preventDefault();
+      // 縦方向にのみ移動する
+      world.camera.move(0, e.deltaY);
+    };
+    renderer.addEventListener('wheel', handler, { passive: false });
+
+    return () => {
+      renderer.removeEventListener('wheel', handler);
+    };
+  }, [!messages || messages.length < 1]);
+
+  const cameraUpHandler = useCallback(() => {
+    if (!messages || messages.length < 1) return;
+
+    const world = worldRef.current;
+    world.camera.move(0, -10);
+  }, [!messages || messages.length < 1]);
+
+  const cameraDownHandler = useCallback(() => {
+    if (!messages || messages.length < 1) return;
+
+    const world = worldRef.current;
+    world.camera.move(0, 10);
+  }, [!messages || messages.length < 1]);
 
   return (
     <>
