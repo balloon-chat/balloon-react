@@ -1,10 +1,11 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import P5Types from 'p5';
 import { MatterWorldFactory } from 'src/view/matter/worlds/matterWorldFactory';
 import { useMessageState } from 'src/data/redux/message/selector';
 import styled from 'styled-components';
 import { Render } from 'matter-js';
 import { MatterListAdapter } from 'src/view/matter/lib/matterListAdapter';
+import { CameraController } from 'src/components/topic/camera/CameraController';
 
 // Matterのレンダラーで表示する（P5だと回転などが考慮されないことがある。）
 const debug = false;
@@ -39,8 +40,7 @@ export const Canvas: React.FC = () => {
 
     const world = worldRef.current;
     world.setMouseEventHandler(parent);
-    world.run();
-    world.p5 = p5;
+    world.run(p5);
 
     const listAdapter = new MatterListAdapter(world);
     listAdapterRef.current = listAdapter;
@@ -73,21 +73,65 @@ export const Canvas: React.FC = () => {
   const draw = (p5: P5Types) => {
     // キャンバスサイズの更新
     const world = worldRef.current;
-    if (renderRef.current) {
-      world.canvas.checkResize(renderRef.current, (width, height) => {
-        p5.resizeCanvas(width, height, true);
-        world.canvas.setSize(width, height - 83);
-      });
-    }
+    const renderer = renderRef.current;
+    if (!renderer) return;
+
+    world.canvas.checkResize(renderer, (width, height) => {
+      p5.resizeCanvas(width, height, true);
+      world.resizeCanvas(width, height - 83);
+    });
 
     // 背面を白で塗りつぶす
     p5.background(255);
 
     // キャラクターの描画
+    if (renderer.children.length === 0) return;
     world.update(p5);
   };
 
-  return <Container ref={renderRef} />;
+  // ======================
+  // カメラ操作
+  // ======================
+  useEffect(() => {
+    // メッセージが一件もないときは、カメラの動きがわからないのでキャンセル
+    if (!messages || messages.length < 1) return undefined;
+
+    const renderer = renderRef.current;
+    const world = worldRef.current;
+    if (!renderer || !world) return undefined;
+
+    const handler = (e: WheelEvent) => {
+      e.preventDefault();
+      // 縦方向にのみ移動する
+      world.camera.move(0, e.deltaY);
+    };
+    renderer.addEventListener('wheel', handler, { passive: false });
+
+    return () => {
+      renderer.removeEventListener('wheel', handler);
+    };
+  }, [!messages || messages.length < 1]);
+
+  const cameraUpHandler = useCallback(() => {
+    if (!messages || messages.length < 1) return;
+
+    const world = worldRef.current;
+    world.camera.move(0, -10);
+  }, [!messages || messages.length < 1]);
+
+  const cameraDownHandler = useCallback(() => {
+    if (!messages || messages.length < 1) return;
+
+    const world = worldRef.current;
+    world.camera.move(0, 10);
+  }, [!messages || messages.length < 1]);
+
+  return (
+    <>
+      <Container id="renderer" ref={renderRef} />
+      <CameraController cameraUp={cameraUpHandler} cameraDown={cameraDownHandler} />
+    </>
+  );
 };
 
 const Container = styled.div`

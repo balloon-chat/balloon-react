@@ -4,7 +4,10 @@ import { Controller } from 'src/view/matter/types/controller';
 import { World } from 'src/view/matter/types/world';
 import { ActorParameter } from 'src/view/matter/types/actorParameter';
 
-export const ActorTags = { CHARACTER: 'CHARACTER' };
+export const ActorTags = {
+  CHARACTER: 'CHARACTER',
+  WALL: 'WALL',
+};
 export type ActorTag = typeof ActorTags[keyof typeof ActorTags];
 
 /**
