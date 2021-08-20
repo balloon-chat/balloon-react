@@ -14,8 +14,10 @@ export abstract class World {
   private runner: Runner|null = null;
 
   public readonly camera: Camera = new Camera({
+    // 左右には動かさない
     bounds: {
-      min: { x: 0, y: 0 },
+      // min: { x: 0, y: 0 },
+      // max: { x: 0, y: Infinity },
     },
   });
 

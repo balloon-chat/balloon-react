@@ -9,7 +9,7 @@ export class WallParams extends ActorParameter {
   public static readonly BASE_WALL_HEIGHT = 2000;
 
   // trueの場合は壁を描画する
-  public static readonly DEBUG = false;
+  public static readonly DEBUG = true;
 
   public height = WallParams.BASE_WALL_HEIGHT;
 

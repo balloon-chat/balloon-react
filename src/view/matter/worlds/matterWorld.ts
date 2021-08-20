@@ -5,7 +5,6 @@ import P5Types from 'p5';
 import { WallFactory } from 'src/view/matter/actors/wall/wallFactory';
 import { WallParams } from 'src/view/matter/actors/wall/wallParams';
 import { Actor } from 'src/view/matter/types/actor';
-import { ExpandWallController } from 'src/view/matter/controllers/wall/expandWallController';
 
 export class MatterWorld extends World {
   private readonly walls: {
@@ -25,26 +24,9 @@ export class MatterWorld extends World {
 
     // 画面の下部以外に壁を配置
     this.walls = {
-      top: WallFactory.create({
-        x: canvas.width / 2,
-        y: -WallParams.WALL_THICK / 2,
-        width: canvas.width,
-        height: WallParams.WALL_THICK,
-      }),
-      left: WallFactory.create({
-        x: -WallParams.WALL_THICK / 2,
-        y: WallParams.BASE_WALL_HEIGHT / 2,
-        width: WallParams.WALL_THICK,
-        height: WallParams.BASE_WALL_HEIGHT,
-        controllers: [new ExpandWallController()],
-      }),
-      right: WallFactory.create({
-        x: canvas.width + WallParams.WALL_THICK,
-        y: WallParams.BASE_WALL_HEIGHT / 2,
-        width: WallParams.WALL_THICK,
-        height: WallParams.BASE_WALL_HEIGHT,
-        controllers: [new ExpandWallController()],
-      }),
+      top: WallFactory.createTopWall(canvas),
+      left: WallFactory.createLeftWall(),
+      right: WallFactory.createRightWall(canvas),
     };
   }
 

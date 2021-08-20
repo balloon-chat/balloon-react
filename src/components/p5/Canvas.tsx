@@ -103,7 +103,7 @@ export const Canvas: React.FC = () => {
     const handler = (e: WheelEvent) => {
       e.preventDefault();
       // 縦方向にのみ移動する
-      world.camera.move(0, e.deltaY);
+      world.camera.move(e.deltaX, e.deltaY);
     };
     renderer.addEventListener('wheel', handler, { passive: false });
 
