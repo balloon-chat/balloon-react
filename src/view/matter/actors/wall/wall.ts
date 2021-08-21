@@ -13,20 +13,21 @@ export class Wall extends Actor<WallParams> {
 
   update(p5: P5Types, world: World) {
     super.update(p5, world);
-    if (!WallParams.DEBUG) return;
 
-    const { x, y } = this.position;
-    const { width, height } = this.params;
-    // 画面側面にくっついて見ることができないため、少しずらして描画する
-    p5.push();
-    p5
-      .fill('orange')
-      .rect(
-        x - width / 2 - 25,
-        y - height / 2 - 25,
-        width + 50,
-        height + 50,
-      );
-    p5.pop();
+    if (WallParams.DEBUG) {
+      const { x, y } = this.position;
+      const { width, height } = this.params;
+      // 画面側面にくっついて見ることができないため、少しずらして描画する
+      p5.push();
+      p5
+        .fill('orange')
+        .rect(
+          x - width / 2 - 25,
+          y - height / 2 - 25,
+          width + 50,
+          height + 50,
+        );
+      p5.pop();
+    }
   }
 }
