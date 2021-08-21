@@ -4,9 +4,18 @@ import { World } from 'src/view/matter/types/world';
 import P5Types from 'p5';
 import { WallFactory } from 'src/view/matter/actors/wall/wallFactory';
 import { Wall } from 'src/view/matter/actors/wall/wall';
+import { Camera } from 'src/view/matter/types/camera';
 
 export class MatterWorld extends World {
   private readonly walls: Wall[]
+
+  public readonly camera: Camera = new Camera({
+    // 左右には動かさない
+    bounds: {
+      min: { x: 0, y: 0 },
+      max: { x: 0, y: Infinity },
+    },
+  });
 
   constructor(
     engine: Engine,
