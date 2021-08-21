@@ -1,8 +1,8 @@
 import P5Types from 'p5';
 import Matter from 'matter-js';
-import { Controller } from 'src/view/matter/types/controller';
-import { World } from 'src/view/matter/types/world';
-import { ActorParameter } from 'src/view/matter/types/actorParameter';
+import { Controller } from 'src/view/matter/types/core/controller';
+import { World } from 'src/view/matter/types/core/world';
+import { ActorParameter } from 'src/view/matter/types/util/actorParameter';
 
 export const ActorTags = {
   CHARACTER: 'CHARACTER',

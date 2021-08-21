@@ -2,9 +2,9 @@ import { Wall } from 'src/view/matter/actors/wall/wall';
 import { WallParams } from 'src/view/matter/actors/wall/wallParams';
 import { Bodies } from 'matter-js';
 import { v4 as uuidv4 } from 'uuid';
-import { CanvasParameter } from 'src/view/matter/types/canvasParameter';
+import { CanvasParameter } from 'src/view/matter/types/util/canvasParameter';
 import { VerticalExpandWallController } from 'src/view/matter/controllers/wall/verticalExpandWallController';
-import { Controller } from 'src/view/matter/types/controller';
+import { Controller } from 'src/view/matter/types/core/controller';
 import { HorizontalExpandWallController } from 'src/view/matter/controllers/wall/horizontalExpandWallController';
 import { StickRightSideWallController } from 'src/view/matter/controllers/wall/stickRightSideWallController';
 

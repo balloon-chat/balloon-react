@@ -1,8 +1,8 @@
-import { Actor, ActorTags } from 'src/view/matter/types/actor';
-import { World } from 'src/view/matter/types/world';
+import { Actor, ActorTags } from 'src/view/matter/types/core/actor';
+import { World } from 'src/view/matter/types/core/world';
 import P5Types from 'p5';
 import { WallParams } from 'src/view/matter/actors/wall/wallParams';
-import { Controller } from 'src/view/matter/types/controller';
+import { Controller } from 'src/view/matter/types/core/controller';
 
 export class Wall extends Actor<WallParams> {
   constructor({

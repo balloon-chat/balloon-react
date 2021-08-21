@@ -1,10 +1,10 @@
 import Matter, { Engine, Mouse, MouseConstraint } from 'matter-js';
-import { CanvasParameter } from 'src/view/matter/types/canvasParameter';
-import { World } from 'src/view/matter/types/world';
+import { CanvasParameter } from 'src/view/matter/types/util/canvasParameter';
+import { World } from 'src/view/matter/types/core/world';
 import P5Types from 'p5';
 import { WallFactory } from 'src/view/matter/actors/wall/wallFactory';
 import { Wall } from 'src/view/matter/actors/wall/wall';
-import { Camera } from 'src/view/matter/types/camera';
+import { Camera } from 'src/view/matter/types/util/camera';
 
 export class MatterWorld extends World {
   private readonly walls: Wall[]

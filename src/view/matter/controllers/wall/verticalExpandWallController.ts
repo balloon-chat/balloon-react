@@ -1,9 +1,9 @@
 /* eslint-disable class-methods-use-this */
-import { Controller } from 'src/view/matter/types/controller';
+import { Controller } from 'src/view/matter/types/core/controller';
 import { WallParams } from 'src/view/matter/actors/wall/wallParams';
 import P5Types from 'p5';
-import { World } from 'src/view/matter/types/world';
-import { ActorTags } from 'src/view/matter/types/actor';
+import { World } from 'src/view/matter/types/core/world';
+import { ActorTags } from 'src/view/matter/types/core/actor';
 import { Body } from 'matter-js';
 
 /**

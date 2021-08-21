@@ -3,7 +3,7 @@ import { MessageEntity } from 'src/view/types/message';
 import { CharacterFactory } from 'src/view/matter/actors/character/characterFactory';
 import { MessageEntityDiffUtil } from 'src/view/matter/lib/messageEntityDiffUtil';
 import { mediaQuery } from 'src/components/constants/mediaQuery';
-import { World } from 'src/view/matter/types/world';
+import { World } from 'src/view/matter/types/core/world';
 
 export class MatterListAdapter extends ListAdapter<MessageEntity> {
   constructor(private readonly world: World) {

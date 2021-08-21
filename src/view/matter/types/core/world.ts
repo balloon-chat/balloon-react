@@ -1,8 +1,8 @@
 import Matter, { Engine, Mouse, Runner } from 'matter-js';
 import P5Types from 'p5';
-import { Actor } from 'src/view/matter/types/actor';
-import { CanvasParameter } from 'src/view/matter/types/canvasParameter';
-import { Camera } from 'src/view/matter/types/camera';
+import { Actor } from 'src/view/matter/types/core/actor';
+import { CanvasParameter } from 'src/view/matter/types/util/canvasParameter';
+import { Camera } from 'src/view/matter/types/util/camera';
 
 /**
  * すべてのActorを管理するオブジェクト

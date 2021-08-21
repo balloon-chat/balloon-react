@@ -1,11 +1,11 @@
 /* eslint-disable no-param-reassign */
-import { Controller } from 'src/view/matter/types/controller';
+import { Controller } from 'src/view/matter/types/core/controller';
 import P5Types from 'p5';
-import { World } from 'src/view/matter/types/world';
+import { World } from 'src/view/matter/types/core/world';
 import { CharacterPopoutAnimator } from 'src/view/matter/actors/character/animator/characterPopoutAnimator';
 import { CharacterParams } from 'src/view/matter/actors/character/characterParams';
 import { CharacterFadeoutAnimator } from 'src/view/matter/actors/character/animator/characterFadeoutAnimator';
-import { Animator } from 'src/view/matter/types/animator';
+import { Animator } from 'src/view/matter/types/util/animator';
 
 const AnimatorKey = {
   POPOUT: 'POPOUT',

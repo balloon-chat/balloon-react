@@ -1,7 +1,7 @@
-import { Controller } from 'src/view/matter/types/controller';
+import { Controller } from 'src/view/matter/types/core/controller';
 import { WallParams } from 'src/view/matter/actors/wall/wallParams';
 import P5Types from 'p5';
-import { World } from 'src/view/matter/types/world';
+import { World } from 'src/view/matter/types/core/world';
 import { Body } from 'matter-js';
 
 /**

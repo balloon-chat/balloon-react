@@ -1,4 +1,4 @@
-import { ActorParameter } from 'src/view/matter/types/actorParameter';
+import { ActorParameter } from 'src/view/matter/types/util/actorParameter';
 import { Body } from 'matter-js';
 
 export class WallParams extends ActorParameter {

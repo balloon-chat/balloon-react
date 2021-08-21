@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this,no-param-reassign */
-import { Controller } from 'src/view/matter/types/controller';
+import { Controller } from 'src/view/matter/types/core/controller';
 import { WallParams } from 'src/view/matter/actors/wall/wallParams';
-import { World } from 'src/view/matter/types/world';
+import { World } from 'src/view/matter/types/core/world';
 import P5Types from 'p5';
 import { Body } from 'matter-js';
 

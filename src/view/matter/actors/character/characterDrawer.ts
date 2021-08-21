@@ -2,7 +2,7 @@
 import P5Types from 'p5';
 import { Vector } from 'matter-js';
 import { CharacterParams } from 'src/view/matter/actors/character/characterParams';
-import { World } from 'src/view/matter/types/world';
+import { World } from 'src/view/matter/types/core/world';
 
 export type EyePosition = {
   left: Vector,

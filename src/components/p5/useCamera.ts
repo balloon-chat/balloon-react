@@ -1,6 +1,6 @@
 import { useMessageState } from 'src/data/redux/message/selector';
 import { MutableRefObject, RefObject, useCallback, useEffect } from 'react';
-import { World } from 'src/view/matter/types/world';
+import { World } from 'src/view/matter/types/core/world';
 
 export const useCamera = (renderRef: RefObject<HTMLElement>, worldRef: MutableRefObject<World>) => {
   const { messages } = useMessageState();
