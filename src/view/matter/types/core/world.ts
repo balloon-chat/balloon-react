@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 import Matter, { Engine, Mouse, Runner } from 'matter-js';
 import P5Types from 'p5';
 import { Actor } from 'src/view/matter/types/core/actor';
@@ -36,25 +37,48 @@ export abstract class World {
     return this.engine.world;
   }
 
+  // =================
+  // Start
+  // =================
   /**
    * 物理演算を開始
    */
-  run(p5: P5Types) {
+  start(p5: P5Types) {
     this.p5 = p5;
     this.runner = Runner.run(this.engine);
     console.info('RUN');
   }
 
   /**
+   * 画面の再描画
+   */
+  update(p5: P5Types) {
+    this.beforeUpdate(p5);
+    Promise
+      .all(this.actors.map((actor) => actor.update(p5, this)))
+      .then();
+    this.afterUpdate(p5);
+  }
+
+  /**
    * Worldの状態をリセットする
    */
-  clear() {
+  destroy() {
+    this.beforeDestroy();
+
     if (this.runner) Runner.stop(this.runner);
     this._actors.forEach((actor) => {
       this.removeActor(actor, true);
     });
+
+    this.afterDestroy();
+
     console.info('CLEAR');
   }
+
+  // =================
+  // Update
+  // =================
 
   /**
    * ActorをIDによって検索する
@@ -63,15 +87,25 @@ export abstract class World {
     return this._actors.find((actor) => actor.id === id) ?? null;
   }
 
-  /**
-   * 画面の再描画
-   */
-  update(p5: P5Types) {
+  // @ts-ignore
+  protected beforeStart(p5: P5Types) {}
+
+  // @ts-ignore
+  protected afterStart(p5: P5Types) {}
+
+  // =================
+  // Destroy
+  // =================
+
+  // @ts-ignore
+  protected beforeUpdate(p5: P5Types) {
     this.updateCamera(p5, this.camera);
-    Promise
-      .all(this.actors.map((actor) => actor.update(p5, this)))
-      .then();
   }
+
+  // @ts-ignore
+  protected afterUpdate(p5: P5Types) {}
+
+  protected beforeDestroy() {}
 
   /**
    * カメラ位置の更新
@@ -87,6 +121,8 @@ export abstract class World {
     // Actorの位置をカメラの位置と対応するようにずらす
     p5.translate(-camera.offset.x, -camera.offset.y);
   }
+
+  protected afterDestroy() {}
 
   addActor(p5: P5Types, actor: Actor<any>) {
     actor.start(p5, this);

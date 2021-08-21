@@ -43,7 +43,7 @@ export const Canvas: React.FC = () => {
 
     const world = worldRef.current;
     world.setMouseEventHandler(parent);
-    world.run(p5);
+    world.start(p5);
 
     const listAdapter = new MatterListAdapter(world);
     listAdapterRef.current = listAdapter;
@@ -63,7 +63,7 @@ export const Canvas: React.FC = () => {
 
     return () => {
       p5.remove();
-      world.clear();
+      world.destroy();
       listAdapter.submit([]);
     };
   }, [renderRef]);

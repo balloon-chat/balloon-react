@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 import P5Types from 'p5';
 import Matter from 'matter-js';
 import { Controller } from 'src/view/matter/types/core/controller';
@@ -52,9 +53,11 @@ export abstract class Actor<T extends ActorParameter> {
    * 描画の更新中に実行される
    */
   update(p5: P5Types, world: World) : void {
+    this.beforeUpdate(p5, world);
     this.controllers.forEach((c) => {
       this.params = c.onUpdate(p5, world, this.params);
     });
+    this.afterUpdate(p5, world);
   }
 
   /**
@@ -74,9 +77,7 @@ export abstract class Actor<T extends ActorParameter> {
     },
   ): void {
     if (immediately) {
-      this.controllers.forEach((c) => {
-        c.onBeforeDestroy(p5, world, this.params, () => {});
-      });
+      this.beforeDestroy(p5, world, () => {});
       onDestroy();
       console.info('ACTOR is destroyed', this);
       return;
@@ -92,9 +93,26 @@ export abstract class Actor<T extends ActorParameter> {
         console.info('ACTOR is destroyed', this);
       }
     };
+    this.beforeDestroy(p5, world, destroy);
 
+    this.afterDestroy(p5, world);
+  }
+
+  // @ts-ignore
+  protected beforeUpdate(p5: P5Types, world: World): void {}
+
+  // @ts-ignore
+  protected afterUpdate(p5: P5Types, world: World): void {}
+
+  protected beforeDestroy(p5: P5Types, world: World, onDestroy: () => void): void {
     this.controllers.forEach((c) => {
-      c.onBeforeDestroy(p5, world, this.params, destroy);
+      c.onBeforeDestroy(p5, world, this.params, onDestroy);
+    });
+  }
+
+  protected afterDestroy(p5: P5Types, world: World): void {
+    this.controllers.forEach((c) => {
+      c.onAfterDestroy(p5, world, this.params);
     });
   }
 }

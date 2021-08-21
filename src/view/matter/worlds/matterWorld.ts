@@ -34,8 +34,8 @@ export class MatterWorld extends World {
     ];
   }
 
-  run(p5: P5Types) {
-    super.run(p5);
+  start(p5: P5Types) {
+    super.start(p5);
     this.walls.forEach((wall) => this.addActor(p5, wall));
   }
 

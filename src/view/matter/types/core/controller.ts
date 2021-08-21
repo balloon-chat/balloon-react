@@ -15,4 +15,7 @@ export abstract class Controller<T extends ActorParameter> {
   onBeforeDestroy(p5: P5Types, world: World, actor: T, destroy: () => void) {
     destroy();
   }
+
+  // @ts-ignore
+  onAfterDestroy(p5: P5Types, world: World, actor: T) {}
 }
