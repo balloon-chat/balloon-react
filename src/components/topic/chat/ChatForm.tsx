@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { sendMessage as sendMessageAction } from 'src/data/redux/message/action';
@@ -13,6 +13,7 @@ import { ShowAllBranchTopics } from 'src/components/topic/actions/ShowAllBranchT
 import { MessageBody } from 'src/domain/message/models/messageBody';
 import { notify } from 'src/data/redux/chat/slice';
 import { ChatNotificationTypes } from 'src/data/redux/chat/state';
+import { Transition } from 'react-transition-group';
 
 export const ChatForm = () => {
   const dispatcher = useDispatch();
@@ -20,6 +21,7 @@ export const ChatForm = () => {
   const { uid } = useUserSelector();
   const [text, setText] = useState('');
   const [isTextOverflow, setIsTextOverflow] = useState(false);
+  const [isVisible, setIsVisible] = useState<boolean>(true);
 
   useEffect(() => {
     setIsTextOverflow(text.length > MessageBody.MAX_MESSAGE_SIZE);
@@ -90,6 +92,29 @@ export const ChatForm = () => {
         <ShowMessageLog />
         <DetailActions />
       </MainActionContainer>
+      <Transition in={isVisible} timeout={duration} unmountOnExit mountOnEnter>
+        {
+          (status) => {
+            const visibleState = status === 'entering' || status === 'entered';
+            return (
+              <NotificationContainer>
+                <Notification isVisible={visibleState} duration={duration}>
+                  <Message>
+                    <Icon src="" alt="" />
+                    <p>友達を招待しましょう!</p>
+                  </Message>
+                  <Buttons>
+                    <InvitationButton href="https://www.google.com/">招待をコピー</InvitationButton>
+                    <CloseButton onClick={() => setIsVisible((isVisible) => !isVisible)}>
+                      閉じる
+                    </CloseButton>
+                  </Buttons>
+                </Notification>
+              </NotificationContainer>
+            );
+          }
+        }
+      </Transition>
     </Container>
   );
 };
@@ -112,7 +137,6 @@ const Container = styled.div`
 const ActionContainer = styled.div`
   display: flex;
   margin: 0 8px;
-  
   & > div {
     margin: 0 8px;
   }
@@ -160,7 +184,7 @@ const MessageForm = styled.form`
   }
 `;
 
-const TextFieldContainer = styled.div<{hasError: boolean, hasWarning: boolean}>`
+const TextFieldContainer = styled.div<{ hasError: boolean, hasWarning: boolean }>`
   align-items: center;
   background-color: white;
   box-sizing: border-box;
@@ -201,3 +225,90 @@ const TextField = styled.input`
     display: block;
   }
 `;
+
+//------------
+const duration = 600;
+
+const NotificationContainer = styled.div`
+  position: absolute;
+  right: 16px;
+  top: -108px;
+  display: flex;
+  justify-content: flex-end;
+  overflow-x: hidden;
+`;
+
+const fadeinAnimation = keyframes`
+  from { opacity: 0; }
+  to   { opacity: 1.0; }
+`;
+
+const slideX = (from: number, to: number) => keyframes`
+  from { transform: translateX(${from}px); }
+  to   { transform: translateX(${to}px); }
+`;
+
+const Notification = styled.div<{ isVisible: boolean, duration: number }>`
+  opacity: ${({ isVisible }) => (isVisible ? 1.0 : 0)};
+  display: flex;
+  transition: all ${({ duration }) => duration}ms;
+  transform: translateX(${({ isVisible }) => (isVisible ? '0px' : '500px')});
+  animation: ${fadeinAnimation} ${({ duration }) => duration}ms, ${slideX(500, 0)} ${({ duration }) => duration}ms;
+
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  width: 300px;
+  padding: 16px;
+  flex-direction: column;
+  background-color: white;
+  p {
+    margin: 0;
+  }
+`;
+
+const Buttons = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+`;
+
+const CloseButton = styled.div`
+  color: #158cbb;
+  font-weight: 2px;
+  padding: 5px;
+  margin-top: 8px;
+  cursor: pointer;
+
+  :hover {
+    opacity: 0.3;
+    transition: 0.2s;
+  }
+`;
+
+const InvitationButton = styled.a`
+  color: white;
+  font-weight: 2px;
+  text-decoration: none;
+  background-color: #158cbb;
+  border-radius: 4px;
+  padding: 5px 10px;
+  margin-top: 8px;
+
+  :hover {
+    opacity: 0.3;
+    transition: 0.2s;
+  }
+`;
+
+const Message = styled.div`
+  color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+`;
+
+const Icon = styled.img`
+  width: 25px;
+  padding: 0 5px;
+`;
+//------------

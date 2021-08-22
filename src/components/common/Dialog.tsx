@@ -57,7 +57,7 @@ const Wrapper = styled.div`
   z-index: ${ZIndex.dialog};
 `;
 
-const Container = styled.div<{isVisible: boolean, duration: number}>`
+const Container = styled.div<{ isVisible: boolean, duration: number }>`
   box-sizing: border-box;
   background-color: white;
   border-radius: 5px;
