@@ -12,11 +12,8 @@ export class MatterListAdapter extends ListAdapter<MessageEntity> {
 
   private get maxCharacterSize() {
     const { width } = this.world.canvas;
-    if (width < mediaQuery.mobile.landscape) {
-      return 5;
-    } if (width < mediaQuery.tablet.portrait) {
-      return 20;
-    }
+    if (width < mediaQuery.mobile.landscape) { return 15; }
+    if (width < mediaQuery.tablet.portrait) { return 20; }
     return 30;
   }
 
