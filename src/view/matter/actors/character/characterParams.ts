@@ -1,6 +1,6 @@
 import { Bodies, Body } from 'matter-js';
 import { CharacterDrawer } from 'src/view/matter/actors/character/characterDrawer';
-import { ActorParameter } from 'src/view/matter/types/actorParameter';
+import { ActorParameter } from 'src/view/matter/types/util/actorParameter';
 
 type Props = {
   position: {x: number, y: number},

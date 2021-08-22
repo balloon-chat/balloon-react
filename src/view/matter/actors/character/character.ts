@@ -1,8 +1,8 @@
-import { World } from 'src/view/matter/types/world';
+import { World } from 'src/view/matter/types/core/world';
 import P5Types from 'p5';
 import { CharacterDrawer } from 'src/view/matter/actors/character/characterDrawer';
-import { Actor, ActorTags } from 'src/view/matter/types/actor';
-import { Controller } from 'src/view/matter/types/controller';
+import { Actor, ActorTags } from 'src/view/matter/types/core/actor';
+import { Controller } from 'src/view/matter/types/core/controller';
 import { CharacterParams } from 'src/view/matter/actors/character/characterParams';
 import Matter from 'matter-js';
 

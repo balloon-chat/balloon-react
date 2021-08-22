@@ -1,6 +1,6 @@
 import { Character } from 'src/view/matter/actors/character/character';
 import { Vector } from 'matter-js';
-import { CanvasParameter } from 'src/view/matter/types/canvasParameter';
+import { CanvasParameter } from 'src/view/matter/types/util/canvasParameter';
 import P5Types from 'p5';
 import { CharacterDrawer } from 'src/view/matter/actors/character/characterDrawer';
 import { PopupCharacterController } from 'src/view/matter/controllers/character/popupCharacterController';

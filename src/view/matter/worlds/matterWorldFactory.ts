@@ -1,5 +1,5 @@
 import { Engine } from 'matter-js';
-import { CanvasParameter } from 'src/view/matter/types/canvasParameter';
+import { CanvasParameter } from 'src/view/matter/types/util/canvasParameter';
 import { MatterWorld } from 'src/view/matter/worlds/matterWorld';
 
 export class MatterWorldFactory {

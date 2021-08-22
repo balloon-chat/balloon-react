@@ -1,4 +1,4 @@
-import { ActorParameter } from 'src/view/matter/types/actorParameter';
+import { ActorParameter } from 'src/view/matter/types/util/actorParameter';
 
 /**
  * {@link Actor}のパラメターを変更して、

@@ -1,4 +1,4 @@
-import { Animator } from 'src/view/matter/types/animator';
+import { Animator } from 'src/view/matter/types/util/animator';
 import { CharacterParams } from 'src/view/matter/actors/character/characterParams';
 
 export class CharacterFadeoutAnimator extends Animator<CharacterParams> {

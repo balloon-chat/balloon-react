@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import P5Types from 'p5';
 import { MatterWorldFactory } from 'src/view/matter/worlds/matterWorldFactory';
 import { useMessageState } from 'src/data/redux/message/selector';
@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { Render } from 'matter-js';
 import { MatterListAdapter } from 'src/view/matter/lib/matterListAdapter';
 import { CameraController } from 'src/components/topic/camera/CameraController';
+import { useCamera } from 'src/components/p5/useCamera';
 
 // Matterのレンダラーで表示する（P5だと回転などが考慮されないことがある。）
 const debug = false;
@@ -18,6 +19,8 @@ export const Canvas: React.FC = () => {
     document.documentElement.clientWidth,
     document.documentElement.clientHeight,
   ));
+
+  const { cameraUpHandler, cameraDownHandler } = useCamera(renderRef, worldRef);
 
   useEffect(() => {
     const listAdapter = listAdapterRef.current;
@@ -40,7 +43,7 @@ export const Canvas: React.FC = () => {
 
     const world = worldRef.current;
     world.setMouseEventHandler(parent);
-    world.run(p5);
+    world.start(p5);
 
     const listAdapter = new MatterListAdapter(world);
     listAdapterRef.current = listAdapter;
@@ -60,7 +63,7 @@ export const Canvas: React.FC = () => {
 
     return () => {
       p5.remove();
-      world.clear();
+      world.destroy();
       listAdapter.submit([]);
     };
   }, [renderRef]);
@@ -88,43 +91,6 @@ export const Canvas: React.FC = () => {
     if (renderer.children.length === 0) return;
     world.update(p5);
   };
-
-  // ======================
-  // カメラ操作
-  // ======================
-  useEffect(() => {
-    // メッセージが一件もないときは、カメラの動きがわからないのでキャンセル
-    if (!messages || messages.length < 1) return undefined;
-
-    const renderer = renderRef.current;
-    const world = worldRef.current;
-    if (!renderer || !world) return undefined;
-
-    const handler = (e: WheelEvent) => {
-      e.preventDefault();
-      // 縦方向にのみ移動する
-      world.camera.move(0, e.deltaY);
-    };
-    renderer.addEventListener('wheel', handler, { passive: false });
-
-    return () => {
-      renderer.removeEventListener('wheel', handler);
-    };
-  }, [!messages || messages.length < 1]);
-
-  const cameraUpHandler = useCallback(() => {
-    if (!messages || messages.length < 1) return;
-
-    const world = worldRef.current;
-    world.camera.move(0, -10);
-  }, [!messages || messages.length < 1]);
-
-  const cameraDownHandler = useCallback(() => {
-    if (!messages || messages.length < 1) return;
-
-    const world = worldRef.current;
-    world.camera.move(0, 10);
-  }, [!messages || messages.length < 1]);
 
   return (
     <>

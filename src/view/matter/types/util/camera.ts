@@ -34,9 +34,11 @@ export class Camera {
       this.bounds?.max?.x ?? Infinity,
       this.bounds?.max?.y ?? Infinity,
     ];
-    if (destY < minY || destY > maxY) return;
-    if (destX < minX || destX > maxX) return;
-
-    this.offset = { x: destX, y: destY };
+    if (destY >= minY && destY <= maxY) {
+      this.offset.y = destY;
+    }
+    if (destX >= minX && destX <= maxX) {
+      this.offset.x = destX;
+    }
   }
 }
