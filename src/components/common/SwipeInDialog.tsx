@@ -57,6 +57,7 @@ const Dialog = styled.div<{ isVisible: boolean, duration: number }>`
   display: flex;
   flex-direction: row;
   width: 100%;
+  height: 100%;
   justify-content: center;
   
   animation: fadein ${({ duration }) => duration}ms;
@@ -69,6 +70,11 @@ const Dialog = styled.div<{ isVisible: boolean, duration: number }>`
   @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
     flex-direction: column;
     max-width: 500px;
+  }
+
+  // タブレット以上で、画面の高さが700px以上の場合は、フルスクリーンを解く
+  @media screen and (min-height: 700px) and (min-width: ${mediaQuery.tablet.portrait}px) {
+    height: 600px;
   }
 `;
 
@@ -86,10 +92,6 @@ const DialogBody = styled.div`
     padding: 16px 0;
     height: 100%;
     max-width: calc(100vw - 64px);
-  }
-  
-  @media screen and (min-height: 700px) {
-    height: 600px;
   }
 `;
 
