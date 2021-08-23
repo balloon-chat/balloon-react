@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { closeBranchTopicsDialog, showDeriveTopicDialog } from 'src/data/redux/chat/slice';
+import { closeBranchTopicsDialog, notify, showDeriveTopicDialog } from 'src/data/redux/chat/slice';
 import { SwipeInDialog } from 'src/components/common/SwipeInDialog';
 import { useChatState } from 'src/data/redux/chat/selector';
 import styled from 'styled-components';
@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { rootPath } from 'src/view/route/pagePath';
 import { imagePath } from 'src/components/constants/imagePath';
 import { TextButton } from 'src/components/common/Button';
+import { ChatNotificationTypes } from 'src/data/redux/chat/state';
 
 export const BranchTopicsDialog = () => {
   const dispatcher = useDispatch();
@@ -18,6 +19,16 @@ export const BranchTopicsDialog = () => {
 
   const handleClose = useCallback(() => {
     dispatcher(closeBranchTopicsDialog());
+  }, []);
+
+  const handleNavigate = useCallback(() => {
+    dispatcher(closeBranchTopicsDialog());
+    dispatcher(notify({
+      type: ChatNotificationTypes.SIMPLE_MESSAGE,
+      title: '話題を移動しました',
+      message: null,
+      payload: {},
+    }));
   }, []);
 
   const handleDeriveTopic = useCallback(() => {
@@ -46,7 +57,7 @@ export const BranchTopicsDialog = () => {
             {
               topic.branchTopics.map((branch, i) => (
                 <Link key={i} href={rootPath.topicPath.topicBranch(topic.id, i)} passHref>
-                  <ItemContainer onClick={handleClose}>
+                  <ItemContainer onClick={handleNavigate}>
                     <BranchTopicTitle active={activeTopic === branch.id}>
                       {branch.title}
                     </BranchTopicTitle>
