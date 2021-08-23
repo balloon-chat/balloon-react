@@ -7,19 +7,19 @@ import { Transition } from 'react-transition-group';
 import { fadeinAnimation, slideX, slideY } from 'src/components/common/Animations';
 import { Button } from 'src/components/common/Button';
 
-type Props = {
-  title?: string,
-  message: string,
-  visible: boolean,
+export type ChatNotificationProps = {
+  isVisible: boolean,
+  title: string,
+  message?: string,
 }
 
-export const ChatNotification: React.FC<Props> = ({
+export const ChatNotification: React.FC<ChatNotificationProps> = ({
   title,
   message,
-  visible,
+  isVisible,
   children,
 }) => (
-  <Transition in={visible} timeout={500} unmountOnExit mountOnEnter>
+  <Transition in={isVisible} timeout={500} unmountOnExit mountOnEnter>
     {
       (status) => {
         const visibleState = status === 'entering' || status === 'entered';
@@ -29,7 +29,7 @@ export const ChatNotification: React.FC<Props> = ({
               <NotificationHeader>
                 <Title>
                   <img src={imagePath.character.blue} width={32} height={32} alt="icon" />
-                  <div>{title ?? 'お知らせ'}</div>
+                  <div>{title}</div>
                 </Title>
                 {message && <Message>{message}</Message>}
               </NotificationHeader>

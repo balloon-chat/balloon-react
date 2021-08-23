@@ -11,7 +11,7 @@ export type ChatActions = ObserveTopic | ObserveTopicFulfilled;
  */
 export type ShowNotification = PayloadAction<{
   type: ChatNotification,
-  title: string | null,
-  message: string,
+  title: string,
+  message: string | null,
   payload: ChatNotificationPayload,
 }>;

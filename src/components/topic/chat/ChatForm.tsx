@@ -30,7 +30,7 @@ export const ChatForm = () => {
     if (isTextOverflow) {
       dispatcher(notify({
         type: ChatNotificationTypes.SIMPLE_MESSAGE,
-        title: null,
+        title: 'エラー',
         message: `送信できるメッセージは${MessageBody.MAX_MESSAGE_SIZE}文字以内です！`,
         payload: {},
       }));

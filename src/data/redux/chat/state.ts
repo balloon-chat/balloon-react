@@ -14,8 +14,8 @@ export type ChatState = {
 
   notification: {
     type: ChatNotification,
-    title?: string,
-    message: string,
+    title: string,
+    message?: string,
     payload: ChatNotificationPayload,
   } | null,
   dialog: {

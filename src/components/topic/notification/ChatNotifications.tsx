@@ -6,8 +6,8 @@ import { ChatNotificationTypes } from 'src/data/redux/chat/state';
 import { InvitationNotification } from 'src/components/topic/notification/InvitationNotification';
 
 export const ChatNotifications = () => {
-  const [message, setMessage] = useState('');
-  const [title, setTitle] = useState<string>();
+  const [message, setMessage] = useState<string>();
+  const [title, setTitle] = useState<string>('');
   const { notification } = useChatState();
 
   useEffect(() => {
