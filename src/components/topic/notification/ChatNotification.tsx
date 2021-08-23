@@ -1,10 +1,11 @@
 /* eslint-disable jsx-a11y/alt-text */
 import React from 'react';
 import { mediaQuery } from 'src/components/constants/mediaQuery';
-import { ZIndex } from 'src/components/constants/z_index';
 import styled from 'styled-components';
 import { imagePath } from 'src/components/constants/imagePath';
 import { Transition } from 'react-transition-group';
+import { fadeinAnimation, slideX, slideY } from 'src/components/common/Animations';
+import { Button } from 'src/components/common/Button';
 
 type Props = {
   title?: string,
@@ -18,88 +19,112 @@ export const ChatNotification: React.FC<Props> = ({
   visible,
   children,
 }) => (
-  <Transition in={visible} timeout={500} mountOnEnter unmountOnExit>
-    {(status) => (
-      <Wrapper>
-        <Container>
-          <Dialog visible={status === 'entered'}>
-            <Header>
-              <img src={imagePath.character.blue} width={30} height={30} alt="" />
-              <HeaderTitle>おしらせ</HeaderTitle>
-            </Header>
-            <Body>
-              {title && <Title>{title}</Title>}
-              <Message>{message}</Message>
+  <Transition in={visible} timeout={500} unmountOnExit mountOnEnter>
+    {
+      (status) => {
+        const visibleState = status === 'entering' || status === 'entered';
+        return (
+          <NotificationContainer>
+            <Notification isVisible={visibleState} duration={500}>
+              <NotificationHeader>
+                <Title>
+                  <img src={imagePath.character.blue} width={32} height={32} alt="icon" />
+                  <div>{title ?? 'お知らせ'}</div>
+                </Title>
+                {message && <Message>{message}</Message>}
+              </NotificationHeader>
               <Actions>{children}</Actions>
-            </Body>
-          </Dialog>
-        </Container>
-      </Wrapper>
-    )}
+            </Notification>
+          </NotificationContainer>
+        );
+      }
+    }
   </Transition>
 );
 
-const Wrapper = styled.div`
-  position: relative;
-`;
-
-const Container = styled.div`
+const NotificationContainer = styled.div`
   position: absolute;
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  top: 16px;
-  left: 0;
   right: 0;
-`;
-
-const Dialog = styled.div<{visible: boolean}>`
-  box-sizing: border-box;
-  background-color: white;
-  border-radius: 10px;
-  box-shadow: 20px 20px 60px rgba(0, 0, 0, .2);
+  top: 0;
+  left: 0;
+  padding: 8px 16px;
+  transform: translateY(-100%);
   display: flex;
-  flex-direction: column;
-  transition: all 0.4s ease-in-out;
-  transform: translateY(${(props) => (props.visible ? 0 : -50)}vh);
-  padding: 16px 24px;
-  width: calc(100% - 16px);
-  max-width: calc(100% - 16px);
-  z-index: ${ZIndex.notification};
+  justify-content: flex-end;
+  overflow-x: hidden;
 
   @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
-    width: auto;
-    max-width: 800px;
+    left: inherit;
+    min-width: 200px;
   }
 `;
 
-const Header = styled.div`
-  display: flex;
-  align-items: center;
-  margin-bottom: 16px;
-`;
-
-const HeaderTitle = styled.div`
-  margin-left: 16px;
-`;
-
-const Body = styled.div`
+const Notification = styled.div<{ isVisible: boolean, duration: number }>`
+  background-color: white;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
   display: flex;
   flex-direction: column;
-`;
+  opacity: ${({ isVisible }) => (isVisible ? 1.0 : 0)};
+  padding: 16px;
+  width: 100%;
 
-const Title = styled.div`
-  font-size: 1.2rem;
-  font-weight: bold;
-  margin-bottom: 4px;
-`;
-
-const Message = styled.div`
-  font-size: 1.0rem;
+  // モバイルの場合は、下からスライドイン
+  animation: ${fadeinAnimation} ${({ duration }) => duration}ms, ${slideY(500, 0)} ${({ duration }) => duration}ms;
+  transition: all ${({ duration }) => duration}ms;
+  transform: translateY(${({ isVisible }) => (isVisible ? 0 : '500px')}); 
+  
+  // タブレット以上の場合は、横からスライドイン
+  @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
+    min-width: 200px;
+    animation: ${fadeinAnimation} ${({ duration }) => duration}ms, ${slideX(500, 0)} ${({ duration }) => duration}ms;
+    transform: translateX(${({ isVisible }) => (isVisible ? 0 : '500px')});
+  }
 `;
 
 const Actions = styled.div`
   display: flex;
-  justify-content: flex-end;
-  margin-top: 16px;
+  flex-direction: row;
+  align-items: start;
+
+  & > ${Button}:first-child {
+    margin-right: 16px;
+  }
+
+  & > ${Button} {
+    margin-top: 16px;
+    flex: 1;
+  }
+`;
+
+const NotificationHeader = styled.div`
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+
+  @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
+    align-items: flex-start;
+  }
+`;
+
+const Title = styled.div`
+  align-items: center;
+  color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  font-size: 1.2rem;
+
+  & > img {
+    margin-right: 8px;
+  }
+
+  @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
+    justify-content: flex-start;
+  }
+`;
+
+const Message = styled.div`
+  margin-top: 4px;
+  color: rgba(0,0,0,.7);
 `;

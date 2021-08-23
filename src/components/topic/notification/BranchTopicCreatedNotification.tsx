@@ -1,4 +1,4 @@
-import { Button, TextButton } from 'src/components/common/Button';
+import { Button, OutlinedButton } from 'src/components/common/Button';
 import { ChatNotification } from 'src/components/topic/notification/ChatNotification';
 import React, { useCallback } from 'react';
 import { useChatState } from 'src/data/redux/chat/selector';
@@ -47,7 +47,7 @@ export const BranchTopicCreatedNotification = ({
         title={title}
         message={message}
       >
-        <TextButton onClick={handleCancel}>ここに残る</TextButton>
+        <OutlinedButton onClick={handleCancel}>ここに残る</OutlinedButton>
         <Button onClick={handleOnPositiveClick}>移動する</Button>
       </ChatNotification>
     </>

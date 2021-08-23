@@ -13,7 +13,7 @@ import { ShowAllBranchTopics } from 'src/components/topic/actions/ShowAllBranchT
 import { MessageBody } from 'src/domain/message/models/messageBody';
 import { notify } from 'src/data/redux/chat/slice';
 import { ChatNotificationTypes } from 'src/data/redux/chat/state';
-import { InvitationNotification } from 'src/components/topic/invitation/InvitationNotification';
+import { ChatNotifications } from 'src/components/topic/notification/ChatNotifications';
 
 export const ChatForm = () => {
   const dispatcher = useDispatch();
@@ -21,7 +21,6 @@ export const ChatForm = () => {
   const { uid } = useUserSelector();
   const [text, setText] = useState('');
   const [isTextOverflow, setIsTextOverflow] = useState(false);
-  const [isVisible, setIsVisible] = useState<boolean>(true);
 
   useEffect(() => {
     setIsTextOverflow(text.length > MessageBody.MAX_MESSAGE_SIZE);
@@ -92,7 +91,7 @@ export const ChatForm = () => {
         <ShowMessageLog />
         <DetailActions />
       </MainActionContainer>
-      <InvitationNotification isVisible={isVisible} onClose={() => setIsVisible(false)} />
+      <ChatNotifications />
     </Container>
   );
 };

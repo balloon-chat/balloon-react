@@ -18,6 +18,7 @@ import { CharacterCanvas } from 'src/components/topic/chat/CharacterCanvas';
 import { ZIndex } from 'src/components/constants/z_index';
 import {
   closeMessageLog,
+  notify,
   observeTopic,
   resetChatState,
   setBranch,
@@ -28,12 +29,12 @@ import {
 } from 'src/data/redux/chat/slice';
 import { createInvitation } from 'src/view/lib/invitation';
 import { useRouter } from 'next/router';
-import { ChatNotifications } from 'src/components/topic/notification/ChatNotifications';
 import { useChatState } from 'src/data/redux/chat/selector';
 import { DeriveTopicDialog } from 'src/components/topic/dialog/DeriveTopicDialog';
 import { BranchTopicsDialog } from 'src/components/topic/dialog/BranchTopicsDialog';
 import { MessageLog } from 'src/components/topic/log/MessageLog';
 import { useChatNotification } from 'src/view/lib/useNotification';
+import { ChatNotificationTypes } from 'src/data/redux/chat/state';
 
 type Props = {
   topic: TopicEntity | null,
@@ -51,6 +52,12 @@ const TopicPage = ({ topic, code }: Props) => {
   useEffect(() => {
     dispatcher(setInvitationCode({ code }));
     dispatcher(setTopic({ topic }));
+    dispatcher(notify({
+      type: ChatNotificationTypes.INVITATION,
+      title: '友達を招待しましょう!',
+      message: '',
+      payload: {},
+    }));
 
     if (topic) {
       dispatcher(observeTopic({ topicId: topic.id }));
@@ -132,7 +139,6 @@ const TopicPage = ({ topic, code }: Props) => {
           <Head>
             <title>{pageTitle.topics.topic(topic.title)}</title>
           </Head>
-          <ChatNotifications />
           <CharacterCanvas />
           <MessageFieldContainer>
             <ChatForm />
