@@ -14,8 +14,8 @@ export type ChatState = {
 
   notification: {
     type: ChatNotification,
-    title?: string,
-    message: string,
+    title: string,
+    message?: string,
     payload: ChatNotificationPayload,
   } | null,
   dialog: {
@@ -28,6 +28,9 @@ export type ChatState = {
 export const ChatNotificationTypes = {
   // 単にメッセージだけを表示する
   SIMPLE_MESSAGE: 'SIMPLE_MESSAGE',
+
+  // 招待
+  INVITATION: 'INVITATION',
 
   // 話題が派生した
   BRANCH_TOPIC_CREATED: 'BRANCH_TOPIC_CREATED',

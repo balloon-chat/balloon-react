@@ -1,5 +1,5 @@
-import { Button, TextButton } from 'src/components/common/Button';
-import { ChatNotification } from 'src/components/topic/notification/ChatNotification';
+import { Button, OutlinedButton } from 'src/components/common/Button';
+import { ChatNotification, ChatNotificationProps } from 'src/components/topic/notification/ChatNotification';
 import React, { useCallback } from 'react';
 import { useChatState } from 'src/data/redux/chat/selector';
 import { BranchTopicCreatedPayload, ChatNotificationTypes } from 'src/data/redux/chat/state';
@@ -8,17 +8,7 @@ import { clearNotification, notify } from 'src/data/redux/chat/slice';
 import { rootPath } from 'src/view/route/pagePath';
 import { useRouter } from 'next/router';
 
-type Props = {
-  isVisible: boolean,
-  title?: string,
-  message: string,
-}
-
-export const BranchTopicCreatedNotification = ({
-  isVisible,
-  title,
-  message,
-}: Props) => {
+export const BranchTopicCreatedNotification = (props: ChatNotificationProps) => {
   const dispatcher = useDispatch();
   const router = useRouter();
   const { notification, topicId } = useChatState();
@@ -34,20 +24,16 @@ export const BranchTopicCreatedNotification = ({
     await router.push(rootPath.topicPath.topicBranch(topicId, branch));
     dispatcher(notify({
       type: ChatNotificationTypes.SIMPLE_MESSAGE,
-      message: '話題を移動しました！',
-      title: null,
+      message: null,
+      title: '話題を移動しました',
       payload: {},
     }));
   };
 
   return (
     <>
-      <ChatNotification
-        visible={isVisible}
-        title={title}
-        message={message}
-      >
-        <TextButton onClick={handleCancel}>ここに残る</TextButton>
+      <ChatNotification {...props}>
+        <OutlinedButton onClick={handleCancel}>ここに残る</OutlinedButton>
         <Button onClick={handleOnPositiveClick}>移動する</Button>
       </ChatNotification>
     </>

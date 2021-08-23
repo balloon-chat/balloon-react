@@ -13,6 +13,7 @@ import { ShowAllBranchTopics } from 'src/components/topic/actions/ShowAllBranchT
 import { MessageBody } from 'src/domain/message/models/messageBody';
 import { notify } from 'src/data/redux/chat/slice';
 import { ChatNotificationTypes } from 'src/data/redux/chat/state';
+import { ChatNotifications } from 'src/components/topic/notification/ChatNotifications';
 
 export const ChatForm = () => {
   const dispatcher = useDispatch();
@@ -29,7 +30,7 @@ export const ChatForm = () => {
     if (isTextOverflow) {
       dispatcher(notify({
         type: ChatNotificationTypes.SIMPLE_MESSAGE,
-        title: null,
+        title: 'エラー',
         message: `送信できるメッセージは${MessageBody.MAX_MESSAGE_SIZE}文字以内です！`,
         payload: {},
       }));
@@ -90,11 +91,13 @@ export const ChatForm = () => {
         <ShowMessageLog />
         <DetailActions />
       </MainActionContainer>
+      <ChatNotifications />
     </Container>
   );
 };
 
 const Container = styled.div`
+  position: relative;
   align-items: center;
   box-sizing: border-box;
   background-color: white;
@@ -112,7 +115,6 @@ const Container = styled.div`
 const ActionContainer = styled.div`
   display: flex;
   margin: 0 8px;
-  
   & > div {
     margin: 0 8px;
   }
@@ -160,7 +162,7 @@ const MessageForm = styled.form`
   }
 `;
 
-const TextFieldContainer = styled.div<{hasError: boolean, hasWarning: boolean}>`
+const TextFieldContainer = styled.div<{ hasError: boolean, hasWarning: boolean }>`
   align-items: center;
   background-color: white;
   box-sizing: border-box;
