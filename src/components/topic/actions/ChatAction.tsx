@@ -9,6 +9,10 @@ type Props = {
   cartStyle?: boolean
 }
 
+/**
+ * メッセージ入力欄に表示されるアクションボタン
+ * isActive がtrueの場合は、ボタンがハイライトされる
+ */
 export const ChatAction: React.FC<Props> = ({
   children,
   message,

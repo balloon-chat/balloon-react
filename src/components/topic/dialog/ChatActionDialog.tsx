@@ -12,15 +12,20 @@ import { useRouter } from 'next/router';
 type Props = {
   isVisible: boolean,
   onClose: () => void,
+  onCopyInvitation: () => void,
 }
 
 export const ChatActionDialog = ({
   isVisible,
+  onCopyInvitation,
   onClose,
 }: Props) => {
   const router = useRouter();
   const { topicId } = useChatState();
   const { invitation, isEditable } = useChatState();
+
+  if (!isVisible) return (<></>);
+
   return (
     <>
       <FullscreenContainer
@@ -32,7 +37,7 @@ export const ChatActionDialog = ({
         <Dialog>
           <CopyToClipboard
             text={invitation ?? ''}
-            onCopy={onClose}
+            onCopy={onCopyInvitation}
           >
             <li>招待をコピー</li>
           </CopyToClipboard>
