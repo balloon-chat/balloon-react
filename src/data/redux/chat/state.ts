@@ -22,6 +22,7 @@ export type ChatState = {
     deriveTopicDialog: boolean,
     branchTopicDialog: boolean,
     messageLog: boolean,
+    detailAction: boolean,
   }
 }
 

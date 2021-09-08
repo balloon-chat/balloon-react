@@ -11,6 +11,7 @@ const initialState: ChatState = {
     deriveTopicDialog: false,
     branchTopicDialog: false,
     messageLog: false,
+    detailAction: false,
   },
   invitation: null,
   invitationCode: null,
@@ -31,6 +32,9 @@ const slice = createSlice({
 
     showMessageLog: (state) => { state.dialog.messageLog = true; },
     closeMessageLog: (state) => { state.dialog.messageLog = false; },
+
+    showDetailActionDialog: (state) => { state.dialog.detailAction = true; },
+    closeDetailActionDialog: (state) => { state.dialog.detailAction = false; },
 
     notify: (state, { payload }: ShowNotification) => {
       state.notification = {
@@ -94,6 +98,9 @@ export const {
 
   showMessageLog,
   closeMessageLog,
+
+  showDetailActionDialog,
+  closeDetailActionDialog,
 
   notify,
   clearNotification,

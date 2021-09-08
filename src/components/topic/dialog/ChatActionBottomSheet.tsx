@@ -26,11 +26,13 @@ import { fadeinAnimation, slideY } from 'src/components/common/Animations';
 type Props = {
   isVisible: boolean,
   onClose: () => void,
+  onCopyInvitation: () => void,
 }
 
 export const ChatActionBottomSheet = ({
   isVisible,
   onClose,
+  onCopyInvitation,
 }: Props) => {
   const router = useRouter();
   const dispatcher = useDispatch();
@@ -73,7 +75,7 @@ export const ChatActionBottomSheet = ({
                     ログを表示
                     <ChatBubbleIcon />
                   </BottomSheetAction>
-                  <CopyToClipboard text={invitation ?? ''} onCopy={onClose}>
+                  <CopyToClipboard text={invitation ?? ''} onCopy={onCopyInvitation}>
                     <BottomSheetAction>
                       招待をコピー
                       <CopyIcon />

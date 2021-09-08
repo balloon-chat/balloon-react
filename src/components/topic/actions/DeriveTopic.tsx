@@ -5,6 +5,10 @@ import { useDispatch } from 'react-redux';
 import { useChatState } from 'src/data/redux/chat/selector';
 import { closeDeriveTopicDialog, showDeriveTopicDialog } from 'src/data/redux/chat/slice';
 
+/**
+ * メッセージ入力欄に表示されるアクションボタンの一つで、
+ * 話題の派生を行う。
+ */
 export const DeriveTopic = () => {
   const dispatcher = useDispatch();
   const { dialog } = useChatState();
