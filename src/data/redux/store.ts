@@ -11,9 +11,7 @@ export const store = configureStore({
       thunk: true,
     }),
   ],
-  // TODO: show only development
-  // devTools: process.env.NODE_ENV === 'development',
-  devTools: true,
+  devTools: process.env.NODE_ENV === 'development',
 });
 
 epicMiddleware.run(rootEpic);
