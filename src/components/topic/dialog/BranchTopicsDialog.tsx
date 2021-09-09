@@ -9,6 +9,8 @@ import { rootPath } from 'src/view/route/pagePath';
 import { imagePath } from 'src/components/constants/imagePath';
 import { TextButton } from 'src/components/common/Button';
 import { ChatNotificationTypes } from 'src/data/redux/chat/state';
+import { DialogDescription, DialogTitle } from 'src/components/common/DialogHeader';
+import { mediaQuery } from 'src/components/constants/mediaQuery';
 
 export const BranchTopicsDialog = () => {
   const dispatcher = useDispatch();
@@ -47,6 +49,10 @@ export const BranchTopicsDialog = () => {
           // 話題が派生している場合
           topic && isDerived && (
           <>
+            <DialogHeader>
+              <DialogTitle>派生した話題</DialogTitle>
+              <DialogDescription>この話題はこれだけの広がりを見せています。</DialogDescription>
+            </DialogHeader>
             <Link href={rootPath.topicPath.topic(topic.id)} passHref>
               <ItemContainer onClick={handleClose}>
                 <BranchTopicTitle active={activeTopic === topic.id}>
@@ -83,9 +89,18 @@ export const BranchTopicsDialog = () => {
   );
 };
 
+const DialogHeader = styled.div`
+  margin-top: 16px;
+  margin-left: 16px;
+
+  @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
+    margin-top: 0;
+  }
+`;
+
 const Container = styled.div`
   box-sizing: border-box;
-  padding: 16px 0;
+  padding-bottom: 16px;
   height: 100%;
 `;
 

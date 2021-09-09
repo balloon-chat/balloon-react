@@ -7,6 +7,7 @@ import { useDispatch } from 'react-redux';
 import { deriveTopic } from 'src/data/redux/topic/action';
 import { closeDeriveTopicDialog } from 'src/data/redux/chat/slice';
 import { useChatState } from 'src/data/redux/chat/selector';
+import { DialogHeader } from 'src/components/common/DialogHeader';
 
 export const DeriveTopicDialog = () => {
   const dispatcher = useDispatch();
@@ -28,8 +29,10 @@ export const DeriveTopicDialog = () => {
 
   return (
     <Dialog animate isVisible={dialog.deriveTopicDialog} onClose={useCallback(onClose, [])}>
-      <Title>話題を広げる</Title>
-      <div>話題を広げて、この話題を更に盛り上げましょう！</div>
+      <DialogHeader
+        title="話題を広げる"
+        message="話題を広げて、この話題を更に盛り上げましょう！"
+      />
       <Form onSubmit={handleSubmit}>
         <InputContainer>
           <TextField
@@ -45,11 +48,6 @@ export const DeriveTopicDialog = () => {
   );
 };
 
-const Title = styled.div`
-  font-size: 24px;
-  font-weight: bold;
-`;
-
 const Form = styled.form`
   display: flex;
   flex-direction: column;
@@ -60,6 +58,5 @@ const Form = styled.form`
 `;
 
 const InputContainer = styled.div`
-  margin-top: 32px;
-  margin-bottom: 16px;
+  margin: 16px 0;
 `;

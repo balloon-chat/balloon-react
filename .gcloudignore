@@ -6,7 +6,10 @@
 .eslintrc.json
 
 /node_modules
+
+# Documents
 README.md
+/docs
 
 # Git
 .gitignore

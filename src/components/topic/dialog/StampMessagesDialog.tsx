@@ -8,6 +8,7 @@ import { sendMessage } from 'src/data/redux/message/action';
 import { useUserSelector } from 'src/data/redux/user/selector';
 import { mediaQuery } from 'src/components/constants/mediaQuery';
 import { stamps } from 'src/components/constants/stamps';
+import { DialogDescription, DialogTitle } from 'src/components/common/DialogHeader';
 
 /**
  * テンプレートとして、表示するとキャラクターの表情のようになるメッセージ一覧を表示。
@@ -51,12 +52,21 @@ export const StampMessagesDialog = () => {
                   onClick={onClickHandler}
                 />
               ))
-            }
+          }
         </StampItemList>
       </Container>
     </SwipeInDialog>
   );
 };
+
+const DialogHeader = styled.div`
+  margin-top: 16px;
+  margin-left: 16px;
+
+  @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
+    margin-top: 0;
+  }
+`;
 
 const StampItem = ({
   title,
@@ -80,24 +90,6 @@ const Container = styled.div`
   flex-direction: column;
 `;
 
-const DialogHeader = styled.div`
-  margin-top: 16px;
-  margin-left: 16px;
-
-  @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
-    margin-top: 0;
-  }
-`;
-
-const DialogTitle = styled.div`
-  font-weight: bold;
-  font-size: 1.25rem;
-`;
-
-const DialogDescription = styled.div`
-  color: rgba(0, 0, 0, .6);
-`;
-
 const StampItemList = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -110,9 +102,10 @@ const StampItemContainer = styled.div`
   display: flex;
   flex-direction: column;
   font-weight: bold;
-  max-width: calc(100% / 2 - 4px);
+  width: calc(100% / 2 - 4px);
   padding: 16px;
   text-align: center;
+  height: 160px;
 
   :hover {
     background-color: rgba(0, 0, 0, .05);
@@ -121,11 +114,12 @@ const StampItemContainer = styled.div`
 
   @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
     // タブレット以上の場合は、3列
-    max-width: calc(100% / 3 - 4px);
+    width: calc(100% / 3 - 4px);
   }
 `;
 
 const StampImage = styled.img`
   border-radius: 10%;
   margin-bottom: 4px;
+  height: 100%; // safariの場合、この指定が無いと表示がおかしくなる。
 `;
