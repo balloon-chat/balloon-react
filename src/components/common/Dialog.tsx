@@ -61,7 +61,7 @@ const Container = styled.div<{ isVisible: boolean, duration: number }>`
   box-sizing: border-box;
   background-color: white;
   border-radius: 5px;
-  padding: 32px 24px;
+  padding: 24px 16px;
   min-width: calc(100% - 16px);
   max-width: calc(100% - 16px);
   z-index: ${ZIndex.dialog};
@@ -72,5 +72,6 @@ const Container = styled.div<{ isVisible: boolean, duration: number }>`
 
   @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
     min-width: 400px;
+    padding: 32px 24px;
   }
 `;

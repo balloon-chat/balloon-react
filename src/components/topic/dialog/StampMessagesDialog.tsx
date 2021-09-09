@@ -8,6 +8,7 @@ import { sendMessage } from 'src/data/redux/message/action';
 import { useUserSelector } from 'src/data/redux/user/selector';
 import { mediaQuery } from 'src/components/constants/mediaQuery';
 import { stamps } from 'src/components/constants/stamps';
+import { DialogDescription, DialogTitle } from 'src/components/common/DialogHeader';
 
 /**
  * テンプレートとして、表示するとキャラクターの表情のようになるメッセージ一覧を表示。
@@ -51,12 +52,21 @@ export const StampMessagesDialog = () => {
                   onClick={onClickHandler}
                 />
               ))
-            }
+          }
         </StampItemList>
       </Container>
     </SwipeInDialog>
   );
 };
+
+const DialogHeader = styled.div`
+  margin-top: 16px;
+  margin-left: 16px;
+
+  @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
+    margin-top: 0;
+  }
+`;
 
 const StampItem = ({
   title,
@@ -78,24 +88,6 @@ const StampItem = ({
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-`;
-
-const DialogHeader = styled.div`
-  margin-top: 16px;
-  margin-left: 16px;
-
-  @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
-    margin-top: 0;
-  }
-`;
-
-const DialogTitle = styled.div`
-  font-weight: bold;
-  font-size: 1.25rem;
-`;
-
-const DialogDescription = styled.div`
-  color: rgba(0, 0, 0, .6);
 `;
 
 const StampItemList = styled.div`
