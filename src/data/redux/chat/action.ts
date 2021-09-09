@@ -15,3 +15,10 @@ export type ShowNotification = PayloadAction<{
   message: string | null,
   payload: ChatNotificationPayload,
 }>;
+
+/*
+ Form
+ */
+export type SetIsInputting = PayloadAction<{
+  value: boolean,
+}>;

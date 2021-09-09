@@ -23,6 +23,10 @@ export type ChatState = {
     branchTopicDialog: boolean,
     messageLog: boolean,
     detailAction: boolean,
+    stamp: boolean,
+  },
+  form: {
+    inputting: boolean, // 入力中か
   }
 }
 
