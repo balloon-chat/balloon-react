@@ -110,9 +110,10 @@ const StampItemContainer = styled.div`
   display: flex;
   flex-direction: column;
   font-weight: bold;
-  max-width: calc(100% / 2 - 4px);
+  width: calc(100% / 2 - 4px);
   padding: 16px;
   text-align: center;
+  height: 160px;
 
   :hover {
     background-color: rgba(0, 0, 0, .05);
@@ -121,11 +122,12 @@ const StampItemContainer = styled.div`
 
   @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
     // タブレット以上の場合は、3列
-    max-width: calc(100% / 3 - 4px);
+    width: calc(100% / 3 - 4px);
   }
 `;
 
 const StampImage = styled.img`
   border-radius: 10%;
   margin-bottom: 4px;
+  height: 100%; // safariの場合、この指定が無いと表示がおかしくなる。
 `;
