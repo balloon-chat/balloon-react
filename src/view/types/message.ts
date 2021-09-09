@@ -2,12 +2,13 @@ import { Message } from 'src/domain/message/models/message';
 import { LoginUser } from 'src/domain/user/models/loginUser';
 
 export type MessageEntity = {
-  id: string;
-  body: string;
-  createdAt: number;
-  senderId: string;
-  senderName: string;
-  senderPhotoUrl: string;
+  id: string,
+  body: string,
+  createdAt: number,
+  anonymousSender: boolean,
+  senderId: string,
+  senderName: string,
+  senderPhotoUrl: string,
 };
 
 export class MessageEntityFactory {
@@ -29,6 +30,7 @@ export class MessageEntityFactory {
       id: message.id.value,
       body: message.body.value,
       createdAt: message.createdAt,
+      anonymousSender: message.isAnonymousMessage,
       senderId: message.sender.id.value,
       senderName,
       senderPhotoUrl,
