@@ -35,6 +35,7 @@ import { BranchTopicsDialog } from 'src/components/topic/dialog/BranchTopicsDial
 import { MessageLog } from 'src/components/topic/log/MessageLog';
 import { useChatNotification } from 'src/view/lib/useNotification';
 import { ChatNotificationTypes } from 'src/data/redux/chat/state';
+import { StampMessagesDialog } from 'src/components/topic/dialog/StampMessagesDialog';
 
 type Props = {
   topic: TopicEntity | null,
@@ -130,6 +131,7 @@ const TopicPage = ({ topic, code }: Props) => {
       <NavBar />
       <DeriveTopicDialog />
       <BranchTopicsDialog />
+      <StampMessagesDialog />
       <MessageLog
         isVisible={dialog.messageLog}
         onClose={() => dispatcher(closeMessageLog())}

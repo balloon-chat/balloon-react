@@ -1,7 +1,12 @@
 import { ChatState, chatStateName } from 'src/data/redux/chat/state';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { TopicEntity } from 'src/view/types/topic';
-import { ObserveTopic, ObserveTopicFulfilled, ShowNotification } from 'src/data/redux/chat/action';
+import {
+  ObserveTopic,
+  ObserveTopicFulfilled,
+  SetIsInputting,
+  ShowNotification,
+} from 'src/data/redux/chat/action';
 
 const initialState: ChatState = {
   topic: null,
@@ -12,6 +17,10 @@ const initialState: ChatState = {
     branchTopicDialog: false,
     messageLog: false,
     detailAction: false,
+    stamp: false,
+  },
+  form: {
+    inputting: false,
   },
   invitation: null,
   invitationCode: null,
@@ -24,6 +33,7 @@ const slice = createSlice({
   name: chatStateName,
   initialState,
   reducers: {
+    // dialog
     showDeriveTopicDialog: (state) => { state.dialog.deriveTopicDialog = true; },
     closeDeriveTopicDialog: (state) => { state.dialog.deriveTopicDialog = false; },
 
@@ -36,6 +46,15 @@ const slice = createSlice({
     showDetailActionDialog: (state) => { state.dialog.detailAction = true; },
     closeDetailActionDialog: (state) => { state.dialog.detailAction = false; },
 
+    showStampDialog: (state) => { state.dialog.stamp = true; },
+    closeStampDialog: (state) => { state.dialog.stamp = false; },
+
+    // form
+    setIsInputting: (state, { payload }: SetIsInputting) => {
+      state.form.inputting = payload.value;
+    },
+
+    // notification
     notify: (state, { payload }: ShowNotification) => {
       state.notification = {
         type: payload.type,
@@ -101,6 +120,11 @@ export const {
 
   showDetailActionDialog,
   closeDetailActionDialog,
+
+  showStampDialog,
+  closeStampDialog,
+
+  setIsInputting,
 
   notify,
   clearNotification,

@@ -11,9 +11,10 @@ import { DetailActions } from 'src/components/topic/actions/DetailActions';
 import { useChatState } from 'src/data/redux/chat/selector';
 import { ShowAllBranchTopics } from 'src/components/topic/actions/ShowAllBranchTopics';
 import { MessageBody } from 'src/domain/message/models/messageBody';
-import { notify } from 'src/data/redux/chat/slice';
+import { notify, setIsInputting } from 'src/data/redux/chat/slice';
 import { ChatNotificationTypes } from 'src/data/redux/chat/state';
 import { ChatNotifications } from 'src/components/topic/notification/ChatNotifications';
+import { StampMessage } from 'src/components/topic/actions/StampMessage';
 
 export const ChatForm = () => {
   const dispatcher = useDispatch();
@@ -21,10 +22,16 @@ export const ChatForm = () => {
   const { uid } = useUserSelector();
   const [text, setText] = useState('');
   const [isTextOverflow, setIsTextOverflow] = useState(false);
+  const [canSend, setCanSend] = useState(false); // メッセージを送信可能か
 
   useEffect(() => {
     setIsTextOverflow(text.length > MessageBody.MAX_MESSAGE_SIZE);
+    dispatcher(setIsInputting({ value: text !== '' }));
   }, [text]);
+
+  useEffect(() => {
+    setCanSend(text !== '' && !isTextOverflow);
+  }, [text, isTextOverflow]);
 
   useEffect(() => {
     if (isTextOverflow) {
@@ -69,9 +76,11 @@ export const ChatForm = () => {
         <DeriveTopic />
         <ShowAllBranchTopics />
       </ActionContainer>
+      <StampMessage />
       <MessageForm onSubmit={(e) => handleSubmit(e)}>
         <TextFieldContainer
           hasError={isTextOverflow}
+          canSend={canSend}
           hasWarning={text.length >= MessageBody.MAX_MESSAGE_SIZE - 10}
         >
           <TextField
@@ -114,10 +123,6 @@ const Container = styled.div`
 
 const ActionContainer = styled.div`
   display: flex;
-  margin: 0 8px;
-  & > div {
-    margin: 0 8px;
-  }
 
   // モバイル版の場合隠す
   position: fixed;
@@ -128,11 +133,15 @@ const ActionContainer = styled.div`
     position: inherit;
     visibility: visible;
     user-select: inherit;
+    margin: 0 8px;
+    
+    & > div {
+      margin: 0 8px;
+    }
   }
 `;
 
 const MainActionContainer = styled(ActionContainer)`
-  margin-left: 8px;
 
   position: inherit;
   visibility: visible;
@@ -145,6 +154,8 @@ const MainActionContainer = styled(ActionContainer)`
   }
 
   @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
+    margin-left: 8px;
+
     & > div:first-child {
       position: inherit;
       visibility: visible;
@@ -156,13 +167,12 @@ const MainActionContainer = styled(ActionContainer)`
 const MessageForm = styled.form`
   max-width: 500px;
   width: 100%;
-  margin: 0 8px;
   @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
     margin: 0 16px;
   }
 `;
 
-const TextFieldContainer = styled.div<{ hasError: boolean, hasWarning: boolean }>`
+const TextFieldContainer = styled.div<{ hasError: boolean, hasWarning: boolean, canSend: boolean }>`
   align-items: center;
   background-color: white;
   box-sizing: border-box;
@@ -172,19 +182,23 @@ const TextFieldContainer = styled.div<{ hasError: boolean, hasWarning: boolean }
     return 'rgba(0, 0, 0, 0.2)';
   }} solid 1.5px;
   border-radius: 50px;
-  box-shadow: 0 10px 40px -10px rgb(0 64 128 / 20%);
   display: flex;
   position: relative;
-  flex-wrap: wrap;
   width: 100%;
   padding: 0 8px;
 
   & > svg {
-    color: #5b87fa;
+    color: ${({ canSend }) => (canSend ? '#5b87fa' : 'rgba(0,0,0,.5)')};
     cursor: pointer;
     fill: currentColor;
-    width: 32px;
+    width: ${({ canSend }) => (canSend ? 32 : 0)}px;
     padding: 8px;
+  }
+
+  @media screen and (min-width: ${mediaQuery.tablet.portrait}px) {
+    & > svg {
+      width: 32px;
+    } 
   }
 `;
 

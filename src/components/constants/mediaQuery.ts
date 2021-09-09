@@ -4,6 +4,6 @@ export const mediaQuery = {
   },
 
   tablet: {
-    portrait: 789,
+    portrait: 700,
   },
 };

@@ -19,7 +19,7 @@ export const ShowAllBranchTopics = () => {
 
   return (
     <ChatAction
-      message="すべての話題を表示"
+      message="話題を表示"
       onClick={handleClick}
       isActive={dialog.branchTopicDialog}
     >
