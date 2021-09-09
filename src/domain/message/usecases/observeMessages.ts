@@ -51,6 +51,7 @@ class BindUserOperator implements Operator<MessageEntity[], Message[]> {
           senderIds.map(async (senderId) => {
             if (senderId && !this.cachedUsers.get(senderId.value)) {
               // ユーザーがキャッシュされていない場合、UserRepositoryから取得、キャッシュに追加
+              // 一時的なユーザーの場合は、AnonymousUserとして扱う
               const user = await this.userRepository.find(senderId) ?? new AnonymousUser(senderId);
               this.cachedUsers.set(senderId.value, user);
             }

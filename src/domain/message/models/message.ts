@@ -16,4 +16,8 @@ export class Message {
     public readonly createdAt: number = Date.now(),
     public readonly sender: User,
   ) {}
+
+  get isAnonymousMessage():boolean {
+    return !this.sender.name;
+  }
 }

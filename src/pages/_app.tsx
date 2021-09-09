@@ -87,6 +87,7 @@ if (process.env.NODE_ENV !== 'development') {
   console.log = () => {};
   console.error = () => {};
   console.dir = () => {};
+  console.info = () => {};
 }
 
 export default App;
