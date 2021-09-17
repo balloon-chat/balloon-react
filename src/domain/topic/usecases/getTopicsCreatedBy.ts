@@ -2,20 +2,20 @@ import { IGetTopicsCreatedBy } from 'src/domain/topic/types/getTopicsCreatedBy';
 import { ITopicRepository } from 'src/domain/topic/repository/topicRepository';
 import { UserId } from 'src/domain/user/models/userId';
 import { TopicData } from 'src/domain/topic/models/topic/topicData';
-import { IGetTopic } from 'src/domain/topic/types/getTopic';
+import { IGetTopicData } from 'src/domain/topic/types/getTopicData';
 import { IUserRepository } from 'src/domain/user/repository/userRepository';
-import { GetTopic } from 'src/domain/topic/usecases/getTopic';
+import { GetTopicData } from 'src/domain/topic/usecases/getTopicData';
 import { IMessageRepository } from 'src/domain/message/repository/messageRepository';
 
 export class GetTopicsCreatedBy implements IGetTopicsCreatedBy {
-  private readonly getTopicUseCase: IGetTopic;
+  private readonly getTopicUseCase: IGetTopicData;
 
   constructor(
     private readonly topicRepository: ITopicRepository,
     messageRepository: IMessageRepository,
     private readonly userRepository: IUserRepository,
   ) {
-    this.getTopicUseCase = new GetTopic(
+    this.getTopicUseCase = new GetTopicData(
       messageRepository,
       this.topicRepository,
       this.userRepository,

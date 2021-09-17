@@ -77,7 +77,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
 
   // 話題の有無を調べる
   const topicService = new TopicService();
-  const topic = await topicService.fetchTopic(id);
+  const topic = await topicService.fetchTopicData(id);
   if (!topic) return emptyResult;
 
   // ログインしていなければ、ログインページへリダイレクト

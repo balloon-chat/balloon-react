@@ -5,7 +5,7 @@ import { ErrorPage } from 'src/components/common/ErrorPage';
 import Head from 'next/head';
 import { pageTitle } from 'src/view/route/pagePath';
 import { GetServerSideProps, GetServerSidePropsResult } from 'next';
-import { TopicEntity, TopicEntityFactory } from 'src/view/types/topic';
+import { TopicEntity } from 'src/view/types/topic';
 import { TopicService } from 'src/domain/topic/service/topicService';
 import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
@@ -39,19 +39,17 @@ import { StampMessagesDialog } from 'src/components/topic/dialog/StampMessagesDi
 
 type Props = {
   topic: TopicEntity | null,
-  code: number[] | null,
 };
 
-const TopicPage = ({ topic, code }: Props) => {
+const TopicPage = ({ topic }: Props) => {
   const router = useRouter();
   const dispatcher = useDispatch();
   const { uid, loginState } = useUserSelector();
-  const { topicId, branchTopicId, dialog } = useChatState();
+  const { topicId, branchTopicId, dialog, invitationCode } = useChatState();
 
   useChatNotification();
 
   useEffect(() => {
-    dispatcher(setInvitationCode({ code }));
     dispatcher(setTopic({ topic }));
     dispatcher(notify({
       type: ChatNotificationTypes.INVITATION,
@@ -63,13 +61,13 @@ const TopicPage = ({ topic, code }: Props) => {
     if (topic) {
       dispatcher(observeTopic({ topicId: topic.id }));
 
-      // 招待メッセージを作成
-      const invitation = createInvitation({
-        title: topic.title,
-        currentPath: router.asPath,
-        code,
+      // 招待コードの設定
+      const service = new TopicService();
+      service.fetchInvitationCode(topic.id).then((code) => {
+        console.info(`invitation code: ${code}`);
+        if (!code) return;
+        dispatcher(setInvitationCode({ code }));
       });
-      dispatcher(setInvitation({ invitation }));
     }
 
     return () => {
@@ -80,6 +78,21 @@ const TopicPage = ({ topic, code }: Props) => {
       dispatcher(resetChatState());
     };
   }, []);
+
+  useEffect(() => {
+    if (!topic) return undefined;
+    // 招待メッセージを作成
+    const invitation = createInvitation({
+      title: topic.title,
+      currentPath: router.asPath,
+      code: invitationCode,
+    });
+    dispatcher(setInvitation({ invitation }));
+
+    return () => {
+      dispatcher(setInvitation({ invitation: null }));
+    };
+  }, [invitationCode]);
 
   useEffect(() => {
     if (!topicId) return () => {};
@@ -170,29 +183,18 @@ const MessageFieldContainer = styled.div`
 export const getServerSideProps: GetServerSideProps<Props> = async (
   context,
 ) => {
-  const emptyResult: GetServerSidePropsResult<Props> = {
-    props: {
-      topic: null,
-      code: null,
-    },
-  };
+  const emptyResult: GetServerSidePropsResult<Props> = { props: { topic: null } };
+
+  // 話題のID
   const { id } = context.query;
   if (typeof id !== 'string') return emptyResult;
 
+  // 対応する話題を取得
   const service = new TopicService();
-  const topicData = await service.fetchTopic(id);
-  if (!topicData) return emptyResult;
+  const topic = await service.fetchTopic(id);
+  if (!topic) return emptyResult;
 
-  const code = await service.fetchInvitationCode(id);
-
-  const topic = TopicEntityFactory.create(topicData);
-
-  return {
-    props: {
-      topic,
-      code,
-    },
-  };
+  return { props: { topic } };
 };
 
 export default TopicPage;

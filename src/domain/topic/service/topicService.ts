@@ -4,7 +4,7 @@ import { UserId } from 'src/domain/user/models/userId';
 import { GetTopics } from 'src/domain/topic/usecases/getTopics';
 import { IMessageRepository } from 'src/domain/message/repository/messageRepository';
 import { IUserRepository } from 'src/domain/user/repository/userRepository';
-import { GetTopic } from 'src/domain/topic/usecases/getTopic';
+import { GetTopicData } from 'src/domain/topic/usecases/getTopicData';
 import { TopicId } from 'src/domain/topic/models/topic/topicId';
 import { TopicData } from 'src/domain/topic/models/topic/topicData';
 import { ITopicImageRepository } from 'src/domain/topic/repository/topicImageRepository';
@@ -19,7 +19,7 @@ import { IGetRecommendTopics } from 'src/domain/topic/types/getRecommendTopics';
 import { ICreateTopic } from 'src/domain/topic/types/createTopic';
 import { IGetTopics } from 'src/domain/topic/types/getTopics';
 import { RecommendTopics } from 'src/domain/topic/models/recommend/recommendTopics';
-import { IGetTopic } from 'src/domain/topic/types/getTopic';
+import { IGetTopicData } from 'src/domain/topic/types/getTopicData';
 import { IGetTopicsCreatedBy } from 'src/domain/topic/types/getTopicsCreatedBy';
 import { GetTopicsCreatedBy } from 'src/domain/topic/usecases/getTopicsCreatedBy';
 import { IInvitationRepository } from 'src/domain/topic/repository/invitationRepository';
@@ -35,6 +35,8 @@ import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { IObserveTopic } from 'src/domain/topic/types/observeTopic';
 import { ObserveTopic } from 'src/domain/topic/usecases/observeTopic';
+import { IGetTopic } from 'src/domain/topic/types/getTopic';
+import { GetTopic } from 'src/domain/topic/usecases/getTopic';
 
 export class TopicService {
   private readonly createTopicUsecase: ICreateTopic;
@@ -42,6 +44,8 @@ export class TopicService {
   private readonly deriveTopicUsecase: IDeriveTopic;
 
   private readonly getTopicUsecase: IGetTopic;
+
+  private readonly getTopicDataUsecase: IGetTopicData;
 
   private readonly getTopicByInvitationCodeUsecase: IGetTopicByInvitationCode;
 
@@ -78,14 +82,15 @@ export class TopicService {
     this.deriveTopicUsecase = new DeriveTopic(
       topicRepository,
     );
-    this.getTopicUsecase = new GetTopic(
+    this.getTopicUsecase = new GetTopic(topicRepository);
+    this.getTopicDataUsecase = new GetTopicData(
       messageRepository,
       topicRepository,
       userRepository,
     );
     this.getTopicByInvitationCodeUsecase = new GetTopicByInvitationCode(
       invitationRepository,
-      this.getTopicUsecase,
+      this.getTopicDataUsecase,
     );
     this.getTopicsUsecase = new GetTopics(
       topicRepository,
@@ -137,7 +142,7 @@ export class TopicService {
   }
 
   async getTopic(topicId: string): Promise<TopicEntity|undefined> {
-    const topicData = await this.getTopicUsecase.execute(new TopicId(topicId));
+    const topicData = await this.getTopicDataUsecase.execute(new TopicId(topicId));
     if (!topicData) return undefined;
 
     return TopicEntityFactory.create(topicData);
@@ -156,8 +161,14 @@ export class TopicService {
     });
   }
 
-  fetchTopic(topicId: string): Promise<TopicData | undefined> {
-    return this.getTopicUsecase.execute(new TopicId(topicId));
+  async fetchTopic(topicId: string): Promise<TopicEntity|undefined> {
+    const topic = await this.getTopicUsecase.execute(new TopicId(topicId));
+    if (!topic) return undefined;
+    return TopicEntityFactory.fromTopic({ topic, commentCount: 0 });
+  }
+
+  fetchTopicData(topicId: string): Promise<TopicData | undefined> {
+    return this.getTopicDataUsecase.execute(new TopicId(topicId));
   }
 
   async fetchTopicFromCode(code: number[] | string): Promise<TopicData | undefined> {

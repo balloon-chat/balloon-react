@@ -1,7 +1,7 @@
 import { FakeTopicRepository } from 'tests/data/topic/fakeTopicRepository';
 import { FakeMessageRepository } from 'tests/data/message/FakeMessageRepository';
 import { FakeUserRepository } from 'tests/data/user/FakeUserRepository';
-import { GetTopic } from 'src/domain/topic/usecases/getTopic';
+import { GetTopicData } from 'src/domain/topic/usecases/getTopicData';
 import { IGetTopicByInvitationCode } from 'src/domain/topic/types/getTopicByInvitationCode';
 import { GetTopicByInvitationCode } from 'src/domain/topic/usecases/getTopicByInvitationCode';
 import { FakeInvitationRepository } from 'tests/data/topic/fakeInvitationRepository';
@@ -17,7 +17,7 @@ const topicRepository = new FakeTopicRepository();
 const messageRepository = new FakeMessageRepository();
 const userRepository = new FakeUserRepository();
 const invitationRepository = new FakeInvitationRepository();
-const getTopicUsecase = new GetTopic(
+const getTopicUsecase = new GetTopicData(
   messageRepository,
   topicRepository,
   userRepository,

@@ -55,7 +55,7 @@ export const fetchTopic = createAsyncThunk<
   }
 >(FETCH_TOPIC, async ({ topicId }) => {
   const service = new TopicService();
-  const topic = await service.fetchTopic(topicId);
+  const topic = await service.fetchTopicData(topicId);
   if (!topic) return undefined;
   return TopicEntityFactory.create(topic);
 });
