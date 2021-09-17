@@ -1,13 +1,13 @@
 import { IGetTopicByInvitationCode } from 'src/domain/topic/types/getTopicByInvitationCode';
 import { TopicData } from 'src/domain/topic/models/topic/topicData';
-import { IGetTopic } from 'src/domain/topic/types/getTopic';
+import { IGetTopicData } from 'src/domain/topic/types/getTopicData';
 import { IInvitationRepository } from 'src/domain/topic/repository/invitationRepository';
 import { InvitationCode } from 'src/domain/topic/models/invitation/invitationCode';
 
 export class GetTopicByInvitationCode implements IGetTopicByInvitationCode {
   constructor(
     private readonly invitationRepository: IInvitationRepository,
-    private readonly getTopicUsecase: IGetTopic,
+    private readonly getTopicUsecase: IGetTopicData,
   ) {
   }
 
